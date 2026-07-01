@@ -132,7 +132,7 @@ const countryRows = [
 ];
 
 const defaultProps: DataTableProps = {
-  writeEnabled: true,
+  isWriteEnabled: true,
   isLoading: false,
   headings,
   rows,
@@ -175,7 +175,11 @@ describe('DataTable', () => {
   it('should render correctly with no write access', async () => {
     const user = userEvent.setup();
     renderWithProviders(
-      <DataTable {...defaultProps} currentPageSize={20} writeEnabled={false} />
+      <DataTable
+        {...defaultProps}
+        currentPageSize={20}
+        isWriteEnabled={false}
+      />
     );
 
     expect(screen.getByText('SubCategory_123')).toBeInTheDocument();
@@ -395,7 +399,7 @@ describe('DataTable', () => {
           headings={headings}
           onDeleteRuleSet={mockDelete}
           onDuplicate={mockDuplicate}
-          writeEnabled={false}
+          isWriteEnabled={false}
         />
       );
 

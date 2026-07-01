@@ -140,7 +140,7 @@ const defaultProps = {
   mapping: mappingMock,
   ruleType: RuleType.Global,
   facetType: FacetType.Global,
-  writeEnabled: true,
+  isWriteEnabled: true,
 } as const;
 
 describe('TablePanel', () => {
@@ -178,7 +178,7 @@ describe('TablePanel', () => {
 
   it('should render the component with no access', async () => {
     renderWithProviders(
-      <TablePanel {...defaultProps} writeEnabled={false} />,
+      <TablePanel {...defaultProps} isWriteEnabled={false} />,
       [],
       {
         featureFlags: { hasAuthorization: true },
@@ -261,7 +261,7 @@ describe('TablePanel', () => {
     it('should track creating a new redirect rule', async () => {
       renderWithProviders(
         <TablePanel
-          writeEnabled
+          isWriteEnabled
           basePath="/search"
           headings={headings}
           mapping={mappingMock}

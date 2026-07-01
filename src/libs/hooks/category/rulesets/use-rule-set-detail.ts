@@ -5,7 +5,15 @@ import { search } from '@/libs/api';
 import { EMPTY_MERCHANDISING_RULES } from '@/libs/hooks/utils/constants';
 import { handleError } from '@/libs/hooks/utils/error';
 
-export const useRuleSetDetail = (id: string, disabled = false) => {
+export const useRuleSetDetail = (
+  id: string,
+  disabled = false
+): {
+  ruleSetDetail: MerchandisingReturnedCategoryRuleSet;
+  error: string;
+  isLoading: boolean;
+  refreshRuleset: () => void;
+} => {
   const [shouldRefetch, refetch] = useState({});
   const api = useMemo(() => search(), []);
   const [ruleSetDetail, setRuleSetDetail] =

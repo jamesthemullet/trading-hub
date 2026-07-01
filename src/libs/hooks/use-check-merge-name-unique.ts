@@ -10,6 +10,8 @@ import {
   convertCountryCodeToCatalogues,
 } from '../utils/convert-country-code-to-catalogues';
 
+export const MAX_FACET_ATTRIBUTE_ROWS = 1000;
+
 export const useCheckMergeNameUnique = (): {
   error: string;
   checkMergeNameUnique: (args: {
@@ -47,7 +49,7 @@ export const useCheckMergeNameUnique = (): {
                 categoryId,
                 ...(searchQuery && { q: searchQuery }),
                 start: 0,
-                rows: 1000,
+                rows: MAX_FACET_ATTRIBUTE_ROWS,
                 catalogue: convertCategoryIdToCatalogue(categoryId),
               })
               .then((response) => response.data.values)
@@ -57,7 +59,7 @@ export const useCheckMergeNameUnique = (): {
               .betaMerchandisingFacetAttributeValuesList(facetId, {
                 ...(searchQuery && { q: searchQuery }),
                 start: 0,
-                rows: 1000,
+                rows: MAX_FACET_ATTRIBUTE_ROWS,
                 catalogue,
               })
               .then((response) => response.data.values)

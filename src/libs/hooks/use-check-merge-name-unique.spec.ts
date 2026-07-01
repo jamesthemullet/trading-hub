@@ -2,7 +2,10 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
-import { useCheckMergeNameUnique } from './use-check-merge-name-unique';
+import {
+  MAX_FACET_ATTRIBUTE_ROWS,
+  useCheckMergeNameUnique,
+} from './use-check-merge-name-unique';
 
 const baseUrl = 'http://localhost';
 
@@ -185,7 +188,7 @@ describe('useGetFacetAttributeValues', () => {
     });
   });
 
-  it('should not request more than 1000 rows', async () => {
+  it(`should not request more than ${MAX_FACET_ATTRIBUTE_ROWS} rows`, async () => {
     const capturedRows: number[] = [];
 
     server.use(
@@ -214,7 +217,9 @@ describe('useGetFacetAttributeValues', () => {
     });
 
     expect(capturedRows.length).toBeGreaterThan(0);
-    expect(capturedRows.every((rows) => rows <= 1000)).toBe(true);
+    expect(capturedRows.every((rows) => rows <= MAX_FACET_ATTRIBUTE_ROWS)).toBe(
+      true
+    );
   });
 
   it('should clear the hook-level error after a successful request following a failure', async () => {

@@ -63,7 +63,7 @@ const Profile = (): ReactElement | null => {
   const router = useRouter();
   const isProfilePageEnabled = useProfilePageFlag();
   const isFavouriteRulesetsEnabled = useFavouriteRulesetsFlag();
-  const [initialized, setInitialized] = useState(false);
+  const [isInitialised, setIsInitialised] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState<PageSize>(DEFAULT_PAGE_SIZE);
   const [recentlyViewed, setRecentlyViewed] = useState<RecentlyViewedRuleset[]>(
     []
@@ -80,16 +80,16 @@ const Profile = (): ReactElement | null => {
   }, []);
 
   useEffect(() => {
-    setInitialized(true);
+    setIsInitialised(true);
   }, []);
 
   useEffect(() => {
-    if (initialized && !isProfilePageEnabled) {
+    if (isInitialised && !isProfilePageEnabled) {
       void router.replace('/');
     }
-  }, [initialized, isProfilePageEnabled, router]);
+  }, [isInitialised, isProfilePageEnabled, router]);
 
-  if (!initialized || !isProfilePageEnabled) return null;
+  if (!isInitialised || !isProfilePageEnabled) return null;
 
   const handleRowsPerPageChange = (_page: number, size: number) => {
     const pageSize = normalisePageSize(size);

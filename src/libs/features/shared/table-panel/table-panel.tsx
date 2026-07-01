@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, ReactElement } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
@@ -61,15 +61,15 @@ export const TablePanel = <
   mapping,
   ruleType,
   facetType,
-  writeEnabled,
+  isWriteEnabled,
 }: {
   basePath: string;
   headings: string[];
   mapping: RuleSetMapping<A, T, N>;
   ruleType: RuleType;
   facetType?: FacetType;
-  writeEnabled: boolean;
-}) => {
+  isWriteEnabled: boolean;
+}): ReactElement => {
   const {
     getRows,
     deleteRow,
@@ -121,7 +121,7 @@ export const TablePanel = <
   );
 
   const [searchInputValue, setSearchInputValue] = useState<string>(
-    router.query.searchQuery?.toString() || ''
+    router.query.searchQuery?.toString() ?? ''
   );
 
   useEffect(() => {
@@ -135,7 +135,7 @@ export const TablePanel = <
       const currentPageSize = isPageSize(parsed)
         ? parsed
         : getStoredRowsPerPage();
-      const query = router.query.searchQuery?.toString() || '';
+      const query = router.query.searchQuery?.toString() ?? '';
 
       setSearchInputValue(query);
       setCurrentPage(currentPage);
@@ -162,7 +162,7 @@ export const TablePanel = <
     updateQueryParams(router, {
       currentPage: page,
       currentPageSize: pageSize,
-      searchQuery: router.query.searchQuery?.toString() || '',
+      searchQuery: router.query.searchQuery?.toString() ?? '',
     });
   };
 
@@ -208,7 +208,7 @@ export const TablePanel = <
           />
         )}
 
-        {writeEnabled && (
+        {isWriteEnabled && (
           <>
             {ruleType !== RuleType.Redirect && facetType && (
               <div className={styles.buttonGroup}>
@@ -283,7 +283,7 @@ export const TablePanel = <
         ruleType={ruleType}
         query={searchInputValue}
         isLoading={isLoading}
-        writeEnabled={writeEnabled}
+        isWriteEnabled={isWriteEnabled}
         basePath={basePath}
         onToggleFavourite={
           isFavouriteRulesetsEnabled ? handleToggleFavourite : undefined

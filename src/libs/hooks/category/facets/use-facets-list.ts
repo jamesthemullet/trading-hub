@@ -21,7 +21,11 @@ export const useFacetsList = ({
   queryBy: 'categoryIds' | 'searchTerms';
   enabled: boolean;
   countryCode: MerchandisingCountryCode;
-}) => {
+}): {
+  facets: MerchandisingReturnedGlobalFacet[];
+  isLoading: boolean;
+  error: string;
+} => {
   const [isLoading, setIsLoading] = useState(false);
   const [facetsList, setFacetsList] = useState<
     MerchandisingReturnedGlobalFacet[]

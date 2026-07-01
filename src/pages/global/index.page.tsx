@@ -81,7 +81,7 @@ const RuleSets = (): ReactElement => {
         mapping={mapping}
         ruleType={RuleType.Global}
         facetType={FacetType.Global}
-        writeEnabled={hasWriteAccess}
+        isWriteEnabled={hasWriteAccess}
       />
     </>
   );

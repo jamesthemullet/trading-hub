@@ -56,7 +56,7 @@ export type DataTableProps = {
   ruleType: RuleType;
   onDuplicate: (id: string) => void;
   query?: string;
-  writeEnabled: boolean;
+  isWriteEnabled: boolean;
   currentPageSize?: number;
   onToggleFavourite?: (id: string) => void;
   favouriteIds?: string[];
@@ -71,7 +71,7 @@ export const DataTable = ({
   onDuplicate,
   onToggleRuleSet,
   query,
-  writeEnabled,
+  isWriteEnabled,
   isLoading,
   currentPageSize,
   onToggleFavourite,
@@ -142,7 +142,7 @@ export const DataTable = ({
     });
   };
 
-  const editViewText = writeEnabled ? 'Edit' : 'View';
+  const editViewText = isWriteEnabled ? 'Edit' : 'View';
 
   return (
     <>
@@ -354,7 +354,7 @@ export const DataTable = ({
                       <Toggle
                         aria-label={toggleAriaLabel}
                         checked={isEnabled}
-                        disabled={!writeEnabled}
+                        disabled={!isWriteEnabled}
                         onChange={() => {
                           track({
                             event: `Toggle ${ruleType} ruleset to ${!isEnabled}`,
@@ -487,7 +487,7 @@ export const DataTable = ({
                             >
                               View history
                             </Link>
-                            {writeEnabled && (
+                            {isWriteEnabled && (
                               <Button
                                 className={styles.tableDropdown}
                                 appearance="plain"
@@ -505,7 +505,7 @@ export const DataTable = ({
                                 Delete
                               </Button>
                             )}
-                            {writeEnabled && !!onDuplicate && (
+                            {isWriteEnabled && !!onDuplicate && (
                               <Button
                                 className={styles.tableDropdown}
                                 appearance="plain"

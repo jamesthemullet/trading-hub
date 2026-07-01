@@ -102,7 +102,7 @@ const RuleSets = (): ReactElement => {
         mapping={mapping}
         ruleType={RuleType.CategoryRanking}
         facetType={FacetType.Category}
-        writeEnabled={hasWriteAccess}
+        isWriteEnabled={hasWriteAccess}
       />
     </>
   );

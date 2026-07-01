@@ -94,7 +94,7 @@ const SearchRuleSets = (): ReactElement => {
         mapping={mapping}
         ruleType={RuleType.SearchRanking}
         facetType={FacetType.Search}
-        writeEnabled={hasWriteAccess}
+        isWriteEnabled={hasWriteAccess}
       />
     </>
   );

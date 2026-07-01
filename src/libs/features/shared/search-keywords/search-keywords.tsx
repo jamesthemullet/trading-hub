@@ -1,4 +1,9 @@
-import { type KeyboardEvent, useEffect, useState } from 'react';
+import {
+  type KeyboardEvent,
+  type ReactElement,
+  useEffect,
+  useState,
+} from 'react';
 import { Modal } from '@mantine/core';
 
 import { Button, Count, ErrorMessage } from '@/libs/components';
@@ -34,8 +39,8 @@ export const SearchKeywords = ({
   selectPreviewSearchTerm,
   title,
   isWriteEnabled,
-}: Props) => {
-  const [showModal, setShowModal] = useState(false);
+}: Props): ReactElement => {
+  const [shouldShowModal, setShouldShowModal] = useState(false);
 
   const [keywordInputResetKey, setKeywordInputResetKey] = useState(0);
   const [duplicationError, setDuplicationError] = useState('');
@@ -48,10 +53,11 @@ export const SearchKeywords = ({
   const [filterValue, setFilterValue] = useState('');
   const [filteredKeywords, setFilteredKeywords] =
     useState<string[]>(searchTerms);
-  const [unfinishedKeyword, setUnfinishedKeyword] = useState<boolean>(false);
+  const [isUnfinishedKeyword, setIsUnfinishedKeyword] =
+    useState<boolean>(false);
 
   const onClose = () => {
-    setShowModal(false);
+    setShouldShowModal(false);
     setDuplicationError('');
   };
 
@@ -108,10 +114,10 @@ export const SearchKeywords = ({
       'newKeywordInput'
     ) as HTMLInputElement | null;
 
-    if ((inputElement?.value || '') === '') {
+    if (!inputElement?.value) {
       onClose();
     } else {
-      setUnfinishedKeyword(true);
+      setIsUnfinishedKeyword(true);
     }
   };
 
@@ -144,7 +150,7 @@ export const SearchKeywords = ({
               onClick={() =>
                 searchTerms.length > 1
                   ? setIsDropdownOpen(!isDropdownOpen)
-                  : setShowModal(true)
+                  : setShouldShowModal(true)
               }
               aria-haspopup="menu"
               aria-expanded={isDropdownOpen}
@@ -153,9 +159,7 @@ export const SearchKeywords = ({
               onKeyDown={handleOnKeyDown}
             >
               <Typography as="span" variant="bodySmall">
-                {previewSearchTerm
-                  ? previewSearchTerm
-                  : 'Add categories to display here'}
+                {previewSearchTerm || 'Add search terms to display here'}
               </Typography>
               <div className={dropdownStyles.arrowContainer}>
                 <span
@@ -198,7 +202,7 @@ export const SearchKeywords = ({
           <Button
             theme="filled"
             isInline
-            onClick={() => setShowModal(true)}
+            onClick={() => setShouldShowModal(true)}
             isDisabled={!isWriteEnabled}
           >
             Edit
@@ -207,7 +211,7 @@ export const SearchKeywords = ({
       </div>
 
       <Modal.Root
-        opened={showModal}
+        opened={shouldShowModal}
         onClose={onClose}
         centered
         padding={20}
@@ -325,10 +329,10 @@ export const SearchKeywords = ({
                         size="small"
                         placeholder="Add new keyword"
                         onChange={() => {
-                          setUnfinishedKeyword(false);
+                          setIsUnfinishedKeyword(false);
                         }}
                         onKeyDown={(event) => {
-                          setUnfinishedKeyword(false);
+                          setIsUnfinishedKeyword(false);
                           if (event.key === 'Enter') {
                             onAddKeyword();
                           }
@@ -344,7 +348,7 @@ export const SearchKeywords = ({
             )}
           </Modal.Body>
           <div className={styles.modalFooter}>
-            {unfinishedKeyword && (
+            {isUnfinishedKeyword && (
               <div className={styles.errorContainer}>
                 <Image
                   alt=""

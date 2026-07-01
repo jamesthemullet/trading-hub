@@ -1,4 +1,4 @@
-import type { ActionDispatch, ReactElement } from 'react';
+import type { ActionDispatch } from 'react';
 import { act, renderHook } from '@testing-library/react';
 
 import type {
@@ -146,8 +146,7 @@ describe('useGlobalFacetAttributesList', () => {
     const params = createHookParams({ searchQuery: 'alpha' });
     const { result } = renderHook(() => useGlobalFacetAttributesList(params));
 
-    const boostedRows = (result.current.boostedValuesRows ??
-      []) as ReactElement[];
+    const boostedRows = result.current.boostedValuesRows ?? [];
 
     expect(boostedRows).toHaveLength(1);
     expect((boostedRows[0].props as { disabled?: boolean }).disabled).toBe(

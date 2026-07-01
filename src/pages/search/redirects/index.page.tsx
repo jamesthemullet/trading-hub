@@ -92,7 +92,7 @@ const RedirectRuleSets = (): ReactElement => {
         headings={headings}
         mapping={mapping}
         ruleType={RuleType.Redirect}
-        writeEnabled={hasWriteAccess}
+        isWriteEnabled={hasWriteAccess}
       />
     </>
   );

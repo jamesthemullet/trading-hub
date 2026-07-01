@@ -1,4 +1,9 @@
-import type { ActionDispatch, Dispatch, SetStateAction } from 'react';
+import type {
+  ActionDispatch,
+  Dispatch,
+  ReactElement,
+  SetStateAction,
+} from 'react';
 import { useCallback, useMemo } from 'react';
 
 import type {
@@ -23,6 +28,7 @@ import type {
   GlobalAttributesPageState,
 } from '@/libs/stores/global-attributes-page/global-attributes-page-reducer';
 
+import type { DragEndEvent } from '@dnd-kit/core';
 import {
   KeyboardSensor,
   PointerSensor,
@@ -60,7 +66,14 @@ export const useGlobalFacetAttributesList = ({
   totalSelectedItems,
   handleOrderChangeCallback,
   initialOrders,
-}: UseGlobalFacetAttributesListParams) => {
+}: UseGlobalFacetAttributesListParams): {
+  sensors: ReturnType<typeof useSensors>;
+  boostedValuesRows: ReactElement[];
+  defaultValuesRows: ReactElement[];
+  excludedValuesRows: ReactElement[];
+  boostedVisibleIds: string[];
+  handleBoostedDragEnd: (event: DragEndEvent) => void;
+} => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -157,7 +170,7 @@ export const useGlobalFacetAttributesList = ({
 
           const localOrder = localOrders[displayName] ?? order;
           const rowKey = `${displayType}-${displayName}`;
-          const disableDrag =
+          const shouldDisableDrag =
             !isWriteEnabled ||
             totalSelectedItems > 0 ||
             filteredRows.length <= 1;
@@ -229,7 +242,7 @@ export const useGlobalFacetAttributesList = ({
               >
                 {displayType === 'included' ? (
                   <DragHandleButton
-                    disabled={disableDrag}
+                    disabled={shouldDisableDrag}
                     displayName={displayName}
                     setActivatorNodeRef={sortableProps?.setActivatorNodeRef}
                     listeners={sortableProps?.listeners ?? {}}
@@ -241,7 +254,11 @@ export const useGlobalFacetAttributesList = ({
 
           if (displayType === 'included') {
             return (
-              <SortableRow key={rowKey} id={displayName} disabled={disableDrag}>
+              <SortableRow
+                key={rowKey}
+                id={displayName}
+                disabled={shouldDisableDrag}
+              >
                 {(sortableProps) => renderRow(sortableProps)}
               </SortableRow>
             );
