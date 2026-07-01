@@ -12,6 +12,7 @@ import { FacetType } from '@/libs/constants/rule-types';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { CategoryAndSearchFacetsPanelPageLayout } from './category-and-search-facet-attributes-page-layout';
+import { appendUndoState, UNDO_HISTORY_LIMIT } from './undo-history';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
@@ -370,32 +371,25 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
       expect(screen.getByRole('button', { name: 'Undo' })).toBeDisabled();
     });
 
-    it('keeps only the latest 50 undo states', async () => {
-      const user = userEvent.setup({ delay: null });
-      setup({ facetType: FacetType.Category });
+    it('keeps only the latest 50 undo states', () => {
+      let histories: MerchandisingRuleSetFacetConfigWithId[] = [];
 
-      for (let i = 0; i < 51; i += 1) {
-        const row = screen.getByTestId(
-          /(included|excluded|algoControl) attribute \d+ 13 - 14\.4/
-        );
-        const dropdown = within(row).getByLabelText(
-          /Select to set as included, excluded or algo control/i
-        );
-
-        await user.click(dropdown);
-        await user.click(
-          within(row).getByRole('menuitemradio', { name: 'Exclude only' })
-        );
+      for (let index = 0; index < UNDO_HISTORY_LIMIT + 1; index += 1) {
+        histories = appendUndoState(histories, {
+          ...facetMock,
+          id: `${index}`,
+        });
       }
 
-      const undoButton = screen.getByRole('button', { name: 'Undo' });
-      expect(undoButton).toBeEnabled();
-
-      for (let i = 0; i < 50; i += 1) {
-        await user.click(undoButton);
-      }
-
-      expect(undoButton).toBeDisabled();
+      expect(histories).toHaveLength(UNDO_HISTORY_LIMIT);
+      expect(histories[0]).toEqual({
+        ...facetMock,
+        id: '1',
+      });
+      expect(histories.at(-1)).toEqual({
+        ...facetMock,
+        id: '50',
+      });
     });
   });
 });

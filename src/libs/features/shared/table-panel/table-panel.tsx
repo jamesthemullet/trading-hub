@@ -33,6 +33,7 @@ import type { PageSize } from '@/libs/hooks/use-rows-per-page-setting';
 import {
   DEFAULT_PAGE_SIZE,
   getStoredRowsPerPage,
+  PAGE_SIZES,
 } from '@/libs/hooks/use-rows-per-page-setting';
 import { useRuleSetRowsState } from '@/libs/hooks/use-rule-set-rows-state';
 import { track } from '@/libs/hooks/utils/analytics';
@@ -43,7 +44,7 @@ import { getRulesetType } from '@/libs/utils/ruleset-type';
 
 import styles from './table-panel.module.css';
 
-const pageSizes: PageSize[] = [10, 20, 50, 100];
+const pageSizes = [...PAGE_SIZES];
 const FAVOURITES_PERSISTENCE_ERROR =
   'Unable to save favourite rulesets in this browser session.';
 

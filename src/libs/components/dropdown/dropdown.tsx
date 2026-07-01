@@ -16,6 +16,7 @@ import {
   COUNTRY_SELECTOR_OPTIONS,
   DropdownVariant,
   RULE_TYPE_FILTER_OPTIONS,
+  VARIANT_HEIGHTS,
   VARIANT_TEST_IDS,
   VARIANT_WIDTHS,
 } from './dropdown.constants';
@@ -471,10 +472,6 @@ export const CombinedDropdown = ({
     );
   }
 
-  const VARIANT_HEIGHTS: Partial<Record<DropdownVariant, string>> = {
-    [DropdownVariant.FacetOrder]: 'default',
-    [DropdownVariant.PageSize]: 'page-size',
-  };
   const dataHeight = VARIANT_HEIGHTS[variant] ?? 'large';
 
   const buttonAriaLabel = (() => {

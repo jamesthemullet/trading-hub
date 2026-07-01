@@ -5,6 +5,7 @@ import type { RulesetType } from './use-recently-viewed-rulesets';
 const STORAGE_KEY = 'ruleset-visit-counts';
 export const MOST_VIEWED_DAYS = 30;
 export const MAX_MOST_VIEWED = 10;
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 type RulesetVisitRecord = {
   id: string;
@@ -22,8 +23,7 @@ export type MostViewedRuleset = {
   count: number;
 };
 
-const cutoff = (days: number): number =>
-  Date.now() - days * 24 * 60 * 60 * 1000;
+const cutoff = (days: number): number => Date.now() - days * MS_PER_DAY;
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;

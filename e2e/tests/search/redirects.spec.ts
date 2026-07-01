@@ -122,6 +122,7 @@ test.describe('Keyword Redirects', () => {
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
+    await checkAccessibility(page);
     await page.getByTestId('Delete rule').click();
 
     await expect(
@@ -148,6 +149,7 @@ test.describe('Keyword Redirects', () => {
       await page.getByPlaceholder('Select date range').click();
 
       await expect(page.getByText('Rule date and time duration')).toBeVisible();
+      await checkAccessibility(page);
 
       await page.getByTitle('Toggle').click();
       await expect(

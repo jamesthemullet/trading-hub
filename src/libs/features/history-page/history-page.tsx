@@ -6,6 +6,7 @@ import { RuleType } from '@/libs/constants/rule-types';
 import { HistoryList } from '@/libs/features/history-list/history-list';
 import { useGlobalFacetsList } from '@/libs/hooks/global/facets/use-global-facets-list';
 import { useAccess } from '@/libs/hooks/use-access';
+import { PAGE_SIZES } from '@/libs/hooks/use-rows-per-page-setting';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
 import {
   computeHistoryDiff,
@@ -62,7 +63,7 @@ export const HistoryPage = ({
     globalFacets?.map((f) => [f.id, f.displayValue]) ?? []
   );
   const identifier = router.query.identifier;
-  const pageSizes = [10, 20, 50, 100];
+  const pageSizes = [...PAGE_SIZES];
   const currentPage = Number(router.query.currentPage) || 1;
   const currentPageSize = Number(router.query.currentPageSize) || 20;
   const currentTab = Number(router.query.tab) || 0;

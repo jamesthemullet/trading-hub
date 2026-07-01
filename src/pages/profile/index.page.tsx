@@ -32,6 +32,7 @@ import type { PageSize } from '@/libs/hooks/use-rows-per-page-setting';
 import {
   DEFAULT_PAGE_SIZE,
   getStoredRowsPerPage,
+  isPageSize,
   PAGE_SIZES,
   saveRowsPerPage,
 } from '@/libs/hooks/use-rows-per-page-setting';
@@ -56,9 +57,7 @@ const getFacetUrl = (type: RulesetType, id: string): string | null => {
 };
 
 export const normalisePageSize = (size: number): PageSize =>
-  size === 10 || size === 20 || size === 50 || size === 100
-    ? size
-    : DEFAULT_PAGE_SIZE;
+  isPageSize(size) ? size : DEFAULT_PAGE_SIZE;
 
 const Profile = (): ReactElement | null => {
   const router = useRouter();

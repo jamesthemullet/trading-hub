@@ -24,7 +24,7 @@ export const useGlobalFacetAttributesEditModal = ({
   displayName: string;
   dispatch: ActionDispatch<[action: GlobalAttributesPageReducer]>;
   globalAttributesLocalState: GlobalAttributesPageState;
-  setIsAwaitingUpdate: (v: boolean) => void;
+  setIsAwaitingUpdate: (isAwaiting: boolean) => void;
 }): {
   editModalError: string;
   handleEditModalError: (message: string) => void;

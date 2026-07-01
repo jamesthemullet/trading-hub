@@ -3,8 +3,8 @@ export const PAGE_SIZES = [10, 20, 50, 100] as const;
 export type PageSize = (typeof PAGE_SIZES)[number];
 export const DEFAULT_PAGE_SIZE: PageSize = 10;
 
-const isPageSize = (value: number): value is PageSize =>
-  value === 10 || value === 20 || value === 50 || value === 100;
+export const isPageSize = (value: number): value is PageSize =>
+  PAGE_SIZES.some((size) => size === value);
 
 export const getStoredRowsPerPage = (): PageSize => {
   try {

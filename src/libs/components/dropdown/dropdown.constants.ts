@@ -91,6 +91,11 @@ export const VARIANT_WIDTHS: Partial<Record<DropdownVariant, number>> = {
   [DropdownVariant.RuleTypeFilter]: 170,
 };
 
+export const VARIANT_HEIGHTS: Partial<Record<DropdownVariant, string>> = {
+  [DropdownVariant.FacetOrder]: 'default',
+  [DropdownVariant.PageSize]: 'page-size',
+};
+
 export const VARIANT_TEST_IDS: Partial<Record<DropdownVariant, string>> = {
   [DropdownVariant.CountryFilter]: 'button to open country filter dropdown',
   [DropdownVariant.CountrySelector]: 'button to open country selector dropdown',

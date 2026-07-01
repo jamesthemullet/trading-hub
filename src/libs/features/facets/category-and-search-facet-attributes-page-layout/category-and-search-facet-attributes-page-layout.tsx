@@ -19,6 +19,7 @@ import without from 'lodash/without';
 
 import { FacetAttributesPageLayoutHeader } from '../facet-attributes-page-layout-header/facet-attributes-page-layout-header';
 import { SearchAndCategoryFacetAttributesList } from '../search-and-category-facet-attributes-list/search-and-category-facet-attributes-list';
+import { appendUndoState } from './undo-history';
 
 type PageLayout = {
   attributeValues: MerchandisingAttributeValuesResponse['values'];
@@ -34,8 +35,6 @@ type PageLayout = {
   countryCode?: string;
   isDraftRuleset?: boolean;
 };
-
-const UNDO_HISTORY_LIMIT = 50;
 
 export const CategoryAndSearchFacetsPanelPageLayout = ({
   attributeValues,
@@ -91,10 +90,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
 
   const dispatchWithHistory = useCallback(
     (action: Action) => {
-      setStateHistory((prev) => {
-        const next = [...prev, { ...facetLocalState }];
-        return next.length > UNDO_HISTORY_LIMIT ? next.slice(1) : next;
-      });
+      setStateHistory((prev) => appendUndoState(prev, { ...facetLocalState }));
       dispatch(action);
     },
     [facetLocalState]
