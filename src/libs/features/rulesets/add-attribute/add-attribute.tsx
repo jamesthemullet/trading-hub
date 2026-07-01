@@ -11,7 +11,11 @@ import { RadioButtons } from '@/libs/components/radio-buttons/radio-buttons';
 import { AlphanumericAttribute } from '@/libs/components/ruleset-attributes/alphanumeric-attribute';
 import { NumericAttribute } from '@/libs/components/ruleset-attributes/numeric-attribute';
 import { Search } from '@/libs/components/search/search';
-import type { AttributeEdit, RulesetAttribute } from '@/libs/components/types';
+import {
+  type AttributeEdit,
+  isBoostOrBury,
+  type RulesetAttribute,
+} from '@/libs/components/types';
 import { addAttributeReducer } from '@/libs/stores/ruleset/add-attribute-reducer';
 
 import styles from './add-attribute.module.css';
@@ -133,9 +137,7 @@ export const AddAttribute = ({
                 isEditMode
                 weight={weight}
                 setWeight={(w) => dispatch({ type: 'setWeight', payload: w })}
-                canEditWeight={
-                  selectedOperation === 'boost' || selectedOperation === 'bury'
-                }
+                canEditWeight={isBoostOrBury(selectedOperation)}
               />
             )}
         </div>

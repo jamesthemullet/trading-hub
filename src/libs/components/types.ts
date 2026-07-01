@@ -214,3 +214,8 @@ export type RowsApi = {
     pagination: MerchandisingPagination;
   };
 };
+
+export const isBoostOrBury = (
+  operation: RulesetAttribute['operation']
+): operation is 'boost' | 'bury' =>
+  operation === 'boost' || operation === 'bury';

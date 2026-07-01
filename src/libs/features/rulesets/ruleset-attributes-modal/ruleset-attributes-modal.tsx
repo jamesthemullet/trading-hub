@@ -7,10 +7,11 @@ import type {
   MerchandisingIncludeExclude,
   MerchandisingNumericBoostBury,
 } from '@/libs/api';
-import type {
-  AttributeEdit,
-  RuleSetActions,
-  RulesetAttribute,
+import {
+  type AttributeEdit,
+  isBoostOrBury,
+  type RuleSetActions,
+  type RulesetAttribute,
 } from '@/libs/components/types';
 
 import { AddSetAttribute } from '../add-set-attribute/add-set-attribute';
@@ -39,7 +40,7 @@ export const RulesetAttributesModal = ({
     if (attribute.change === 'modify' && editData) {
       if (
         attribute.type === 'alphanumeric' &&
-        (attribute.operation === 'boost' || attribute.operation === 'bury')
+        isBoostOrBury(attribute.operation)
       ) {
         if (attribute.operation === editData.operation) {
           const data =
@@ -65,7 +66,7 @@ export const RulesetAttributesModal = ({
               operation: attribute.operation,
             },
           });
-          if (editData.operation === 'boost' || editData.operation === 'bury') {
+          if (isBoostOrBury(editData.operation)) {
             dispatch({
               type: 'alphanumericBoostBuryAttribute',
               payload: {
@@ -123,7 +124,7 @@ export const RulesetAttributesModal = ({
               operation: attribute.operation,
             },
           });
-          if (editData.operation === 'boost' || editData.operation === 'bury') {
+          if (isBoostOrBury(editData.operation)) {
             dispatch({
               type: 'alphanumericBoostBuryAttribute',
               payload: {
@@ -151,10 +152,7 @@ export const RulesetAttributesModal = ({
           }
         }
       }
-      if (
-        attribute.type === 'numeric' &&
-        (attribute.operation === 'boost' || attribute.operation === 'bury')
-      ) {
+      if (attribute.type === 'numeric' && isBoostOrBury(attribute.operation)) {
         if (attribute.operation === editData.operation) {
           const data = attribute.attribute as MerchandisingNumericBoostBury;
           dispatch({
@@ -192,10 +190,7 @@ export const RulesetAttributesModal = ({
         }
       }
     } else {
-      if (
-        attribute.type === 'numeric' &&
-        (attribute.operation === 'boost' || attribute.operation === 'bury')
-      ) {
+      if (attribute.type === 'numeric' && isBoostOrBury(attribute.operation)) {
         const data = attribute.attribute as MerchandisingNumericBoostBury;
         dispatch({
           type: 'numericAttribute',
@@ -210,7 +205,7 @@ export const RulesetAttributesModal = ({
 
       if (
         attribute.type === 'alphanumeric' &&
-        (attribute.operation === 'boost' || attribute.operation === 'bury')
+        isBoostOrBury(attribute.operation)
       ) {
         const data = attribute.attribute as MerchandisingAlphanumericBoostBury;
         dispatch({

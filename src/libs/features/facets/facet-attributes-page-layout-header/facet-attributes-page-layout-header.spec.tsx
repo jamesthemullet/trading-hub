@@ -1,7 +1,8 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { FacetType } from '@/libs/constants/rule-types';
+import { renderWithProviders } from '@/test/render-with-providers';
 
 import { FacetAttributesPageLayoutHeader } from './facet-attributes-page-layout-header';
 
@@ -22,7 +23,7 @@ const defaultProps = {
 
 describe('Facet Page Layout Header', () => {
   it('should render', () => {
-    render(
+    renderWithProviders(
       <FacetAttributesPageLayoutHeader
         {...defaultProps}
         facetType={FacetType.Category}
@@ -30,15 +31,18 @@ describe('Facet Page Layout Header', () => {
       />
     );
 
-    expect(screen.getByText('Category specific text')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /Value settings of: Age/i })
+    ).toBeVisible();
+    expect(screen.getByText('Category specific text')).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
   });
 
   it('close button should navigate back to appropriate facets editing page', async () => {
     const user = userEvent.setup();
 
-    render(<FacetAttributesPageLayoutHeader {...defaultProps} />);
+    renderWithProviders(<FacetAttributesPageLayoutHeader {...defaultProps} />);
 
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });
     await user.click(cancelButton);
@@ -47,12 +51,12 @@ describe('Facet Page Layout Header', () => {
   });
 
   it('should render UK flag when countryCode is UK', () => {
-    render(
+    renderWithProviders(
       <FacetAttributesPageLayoutHeader {...defaultProps} countryCode="UK" />
     );
 
     const ukFlag = screen.getByAltText('UK rule');
-    expect(ukFlag).toBeInTheDocument();
+    expect(ukFlag).toBeVisible();
     expect(ukFlag).toHaveAttribute(
       'src',
       expect.stringContaining('icon-uk-flag')
@@ -60,12 +64,12 @@ describe('Facet Page Layout Header', () => {
   });
 
   it('should render IE flag when countryCode is IE', () => {
-    render(
+    renderWithProviders(
       <FacetAttributesPageLayoutHeader {...defaultProps} countryCode="IE" />
     );
 
     const ieFlag = screen.getByAltText('IE rule');
-    expect(ieFlag).toBeInTheDocument();
+    expect(ieFlag).toBeVisible();
     expect(ieFlag).toHaveAttribute(
       'src',
       expect.stringContaining('icon-ie-flag')
@@ -73,18 +77,16 @@ describe('Facet Page Layout Header', () => {
   });
 
   it('should render both UK and IE flags when countryCode is UK_IE', () => {
-    render(
+    renderWithProviders(
       <FacetAttributesPageLayoutHeader {...defaultProps} countryCode="UK_IE" />
     );
 
-    const ukFlag = screen.getByAltText('UK rule');
-    const ieFlag = screen.getByAltText('IE rule');
-    expect(ukFlag).toBeInTheDocument();
-    expect(ieFlag).toBeInTheDocument();
+    expect(screen.getByAltText('UK rule')).toBeVisible();
+    expect(screen.getByAltText('IE rule')).toBeVisible();
   });
 
   it('should disable save button when isWriteEnabled is false', () => {
-    render(
+    renderWithProviders(
       <FacetAttributesPageLayoutHeader
         {...defaultProps}
         isWriteEnabled={false}
@@ -95,7 +97,7 @@ describe('Facet Page Layout Header', () => {
   });
 
   it('should not render undo button by default', () => {
-    render(<FacetAttributesPageLayoutHeader {...defaultProps} />);
+    renderWithProviders(<FacetAttributesPageLayoutHeader {...defaultProps} />);
 
     expect(
       screen.queryByRole('button', { name: 'Undo' })
@@ -103,7 +105,7 @@ describe('Facet Page Layout Header', () => {
   });
 
   it('should render a disabled undo button when isUndoButtonVisible is true and isUndoDisabled is true', () => {
-    render(
+    renderWithProviders(
       <FacetAttributesPageLayoutHeader
         {...defaultProps}
         isUndoButtonVisible
@@ -116,7 +118,7 @@ describe('Facet Page Layout Header', () => {
   });
 
   it('should render an enabled undo button when isUndoButtonVisible is true and isUndoDisabled is false', () => {
-    render(
+    renderWithProviders(
       <FacetAttributesPageLayoutHeader
         {...defaultProps}
         isUndoButtonVisible
@@ -132,7 +134,7 @@ describe('Facet Page Layout Header', () => {
     const onUndo = jest.fn();
     const user = userEvent.setup();
 
-    render(
+    renderWithProviders(
       <FacetAttributesPageLayoutHeader
         {...defaultProps}
         isUndoButtonVisible
