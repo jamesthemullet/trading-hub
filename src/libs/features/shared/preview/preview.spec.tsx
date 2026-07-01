@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event';
 
 import type { MerchandisingFacet } from '@/libs/api';
 import { usePreview } from '@/libs/hooks/use-preview';
+import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
+import { mockEmptyMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import type { Props } from './preview';
@@ -12,18 +14,6 @@ jest.mock('@/libs/hooks/use-preview', () => ({
   usePreview: jest.fn(),
 }));
 
-const mockMerchandisingRules = {
-  pinnedProducts: [],
-  blockedProducts: [],
-  boosts: { numeric: [], alphanumeric: [], product: [] },
-  buries: { numeric: [], alphanumeric: [], product: [] },
-  includes: {
-    alphanumeric: [],
-  },
-  excludes: {
-    alphanumeric: [],
-  },
-};
 const mockCategoryId = 'SubCat_123';
 const mockOnClose = jest.fn();
 
@@ -153,7 +143,7 @@ const mockFacets: MerchandisingFacet[] = [
 const mockCategoryReturnValue = {
   data: {
     category: 'categoryId1',
-    externalChanges: mockMerchandisingRules,
+    externalChanges: mockEmptyMerchandisingRulesWithInfo,
     facets: mockFacets,
     pagination: {
       totalItems: 1,
@@ -169,7 +159,7 @@ const mockCategoryReturnValue = {
     ],
     ruleSet: {
       facets: mockFacets,
-      rules: mockMerchandisingRules,
+      rules: mockEmptyMerchandisingRulesWithInfo,
     },
   },
   error: '',

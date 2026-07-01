@@ -3,24 +3,13 @@ import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
 import type { MerchandisingSearchPreviewResponseBeta } from '@/libs/api';
+import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
+import { mockEmptyMerchandisingRulesWithInfo } from '@/test/data/mock-merchandising-rules-with-info';
 
 import { usePreview } from './use-preview';
 
 const baseUrl = 'http://localhost';
 const mockCategoryId = 'abc123';
-
-const mockMerchandisingRules = {
-  pinnedProducts: [],
-  boosts: { numeric: [], alphanumeric: [], product: [] },
-  buries: { numeric: [], alphanumeric: [], product: [] },
-  blockedProducts: [],
-  includes: {
-    alphanumeric: [],
-  },
-  excludes: {
-    alphanumeric: [],
-  },
-};
 
 const mockSearchData: MerchandisingSearchPreviewResponseBeta = {
   products: [
@@ -47,7 +36,7 @@ const mockSearchData: MerchandisingSearchPreviewResponseBeta = {
   category: '123',
   ruleSet: {
     facets: [],
-    rules: mockMerchandisingRules,
+    rules: mockEmptyMerchandisingRulesWithInfo,
   },
   externalChanges: {
     pinnedProducts: [],

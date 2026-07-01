@@ -99,3 +99,10 @@ export const mockMerchandisingRulesWithInfo: MerchandisingRulesWithInfo = {
     product: [],
   },
 };
+
+export const mockEmptyMerchandisingRulesWithInfo: MerchandisingRulesWithInfo = {
+  pinnedProducts: [],
+  blockedProducts: [],
+  boosts: { numeric: [], alphanumeric: [], product: [] },
+  buries: { numeric: [], alphanumeric: [], product: [] },
+};

@@ -5,6 +5,7 @@ import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
 import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
+import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as Categories } from './index.page';
@@ -99,19 +100,6 @@ const server = setupServer(
     );
   })
 );
-
-const mockMerchandisingRules = {
-  pinnedProducts: [],
-  blockedProducts: [],
-  boosts: { numeric: [], alphanumeric: [], product: [] },
-  buries: { numeric: [], alphanumeric: [], product: [] },
-  includes: {
-    alphanumeric: [],
-  },
-  excludes: {
-    alphanumeric: [],
-  },
-};
 
 const mockPush = jest.fn();
 const mockRouter = {

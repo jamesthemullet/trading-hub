@@ -5,6 +5,7 @@ import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
 import type { MerchandisingReturnedGlobalRuleSet } from '@/libs/api/generated/open-api';
+import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { default as RuleSets } from './index.page';
@@ -17,19 +18,6 @@ const useRuleSet = jest.fn();
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
-
-const mockMerchandisingRules = {
-  pinnedProducts: [],
-  blockedProducts: [],
-  boosts: { numeric: [], alphanumeric: [], product: [] },
-  buries: { numeric: [], alphanumeric: [], product: [] },
-  includes: {
-    alphanumeric: [],
-  },
-  excludes: {
-    alphanumeric: [],
-  },
-};
 
 const MOCK_CATEGORY_ID = 'Cat123';
 

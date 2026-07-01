@@ -3,23 +3,11 @@ import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
 import type { MerchandisingProductSearchResponse } from '@/libs/api';
+import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 
 import { useCategoryProductSearch } from './use-category-product-search';
 
 const baseUrl = 'http://localhost';
-
-const mockMerchandisingRules = {
-  pinnedProducts: [],
-  boosts: { numeric: [], alphanumeric: [], product: [] },
-  buries: { numeric: [], alphanumeric: [], product: [] },
-  blockedProducts: [],
-  includes: {
-    alphanumeric: [],
-  },
-  excludes: {
-    alphanumeric: [],
-  },
-};
 
 const getProductsMock = jest.fn();
 

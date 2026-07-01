@@ -11,6 +11,7 @@ import {
 } from '@/libs/hooks';
 import { useGlobalHistory } from '@/libs/hooks/global/history/use-global-history';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
+import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -78,18 +79,6 @@ const mockGetCategories = {
     },
   ],
   pagination: { totalItems: 20 },
-};
-const mockMerchandisingRules = {
-  pinnedProducts: [],
-  blockedProducts: [],
-  boosts: { numeric: [], alphanumeric: [], product: [] },
-  buries: { numeric: [], alphanumeric: [], product: [] },
-  includes: {
-    alphanumeric: [],
-  },
-  excludes: {
-    alphanumeric: [],
-  },
 };
 
 describe('Global Facet Management Editing', () => {

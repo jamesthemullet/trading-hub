@@ -2,30 +2,20 @@ import { act, renderHook } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
+import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
+
 import { useSearchRuleSetCreate } from './use-search-ruleset-create';
 
 const getRuleSetCreateMock = jest.fn();
 
 const baseUrl = 'http://localhost';
+
 const handlers = [
   http.post(`${baseUrl}/search/beta/merchandising/keyword/ruleset`, () => {
     const { data, status } = getRuleSetCreateMock();
     return HttpResponse.json(data, status);
   }),
 ];
-
-const mockMerchandisingRules = {
-  pinnedProducts: [],
-  blockedProducts: [],
-  boosts: { numeric: [], alphanumeric: [], product: [] },
-  buries: { numeric: [], alphanumeric: [], product: [] },
-  includes: {
-    alphanumeric: [],
-  },
-  excludes: {
-    alphanumeric: [],
-  },
-};
 
 const server = setupServer(...handlers);
 const mockSearchTerms = ['socks'];
