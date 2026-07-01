@@ -9,6 +9,10 @@ import type {
 } from '@/libs/api';
 import { FacetType, RuleType } from '@/libs/constants/rule-types';
 import { useDraftRuleset } from '@/libs/hooks';
+import {
+  addFavourite,
+  getStoredFavourites,
+} from '@/libs/hooks/use-favourite-rulesets';
 import { track } from '@/libs/hooks/utils/analytics';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -402,6 +406,227 @@ describe('TablePanel', () => {
     });
   });
 
+  describe('favourite functionality', () => {
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    it('should not render favourite buttons when flag is off', async () => {
+      renderWithProviders(<TablePanel {...defaultProps} />);
+      expect(await screen.findAllByTitle('More options')).toHaveLength(2);
+      expect(screen.queryByTitle('Add to favourites')).not.toBeInTheDocument();
+    });
+
+    it('should render favourite buttons when flag is on', async () => {
+      renderWithProviders(<TablePanel {...defaultProps} />, ['Cat.W'], {
+        featureFlags: { hasFavouriteRulesets: true },
+      });
+      expect(await screen.findAllByTitle('Add to favourites')).toHaveLength(2);
+    });
+
+    it('should toggle a favourite and update button label', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<TablePanel {...defaultProps} />, ['Cat.W'], {
+        featureFlags: { hasFavouriteRulesets: true },
+      });
+
+      const buttons = await screen.findAllByTitle('Add to favourites');
+      await user.click(buttons[0]);
+
+      await waitFor(() => {
+        expect(screen.getByTitle('Remove from favourites')).toBeInTheDocument();
+      });
+    });
+
+    it('should display an error message when favourite persistence fails', async () => {
+      const user = userEvent.setup();
+      const setItemSpy = jest
+        .spyOn(Storage.prototype, 'setItem')
+        .mockImplementation(() => {
+          throw new Error('quota exceeded');
+        });
+
+      renderWithProviders(<TablePanel {...defaultProps} />, ['Cat.W'], {
+        featureFlags: { hasFavouriteRulesets: true },
+      });
+
+      const buttons = await screen.findAllByTitle('Add to favourites');
+      await user.click(buttons[0]);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            'Unable to save favourite rulesets in this browser session.'
+          )
+        ).toBeVisible();
+      });
+
+      setItemSpy.mockRestore();
+    });
+
+    it('should store type "search" when toggling a SearchRanking ruleset', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <TablePanel
+          {...defaultProps}
+          ruleType={RuleType.SearchRanking}
+          basePath="/search"
+        />,
+        ['Search.W'],
+        { featureFlags: { hasFavouriteRulesets: true } }
+      );
+
+      const buttons = await screen.findAllByTitle('Add to favourites');
+      await user.click(buttons[0]);
+
+      await waitFor(() => {
+        expect(screen.getByTitle('Remove from favourites')).toBeInTheDocument();
+      });
+    });
+
+    it('should remove a ruleset from favourites when it is deleted', async () => {
+      jest.mocked(mappingMock.deleteRuleSetById).mockResolvedValue(undefined);
+      const user = userEvent.setup();
+      renderWithProviders(<TablePanel {...defaultProps} />, ['Cat.W'], {
+        featureFlags: { hasFavouriteRulesets: true },
+      });
+
+      const addButtons = await screen.findAllByTitle('Add to favourites');
+      await user.click(addButtons[0]);
+      await waitFor(() => {
+        expect(getStoredFavourites().map((r) => r.id)).toContain(mockId1);
+      });
+
+      await user.click((await screen.findAllByTitle('More options'))[0]);
+      await user.click(screen.getAllByRole('button', { name: 'Delete' })[0]);
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            level: 2,
+            name: 'Do you want to delete this rule?',
+          })
+        ).toBeVisible();
+      });
+      await user.click(screen.getByTestId('Delete rule'));
+
+      await waitFor(() => {
+        expect(getStoredFavourites().map((r) => r.id)).not.toContain(mockId1);
+      });
+    });
+
+    it('should update favouriteIds after deleting a row with remaining favourites', async () => {
+      jest.mocked(mappingMock.deleteRuleSetById).mockResolvedValue(undefined);
+      addFavourite({
+        id: mockId1,
+        label: 'Jeans',
+        url: '/jeans',
+        type: 'category',
+      });
+      addFavourite({
+        id: mockId2,
+        label: 'Tops',
+        url: '/tops',
+        type: 'category',
+      });
+      const user = userEvent.setup();
+      renderWithProviders(<TablePanel {...defaultProps} />, ['Cat.W'], {
+        featureFlags: { hasFavouriteRulesets: true },
+      });
+
+      await user.click((await screen.findAllByTitle('More options'))[0]);
+      await user.click(screen.getAllByRole('button', { name: 'Delete' })[0]);
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            level: 2,
+            name: 'Do you want to delete this rule?',
+          })
+        ).toBeVisible();
+      });
+      await user.click(screen.getByTestId('Delete rule'));
+
+      await waitFor(() => {
+        expect(getStoredFavourites().map((r) => r.id)).not.toContain(mockId1);
+        expect(getStoredFavourites().map((r) => r.id)).toContain(mockId2);
+      });
+    });
+
+    it('should keep favourite when delete fails', async () => {
+      jest.mocked(mappingMock.deleteRuleSetById).mockRejectedValue({
+        error: { message: 'not ok', status: 500 },
+      });
+      const user = userEvent.setup();
+      renderWithProviders(<TablePanel {...defaultProps} />, ['Cat.W'], {
+        featureFlags: { hasFavouriteRulesets: true },
+      });
+
+      const addButtons = await screen.findAllByTitle('Add to favourites');
+      await user.click(addButtons[0]);
+      await waitFor(() => {
+        expect(getStoredFavourites().map((r) => r.id)).toContain(mockId1);
+      });
+
+      await user.click((await screen.findAllByTitle('More options'))[0]);
+      await user.click(screen.getAllByRole('button', { name: 'Delete' })[0]);
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            level: 2,
+            name: 'Do you want to delete this rule?',
+          })
+        ).toBeVisible();
+      });
+      await user.click(screen.getByTestId('Delete rule'));
+
+      await waitFor(() => {
+        expect(getStoredFavourites().map((r) => r.id)).toContain(mockId1);
+      });
+    });
+
+    it('should show an error when favourite removal fails after delete', async () => {
+      jest.mocked(mappingMock.deleteRuleSetById).mockResolvedValue(undefined);
+      const user = userEvent.setup();
+      renderWithProviders(<TablePanel {...defaultProps} />, ['Cat.W'], {
+        featureFlags: { hasFavouriteRulesets: true },
+      });
+
+      const addButtons = await screen.findAllByTitle('Add to favourites');
+      await user.click(addButtons[0]);
+      await waitFor(() => {
+        expect(getStoredFavourites().map((r) => r.id)).toContain(mockId1);
+      });
+
+      const setItemSpy = jest
+        .spyOn(Storage.prototype, 'setItem')
+        .mockImplementation(() => {
+          throw new Error('quota exceeded');
+        });
+
+      await user.click((await screen.findAllByTitle('More options'))[0]);
+      await user.click(screen.getAllByRole('button', { name: 'Delete' })[0]);
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            level: 2,
+            name: 'Do you want to delete this rule?',
+          })
+        ).toBeVisible();
+      });
+      await user.click(screen.getByTestId('Delete rule'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            'Unable to save favourite rulesets in this browser session.'
+          )
+        ).toBeVisible();
+        expect(getStoredFavourites().map((r) => r.id)).toContain(mockId1);
+      });
+
+      setItemSpy.mockRestore();
+    });
+  });
+
   describe('duplicate functionality', () => {
     it('should duplicate a row', async () => {
       jest.mocked(mappingMock.queryRuleSetById).mockResolvedValue({
@@ -736,6 +961,27 @@ describe('TablePanel', () => {
       await waitFor(() => {
         expect(screen.getByText('Page 1 of 1')).toBeVisible();
       });
+    });
+
+    it('should render default rows per page before router is ready', () => {
+      localStorage.setItem('user-rows-per-page', '20');
+
+      jest.mocked(useRouter as jest.Mock).mockReturnValue({
+        pathname: '/search',
+        query: {},
+        isReady: false,
+        push: mockPush,
+      });
+
+      renderWithProviders(<TablePanel {...defaultProps} />);
+
+      expect(
+        screen.getByRole('button', {
+          name: 'Select rows per page - currently 10 rows per page',
+        })
+      ).toBeVisible();
+
+      localStorage.removeItem('user-rows-per-page');
     });
 
     it('should default to 10 rows per page on search, if no existing url query', async () => {

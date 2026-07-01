@@ -4,6 +4,7 @@ import {
   defaultFeatureFlags,
   FeatureFlagContext,
   useAuthorizationFlag,
+  useFavouriteRulesetsFlag,
   useProfilePageFlag,
   useStickyBarFlag,
 } from './feature-flag';
@@ -70,6 +71,32 @@ describe('useProfilePageFlag', () => {
       wrapper: ({ children }: { children: React.ReactNode }) => (
         <FeatureFlagContext.Provider
           value={{ ...defaultFeatureFlags, hasProfilePage: true }}
+        >
+          {children}
+        </FeatureFlagContext.Provider>
+      ),
+    });
+    expect(result.current).toBe(true);
+  });
+});
+
+describe('useFavouriteRulesetsFlag', () => {
+  it('should return false by default', () => {
+    const { result } = renderHook(() => useFavouriteRulesetsFlag(), {
+      wrapper: ({ children }: { children: React.ReactNode }) => (
+        <FeatureFlagContext.Provider value={defaultFeatureFlags}>
+          {children}
+        </FeatureFlagContext.Provider>
+      ),
+    });
+    expect(result.current).toBe(false);
+  });
+
+  it('should return true when flag is enabled', () => {
+    const { result } = renderHook(() => useFavouriteRulesetsFlag(), {
+      wrapper: ({ children }: { children: React.ReactNode }) => (
+        <FeatureFlagContext.Provider
+          value={{ ...defaultFeatureFlags, hasFavouriteRulesets: true }}
         >
           {children}
         </FeatureFlagContext.Provider>

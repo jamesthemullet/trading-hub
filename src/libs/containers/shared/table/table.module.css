@@ -396,6 +396,16 @@
   padding: 2px;
 }
 
+.favourite {
+  color: var(--color-surface-on-surface-variant);
+  line-height: 1;
+}
+
+.favouriteActive {
+  color: var(--color-state-warning-warning);
+  line-height: 1;
+}
+
 .tableHeading {
   color: #1d1d1b;
 }

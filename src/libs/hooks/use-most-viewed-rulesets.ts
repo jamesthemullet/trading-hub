@@ -1,3 +1,5 @@
+import { isValidRulesetType } from '@/libs/utils/ruleset-type';
+
 import type { RulesetType } from './use-recently-viewed-rulesets';
 
 const STORAGE_KEY = 'ruleset-visit-counts';
@@ -35,10 +37,7 @@ const isRulesetVisitRecord = (item: unknown): item is RulesetVisitRecord => {
     typeof id === 'string' &&
     typeof label === 'string' &&
     typeof url === 'string' &&
-    (type === 'category' ||
-      type === 'search' ||
-      type === 'global' ||
-      type === 'redirect') &&
+    isValidRulesetType(type) &&
     Array.isArray(visits) &&
     visits.every((visit) => typeof visit === 'number')
   );

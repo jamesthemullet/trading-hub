@@ -98,7 +98,7 @@ export const useRuleSetRowsState = <
           setError(
             `Error whilst deleting ruleset: ${JSON.stringify(handleError(error))}`
           );
-          return;
+          return false;
         }
 
         setRowsState((rowsState) => {
@@ -111,6 +111,8 @@ export const useRuleSetRowsState = <
             },
           };
         });
+
+        return true;
       };
       return asyncCall();
     },

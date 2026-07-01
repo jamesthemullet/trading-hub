@@ -829,6 +829,44 @@ describe('DataTable', () => {
     expect(container.querySelector('b')).toHaveTextContent('Foo');
   });
 
+  describe('favourite functionality', () => {
+    it('should not render a favourite button when onToggleFavourite is not provided', () => {
+      renderWithProviders(<DataTable {...defaultProps} />);
+      expect(screen.queryByTitle('Add to favourites')).not.toBeInTheDocument();
+    });
+
+    it('should render a favourite button when onToggleFavourite is provided', async () => {
+      const mockToggleFavourite = jest.fn();
+      renderWithProviders(
+        <DataTable {...defaultProps} onToggleFavourite={mockToggleFavourite} />
+      );
+      expect(screen.getAllByTitle('Add to favourites')[0]).toBeInTheDocument();
+    });
+
+    it('should show "Remove from favourites" for an already-favourited row', () => {
+      const mockToggleFavourite = jest.fn();
+      renderWithProviders(
+        <DataTable
+          {...defaultProps}
+          onToggleFavourite={mockToggleFavourite}
+          favouriteIds={['mockId']}
+        />
+      );
+      expect(screen.getByTitle('Remove from favourites')).toBeInTheDocument();
+      expect(screen.getByTitle('Add to favourites')).toBeInTheDocument();
+    });
+
+    it('should call onToggleFavourite when the favourite button is clicked', async () => {
+      const user = userEvent.setup();
+      const mockToggleFavourite = jest.fn();
+      renderWithProviders(
+        <DataTable {...defaultProps} onToggleFavourite={mockToggleFavourite} />
+      );
+      await user.click(screen.getAllByTitle('Add to favourites')[0]);
+      expect(mockToggleFavourite).toHaveBeenCalledWith('mockId');
+    });
+  });
+
   describe('Historical Log Of Changes', () => {
     it('should process click for historical log of changes for category rulesets', async () => {
       const user = userEvent.setup();

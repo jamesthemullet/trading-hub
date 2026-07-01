@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
@@ -12,6 +12,7 @@ import {
   Search,
   TablePagination,
 } from '@/libs/components';
+import { useFavouriteRulesetsFlag } from '@/libs/components/feature-flag/feature-flag';
 import type { RuleSetMapping, RuleTypeFilter } from '@/libs/components/types';
 import {
   getNewFacetRoute,
@@ -23,17 +24,28 @@ import { RuleType } from '@/libs/constants/rule-types';
 import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { DataTable } from '@/libs/containers/shared/table/datatable';
 import { useDraftRuleset } from '@/libs/hooks';
+import {
+  getStoredFavourites,
+  removeFavourite,
+  toggleFavourite,
+} from '@/libs/hooks/use-favourite-rulesets';
 import type { PageSize } from '@/libs/hooks/use-rows-per-page-setting';
-import { getStoredRowsPerPage } from '@/libs/hooks/use-rows-per-page-setting';
+import {
+  DEFAULT_PAGE_SIZE,
+  getStoredRowsPerPage,
+} from '@/libs/hooks/use-rows-per-page-setting';
 import { useRuleSetRowsState } from '@/libs/hooks/use-rule-set-rows-state';
 import { track } from '@/libs/hooks/utils/analytics';
 import { DEBOUNCE_DELAY_MS } from '@/libs/hooks/utils/constants';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
+import { getRulesetType } from '@/libs/utils/ruleset-type';
 
 import styles from './table-panel.module.css';
 
 const pageSizes: PageSize[] = [10, 20, 50, 100];
+const FAVOURITES_PERSISTENCE_ERROR =
+  'Unable to save favourite rulesets in this browser session.';
 
 const isPageSize = (value: number): value is PageSize =>
   (pageSizes as number[]).includes(value);
@@ -69,9 +81,8 @@ export const TablePanel = <
 
   const router = useRouter();
 
-  const [currentPageSize, setCurrentPageSize] = useState<PageSize>(() =>
-    getStoredRowsPerPage()
-  );
+  const [currentPageSize, setCurrentPageSize] =
+    useState<PageSize>(DEFAULT_PAGE_SIZE);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -83,9 +94,38 @@ export const TablePanel = <
 
   const { clearDraft } = useDraftRuleset();
 
+  const isFavouriteRulesetsEnabled = useFavouriteRulesetsFlag();
+  const [favouriteIds, setFavouriteIds] = useState<string[]>([]);
+  const [favouritesError, setFavouritesError] = useState('');
+
+  const handleToggleFavourite = useCallback(
+    (id: string) => {
+      const row = rowsState.rows.find((r) => r.id === id);
+      /* istanbul ignore next */
+      if (!row) return;
+      const isFavouriteToggled = toggleFavourite({
+        id: row.id,
+        label: row.identifier,
+        url: row.url,
+        type: getRulesetType(ruleType),
+      });
+      if (!isFavouriteToggled) {
+        setFavouritesError(FAVOURITES_PERSISTENCE_ERROR);
+        return;
+      }
+      setFavouritesError('');
+      setFavouriteIds(getStoredFavourites().map((r) => r.id));
+    },
+    [rowsState.rows, ruleType]
+  );
+
   const [searchInputValue, setSearchInputValue] = useState<string>(
     router.query.searchQuery?.toString() || ''
   );
+
+  useEffect(() => {
+    setFavouriteIds(getStoredFavourites().map((r) => r.id));
+  }, []);
 
   useEffect(() => {
     if (router.isReady) {
@@ -218,12 +258,25 @@ export const TablePanel = <
       </div>
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
+      {favouritesError && <ErrorMessage>{favouritesError}</ErrorMessage>}
 
       <DataTable
         headings={headings}
         rows={rowsState.rows}
         currentPageSize={currentPageSize}
-        onDeleteRuleSet={deleteRow}
+        onDeleteRuleSet={({ id }) => {
+          void (async () => {
+            const isDeleted = await deleteRow({ id });
+            if (!isDeleted) return;
+            const isFavouriteRemoved = removeFavourite(id);
+            if (!isFavouriteRemoved) {
+              setFavouritesError(FAVOURITES_PERSISTENCE_ERROR);
+              return;
+            }
+            setFavouritesError('');
+            setFavouriteIds(getStoredFavourites().map((r) => r.id));
+          })();
+        }}
         onDuplicate={duplicateRow}
         onToggleRuleSet={onToggleRow}
         ruleType={ruleType}
@@ -231,6 +284,10 @@ export const TablePanel = <
         isLoading={isLoading}
         writeEnabled={writeEnabled}
         basePath={basePath}
+        onToggleFavourite={
+          isFavouriteRulesetsEnabled ? handleToggleFavourite : undefined
+        }
+        favouriteIds={isFavouriteRulesetsEnabled ? favouriteIds : undefined}
       />
 
       <TablePagination

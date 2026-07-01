@@ -1,3 +1,5 @@
+import { isValidRulesetType } from '@/libs/utils/ruleset-type';
+
 const STORAGE_KEY = 'recently-viewed-rulesets';
 export const MAX_RECENTLY_VIEWED = 10;
 
@@ -25,10 +27,7 @@ const isRecentlyViewedRuleset = (
     typeof id === 'string' &&
     typeof label === 'string' &&
     typeof url === 'string' &&
-    (type === 'category' ||
-      type === 'search' ||
-      type === 'global' ||
-      type === 'redirect') &&
+    isValidRulesetType(type) &&
     typeof viewedAt === 'number'
   );
 };

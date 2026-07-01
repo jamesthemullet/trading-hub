@@ -10,6 +10,7 @@ jest.mock('next/router', () => ({ useRouter: jest.fn() }));
 jest.mock('@/libs/components/feature-flag/feature-flag', () => ({
   ...jest.requireActual('@/libs/components/feature-flag/feature-flag'),
   useProfilePageFlag: jest.fn(),
+  useFavouriteRulesetsFlag: jest.fn(),
 }));
 jest.mock('@/libs/hooks/use-rows-per-page-setting', () => ({
   ...jest.requireActual('@/libs/hooks/use-rows-per-page-setting'),
@@ -19,12 +20,16 @@ jest.mock('@/libs/hooks/use-rows-per-page-setting', () => ({
 import Profile, { normalisePageSize } from './index.page';
 
 const mockReplace = jest.fn();
+const { useFavouriteRulesetsFlag } = jest.requireMock(
+  '@/libs/components/feature-flag/feature-flag'
+);
 
 beforeEach(() => {
   localStorage.clear();
   jest.clearAllMocks();
   (useRouter as jest.Mock).mockReturnValue({ replace: mockReplace });
   jest.mocked(useProfilePageFlag).mockReturnValue(true);
+  useFavouriteRulesetsFlag.mockReturnValue(false);
 });
 
 const renderProfile = () => renderWithProviders(<Profile />);
@@ -257,5 +262,167 @@ describe('Profile page', () => {
     expect(
       screen.queryByRole('link', { name: 'Facets' })
     ).not.toBeInTheDocument();
+  });
+
+  describe('favourite rulesets section', () => {
+    it('should not render the section when the flag is off', () => {
+      renderProfile();
+
+      expect(
+        screen.queryByRole('heading', { name: 'Favourite rulesets' })
+      ).not.toBeInTheDocument();
+    });
+
+    it('should render the section with empty state when the flag is on', () => {
+      useFavouriteRulesetsFlag.mockReturnValue(true);
+      renderProfile();
+
+      expect(
+        screen.getByRole('heading', { name: 'Favourite rulesets' })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText('No favourite rulesets yet.')
+      ).toBeInTheDocument();
+    });
+
+    it('should list favourites from localStorage', async () => {
+      useFavouriteRulesetsFlag.mockReturnValue(true);
+      localStorage.setItem(
+        'favourite-rulesets',
+        JSON.stringify([
+          {
+            id: 'fav-1',
+            label: 'Jeans | category',
+            url: '/category/rulesets/edit/fav-1',
+            type: 'category',
+          },
+          {
+            id: 'fav-2',
+            label: 'shoes',
+            url: '/search/rulesets/edit/fav-2',
+            type: 'search',
+          },
+        ])
+      );
+      renderProfile();
+
+      expect(
+        await screen.findByRole('link', { name: 'Jeans | category' })
+      ).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'shoes' })).toBeInTheDocument();
+    });
+
+    it('should render Ruleset and Facets action links for a category favourite', async () => {
+      useFavouriteRulesetsFlag.mockReturnValue(true);
+      localStorage.setItem(
+        'favourite-rulesets',
+        JSON.stringify([
+          {
+            id: 'fav-1',
+            label: 'Jeans',
+            url: '/category/rulesets/edit/fav-1',
+            type: 'category',
+          },
+        ])
+      );
+      renderProfile();
+
+      expect(
+        await screen.findByRole('link', { name: 'Ruleset' })
+      ).toHaveAttribute('href', '/category/rulesets/edit/fav-1');
+      expect(screen.getByRole('link', { name: 'Facets' })).toHaveAttribute(
+        'href',
+        '/category/facets/edit/fav-1'
+      );
+    });
+
+    it('should not render a Facets link for redirect favourites', async () => {
+      useFavouriteRulesetsFlag.mockReturnValue(true);
+      localStorage.setItem(
+        'favourite-rulesets',
+        JSON.stringify([
+          {
+            id: 'fav-3',
+            label: 'shoes redirect',
+            url: '/search/redirects/edit/fav-3',
+            type: 'redirect',
+          },
+        ])
+      );
+      renderProfile();
+
+      expect(
+        await screen.findByRole('link', { name: 'Ruleset' })
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole('link', { name: 'Facets' })
+      ).not.toBeInTheDocument();
+    });
+
+    it('should remove a favourite when the remove button is clicked', async () => {
+      const user = userEvent.setup();
+      useFavouriteRulesetsFlag.mockReturnValue(true);
+      localStorage.setItem(
+        'favourite-rulesets',
+        JSON.stringify([
+          {
+            id: 'fav-1',
+            label: 'Jeans',
+            url: '/category/rulesets/edit/fav-1',
+            type: 'category',
+          },
+        ])
+      );
+      renderProfile();
+
+      const removeButton = await screen.findByRole('button', {
+        name: 'Remove Jeans from favourites',
+      });
+      await user.click(removeButton);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('No favourite rulesets yet.')
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('should display an error when removing a favourite fails to persist', async () => {
+      const user = userEvent.setup();
+      useFavouriteRulesetsFlag.mockReturnValue(true);
+      localStorage.setItem(
+        'favourite-rulesets',
+        JSON.stringify([
+          {
+            id: 'fav-1',
+            label: 'Jeans',
+            url: '/category/rulesets/edit/fav-1',
+            type: 'category',
+          },
+        ])
+      );
+      const setItemSpy = jest
+        .spyOn(Storage.prototype, 'setItem')
+        .mockImplementation(() => {
+          throw new Error('quota exceeded');
+        });
+
+      renderProfile();
+
+      const removeButton = await screen.findByRole('button', {
+        name: 'Remove Jeans from favourites',
+      });
+      await user.click(removeButton);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            'Unable to save favourite rulesets in this browser session.'
+          )
+        ).toBeInTheDocument();
+      });
+
+      setItemSpy.mockRestore();
+    });
   });
 });

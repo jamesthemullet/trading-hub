@@ -45,6 +45,7 @@ const FeatureFlagWrapper = ({
     'flagStickyBar',
     'flagStickyBarVariant',
     'flagProfilePage',
+    'flagFavouriteRulesets',
   ]);
 
   return (
@@ -62,6 +63,7 @@ const FeatureFlagWrapper = ({
             ? 'variant-b'
             : 'variant-a',
         hasProfilePage: cookies.flagProfilePage === true,
+        hasFavouriteRulesets: cookies.flagFavouriteRulesets === true,
       }}
     >
       {children}

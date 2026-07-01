@@ -39,6 +39,12 @@
   column-gap: var(--mns-spacing-2);
 }
 
+.favouriteColumns {
+  display: grid;
+  grid-template-columns: 1fr 100px 90px 130px;
+  column-gap: var(--mns-spacing-2);
+}
+
 .recentColumnsWithCount {
   display: grid;
   grid-template-columns: 1fr 100px 60px 130px;
@@ -47,6 +53,13 @@
 
 .recentHeader {
   composes: recentColumns;
+  padding: var(--mns-spacing-1-5) var(--mns-spacing-2);
+  border-bottom: 1px solid var(--color-state-disabled-on-disabled-on-dark);
+  align-items: center;
+}
+
+.favouriteHeader {
+  composes: favouriteColumns;
   padding: var(--mns-spacing-1-5) var(--mns-spacing-2);
   border-bottom: 1px solid var(--color-state-disabled-on-disabled-on-dark);
   align-items: center;
@@ -71,6 +84,22 @@
 
 .recentRow {
   composes: recentColumns;
+  padding: var(--mns-spacing-1-5) var(--mns-spacing-2);
+  border-bottom: 1px solid var(--color-state-disabled-on-disabled-on-dark);
+  align-items: center;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover,
+  &:focus-within {
+    background-color: var(--color-state-disabled-disabled);
+  }
+}
+
+.favouriteRow {
+  composes: favouriteColumns;
   padding: var(--mns-spacing-1-5) var(--mns-spacing-2);
   border-bottom: 1px solid var(--color-state-disabled-on-disabled-on-dark);
   align-items: center;
@@ -132,6 +161,19 @@
   white-space: nowrap;
 
   &:hover {
+    text-decoration: underline;
+  }
+}
+
+.removeFavourite {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--color-state-error-error);
+  white-space: nowrap;
+
+  &:hover span {
     text-decoration: underline;
   }
 }

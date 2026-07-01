@@ -17,13 +17,19 @@ const FeatureFlags = () => {
       'flagStickyBar',
       'flagStickyBarVariant',
       'flagProfilePage',
+      'flagFavouriteRulesets',
     ],
     {
       doNotUpdate: true,
     }
   );
 
-  const { flagAuthorization, flagStickyBar, flagProfilePage } = cookies;
+  const {
+    flagAuthorization,
+    flagStickyBar,
+    flagProfilePage,
+    flagFavouriteRulesets,
+  } = cookies;
 
   return (
     <div className={styles.wrapper}>
@@ -33,8 +39,8 @@ const FeatureFlags = () => {
       <div className={styles.flag}>
         <Typography>Authorization:&nbsp;</Typography>
         <Toggle
+          aria-label="Toggle authorization feature flag"
           checked={flagAuthorization}
-          aria-label="Authorization"
           onChange={() => {
             setCookie('flagAuthorization', JSON.stringify(!flagAuthorization));
           }}
@@ -104,8 +110,8 @@ const FeatureFlags = () => {
       <div className={styles.flag}>
         <Typography>Sticky Bar:&nbsp;</Typography>
         <Toggle
+          aria-label="Toggle sticky bar feature flag"
           checked={flagStickyBar}
-          aria-label="Sticky Bar"
           onChange={() => {
             setCookie('flagStickyBar', JSON.stringify(!flagStickyBar));
           }}
@@ -132,10 +138,23 @@ const FeatureFlags = () => {
       <div className={styles.flag}>
         <Typography>Profile Page:&nbsp;</Typography>
         <Toggle
+          aria-label="Toggle profile page feature flag"
           checked={flagProfilePage}
-          aria-label="Profile Page"
           onChange={() => {
             setCookie('flagProfilePage', JSON.stringify(!flagProfilePage));
+          }}
+        />
+      </div>
+      <div className={styles.flag}>
+        <Typography>Favourite Rulesets:&nbsp;</Typography>
+        <Toggle
+          aria-label="Toggle favourite rulesets feature flag"
+          checked={flagFavouriteRulesets}
+          onChange={() => {
+            setCookie(
+              'flagFavouriteRulesets',
+              JSON.stringify(!flagFavouriteRulesets)
+            );
           }}
         />
       </div>

@@ -2,14 +2,22 @@ import type { ReactElement } from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { Heading, Typography } from '@/libs/components';
+import { Button, ErrorMessage, Heading, Typography } from '@/libs/components';
 import {
   CombinedDropdown,
   DropdownVariant,
 } from '@/libs/components/dropdown/dropdown';
-import { useProfilePageFlag } from '@/libs/components/feature-flag/feature-flag';
+import {
+  useFavouriteRulesetsFlag,
+  useProfilePageFlag,
+} from '@/libs/components/feature-flag/feature-flag';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
 import { ROUTES } from '@/libs/constants/routes';
+import type { FavouriteRuleset } from '@/libs/hooks/use-favourite-rulesets';
+import {
+  getStoredFavourites,
+  removeFavourite,
+} from '@/libs/hooks/use-favourite-rulesets';
 import type { MostViewedRuleset } from '@/libs/hooks/use-most-viewed-rulesets';
 import {
   getMostViewedRulesets,
@@ -33,6 +41,9 @@ import Link from 'next/link';
 
 import styles from './index.module.css';
 
+const FAVOURITES_PERSISTENCE_ERROR =
+  'Unable to save favourite rulesets in this browser session.';
+
 const FACET_ROUTES: Partial<Record<RulesetType, (id: string) => string>> = {
   category: ROUTES.CATEGORY.FACETS.EDIT,
   search: ROUTES.SEARCH.FACETS.EDIT,
@@ -52,17 +63,21 @@ export const normalisePageSize = (size: number): PageSize =>
 const Profile = (): ReactElement | null => {
   const router = useRouter();
   const isProfilePageEnabled = useProfilePageFlag();
+  const isFavouriteRulesetsEnabled = useFavouriteRulesetsFlag();
   const [initialized, setInitialized] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState<PageSize>(DEFAULT_PAGE_SIZE);
   const [recentlyViewed, setRecentlyViewed] = useState<RecentlyViewedRuleset[]>(
     []
   );
   const [mostViewed, setMostViewed] = useState<MostViewedRuleset[]>([]);
+  const [favourites, setFavourites] = useState<FavouriteRuleset[]>([]);
+  const [favouritesError, setFavouritesError] = useState('');
 
   useEffect(() => {
     setRowsPerPage(getStoredRowsPerPage());
     setRecentlyViewed(getStoredRecentlyViewed());
     setMostViewed(getMostViewedRulesets());
+    setFavourites(getStoredFavourites());
   }, []);
 
   useEffect(() => {
@@ -81,6 +96,16 @@ const Profile = (): ReactElement | null => {
     const pageSize = normalisePageSize(size);
     setRowsPerPage(pageSize);
     saveRowsPerPage(pageSize);
+  };
+
+  const handleRemoveFavourite = (id: string): void => {
+    const isFavouriteRemoved = removeFavourite(id);
+    if (!isFavouriteRemoved) {
+      setFavouritesError(FAVOURITES_PERSISTENCE_ERROR);
+      return;
+    }
+    setFavouritesError('');
+    setFavourites(getStoredFavourites());
   };
 
   return (
@@ -124,6 +149,86 @@ const Profile = (): ReactElement | null => {
             />
           </div>
         </section>
+        {isFavouriteRulesetsEnabled && (
+          <section className={styles.section}>
+            <Typography variant="titleMedium" isStrong as="h2">
+              Favourite rulesets
+            </Typography>
+            {favouritesError && <ErrorMessage>{favouritesError}</ErrorMessage>}
+            {favourites.length === 0 ? (
+              <Typography variant="bodyMedium">
+                No favourite rulesets yet.
+              </Typography>
+            ) : (
+              <div className={styles.recentCard}>
+                <div className={styles.favouriteHeader} aria-hidden="true">
+                  <Typography variant="bodySmall" isStrong>
+                    Ruleset
+                  </Typography>
+                  <Typography variant="bodySmall" isStrong>
+                    Type
+                  </Typography>
+                  <div />
+                  <div />
+                </div>
+                <ul className={styles.recentList}>
+                  {favourites.map((item) => {
+                    const facetUrl = getFacetUrl(item.type, item.id);
+                    return (
+                      <li key={item.id}>
+                        <div className={styles.favouriteRow}>
+                          <Link href={item.url} className={styles.labelLink}>
+                            <Typography
+                              variant="bodySmall"
+                              as="span"
+                              className={styles.labelText}
+                            >
+                              {item.label}
+                            </Typography>
+                          </Link>
+                          <Typography
+                            variant="bodySmall"
+                            className={styles.recentType}
+                          >
+                            {item.type}
+                          </Typography>
+                          <Button
+                            type="button"
+                            appearance="plain"
+                            className={styles.removeFavourite}
+                            onClick={() => handleRemoveFavourite(item.id)}
+                            aria-label={`Remove ${item.label} from favourites`}
+                          >
+                            <Typography variant="bodySmall" as="span">
+                              ★ Remove
+                            </Typography>
+                          </Button>
+                          <div className={styles.actionLinks}>
+                            <Link href={item.url} className={styles.actionLink}>
+                              <Typography variant="bodySmall" as="span">
+                                Ruleset
+                              </Typography>
+                            </Link>
+                            {facetUrl && (
+                              <Link
+                                href={facetUrl}
+                                className={styles.actionLink}
+                              >
+                                <Typography variant="bodySmall" as="span">
+                                  Facets
+                                </Typography>
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+          </section>
+        )}
         <section className={styles.section}>
           <Typography variant="titleMedium" isStrong as="h2">
             Most viewed rulesets (last {MOST_VIEWED_DAYS} days)

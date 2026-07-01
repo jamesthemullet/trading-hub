@@ -158,7 +158,7 @@ export type GetRowsFn = (
   countryCode?: MerchandisingCountryCode,
   havingRules?: RuleTypeFilter
 ) => Promise<void>;
-export type DeleteRowFn = (row: { id: string }) => Promise<void>;
+export type DeleteRowFn = (row: { id: string }) => Promise<boolean>;
 export type DuplicateRowFn = (id: string) => Promise<void>;
 export type ToggleRowFn = (row: { id: string }) => Promise<void>;
 

@@ -18,6 +18,7 @@ export type FeatureFlags = {
   hasStickyBar: boolean;
   stickyBarVariant: StickyBarVariant;
   hasProfilePage: boolean;
+  hasFavouriteRulesets: boolean;
 };
 
 export const defaultFeatureFlags: FeatureFlags = {
@@ -30,6 +31,7 @@ export const defaultFeatureFlags: FeatureFlags = {
   hasStickyBar: false,
   stickyBarVariant: 'variant-a',
   hasProfilePage: false,
+  hasFavouriteRulesets: false,
 };
 
 export const FeatureFlagContext =
@@ -86,4 +88,16 @@ export const useProfilePageFlag = () => {
   }, [featureFlags.hasProfilePage]);
 
   return profilePageEnabled;
+};
+
+export const useFavouriteRulesetsFlag = () => {
+  const featureFlags = useContext(FeatureFlagContext);
+  const [favouriteRulesetsEnabled, setFavouriteRulesetsEnabled] =
+    useState(false);
+
+  useEffect(() => {
+    setFavouriteRulesetsEnabled(featureFlags.hasFavouriteRulesets);
+  }, [featureFlags.hasFavouriteRulesets]);
+
+  return favouriteRulesetsEnabled;
 };

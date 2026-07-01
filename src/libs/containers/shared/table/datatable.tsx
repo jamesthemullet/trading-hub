@@ -58,6 +58,8 @@ export type DataTableProps = {
   query?: string;
   writeEnabled: boolean;
   currentPageSize?: number;
+  onToggleFavourite?: (id: string) => void;
+  favouriteIds?: string[];
 };
 
 export const DataTable = ({
@@ -72,6 +74,8 @@ export const DataTable = ({
   writeEnabled,
   isLoading,
   currentPageSize,
+  onToggleFavourite,
+  favouriteIds = [],
 }: DataTableProps) => {
   const [optionToggle, setOptionToggle] = useState('');
   const [ruleSetIdToEdit, setRuleSetIdToEdit] = useState('');
@@ -217,6 +221,17 @@ export const DataTable = ({
                 countryCode,
               }: Row) => {
                 const isOptionDropdownOpen = optionToggle === id;
+                const isRowFavourite = favouriteIds.includes(id);
+                const favouriteActionLabel = isRowFavourite
+                  ? 'Remove from favourites'
+                  : 'Add to favourites';
+
+                const handleFavouriteAction = (event: {
+                  stopPropagation: () => void;
+                }) => {
+                  event.stopPropagation();
+                  onToggleFavourite?.(id);
+                };
 
                 const onConfirmDelete = () => {
                   setRuleSetIdToEdit(id);
@@ -365,6 +380,33 @@ export const DataTable = ({
                     </div>
                     <div className={styles.tableCol}>
                       <div className={styles.tableActions}>
+                        {onToggleFavourite && (
+                          <Button
+                            appearance="icon"
+                            aria-label={favouriteActionLabel}
+                            title={favouriteActionLabel}
+                            onMouseDown={handleFavouriteAction}
+                            onKeyDown={
+                              /* istanbul ignore next */
+                              (e) => {
+                                if (e.key === 'Enter') {
+                                  handleFavouriteAction(e);
+                                }
+                              }
+                            }
+                          >
+                            <span
+                              aria-hidden="true"
+                              className={
+                                isRowFavourite
+                                  ? styles.favouriteActive
+                                  : styles.favourite
+                              }
+                            >
+                              ★
+                            </span>
+                          </Button>
+                        )}
                         <Button
                           appearance="icon"
                           onKeyDown={(e) => {

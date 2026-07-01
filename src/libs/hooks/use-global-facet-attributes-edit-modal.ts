@@ -153,7 +153,6 @@ export const useGlobalFacetAttributesEditModal = ({
               payload: {
                 valueToRemove,
                 mergeDisplayName:
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string should fall through
                   originalMergeGroup?.displayValue ||
                   globalAttributesLocalState.currentMerge.displayValue,
               },
