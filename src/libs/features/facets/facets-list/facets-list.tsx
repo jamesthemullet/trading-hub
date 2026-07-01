@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
-import { useRouter } from 'next/router';
 
 import type { MerchandisingRuleSet } from '@/libs/api';
 import {
@@ -25,6 +24,7 @@ import {
   useDraftRuleset,
   useFacetsList,
   useGlobalFacetsList,
+  useTypeSafeQuery,
 } from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { track } from '@/libs/hooks/utils/analytics';
@@ -100,8 +100,8 @@ export const FacetsList = ({
   onSave,
   isWriteEnabled,
 }: FacetsListProps) => {
-  const router = useRouter();
-  const rulesetId = router.query.id as string;
+  const { getStringParam } = useTypeSafeQuery();
+  const rulesetId = getStringParam('id');
 
   const { getDraft, clearDraft } = useDraftRuleset();
 

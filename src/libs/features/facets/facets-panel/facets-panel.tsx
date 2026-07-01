@@ -6,7 +6,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useRouter } from 'next/router';
 
 import type {
   MerchandisingCountryCode,
@@ -25,7 +24,7 @@ import { COLUMNS } from '@/libs/constants';
 import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
 import { createBoostedDragEndHandler } from '@/libs/features/facets/utils/create-boosted-drag-end-handler';
-import { useFacetsFilter } from '@/libs/hooks';
+import { useFacetsFilter, useTypeSafeQuery } from '@/libs/hooks';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { DEBOUNCE_DELAY_MS } from '@/libs/hooks/utils/constants';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -90,7 +89,7 @@ export const FacetsPanel = ({
   onCancel,
   onFacetDataChange,
 }: FacetsPanelProps) => {
-  const router = useRouter();
+  const { getStringParam } = useTypeSafeQuery();
 
   const [facetPanelLocalState, dispatch] = useReducer(facetsPanelReducer, {
     includedFacets: [],
@@ -281,7 +280,7 @@ export const FacetsPanel = ({
     facetPanelLocalState.orders
   );
 
-  const ruleSetId = router.query.id as string;
+  const ruleSetId = getStringParam('id');
 
   const [boostedCount, excludedCount, nonBoostedExcludedCount] = useMemo(() => {
     const boosted = facetsState.filter(
