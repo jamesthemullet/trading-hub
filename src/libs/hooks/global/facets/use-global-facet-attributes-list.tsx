@@ -28,7 +28,6 @@ import type {
   GlobalAttributesPageState,
 } from '@/libs/stores/global-attributes-page/global-attributes-page-reducer';
 
-import type { DragEndEvent } from '@dnd-kit/core';
 import {
   KeyboardSensor,
   PointerSensor,
@@ -53,6 +52,15 @@ type UseGlobalFacetAttributesListParams = {
   initialOrders: Record<string, number>;
 };
 
+type UseGlobalFacetAttributesListResult = {
+  sensors: ReturnType<typeof useSensors>;
+  boostedValuesRows: ReactElement[];
+  defaultValuesRows: ReactElement[];
+  excludedValuesRows: ReactElement[];
+  boostedVisibleIds: string[];
+  handleBoostedDragEnd: ReturnType<typeof createBoostedDragEndHandler>;
+};
+
 export const useGlobalFacetAttributesList = ({
   searchQuery,
   countryCode,
@@ -66,14 +74,7 @@ export const useGlobalFacetAttributesList = ({
   totalSelectedItems,
   handleOrderChangeCallback,
   initialOrders,
-}: UseGlobalFacetAttributesListParams): {
-  sensors: ReturnType<typeof useSensors>;
-  boostedValuesRows: ReactElement[];
-  defaultValuesRows: ReactElement[];
-  excludedValuesRows: ReactElement[];
-  boostedVisibleIds: string[];
-  handleBoostedDragEnd: (event: DragEndEvent) => void;
-} => {
+}: UseGlobalFacetAttributesListParams): UseGlobalFacetAttributesListResult => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {

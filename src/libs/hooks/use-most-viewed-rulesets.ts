@@ -70,20 +70,23 @@ export const saveRulesetVisit = ({
 }): void => {
   try {
     const records = getStoredVisitRecords();
-    const existing = records.find((r) => r.id === id);
+    const existing = records.find((record) => record.id === id);
     const now = Date.now();
     const threshold = cutoff(MOST_VIEWED_DAYS);
 
     const updatedRecords = existing
-      ? records.map((r) =>
-          r.id === id
+      ? records.map((record) =>
+          record.id === id
             ? {
-                ...r,
+                ...record,
                 label,
                 url,
-                visits: [...r.visits.filter((t) => t > threshold), now],
+                visits: [
+                  ...record.visits.filter((timestamp) => timestamp > threshold),
+                  now,
+                ],
               }
-            : r
+            : record
         )
       : [...records, { id, label, url, type, visits: [now] }];
 
@@ -104,9 +107,9 @@ export const getMostViewedRulesets = (
       label,
       url,
       type,
-      count: visits.filter((t) => t > threshold).length,
+      count: visits.filter((timestamp) => timestamp > threshold).length,
     }))
-    .filter((r) => r.count > 0)
+    .filter((record) => record.count > 0)
     .sort((a, b) => b.count - a.count)
     .slice(0, limit);
 };

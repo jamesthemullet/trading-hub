@@ -149,9 +149,7 @@ describe('useGlobalFacetAttributesList', () => {
     const boostedRows = result.current.boostedValuesRows ?? [];
 
     expect(boostedRows).toHaveLength(1);
-    expect((boostedRows[0].props as { disabled?: boolean }).disabled).toBe(
-      true
-    );
+    expect(boostedRows[0].props).toMatchObject({ disabled: true });
   });
 
   it('does not dispatch when drag end lacks a drop target', () => {

@@ -54,7 +54,7 @@ const EditRedirect = ({ id }: Props): ReactElement => {
 
   useTrackRecentlyViewed({
     id: redirectData?.id,
-    label: redirectData?.ruleTitle || redirectData?.keywords?.join(', '),
+    label: redirectData?.ruleTitle || redirectData?.keywords?.join(', '), // || intentional: empty string ruleTitle should fall through to keywords
     url: ROUTES.SEARCH.REDIRECTS.EDIT(id),
     type: 'redirect',
   });
