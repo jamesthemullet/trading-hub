@@ -1,0 +1,23 @@
+name: Automated CAB
+
+on:
+  pull_request:
+    types: [opened, synchronize, labeled, unlabeled]
+  merge_group:
+    types: [checks_requested]
+
+jobs:
+  automated-cab:
+    name: Automated CAB Process
+    uses: DigitalInnovation/change-management-github-workflows/.github/workflows/create-change-request.yml@v2
+    permissions:
+      pull-requests: write
+    with:
+      portfolio: 'Customer Engagement'
+      app-name: 'Merchandising Hub'
+      start-delay: '30m'
+      change-duration: '30m'
+      use-helix-qa-environment: false
+    secrets:
+      helix-password: ${{ secrets.BMC_HELIX_API_PASSWORD }}
+      dynatrace-api-token: ${{ secrets.DYNATRACE_ACCESS_TOKEN_PROD }}

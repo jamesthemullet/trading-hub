@@ -110,7 +110,7 @@ GROUP_ID='<group-object-id>'; az rest --method GET --url "https://graph.microsof
 
 ### 3. Test access in the app
 
-Log in to Trading Hub DEV and confirm the correct features are visible/locked for each role. See [authorization.md](./authorization.md) for what each role controls.
+Log in to Trading Hub DEV and confirm the correct features are visible/locked for each role . See [authorization.md](./authorization.md) for what each role controls.
 
 ### 4. Make changes
 

@@ -197,6 +197,18 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+  automated-cab-start:
+    name: Automated CAB Start
+    uses: DigitalInnovation/change-management-github-workflows/.github/workflows/start-change-request.yml@v2
+    needs: [build, deploy-dev, dev-e2e-tests]
+    permissions:
+      pull-requests: write
+    with:
+      portfolio: 'Customer Engagement'
+      app-name: 'Merchandising Hub'
+    secrets:
+      helix-password: ${{ secrets.BMC_HELIX_API_PASSWORD }}
+      dynatrace-api-token: ${{ secrets.DYNATRACE_ACCESS_TOKEN_PROD }}
 
   deploy-prod:
     runs-on: ubuntu-latest
@@ -322,3 +334,28 @@ jobs:
           from_branch: main
           target_branch: hotfix
           github_token: ${{ secrets.GITHUB_TOKEN }}
+  automated-cab-end:
+    name: Automated CAB End
+    uses: DigitalInnovation/change-management-github-workflows/.github/workflows/complete-change-request.yml@v2
+    needs: [automated-cab-start, deploy-prod]
+    permissions:
+      pull-requests: write
+    with:
+      portfolio: 'Customer Engagement'
+      app-name: 'Merchandising Hub'
+    secrets:
+      helix-password: ${{ secrets.BMC_HELIX_API_PASSWORD }}
+      dynatrace-api-token: ${{ secrets.DYNATRACE_ACCESS_TOKEN_PROD }}
+
+  automated-cab-close:
+    name: Automated CAB Close
+    uses: DigitalInnovation/change-management-github-workflows/.github/workflows/close-change-request.yml@v2
+    needs: [automated-cab-start, deploy-prod]
+    if: ${{ always() && needs.deploy-prod.result == 'failure' }}
+    with:
+      portfolio: 'Customer Engagement'
+      app-name: 'Merchandising Hub'
+      close-reason: 'Unsuccessful'
+    secrets:
+      helix-password: ${{ secrets.BMC_HELIX_API_PASSWORD }}
+      dynatrace-api-token: ${{ secrets.DYNATRACE_ACCESS_TOKEN_PROD }}
