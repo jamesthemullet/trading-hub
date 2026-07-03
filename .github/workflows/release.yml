@@ -215,7 +215,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    needs: [build, deploy-dev, dev-e2e-tests]
+    needs: [build, deploy-dev, dev-e2e-tests, automated-cab-start]
     name: Deploy to Azure Web App (production)
     environment:
       name: prodeun
