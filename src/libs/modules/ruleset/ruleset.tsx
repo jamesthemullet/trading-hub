@@ -22,6 +22,7 @@ import {
 } from '@/libs/components';
 import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
+import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import { BulkActions } from '@/libs/containers/rulesets/bulk-actions-products';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
 import { ProductGridHeader } from '@/libs/containers/shared/product-grid-header/product-grid-header';
@@ -35,6 +36,7 @@ import {
 } from '@/libs/features';
 import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-keywords';
 import { usePreview } from '@/libs/hooks';
+import { useRulesetDiff } from '@/libs/hooks/use-ruleset-diff';
 import { track } from '@/libs/hooks/utils/analytics';
 import { rulesetReducer } from '@/libs/stores/ruleset/reducer';
 
@@ -54,6 +56,7 @@ export const Ruleset = ({
   onCreateGlobalRuleset,
   onCreateKeywordSearchRuleset,
   onSave,
+  originalRuleset,
   categoriesInfo,
   rulesetFacets,
   rulesetExcludedFacets,
@@ -84,6 +87,7 @@ export const Ruleset = ({
   ) => void;
   onCreateGlobalRuleset?: (args: MerchandisingRuleSet) => void;
   onCreateKeywordSearchRuleset?: (args: MerchandisingKeywordRuleSet) => void;
+  originalRuleset?: MerchandisingRuleSet;
   categoriesInfo?: Array<{
     id: string;
     name?: string;
@@ -119,6 +123,8 @@ export const Ruleset = ({
   const [currentEditorTab, setCurrentEditorTab] = useState(0);
   const [hasChanges, setHasChanges] = useState(false);
   const [shouldShowPreview, setShouldShowPreview] = useState(false);
+  const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
+  const [pendingSave, setPendingSave] = useState<(() => void) | null>(null);
 
   const defaultPreviewCountryCode =
     categoryIds?.[0].includes('IE_') ||
@@ -196,6 +202,28 @@ export const Ruleset = ({
   });
 
   const { rules: merchandisingRules } = ruleset;
+
+  const currentRulesetForDiff: MerchandisingRuleSet = {
+    isEnabled,
+    rules: merchandisingRules,
+    facets: rulesetFacets,
+    excludedFacets: rulesetExcludedFacets,
+    startDate: ruleset.startDate,
+    endDate: ruleset.endDate,
+    countryCode: ruleset.countryCode,
+  };
+
+  const diffItems = useRulesetDiff(originalRuleset, currentRulesetForDiff, {
+    isEnabled: isPendingConfirmation,
+    ...(rulesetType === 'category' && {
+      originalCategoryIds: categoryIds ?? [],
+      currentCategoryIds: selectedCategories,
+    }),
+    ...(rulesetType === 'search' && {
+      originalSearchTerms: searchTerms ?? [],
+      currentSearchTerms: rulesetSearchTerms,
+    }),
+  });
 
   useEffect(() => {
     const warningText =
@@ -290,7 +318,7 @@ export const Ruleset = ({
 
   const onSaveRuleset = () => {
     if (onSave && rulesetId) {
-      onSave({
+      const saveArgs = {
         ruleSetId: rulesetId,
         ruleSet: {
           facets: rulesetFacets ?? [],
@@ -305,7 +333,15 @@ export const Ruleset = ({
         ...(rulesetSearchTerms && {
           searchTerms: rulesetSearchTerms,
         }),
-      });
+      };
+
+      if (originalRuleset) {
+        setPendingSave(() => () => onSave(saveArgs));
+        setIsPendingConfirmation(true);
+        return;
+      }
+
+      onSave(saveArgs);
     } else if (onCreate && selectedCategories.length) {
       onCreate({
         facets: [],
@@ -329,6 +365,17 @@ export const Ruleset = ({
     }
   };
 
+  const onConfirmSave = () => {
+    pendingSave?.();
+    setIsPendingConfirmation(false);
+    setPendingSave(null);
+  };
+
+  const onCancelSave = () => {
+    setIsPendingConfirmation(false);
+    setPendingSave(null);
+  };
+
   return (
     <>
       {shouldShowPreview && (
@@ -341,6 +388,16 @@ export const Ruleset = ({
           countryCode={selectedPreviewCountryCode}
         />
       )}
+
+      <RulesetDiffModal
+        opened={isPendingConfirmation}
+        diffItems={diffItems}
+        onConfirm={() => {
+          onConfirmSave();
+          setHasChanges(false);
+        }}
+        onCancel={onCancelSave}
+      />
 
       <ProductGridHeader
         canSave={
@@ -355,7 +412,9 @@ export const Ruleset = ({
         }
         onSave={() => {
           onSaveRuleset();
-          setHasChanges(false);
+          if (!originalRuleset) {
+            setHasChanges(false);
+          }
         }}
         hasPreview={!!selectedCategories.length || !!rulesetSearchTerms.length}
         onPreview={() => {

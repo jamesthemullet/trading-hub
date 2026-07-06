@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { renderHook } from '@testing-library/react';
 
 import {
@@ -9,15 +10,26 @@ import {
   useStickyBarFlag,
 } from './feature-flag';
 
+const createWrapper = (overrides: Partial<typeof defaultFeatureFlags> = {}) => {
+  const FeatureFlagTestWrapper = ({ children }: { children: ReactNode }) => (
+    <FeatureFlagContext.Provider
+      value={{ ...defaultFeatureFlags, ...overrides }}
+    >
+      {children}
+    </FeatureFlagContext.Provider>
+  );
+
+  FeatureFlagTestWrapper.displayName = 'FeatureFlagTestWrapper';
+
+  return FeatureFlagTestWrapper;
+};
+
 describe('useAuthorizationFlag', () => {
   it('should return the default feature flags', () => {
     const { result } = renderHook(() => useAuthorizationFlag(), {
-      wrapper: ({ children }: { children: React.ReactNode }) => (
-        <FeatureFlagContext.Provider value={defaultFeatureFlags}>
-          {children}
-        </FeatureFlagContext.Provider>
-      ),
+      wrapper: createWrapper(),
     });
+
     expect(result.current).toBe(false);
   });
 });
@@ -25,30 +37,21 @@ describe('useAuthorizationFlag', () => {
 describe('useStickyBarFlag', () => {
   it('should return defaults when flag is off', () => {
     const { result } = renderHook(() => useStickyBarFlag(), {
-      wrapper: ({ children }: { children: React.ReactNode }) => (
-        <FeatureFlagContext.Provider value={defaultFeatureFlags}>
-          {children}
-        </FeatureFlagContext.Provider>
-      ),
+      wrapper: createWrapper(),
     });
+
     expect(result.current.stickyBarEnabled).toBe(false);
     expect(result.current.stickyBarVariant).toBe('variant-a');
   });
 
   it('should return enabled state and variant when flag is on', () => {
     const { result } = renderHook(() => useStickyBarFlag(), {
-      wrapper: ({ children }: { children: React.ReactNode }) => (
-        <FeatureFlagContext.Provider
-          value={{
-            ...defaultFeatureFlags,
-            hasStickyBar: true,
-            stickyBarVariant: 'variant-b',
-          }}
-        >
-          {children}
-        </FeatureFlagContext.Provider>
-      ),
+      wrapper: createWrapper({
+        hasStickyBar: true,
+        stickyBarVariant: 'variant-b',
+      }),
     });
+
     expect(result.current.stickyBarEnabled).toBe(true);
     expect(result.current.stickyBarVariant).toBe('variant-b');
   });
@@ -57,25 +60,17 @@ describe('useStickyBarFlag', () => {
 describe('useProfilePageFlag', () => {
   it('should return false by default', () => {
     const { result } = renderHook(() => useProfilePageFlag(), {
-      wrapper: ({ children }: { children: React.ReactNode }) => (
-        <FeatureFlagContext.Provider value={defaultFeatureFlags}>
-          {children}
-        </FeatureFlagContext.Provider>
-      ),
+      wrapper: createWrapper(),
     });
+
     expect(result.current).toBe(false);
   });
 
   it('should return true when flag is enabled', () => {
     const { result } = renderHook(() => useProfilePageFlag(), {
-      wrapper: ({ children }: { children: React.ReactNode }) => (
-        <FeatureFlagContext.Provider
-          value={{ ...defaultFeatureFlags, hasProfilePage: true }}
-        >
-          {children}
-        </FeatureFlagContext.Provider>
-      ),
+      wrapper: createWrapper({ hasProfilePage: true }),
     });
+
     expect(result.current).toBe(true);
   });
 });

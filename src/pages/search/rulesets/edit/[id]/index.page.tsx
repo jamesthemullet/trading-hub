@@ -110,6 +110,7 @@ const Page = ({ id }: PageProps): ReactElement => {
           isEnabled={rulesetData.isEnabled}
           onCancel={() => router.push('/search')}
           onSave={saveRuleSet}
+          originalRuleset={isHistoryView ? undefined : ruleSet}
           rulesetId={rulesetData.id}
           rulesetMerchandisingRules={rulesetData.rules}
           rulesetType="search"

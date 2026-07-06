@@ -1,0 +1,107 @@
+import { useId } from 'react';
+import { Divider, Modal } from '@mantine/core';
+
+import { Button, Typography } from '@/libs/components';
+import type { DiffItem } from '@/libs/hooks/use-ruleset-diff';
+
+import Image from 'next/image';
+
+import { DIFF_TYPE_LABEL, LABEL_ICON } from './ruleset-diff-modal.constants';
+import styles from './ruleset-diff-modal.module.css';
+
+type RulesetDiffModalProps = {
+  opened: boolean;
+  diffItems: DiffItem[];
+  onConfirm: () => void;
+  onCancel: () => void;
+};
+
+export const RulesetDiffModal = ({
+  opened,
+  diffItems,
+  onConfirm,
+  onCancel,
+}: RulesetDiffModalProps) => {
+  const titleId = useId();
+
+  return (
+    <Modal.Root opened={opened} onClose={onCancel} centered padding={20}>
+      <Modal.Overlay blur={3} />
+      <Modal.Content aria-labelledby={titleId}>
+        <Modal.Body>
+          <Modal.Title component="div" id={titleId}>
+            <Typography as="h2" variant="titleMedium" isStrong withMargin>
+              Review changes
+            </Typography>
+          </Modal.Title>
+
+          <Typography variant="bodySmall" withMargin>
+            The following changes will go live on the M&S website and app.
+            Please review before saving.
+          </Typography>
+
+          <Divider
+            color="var(--color-role-outline-outline-variant)"
+            mx={-20}
+            mb="md"
+          />
+
+          {diffItems.length === 0 ? (
+            <Typography variant="bodySmall" withMargin>
+              No changes detected.
+            </Typography>
+          ) : (
+            <ul className={styles.diffList}>
+              {diffItems.map((item) => {
+                const iconSrc =
+                  LABEL_ICON[`${item.type}-${item.label}`] ??
+                  LABEL_ICON[item.label];
+
+                return (
+                  <li
+                    key={`${item.type}-${item.label}-${item.description}`}
+                    className={styles.diffItem}
+                    data-type={item.type}
+                  >
+                    {iconSrc && (
+                      <Image
+                        src={iconSrc}
+                        width={16}
+                        height={16}
+                        alt=""
+                        data-testid="change-type-icon"
+                        className={styles.diffItemIcon}
+                      />
+                    )}
+                    <div>
+                      <Typography variant="bodySmall" isStrong>
+                        {DIFF_TYPE_LABEL[item.type]} {item.label}
+                      </Typography>
+                      <Typography variant="bodySmall">
+                        {item.description}
+                      </Typography>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+
+          <Divider
+            color="var(--color-surface-dark-on-surface-dark-container)"
+            mx={-20}
+          />
+
+          <div className={styles.buttons}>
+            <Button onClick={onCancel} theme="secondary" isInline>
+              Cancel
+            </Button>
+            <Button onClick={onConfirm} theme="primary" isInline data-autofocus>
+              Save changes
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal.Content>
+    </Modal.Root>
+  );
+};

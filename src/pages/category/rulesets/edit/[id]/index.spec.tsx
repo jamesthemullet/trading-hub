@@ -151,6 +151,9 @@ describe('Index', () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
 
     expect(mockUpdateRuleSet.updateCategoryRuleSet).toHaveBeenCalled();
   });
@@ -203,6 +206,9 @@ describe('Index', () => {
     await user.click(irelandOption);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
 
     expect(mockUpdateRuleSet.updateCategoryRuleSet).toHaveBeenCalledWith({
       countryCode: 'IE',

@@ -24,6 +24,7 @@ export * from './use-rule-set';
 export * from './use-rule-set-create';
 export * from './use-rule-set-delete';
 export * from './use-rule-set-update';
+export * from './use-ruleset-diff';
 export * from './use-type-safe-query';
 export * from './utils/use-mouse-focus';
 export * from './utils/use-on-outside-click';

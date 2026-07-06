@@ -2266,4 +2266,130 @@ describe('Ruleset', () => {
       ).not.toBeChecked();
     });
   });
+
+  describe('diff modal', () => {
+    const originalRuleset = {
+      isEnabled: true,
+      rules: {
+        pinnedProducts: [],
+        blockedProducts: [],
+        boosts: { numeric: [], alphanumeric: [], product: [] },
+        buries: { numeric: [], alphanumeric: [], product: [] },
+        includes: { alphanumeric: [] },
+        excludes: { alphanumeric: [] },
+      },
+    };
+
+    it('should show diff modal before saving', async () => {
+      const mockSave = jest.fn();
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <Ruleset
+          {...defaultProps}
+          onSave={mockSave}
+          onCancel={jest.fn()}
+          originalRuleset={originalRuleset}
+          categoriesInfo={mockCategoriesInfo}
+          rulesetMerchandisingRules={originalRuleset.rules}
+          rulesetId={ruleSetId}
+          rulesetType="category"
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      const user = userEvent.setup();
+      const saveButton = await screen.findByText(SAVE_BUTTON);
+      await user.click(saveButton);
+
+      expect(
+        await screen.findByRole('heading', { name: 'Review changes' })
+      ).toBeInTheDocument();
+      expect(mockSave).not.toHaveBeenCalled();
+    });
+
+    it('should call onSave after confirming in diff modal', async () => {
+      const user = userEvent.setup();
+      const mockSave = jest.fn();
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <Ruleset
+          {...defaultProps}
+          onSave={mockSave}
+          onCancel={jest.fn()}
+          originalRuleset={originalRuleset}
+          categoriesInfo={mockCategoriesInfo}
+          rulesetMerchandisingRules={originalRuleset.rules}
+          rulesetId={ruleSetId}
+          rulesetType="category"
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      const saveButton = await screen.findByText(SAVE_BUTTON);
+
+      await user.click(saveButton);
+
+      await user.click(
+        await screen.findByRole('button', { name: 'Save changes' })
+      );
+
+      expect(mockSave).toHaveBeenCalledWith(
+        expect.objectContaining({ ruleSetId })
+      );
+    });
+
+    it('should not call onSave when cancelling the diff modal', async () => {
+      const user = userEvent.setup();
+      const mockSave = jest.fn();
+
+      jest.mocked(useGetCategories).mockReturnValue({
+        getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+        getCategoriesError: '',
+      });
+
+      renderWithProviders(
+        <Ruleset
+          {...defaultProps}
+          onSave={mockSave}
+          onCancel={jest.fn()}
+          originalRuleset={originalRuleset}
+          categoriesInfo={mockCategoriesInfo}
+          rulesetMerchandisingRules={originalRuleset.rules}
+          rulesetId={ruleSetId}
+          rulesetType="category"
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      const saveButton = await screen.findByText(SAVE_BUTTON);
+
+      await user.click(saveButton);
+
+      const modalHeading = await screen.findByRole('heading', {
+        name: 'Review changes',
+      });
+
+      const dialog = modalHeading.closest('[role="dialog"]');
+      expect(dialog).not.toBeNull();
+
+      await user.click(
+        within(dialog as HTMLElement).getByRole('button', { name: 'Cancel' })
+      );
+
+      expect(mockSave).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(screen.queryByText('Review changes')).not.toBeInTheDocument();
+      });
+    });
+  });
 });
