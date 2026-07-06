@@ -15,8 +15,8 @@ jobs:
     with:
       portfolio: 'Customer Engagement'
       app-name: 'Merchandising Hub'
-      start-delay: '30m'
-      change-duration: '30m'
+      start-delay: '5m'
+      change-duration: '2h'
       use-helix-qa-environment: false
     secrets:
       helix-password: ${{ secrets.BMC_HELIX_API_PASSWORD }}
