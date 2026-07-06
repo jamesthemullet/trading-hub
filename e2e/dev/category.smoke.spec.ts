@@ -94,7 +94,7 @@ test.describe('Category Ranking', () => {
     await page.getByRole('button', { name: 'Preview', exact: true }).click();
 
     await expect(
-      page.getByRole('button', { name: 'brand', exact: true })
+      page.getByRole('button', { name: 'Brand', exact: true })
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'close modal' }).click();
