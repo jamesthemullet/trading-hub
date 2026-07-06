@@ -206,6 +206,7 @@ jobs:
     with:
       portfolio: 'Customer Engagement'
       app-name: 'Merchandising Hub'
+      use-helix-qa-environment: false
     secrets:
       helix-password: ${{ secrets.BMC_HELIX_API_PASSWORD }}
       dynatrace-api-token: ${{ secrets.DYNATRACE_ACCESS_TOKEN_PROD }}
@@ -343,6 +344,7 @@ jobs:
     with:
       portfolio: 'Customer Engagement'
       app-name: 'Merchandising Hub'
+      use-helix-qa-environment: false
     secrets:
       helix-password: ${{ secrets.BMC_HELIX_API_PASSWORD }}
       dynatrace-api-token: ${{ secrets.DYNATRACE_ACCESS_TOKEN_PROD }}
