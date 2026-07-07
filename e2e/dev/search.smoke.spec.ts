@@ -1,6 +1,9 @@
 import { expect, test } from '@playwright/test';
 
-import { searchAndWaitForResults } from '../helpers';
+import {
+  clickSaveAndConfirmReviewIfPresent,
+  searchAndWaitForResults,
+} from '../helpers';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -115,7 +118,7 @@ test.describe('Search Ranking', () => {
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Close schedule editor' }).click();
-    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await clickSaveAndConfirmReviewIfPresent(page);
 
     await expect(page.getByText('Sequin Dress').first()).toBeVisible();
     await expect(page.getByRole('time').first()).toHaveText(
@@ -159,7 +162,7 @@ test.describe('Search Ranking', () => {
 
     await expect(page.getByText('sequin dress', { exact: true })).toBeVisible();
 
-    await page.getByRole('button', { name: 'Save' }).click();
+    await clickSaveAndConfirmReviewIfPresent(page);
 
     await expect(page.getByText('Green Dress').first()).toBeVisible();
   });

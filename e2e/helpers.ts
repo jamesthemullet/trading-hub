@@ -30,3 +30,33 @@ export const searchAndWaitForResults = async (
 
   await expect(resultsCount).not.toHaveText(initialCount ?? '');
 };
+
+export const clickSaveAndConfirmReviewIfPresent = async (
+  page: Page
+): Promise<void> => {
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
+
+  const reviewDialog = page
+    .getByRole('dialog')
+    .filter({ has: page.getByRole('heading', { name: 'Review changes' }) });
+
+  const hasReviewDialog = await reviewDialog
+    .waitFor({ state: 'visible', timeout: 3000 })
+    .then(() => true)
+    .catch((err: unknown) => {
+      if (
+        err instanceof Error &&
+        (err.name === 'TimeoutError' || err.message.includes('Timeout'))
+      ) {
+        return false;
+      }
+      throw err;
+    });
+
+  if (hasReviewDialog) {
+    await reviewDialog
+      .getByRole('button', { name: 'Save changes', exact: true })
+      .click();
+    await reviewDialog.waitFor({ state: 'hidden' });
+  }
+};

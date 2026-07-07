@@ -1,6 +1,9 @@
 import { expect, test } from '@playwright/test';
 
-import { searchAndWaitForResults } from '../helpers';
+import {
+  clickSaveAndConfirmReviewIfPresent,
+  searchAndWaitForResults,
+} from '../helpers';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -98,7 +101,7 @@ test.describe('Category Ranking', () => {
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'close modal' }).click();
-    await page.getByRole('button', { name: 'Save' }).click();
+    await clickSaveAndConfirmReviewIfPresent(page);
   });
 
   test('edits a ruleset', async ({ page }) => {
@@ -192,7 +195,7 @@ test.describe('Category Ranking', () => {
       page.getByRole('heading', { name: 'Blocked Products (2)' })
     ).toBeVisible();
 
-    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await clickSaveAndConfirmReviewIfPresent(page);
 
     await expect(
       page.getByText(TEST_CATEGORY_IDENTIFIER).first()
@@ -280,7 +283,7 @@ test.describe('Category Ranking', () => {
 
     await page.getByRole('button', { name: 'Close' }).click();
 
-    await page.getByRole('button', { name: 'Save' }).click();
+    await clickSaveAndConfirmReviewIfPresent(page);
 
     await expect(
       page.getByRole('heading', { name: 'Categories' })
