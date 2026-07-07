@@ -173,10 +173,12 @@ export type ProductProps = ProductType & {
   isProductNumberEnabled?: boolean;
   isSearchResult?: boolean;
   hasSupplementaryInfo?: boolean;
+  canSetBoostWeight?: boolean;
 } & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 export const Product = ({
   brand,
+  canSetBoostWeight = false,
   dispatch,
   id,
   imageUrl,
@@ -199,11 +201,15 @@ export const Product = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLockToPositionMenuOpen, setIsLockToPositionMenuOpen] =
     useState(false);
+  const [isBoostWeightMenuOpen, setIsBoostWeightMenuOpen] = useState(false);
   const [positionToLockTo, setPositionToLockTo] = useState<number>();
+  const [boostWeight, setBoostWeight] = useState(100);
+  const [boostWeightError, setBoostWeightError] = useState('');
   const [error, setError] = useState('');
   const totalPinnedProducts =
     pinnedProductsCount || /* istanbul ignore next */ 0;
   const slotPositionInputId = `slot-position-${id}`;
+  const boostWeightInputId = `boost-weight-${id}`;
   const canOpenPinPositionMenu =
     isPinnable && (!isPinned || totalPinnedProducts > 1);
   const lockActionLabelVariant = isSearchResult ? 'bodySmall' : 'bodyMedium';
@@ -255,12 +261,63 @@ export const Product = ({
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const boostWeightInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, [isLockToPositionMenuOpen]);
+
+  useEffect(() => {
+    if (boostWeightInputRef.current) {
+      boostWeightInputRef.current.focus();
+    }
+  }, [isBoostWeightMenuOpen]);
+
+  useEffect(() => {
+    if (!isMenuOpen) {
+      setIsLockToPositionMenuOpen(false);
+      setIsBoostWeightMenuOpen(false);
+    }
+  }, [isMenuOpen]);
+
+  const onBoostWeightChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const trimmedValue = value.trim();
+
+    if (!trimmedValue) {
+      setBoostWeightError('');
+      setBoostWeight(0);
+      return;
+    }
+
+    const parsed = Number(trimmedValue);
+    const isValidBoostWeight =
+      Number.isInteger(parsed) && parsed >= 1 && parsed <= 100;
+
+    setBoostWeight(parsed);
+
+    if (!isValidBoostWeight) {
+      setBoostWeightError('Please enter a whole number between 1 and 100');
+    } else {
+      setBoostWeightError('');
+    }
+  };
+
+  const confirmBoost = () => {
+    dispatch({
+      type: 'product',
+      payload: {
+        ids: [id],
+        operation: 'boost',
+        change: 'add',
+        weight: boostWeight,
+      },
+    });
+    setIsMenuOpen(false);
+    setIsBoostWeightMenuOpen(false);
+  };
 
   return (
     <div
@@ -414,19 +471,107 @@ export const Product = ({
                   <ProductMenuAction
                     icon="boost"
                     onClick={() => {
-                      dispatch({
-                        type: 'product',
-                        payload: {
-                          ids: [id],
-                          operation: 'boost',
-                          change: 'add',
-                        },
-                      });
-                      setIsMenuOpen(false);
+                      if (canSetBoostWeight) {
+                        setBoostWeight(100);
+                        setBoostWeightError('');
+                        setIsBoostWeightMenuOpen(true);
+                      } else {
+                        dispatch({
+                          type: 'product',
+                          payload: {
+                            ids: [id],
+                            operation: 'boost',
+                            change: 'add',
+                          },
+                        });
+                        setIsMenuOpen(false);
+                      }
                     }}
                   >
                     Boost to Top
                   </ProductMenuAction>
+                )}
+
+                {isBoostWeightMenuOpen && (
+                  <div
+                    className={`${styles.lockMenu} ${styles.lockMenuInline}`}
+                  >
+                    <Typography
+                      variant="bodySmall"
+                      isStrong
+                      withMargin
+                      aria-label="Boost weight heading"
+                    >
+                      Boost amount
+                    </Typography>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        // istanbul ignore else — button is disabled when boostWeight is 0 or there is an error
+                        if (!boostWeightError && boostWeight > 0) {
+                          confirmBoost();
+                        }
+                      }}
+                    >
+                      <div className={styles.boostInputWrapper}>
+                        <Input
+                          id={boostWeightInputId}
+                          label="Boost amount %"
+                          isLabelHidden
+                          ref={boostWeightInputRef}
+                          placeholder="i.e. 100"
+                          value={boostWeight}
+                          onChange={onBoostWeightChange}
+                          type="number"
+                          step={1}
+                          min={1}
+                          max={100}
+                          aria-invalid={!!boostWeightError.length}
+                        />
+                        <span
+                          className={styles.boostInputSuffix}
+                          aria-hidden="true"
+                        >
+                          %
+                        </span>
+                      </div>
+                      {boostWeightError && (
+                        <div
+                          className={styles.errorText}
+                          data-testid="Boost weight error message"
+                        >
+                          <Typography as="span" variant="bodySmall">
+                            {boostWeightError}
+                          </Typography>
+                        </div>
+                      )}
+                      <div
+                        className={styles.lockActions}
+                        data-is-search-result={isSearchResult}
+                      >
+                        <Button onClick={() => setIsBoostWeightMenuOpen(false)}>
+                          <Typography
+                            as="span"
+                            variant={lockActionLabelVariant}
+                          >
+                            Cancel
+                          </Typography>
+                        </Button>
+                        <Button
+                          theme="primary"
+                          type="submit"
+                          isDisabled={!!boostWeightError || !boostWeight}
+                        >
+                          <Typography
+                            as="span"
+                            variant={lockActionLabelVariant}
+                          >
+                            Boost {boostWeight}%
+                          </Typography>
+                        </Button>
+                      </div>
+                    </form>
+                  </div>
                 )}
 
                 {!isBuried && (

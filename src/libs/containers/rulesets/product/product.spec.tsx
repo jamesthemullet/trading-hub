@@ -96,7 +96,7 @@ describe('Product', () => {
       expect(screen.getByTestId('Pinned product')).toBeInTheDocument();
     });
 
-    it('should boost to top', () => {
+    it('should boost to top', async () => {
       const expectedCall: RuleSetActions = {
         type: 'product',
         payload: {
@@ -116,6 +116,177 @@ describe('Product', () => {
       });
 
       expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
+    });
+
+    it('should open boost weight menu when canSetBoostWeight is true', () => {
+      render(<Product {...productProps} canSetBoostWeight />);
+
+      openActionsMenu(screen);
+
+      const boostToTop = screen.getByRole('button', { name: 'Boost to Top' });
+
+      act(() => {
+        boostToTop.click();
+      });
+
+      expect(screen.getByLabelText('Boost weight heading')).toBeInTheDocument();
+    });
+
+    it('should boost with a custom weight', async () => {
+      const expectedCall: RuleSetActions = {
+        type: 'product',
+        payload: {
+          ids: ['id'],
+          change: 'add',
+          operation: 'boost',
+          weight: 75,
+        },
+      };
+      const user = userEvent.setup();
+      render(<Product {...productProps} canSetBoostWeight />);
+
+      openActionsMenu(screen);
+
+      const boostToTop = screen.getByRole('button', { name: 'Boost to Top' });
+
+      act(() => {
+        boostToTop.click();
+      });
+
+      const input = screen.getByPlaceholderText('i.e. 100');
+
+      await user.clear(input);
+      await user.type(input, '75');
+
+      const confirmButton = screen.getByRole('button', { name: 'Boost 75%' });
+
+      act(() => {
+        confirmButton.click();
+      });
+
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
+    });
+
+    it('should boost with default weight of 100', async () => {
+      const expectedCall: RuleSetActions = {
+        type: 'product',
+        payload: {
+          ids: ['id'],
+          change: 'add',
+          operation: 'boost',
+          weight: 100,
+        },
+      };
+      render(<Product {...productProps} canSetBoostWeight />);
+
+      openActionsMenu(screen);
+
+      const boostToTop = screen.getByRole('button', { name: 'Boost to Top' });
+
+      act(() => {
+        boostToTop.click();
+      });
+
+      const confirmButton = screen.getByRole('button', { name: 'Boost 100%' });
+
+      act(() => {
+        confirmButton.click();
+      });
+
+      expect(mockDispatch).toHaveBeenLastCalledWith(expectedCall);
+    });
+
+    it('should show error for out of range boost weight', async () => {
+      const user = userEvent.setup();
+      render(<Product {...productProps} canSetBoostWeight />);
+
+      openActionsMenu(screen);
+
+      const boostToTop = screen.getByRole('button', { name: 'Boost to Top' });
+
+      act(() => {
+        boostToTop.click();
+      });
+
+      const input = screen.getByPlaceholderText('i.e. 100');
+
+      await user.clear(input);
+      await user.type(input, '150');
+
+      expect(
+        screen.getByTestId('Boost weight error message')
+      ).toHaveTextContent('Please enter a whole number between 1 and 100');
+
+      expect(screen.getByRole('button', { name: 'Boost 150%' })).toBeDisabled();
+    });
+
+    it('should not dispatch when boost form is submitted with a validation error', async () => {
+      const user = userEvent.setup();
+      render(<Product {...productProps} canSetBoostWeight />);
+
+      openActionsMenu(screen);
+
+      act(() => {
+        screen.getByRole('button', { name: 'Boost to Top' }).click();
+      });
+
+      const input = screen.getByPlaceholderText('i.e. 100');
+      await user.clear(input);
+      await user.type(input, '150');
+
+      await user.keyboard('{Enter}');
+
+      expect(mockDispatch).not.toHaveBeenCalled();
+    });
+
+    it('should cancel the boost weight menu', () => {
+      render(<Product {...productProps} canSetBoostWeight />);
+
+      openActionsMenu(screen);
+
+      const boostToTop = screen.getByRole('button', { name: 'Boost to Top' });
+
+      act(() => {
+        boostToTop.click();
+      });
+
+      expect(screen.getByLabelText('Boost weight heading')).toBeInTheDocument();
+
+      const cancelButton = screen.getByRole('button', { name: 'Cancel' });
+
+      act(() => {
+        cancelButton.click();
+      });
+
+      expect(
+        screen.queryByLabelText('Boost weight heading')
+      ).not.toBeInTheDocument();
+    });
+
+    it('should reject decimal values', async () => {
+      const user = userEvent.setup();
+      render(<Product {...productProps} canSetBoostWeight />);
+
+      openActionsMenu(screen);
+
+      const boostToTop = screen.getByRole('button', { name: 'Boost to Top' });
+
+      act(() => {
+        boostToTop.click();
+      });
+
+      const input = screen.getByPlaceholderText('i.e. 100');
+
+      await user.clear(input);
+      await user.type(input, '50.5');
+
+      expect(
+        screen.getByTestId('Boost weight error message')
+      ).toHaveTextContent('Please enter a whole number between 1 and 100');
+
+      expect(
+        screen.getByRole('button', { name: 'Boost 50.5%' })
+      ).toBeDisabled();
     });
 
     it('should block', () => {

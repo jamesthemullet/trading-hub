@@ -129,6 +129,7 @@ test.describe('global rulesets', () => {
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Boost to Top' }).click();
+    await page.getByRole('button', { name: 'Boost 100%' }).click();
 
     await getProductSearchResultPosition(page, 3)
       .getByRole('button', { name: 'Open menu' })

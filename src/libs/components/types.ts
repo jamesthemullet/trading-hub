@@ -33,6 +33,7 @@ type ProductPayload = {
   change: Change;
   ids: string[];
   position?: number;
+  weight?: number;
 };
 
 type MerchandisingNumericAttributePayload = {

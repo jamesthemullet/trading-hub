@@ -8,7 +8,7 @@ import styles from './visual-editor.module.css';
 
 type Props = {
   dispatch: Dispatch<RuleSetActions>;
-
+  canSetBoostWeight?: boolean;
   onSelectProduct: ({
     id,
     isSelected,
@@ -24,7 +24,7 @@ type Props = {
 export const VisualEditor = ({
   products,
   dispatch,
-
+  canSetBoostWeight = false,
   onSelectProduct,
   selectedProducts,
   isSelectionDisabled,
@@ -47,6 +47,7 @@ export const VisualEditor = ({
             isSelectionDisabled={isSelectionDisabled}
             pinnedProductsCount={pinnedProductsCount}
             hasSupplementaryInfo
+            canSetBoostWeight={canSetBoostWeight}
           />
         </div>
       ))}

@@ -164,6 +164,7 @@ export const ProductSearchAll = ({
               isSearchResult
               isSelected={isSelected}
               hasSupplementaryInfo
+              canSetBoostWeight={rulesetType === 'global'}
             />
           );
         })}

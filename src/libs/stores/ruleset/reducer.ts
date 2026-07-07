@@ -27,7 +27,10 @@ export const rulesetReducer = (
         (product) => !payload.ids.includes(product.id)
       );
       if (payload.change === 'add') {
-        const products = payload.ids.map((id) => ({ id, weight: 100 }));
+        const products = payload.ids.map((id) => ({
+          id,
+          weight: payload.weight ?? 100,
+        }));
 
         return {
           ...state,
