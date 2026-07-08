@@ -139,6 +139,8 @@ test.describe('Global Ranking', () => {
       .getByRole('button', { name: 'Open menu' })
       .click();
     await page.getByRole('button', { name: 'Boost to Top' }).click();
+    await page.getByLabel('Boost amount %').fill('95');
+    await page.getByRole('button', { name: 'Boost 95%' }).click();
 
     await expect(page.getByTestId('Position 2')).toBeVisible();
     await page
