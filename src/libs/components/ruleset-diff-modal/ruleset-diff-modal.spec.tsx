@@ -136,6 +136,41 @@ describe('RulesetDiffModal', () => {
     expect(screen.getByText('No changes detected.')).toBeVisible();
   });
 
+  it('should show the global warning text when showGlobalWarning is true', () => {
+    renderWithProviders(
+      <RulesetDiffModal
+        opened
+        diffItems={mockDiffItems}
+        showGlobalWarning
+        onConfirm={jest.fn()}
+        onCancel={jest.fn()}
+      />
+    );
+
+    expect(
+      screen.getByText(
+        /This action will apply live changes on the M&S website and app/
+      )
+    ).toBeVisible();
+  });
+
+  it('should not show the global warning text by default', () => {
+    renderWithProviders(
+      <RulesetDiffModal
+        opened
+        diffItems={mockDiffItems}
+        onConfirm={jest.fn()}
+        onCancel={jest.fn()}
+      />
+    );
+
+    expect(
+      screen.queryByText(
+        /This action will apply live changes on the M&S website and app/
+      )
+    ).not.toBeInTheDocument();
+  });
+
   it('should call onConfirm when "Save changes" is clicked', async () => {
     const user = userEvent.setup();
     const mockConfirm = jest.fn();

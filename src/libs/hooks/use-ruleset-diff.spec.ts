@@ -148,7 +148,7 @@ describe('useRulesetDiff', () => {
   });
 
   describe('boosted products', () => {
-    it('should detect added boosted product', () => {
+    it('should detect added boosted product at default weight', () => {
       const current: MerchandisingRuleSet = {
         ...emptyRules,
         rules: {
@@ -167,7 +167,7 @@ describe('useRulesetDiff', () => {
       });
     });
 
-    it('should detect removed boosted product', () => {
+    it('should detect removed boosted product at default weight', () => {
       const original: MerchandisingRuleSet = {
         ...emptyRules,
         rules: {
@@ -184,6 +184,88 @@ describe('useRulesetDiff', () => {
         label: 'Boosted product',
         description: 'prod3',
       });
+    });
+
+    it('should show percentage for added boosted product with non-default weight', () => {
+      const current: MerchandisingRuleSet = {
+        ...emptyRules,
+        rules: {
+          ...emptyRules.rules,
+          boosts: {
+            ...emptyRules.rules.boosts,
+            product: [{ id: 'prod3', weight: 50 }],
+          },
+        },
+      };
+      const result = useRulesetDiff(emptyRules, current);
+      expect(result).toContainEqual({
+        type: 'added',
+        label: 'Boosted product',
+        description: 'prod3 (50%)',
+      });
+    });
+
+    it('should show percentage for removed boosted product with non-default weight', () => {
+      const original: MerchandisingRuleSet = {
+        ...emptyRules,
+        rules: {
+          ...emptyRules.rules,
+          boosts: {
+            ...emptyRules.rules.boosts,
+            product: [{ id: 'prod3', weight: 50 }],
+          },
+        },
+      };
+      const result = useRulesetDiff(original, emptyRules);
+      expect(result).toContainEqual({
+        type: 'removed',
+        label: 'Boosted product',
+        description: 'prod3 (50%)',
+      });
+    });
+
+    it('should detect changed boost weight for a product', () => {
+      const original: MerchandisingRuleSet = {
+        ...emptyRules,
+        rules: {
+          ...emptyRules.rules,
+          boosts: {
+            ...emptyRules.rules.boosts,
+            product: [{ id: 'prod3', weight: 100 }],
+          },
+        },
+      };
+      const current: MerchandisingRuleSet = {
+        ...emptyRules,
+        rules: {
+          ...emptyRules.rules,
+          boosts: {
+            ...emptyRules.rules.boosts,
+            product: [{ id: 'prod3', weight: 50 }],
+          },
+        },
+      };
+      const result = useRulesetDiff(original, current);
+      expect(result).toContainEqual({
+        type: 'changed',
+        label: 'Boosted product',
+        description: 'prod3 (100% → 50%)',
+      });
+    });
+
+    it('should not report unchanged boosted product weight', () => {
+      const rulesetWithBoost: MerchandisingRuleSet = {
+        ...emptyRules,
+        rules: {
+          ...emptyRules.rules,
+          boosts: {
+            ...emptyRules.rules.boosts,
+            product: [{ id: 'prod3', weight: 50 }],
+          },
+        },
+      };
+      const result = useRulesetDiff(rulesetWithBoost, rulesetWithBoost);
+      expect(result).toEqual([]);
     });
   });
 

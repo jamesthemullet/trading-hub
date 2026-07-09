@@ -392,6 +392,7 @@ export const Ruleset = ({
       <RulesetDiffModal
         opened={isPendingConfirmation}
         diffItems={diffItems}
+        showGlobalWarning={rulesetType === 'global'}
         onConfirm={() => {
           onConfirmSave();
           setHasChanges(false);

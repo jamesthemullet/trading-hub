@@ -1,13 +1,10 @@
 import type { ReactElement } from 'react';
-import { useState } from 'react';
-import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ROUTES } from '@/libs/constants/routes';
-import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { useGlobalHistory } from '@/libs/hooks/global/history/use-global-history';
 import { useAccess } from '@/libs/hooks/use-access';
@@ -23,7 +20,6 @@ type PageProps = {
 };
 
 const Page = ({ id }: PageProps): ReactElement => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const isHistoryView = router.query.history === 'true';
   const currentPage = Number(router.query.currentPage) || 1;
@@ -52,10 +48,6 @@ const Page = ({ id }: PageProps): ReactElement => {
     currentData: { data: globalRuleSet, isLoading: isRuleSetLoading },
   });
 
-  const [ruleSetIdToSave, setRuleSetIdToSave] = useState<string>('');
-  const [ruleSetToSave, setRuleSetToSave] =
-    useState<MerchandisingRuleSet>(globalRuleSet);
-
   const { saveGlobalRuleset, error } = useGlobalRuleSetUpdate();
 
   useTrackRecentlyViewed({
@@ -65,30 +57,11 @@ const Page = ({ id }: PageProps): ReactElement => {
     type: 'global',
   });
 
-  const onCloseModal = () => setIsModalOpen(false);
-
-  const saveRuleSet = async () => {
-    const response = await saveGlobalRuleset({
-      ruleSetId: ruleSetIdToSave,
-      ruleSet: ruleSetToSave,
-    });
-
-    // istanbul ignore else
-    if (response.status === 'success') {
-      router.push('/global');
-    }
-  };
-
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
   }
-
-  const handleModalConfirm = async () => {
-    setIsModalOpen(false);
-    saveRuleSet();
-  };
 
   return (
     <>
@@ -110,16 +83,20 @@ const Page = ({ id }: PageProps): ReactElement => {
         rulesetData && (
           <Ruleset
             isEnabled={rulesetData.isEnabled}
-            onSave={({
+            originalRuleset={isHistoryView ? undefined : globalRuleSet}
+            onSave={async ({
               ruleSetId,
               ruleSet,
             }: {
               ruleSetId: string;
               ruleSet: MerchandisingRuleSet;
             }) => {
-              setIsModalOpen(true);
-              setRuleSetIdToSave(ruleSetId);
-              setRuleSetToSave(ruleSet);
+              const response = await saveGlobalRuleset({ ruleSetId, ruleSet });
+
+              // istanbul ignore else
+              if (response.status === 'success') {
+                router.push('/global');
+              }
             }}
             onCancel={() => router.push('/global')}
             rulesetMerchandisingRules={rulesetData.rules}
@@ -132,21 +109,6 @@ const Page = ({ id }: PageProps): ReactElement => {
           />
         )
       )}
-
-      <Modal.Root
-        centered
-        opened={isModalOpen}
-        onClose={onCloseModal}
-        padding={10}
-      >
-        <Modal.Overlay blur={3} />
-        <Modal.Content>
-          <ConfirmationModal
-            onCloseModal={onCloseModal}
-            handleModalConfirm={handleModalConfirm}
-          />
-        </Modal.Content>
-      </Modal.Root>
     </>
   );
 };

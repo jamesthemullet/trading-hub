@@ -14,6 +14,7 @@ type RulesetDiffModalProps = {
   diffItems: DiffItem[];
   onConfirm: () => void;
   onCancel: () => void;
+  showGlobalWarning?: boolean;
 };
 
 export const RulesetDiffModal = ({
@@ -21,6 +22,7 @@ export const RulesetDiffModal = ({
   diffItems,
   onConfirm,
   onCancel,
+  showGlobalWarning = false,
 }: RulesetDiffModalProps) => {
   const titleId = useId();
 
@@ -43,7 +45,7 @@ export const RulesetDiffModal = ({
           <Divider
             color="var(--color-role-outline-outline-variant)"
             mx={-20}
-            mb="md"
+            mb="sm"
           />
 
           {diffItems.length === 0 ? (
@@ -90,7 +92,15 @@ export const RulesetDiffModal = ({
           <Divider
             color="var(--color-surface-dark-on-surface-dark-container)"
             mx={-20}
+            mb="sm"
           />
+
+          {showGlobalWarning && (
+            <Typography variant="bodySmall">
+              This action will apply live changes on the M&S website and app. Do
+              you want to proceed?
+            </Typography>
+          )}
 
           <div className={styles.buttons}>
             <Button onClick={onCancel} theme="secondary" isInline>

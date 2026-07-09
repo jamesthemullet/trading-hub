@@ -2,6 +2,7 @@ import type {
   MerchandisingAlphanumericBoostBury,
   MerchandisingIncludeExclude,
   MerchandisingNumericBoostBury,
+  MerchandisingProductBoostBury,
   MerchandisingRuleSet,
 } from '@/libs/api';
 
@@ -83,6 +84,46 @@ const diffPinnedProducts = (
     .map((id) => createDiffItem('removed', label, id));
 
   return [...additionsAndMoves, ...removals];
+};
+
+const diffProductBoosts = (
+  original: MerchandisingProductBoostBury[],
+  current: MerchandisingProductBoostBury[]
+): DiffItem[] => {
+  const label = 'Boosted product';
+  const formatWeight = (weight: number) =>
+    weight !== 100 ? ` (${weight}%)` : '';
+
+  const additionsAndChanges = current.flatMap<DiffItem>((curr) => {
+    const orig = original.find((o) => o.id === curr.id);
+    if (!orig) {
+      return [
+        createDiffItem(
+          'added',
+          label,
+          `${curr.id}${formatWeight(curr.weight)}`
+        ),
+      ];
+    }
+    if (orig.weight !== curr.weight) {
+      return [
+        createDiffItem(
+          'changed',
+          label,
+          `${curr.id} (${orig.weight}% → ${curr.weight}%)`
+        ),
+      ];
+    }
+    return [];
+  });
+
+  const removals = original
+    .filter((orig) => !current.some((c) => c.id === orig.id))
+    .map((orig) =>
+      createDiffItem('removed', label, `${orig.id}${formatWeight(orig.weight)}`)
+    );
+
+  return [...additionsAndChanges, ...removals];
 };
 
 const diffWeightedAlphanumericAttributes = (
@@ -234,11 +275,7 @@ export const useRulesetDiff = (
       currRules.blockedProducts.map((product) => product.id),
       'Blocked product'
     ),
-    ...diffProductIds(
-      origRules.boosts.product.map((product) => product.id),
-      currRules.boosts.product.map((product) => product.id),
-      'Boosted product'
-    ),
+    ...diffProductBoosts(origRules.boosts.product, currRules.boosts.product),
     ...diffProductIds(
       origRules.buries.product.map((product) => product.id),
       currRules.buries.product.map((product) => product.id),

@@ -147,12 +147,18 @@ describe('Index', () => {
     await waitFor(() => {
       expect(
         screen.getByRole('heading', {
-          name: 'Apply global changes',
+          name: 'Review changes',
         })
       ).toBeVisible();
     });
 
-    await user.click(screen.getByRole('button', { name: 'Apply action' }));
+    expect(
+      screen.getByText(
+        /This action will apply live changes on the M&S website and app/
+      )
+    ).toBeVisible();
+
+    await user.click(screen.getByRole('button', { name: 'Save changes' }));
 
     expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(expectedRuleSet);
     expect(mockRouter.push).toHaveBeenCalledWith('/global');
@@ -200,12 +206,12 @@ describe('Index', () => {
     await waitFor(() => {
       expect(
         screen.getByRole('heading', {
-          name: 'Apply global changes',
+          name: 'Review changes',
         })
       ).toBeVisible();
     });
 
-    await user.click(screen.getByRole('button', { name: 'Apply action' }));
+    await user.click(screen.getByRole('button', { name: 'Save changes' }));
 
     expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(expectedRuleSet);
 
@@ -225,36 +231,6 @@ describe('Index', () => {
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
     expect(mockRouter.push).toHaveBeenCalledWith('/global');
-  });
-
-  it('should close the confirmation modal when cancel button on modal clicked', async () => {
-    jest.mocked(useGlobalRuleSetDetail).mockImplementation(() => {
-      return {
-        globalRuleSet: mockRuleData,
-        isLoading: false,
-        error: '',
-      };
-    });
-
-    const user = userEvent.setup({ delay: null });
-
-    renderWithProviders(<Page id={ruleSetId} />);
-
-    await user.click(screen.getByRole('button', { name: 'Save' }));
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('heading', {
-          name: 'Apply global changes',
-        })
-      ).toBeVisible();
-    });
-
-    await user.click(
-      screen.getByRole('button', { name: 'Close confirmation modal' })
-    );
-
-    expect(mockUpdateGlobalRuleSet).not.toHaveBeenCalled();
   });
 
   it('loads the mock data', async () => {
