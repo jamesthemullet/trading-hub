@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 
 import type { MerchandisingRuleSet } from '@/libs/api';
@@ -99,7 +100,7 @@ export const FacetsList = ({
   onCancel,
   onSave,
   isWriteEnabled,
-}: FacetsListProps) => {
+}: FacetsListProps): ReactElement => {
   const { getStringParam } = useTypeSafeQuery();
   const rulesetId = getStringParam('id');
 
@@ -165,7 +166,7 @@ export const FacetsList = ({
 
   const [facetListState, dispatchFacetList] = useReducer(FacetListReducer, {
     isDraftLoaded: false,
-    showPreview: false,
+    shouldShowPreview: false,
     previewValue: categoriesInfo?.[0].id || searchTerms?.[0],
     selectedPreviewCountryCode: 'UK',
     selectedCategoriesInfo: categoriesInfo || [],
@@ -175,7 +176,7 @@ export const FacetsList = ({
 
   const {
     isDraftLoaded,
-    showPreview,
+    shouldShowPreview,
     previewValue,
     selectedPreviewCountryCode,
     selectedCategoriesInfo,
@@ -406,7 +407,7 @@ export const FacetsList = ({
 
   return (
     <>
-      {showPreview && (
+      {shouldShowPreview && (
         <Preview
           onClose={() => dispatchFacetList({ type: 'togglePreview' })}
           categoryId={

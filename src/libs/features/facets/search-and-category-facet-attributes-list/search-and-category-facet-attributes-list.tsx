@@ -1,4 +1,5 @@
-import { type ActionDispatch, useCallback, useMemo } from 'react';
+import type { ActionDispatch, ReactElement } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import type { MerchandisingAttributeValuesResponse } from '@/libs/api/generated/open-api';
 import { CombinedDropdown, DropdownVariant } from '@/libs/components';
@@ -72,7 +73,7 @@ export const SearchAndCategoryFacetAttributesList = ({
   dispatch,
   searchQuery,
   isWriteEnabled,
-}: SearchAndCategoryFacetAttributesListProps) => {
+}: SearchAndCategoryFacetAttributesListProps): ReactElement => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -150,7 +151,7 @@ export const SearchAndCategoryFacetAttributesList = ({
           order = row.order;
           localOrder = localOrders[displayValue] ?? order;
         }
-        const disableDrag = !isWriteEnabled || filteredRows.length <= 1;
+        const shouldDisableDrag = !isWriteEnabled || filteredRows.length <= 1;
 
         const renderRow = (sortableProps?: SortableRowRenderArgs) => (
           <SearchCategoryFacetAttributeValuesTableRow
@@ -214,7 +215,7 @@ export const SearchAndCategoryFacetAttributesList = ({
             <div className={facetPanelStyles.tableCol}>
               {displayType === 'included' && order !== undefined && (
                 <DragHandleButton
-                  disabled={disableDrag}
+                  disabled={shouldDisableDrag}
                   displayName={displayValue}
                   setActivatorNodeRef={sortableProps?.setActivatorNodeRef}
                   listeners={sortableProps?.listeners ?? {}}
@@ -226,7 +227,11 @@ export const SearchAndCategoryFacetAttributesList = ({
 
         if (displayType === 'included') {
           return (
-            <SortableRow key={rowKey} id={displayValue} disabled={disableDrag}>
+            <SortableRow
+              key={rowKey}
+              id={displayValue}
+              disabled={shouldDisableDrag}
+            >
               {(sortableProps) => renderRow(sortableProps)}
             </SortableRow>
           );

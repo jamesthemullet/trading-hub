@@ -1,4 +1,4 @@
-import type { Dispatch } from 'react';
+import type { Dispatch, ReactElement } from 'react';
 
 import type { MerchandisingProduct as ProductType } from '@/libs/api';
 import type { RuleSetActions } from '@/libs/components/types';
@@ -28,7 +28,7 @@ export const VisualEditor = ({
   onSelectProduct,
   selectedProducts,
   isSelectionDisabled,
-}: Props) => {
+}: Props): ReactElement => {
   const pinnedProductsCount = products.filter(
     (product) => product.metadata.isPinned
   ).length;

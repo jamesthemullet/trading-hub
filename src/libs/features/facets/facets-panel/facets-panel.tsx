@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import {
   useCallback,
   useEffect,
@@ -56,7 +57,7 @@ import { FacetRow } from './facet-row';
 import styles from './facets-panel.module.css';
 
 type FacetsPanelProps = {
-  displayRowOrderControls?: boolean;
+  shouldDisplayRowOrderControls?: boolean;
   title: string;
   countryCode: MerchandisingCountryCode;
   facetsData: MerchandisingReturnedFacet[];
@@ -88,7 +89,7 @@ export const FacetsPanel = ({
   onSave,
   onCancel,
   onFacetDataChange,
-}: FacetsPanelProps) => {
+}: FacetsPanelProps): ReactElement => {
   const { getStringParam } = useTypeSafeQuery();
 
   const [facetPanelLocalState, dispatch] = useReducer(facetsPanelReducer, {

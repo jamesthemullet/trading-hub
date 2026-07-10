@@ -1,12 +1,13 @@
+import type { ReactElement } from 'react';
 import { useEffect } from 'react';
 
 import { signIn, useSession } from 'next-auth/react';
 
 export const LoginCheck = ({
-  autoLogin: autoLoginEnabled = false,
+  shouldAutoLogin: autoLoginEnabled = false,
 }: {
-  autoLogin?: boolean;
-}) => {
+  shouldAutoLogin?: boolean;
+}): ReactElement => {
   const { data: session, status, update } = useSession();
 
   const login = async () => {

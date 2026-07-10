@@ -10,7 +10,7 @@ type AttributeToMergeGroupMap = Record<string, MergeGroup>;
 
 export const getAttributeToMergeGroupMap = (
   merged: NonNullable<MerchandisingReturnedGlobalFacet['merged']>
-) => {
+): AttributeToMergeGroupMap => {
   return merged.reduce<AttributeToMergeGroupMap>((acc, merged) => {
     const mergedValues = merged.mergedValues ?? [];
     const displayValue = merged.displayValue ?? '';

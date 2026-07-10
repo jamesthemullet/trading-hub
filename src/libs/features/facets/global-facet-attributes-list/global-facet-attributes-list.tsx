@@ -1,4 +1,9 @@
-import type { ActionDispatch, Dispatch, SetStateAction } from 'react';
+import type {
+  ActionDispatch,
+  Dispatch,
+  ReactElement,
+  SetStateAction,
+} from 'react';
 import { useCallback, useMemo } from 'react';
 
 import type {
@@ -79,7 +84,7 @@ export const GlobalFacetAttributesList = ({
   isAwaitingUpdate,
   setIsAwaitingUpdate,
   facet,
-}: GlobalFacetAttributesListProps) => {
+}: GlobalFacetAttributesListProps): ReactElement => {
   const initialOrders = useMemo(
     () =>
       Object.fromEntries(

@@ -1,6 +1,11 @@
 import { isValidRulesetType } from '@/libs/utils/ruleset-type';
 
 import type { RulesetType } from './use-recently-viewed-rulesets';
+import {
+  isRecord,
+  readLocalStorage,
+  writeLocalStorage,
+} from './utils/local-storage';
 
 const STORAGE_KEY = 'favourite-rulesets';
 
@@ -10,9 +15,6 @@ export type FavouriteRuleset = {
   url: string;
   type: RulesetType;
 };
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null;
 
 const isFavouriteRuleset = (item: unknown): item is FavouriteRuleset => {
   if (!isRecord(item)) return false;
@@ -27,38 +29,17 @@ const isFavouriteRuleset = (item: unknown): item is FavouriteRuleset => {
   );
 };
 
-export const getStoredFavourites = (): FavouriteRuleset[] => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-
-    return parsed.filter(isFavouriteRuleset);
-  } catch {
-    return [];
-  }
-};
+export const getStoredFavourites = (): FavouriteRuleset[] =>
+  readLocalStorage(STORAGE_KEY, isFavouriteRuleset);
 
 export const addFavourite = (item: FavouriteRuleset): boolean => {
-  try {
-    const existing = getStoredFavourites().filter((r) => r.id !== item.id);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([...existing, item]));
-    return true;
-  } catch {
-    return false;
-  }
+  const existing = getStoredFavourites().filter((r) => r.id !== item.id);
+  return writeLocalStorage(STORAGE_KEY, [...existing, item]);
 };
 
 export const removeFavourite = (id: string): boolean => {
-  try {
-    const updated = getStoredFavourites().filter((r) => r.id !== id);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    return true;
-  } catch {
-    return false;
-  }
+  const updated = getStoredFavourites().filter((r) => r.id !== id);
+  return writeLocalStorage(STORAGE_KEY, updated);
 };
 
 export const toggleFavourite = (item: FavouriteRuleset): boolean => {

@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 import { Modal } from '@mantine/core';
 
@@ -123,10 +124,10 @@ export const Preview = ({
   onClose,
   previewTitle,
   searchTerm,
-}: Props) => {
-  const [withRules, setWithRules] = useState(true);
+}: Props): ReactElement => {
+  const [hasRules, setHasRules] = useState(true);
   const [rules, setRules] = useState(merchandisingRules);
-  const [showAllFacets, setShowAllFacets] = useState(false);
+  const [shouldShowAllFacets, setShouldShowAllFacets] = useState(false);
   const [openFacetId, setOpenFacetId] = useState('');
 
   const emptyRules: MerchandisingRules = {
@@ -152,7 +153,7 @@ export const Preview = ({
   });
 
   const toggleView = (withMerchandisingRules: boolean) => {
-    setWithRules(withMerchandisingRules);
+    setHasRules(withMerchandisingRules);
     setRules(withMerchandisingRules ? merchandisingRules : emptyRules);
     setFacetConfigRules(withMerchandisingRules ? facetConfig : []);
   };
@@ -185,7 +186,7 @@ export const Preview = ({
                   <CombinedDropdown
                     variant={DropdownVariant.Generic}
                     width={220}
-                    label={`${withRules ? 'with new rule change' : 'current state'}`}
+                    label={`${hasRules ? 'with new rule change' : 'current state'}`}
                     ariaLabel="Preview type selector"
                   >
                     <Button
@@ -195,7 +196,7 @@ export const Preview = ({
                         toggleView(true);
                       }}
                       role="menuitemradio"
-                      aria-checked={withRules}
+                      aria-checked={hasRules}
                     >
                       <Typography variant="bodySmall" align="center">
                         with new rule change
@@ -208,7 +209,7 @@ export const Preview = ({
                         toggleView(false);
                       }}
                       role="menuitemradio"
-                      aria-checked={!withRules}
+                      aria-checked={!hasRules}
                     >
                       <Typography variant="bodySmall" align="center">
                         current state
@@ -223,7 +224,7 @@ export const Preview = ({
               <div className={styles.facetRowWrapper}>
                 <div className={styles.facetContainer}>
                   {data.facets
-                    .slice(0, showAllFacets ? data.facets.length : 5)
+                    .slice(0, shouldShowAllFacets ? data.facets.length : 5)
                     .map((facet: MerchandisingFacet) => (
                       <FacetInfo
                         key={facet.id}
@@ -241,7 +242,7 @@ export const Preview = ({
                     className={styles.showAllButton}
                     appearance="plain"
                     type="button"
-                    onClick={() => setShowAllFacets(!showAllFacets)}
+                    onClick={() => setShouldShowAllFacets(!shouldShowAllFacets)}
                   >
                     <Image
                       src="https://static.marksandspencer.com/icons/svgs/FilterSwitch-v2.svg"
@@ -250,7 +251,7 @@ export const Preview = ({
                       height={32}
                     />
                     <Typography as="span" isStrong>
-                      {showAllFacets ? 'Fewer' : 'All'} Filters
+                      {shouldShowAllFacets ? 'Fewer' : 'All'} Filters
                     </Typography>
                   </Button>
                 )}

@@ -1,10 +1,5 @@
-import {
-  type ChangeEvent,
-  useCallback,
-  useEffect,
-  useReducer,
-  useState,
-} from 'react';
+import type { ChangeEvent, ReactElement } from 'react';
+import { useCallback, useEffect, useReducer, useState } from 'react';
 import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
@@ -54,13 +49,13 @@ export const GlobalFacetAttributesPageLayout = ({
   searchQuery,
   onSearchChange,
   isWriteEnabled,
-}: PageLayout) => {
+}: PageLayout): ReactElement => {
   const router = useRouter();
 
-  const { stickyBarEnabled, stickyBarVariant } = useStickyBarFlag();
-  const isVariantA = stickyBarEnabled && stickyBarVariant === 'variant-a';
-  const isVariantB = stickyBarEnabled && stickyBarVariant === 'variant-b';
-  const showPinButton = isVariantA || isVariantB;
+  const { isStickyBarEnabled, stickyBarVariant } = useStickyBarFlag();
+  const isVariantA = isStickyBarEnabled && stickyBarVariant === 'variant-a';
+  const isVariantB = isStickyBarEnabled && stickyBarVariant === 'variant-b';
+  const shouldShowPinButton = isVariantA || isVariantB;
   const [isPinned, setIsPinned] = useState(false);
 
   // reducer
@@ -292,7 +287,7 @@ export const GlobalFacetAttributesPageLayout = ({
           onMergeClick={handleMerge}
           isWriteEnabled={isWriteEnabled}
           checkedRows={checkedRows.length}
-          showPinButton={showPinButton && !(isVariantB && isPinned)}
+          showPinButton={shouldShowPinButton && !(isVariantB && isPinned)}
           isPinned={isPinned}
           onTogglePin={() => setIsPinned((prev) => !prev)}
         />

@@ -26,7 +26,7 @@ describe('Login check', () => {
       update: jest.fn(),
     });
 
-    renderWithProviders(<LoginCheck autoLogin />);
+    renderWithProviders(<LoginCheck shouldAutoLogin />);
 
     expect(signIn).toHaveBeenCalledWith('azure-ad');
   });

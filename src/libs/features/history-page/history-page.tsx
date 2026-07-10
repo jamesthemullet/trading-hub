@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
 import { AccessDeny, Button, ErrorMessage, Heading } from '@/libs/components';
@@ -53,7 +54,7 @@ export const HistoryPage = ({
   history,
   isLoading,
   error,
-}: HistoryPageProps) => {
+}: HistoryPageProps): ReactElement => {
   const { hasReadAccess, requiredReadRole } = useAccess(accessType);
   const router = useRouter();
   const { facets: globalFacets } = useGlobalFacetsList({

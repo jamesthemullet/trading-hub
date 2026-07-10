@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, ReactElement } from 'react';
 
 import { Button, Search } from '@/libs/components';
 import { Typography } from '@/libs/components/typography/typography';
@@ -29,7 +29,7 @@ export const GlobalFacetAttributesCompactBar = ({
   checkedRows,
   isPinned,
   onTogglePin,
-}: CompactBarProps) => (
+}: CompactBarProps): ReactElement => (
   <div className={styles.bar}>
     <Button
       className={styles.mergeButton}

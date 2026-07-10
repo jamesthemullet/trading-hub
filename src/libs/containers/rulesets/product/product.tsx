@@ -705,10 +705,7 @@ export const MissingProduct = ({
   id,
   index,
   isProductNumberEnabled,
-  isPinned,
-  isBoosted,
-  isBuried,
-  isBlocked,
+  changeType,
   onSelectProduct,
   isSelected,
   isSelectionDisabled,
@@ -726,17 +723,21 @@ export const MissingProduct = ({
   isSelected: boolean;
   isSelectionDisabled: boolean;
   isProductNumberEnabled?: boolean;
-  isPinned?: boolean;
-  isBoosted?: boolean;
-  isBuried?: boolean;
-  isBlocked?: boolean;
+  changeType?: 'pin' | 'boost' | 'bury' | 'block';
 } & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
+  const isPinned = changeType === 'pin';
+  const isBoosted = changeType === 'boost';
+  const isBuried = changeType === 'bury';
+  const isBlocked = changeType === 'block';
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const clearChanges = () => {
+
+  const handleRemove = (operation: 'pin' | 'boost' | 'bury' | 'block') => {
     dispatch({
       type: 'product',
-      payload: { ids: [id], operation: 'pin', change: 'remove' },
+      payload: { ids: [id], operation, change: 'remove' },
     });
+    setIsMenuOpen(false);
   };
 
   return (
@@ -816,24 +817,17 @@ export const MissingProduct = ({
               </Typography>
             </div>
             {isPinned && (
-              <ProductMenuAction icon="restore" onClick={() => clearChanges()}>
+              <ProductMenuAction
+                icon="restore"
+                onClick={() => handleRemove('pin')}
+              >
                 Restore
               </ProductMenuAction>
             )}
             {isBoosted && (
               <ProductMenuAction
                 icon="restore"
-                onClick={() => {
-                  dispatch({
-                    type: 'product',
-                    payload: {
-                      ids: [id],
-                      operation: 'boost',
-                      change: 'remove',
-                    },
-                  });
-                  setIsMenuOpen(false);
-                }}
+                onClick={() => handleRemove('boost')}
               >
                 Unboost
               </ProductMenuAction>
@@ -841,17 +835,7 @@ export const MissingProduct = ({
             {isBuried && (
               <ProductMenuAction
                 icon="restore"
-                onClick={() => {
-                  dispatch({
-                    type: 'product',
-                    payload: {
-                      ids: [id],
-                      operation: 'bury',
-                      change: 'remove',
-                    },
-                  });
-                  setIsMenuOpen(false);
-                }}
+                onClick={() => handleRemove('bury')}
               >
                 Unbury
               </ProductMenuAction>
@@ -859,17 +843,7 @@ export const MissingProduct = ({
             {isBlocked && (
               <ProductMenuAction
                 icon="restore"
-                onClick={() => {
-                  dispatch({
-                    type: 'product',
-                    payload: {
-                      ids: [id],
-                      operation: 'block',
-                      change: 'remove',
-                    },
-                  });
-                  setIsMenuOpen(false);
-                }}
+                onClick={() => handleRemove('block')}
               >
                 Restore
               </ProductMenuAction>

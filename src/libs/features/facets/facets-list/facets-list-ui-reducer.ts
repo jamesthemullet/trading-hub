@@ -4,7 +4,7 @@ type PreviewCountryCode = 'UK' | 'IE';
 
 export type FacetListState = {
   isDraftLoaded: boolean;
-  showPreview: boolean;
+  shouldShowPreview: boolean;
   previewValue: string | undefined;
   selectedPreviewCountryCode: PreviewCountryCode;
   selectedCategoriesInfo: CategoryInfo[];
@@ -33,7 +33,7 @@ export const FacetListReducer = (
     case 'setDraftLoaded':
       return { ...state, isDraftLoaded: true };
     case 'togglePreview':
-      return { ...state, showPreview: !state.showPreview };
+      return { ...state, shouldShowPreview: !state.shouldShowPreview };
     case 'setPreviewValue':
       return { ...state, previewValue: action.payload };
     case 'setPreviewCountryCode':

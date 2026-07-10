@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useEffect, useReducer, useState } from 'react';
 
 import type {
@@ -73,6 +74,7 @@ type Props = {
   isEditMode: boolean;
   editData: AttributeEdit | null;
 };
+
 export const AddAttribute = ({
   onCancel,
   onSelect,
@@ -80,7 +82,7 @@ export const AddAttribute = ({
   alphanumericAttributes,
   isEditMode,
   editData,
-}: Props) => {
+}: Props): ReactElement => {
   const [numericSearchValue, setNumericSearchValue] = useState('');
   const [alphanumericSearchValue, setAlphanumericSearchValue] = useState('');
   const [alphanumericFilterValue, setAlphanumericFilterValue] = useState('');

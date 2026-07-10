@@ -1,5 +1,11 @@
 import { isValidRulesetType } from '@/libs/utils/ruleset-type';
 
+import {
+  isRecord,
+  readLocalStorage,
+  writeLocalStorage,
+} from './utils/local-storage';
+
 const STORAGE_KEY = 'recently-viewed-rulesets';
 export const MAX_RECENTLY_VIEWED = 10;
 
@@ -12,9 +18,6 @@ export type RecentlyViewedRuleset = {
   type: RulesetType;
   viewedAt: number;
 };
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null;
 
 const isRecentlyViewedRuleset = (
   item: unknown
@@ -32,26 +35,11 @@ const isRecentlyViewedRuleset = (
   );
 };
 
-export const getStoredRecentlyViewed = (): RecentlyViewedRuleset[] => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-
-    return parsed.filter(isRecentlyViewedRuleset);
-  } catch {
-    return [];
-  }
-};
+export const getStoredRecentlyViewed = (): RecentlyViewedRuleset[] =>
+  readLocalStorage(STORAGE_KEY, isRecentlyViewedRuleset);
 
 export const saveRecentlyViewed = (item: RecentlyViewedRuleset): void => {
-  try {
-    const existing = getStoredRecentlyViewed().filter((r) => r.id !== item.id);
-    const updated = [item, ...existing].slice(0, MAX_RECENTLY_VIEWED);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-  } catch {
-    /* ignore storage errors (private browsing, quota exceeded) */
-  }
+  const existing = getStoredRecentlyViewed().filter((r) => r.id !== item.id);
+  const updated = [item, ...existing].slice(0, MAX_RECENTLY_VIEWED);
+  writeLocalStorage(STORAGE_KEY, updated);
 };

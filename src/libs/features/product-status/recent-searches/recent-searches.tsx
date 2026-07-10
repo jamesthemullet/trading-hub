@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 
 import { Button, Typography } from '@/libs/components';
@@ -20,7 +21,7 @@ type CardProps = {
 };
 
 const SearchCard = ({ search, onSelect }: CardProps) => {
-  const [imageError, setImageError] = useState(false);
+  const [hasImageError, setHasImageError] = useState(false);
 
   return (
     <div className={styles.card}>
@@ -52,14 +53,14 @@ const SearchCard = ({ search, onSelect }: CardProps) => {
         </Button>
       </div>
 
-      {search.imageUrl && !imageError ? (
+      {search.imageUrl && !hasImageError ? (
         <Image
           src={`${MNS_IMAGE_BASE}/${search.imageUrl}`}
           alt={search.title ?? ''}
           width={213}
           height={277}
           className={styles.productImage}
-          onError={() => setImageError(true)}
+          onError={() => setHasImageError(true)}
         />
       ) : (
         <div className={styles.imagePlaceholder} />
@@ -74,7 +75,11 @@ type Props = {
   onSelect: (displayId: string) => void;
 };
 
-export const RecentSearches = ({ searches, onBack, onSelect }: Props) => {
+export const RecentSearches = ({
+  searches,
+  onBack,
+  onSelect,
+}: Props): ReactElement => {
   return (
     <>
       <section className={styles.hero}>

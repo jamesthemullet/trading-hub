@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useEffect, useState } from 'react';
 
 import { Button, TablePagination, Tabs, Typography } from '@/libs/components';
@@ -156,7 +157,7 @@ export const HistoryList = ({
   handlePageChange,
   initialTab = 0,
   onTabChange,
-}: HistoryListProps) => {
+}: HistoryListProps): ReactElement => {
   const [activeTab, setActiveTab] = useState(initialTab);
   const facetType = RULE_TYPE_TO_FACET_TYPE[ruleType];
   const isShowingFacets = activeTab === 1;

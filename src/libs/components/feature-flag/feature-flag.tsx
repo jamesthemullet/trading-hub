@@ -63,20 +63,20 @@ export const useAuthorizationRoleOverride = () => {
 
 export const useStickyBarFlag = () => {
   const featureFlags = useContext(FeatureFlagContext);
-  const [stickyBarEnabled, setStickyBarEnabled] = useState(false);
+  const [isStickyBarEnabled, setIsStickyBarEnabled] = useState(false);
   const [stickyBarVariant, setStickyBarVariant] = useState<StickyBarVariant>(
     featureFlags.stickyBarVariant
   );
 
   useEffect(() => {
-    setStickyBarEnabled(featureFlags.hasStickyBar);
+    setIsStickyBarEnabled(featureFlags.hasStickyBar);
   }, [featureFlags.hasStickyBar]);
 
   useEffect(() => {
     setStickyBarVariant(featureFlags.stickyBarVariant);
   }, [featureFlags.stickyBarVariant]);
 
-  return { stickyBarEnabled, stickyBarVariant };
+  return { isStickyBarEnabled, stickyBarVariant };
 };
 
 export const useProfilePageFlag = () => {

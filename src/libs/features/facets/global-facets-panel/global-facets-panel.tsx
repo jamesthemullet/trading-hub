@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useMemo, useState } from 'react';
 
 import type {
@@ -33,7 +34,7 @@ const GlobalFacetsPanel = ({
   isWriteEnabled,
   onSave,
   onCancel,
-}: GlobalFacetsPanelProps) => {
+}: GlobalFacetsPanelProps): ReactElement => {
   const {
     facets,
     isLoading: isLoadingFacets,

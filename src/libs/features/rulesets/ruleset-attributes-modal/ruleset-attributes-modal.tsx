@@ -1,4 +1,4 @@
-import type { Dispatch } from 'react';
+import type { Dispatch, ReactElement } from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
@@ -35,7 +35,7 @@ export const RulesetAttributesModal = ({
   editData,
   onCloseModal,
   dispatch,
-}: RulesetAttributesModalProps) => {
+}: RulesetAttributesModalProps): ReactElement => {
   const handleSave = (attribute: RulesetAttribute) => {
     if (attribute.change === 'modify' && editData) {
       if (

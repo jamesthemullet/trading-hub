@@ -650,7 +650,7 @@ describe('Product', () => {
         },
       };
       renderWithProviders(
-        <MissingProduct {...missingProductProps} isBoosted />
+        <MissingProduct {...missingProductProps} changeType="boost" />
       );
 
       openActionsMenu(screen);
@@ -673,7 +673,9 @@ describe('Product', () => {
           operation: 'bury',
         },
       };
-      renderWithProviders(<MissingProduct {...missingProductProps} isBuried />);
+      renderWithProviders(
+        <MissingProduct {...missingProductProps} changeType="bury" />
+      );
 
       openActionsMenu(screen);
 
@@ -695,7 +697,9 @@ describe('Product', () => {
           change: 'remove',
         },
       };
-      renderWithProviders(<MissingProduct {...missingProductProps} isPinned />);
+      renderWithProviders(
+        <MissingProduct {...missingProductProps} changeType="pin" />
+      );
 
       openActionsMenu(screen);
 
@@ -718,7 +722,7 @@ describe('Product', () => {
         },
       };
       renderWithProviders(
-        <MissingProduct {...missingProductProps} isBlocked />
+        <MissingProduct {...missingProductProps} changeType="block" />
       );
 
       openActionsMenu(screen);

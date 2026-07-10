@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import { Button, Typography } from '@/libs/components';
 import { SearchBox } from '@/libs/components/search/search';
 
@@ -15,7 +17,7 @@ const ProductStatusHeader = ({
   onQueryChange,
   onSearch,
   onRecentSearchesClick,
-}: ProductStatusHeaderProps) => {
+}: ProductStatusHeaderProps): ReactElement => {
   return (
     <section className={styles.hero}>
       <div className={styles.heroHeader}>

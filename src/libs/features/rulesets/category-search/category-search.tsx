@@ -1,10 +1,10 @@
-import {
-  type ChangeEvent,
-  type FormEvent,
-  type KeyboardEvent,
-  useEffect,
-  useState,
+import type {
+  ChangeEvent,
+  KeyboardEvent,
+  ReactElement,
+  SyntheticEvent,
 } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
@@ -92,7 +92,7 @@ export const CategorySearch = ({
   selectedCategoriesInfo,
   countryCode = 'UK_IE',
   isWriteEnabled,
-}: Props) => {
+}: Props): ReactElement => {
   const [searchValue, setSearchValue] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -181,7 +181,7 @@ export const CategorySearch = ({
     onSearchRequest(value);
   };
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     await searchCategories(searchValue, countryCode);
   };

@@ -8,7 +8,7 @@ import {
 describe('FacetList reducer', () => {
   const defaultState: FacetListState = {
     isDraftLoaded: false,
-    showPreview: false,
+    shouldShowPreview: false,
     previewValue: undefined,
     selectedPreviewCountryCode: 'UK',
     selectedCategoriesInfo: [],
@@ -34,16 +34,16 @@ describe('FacetList reducer', () => {
     it('should toggle preview on', () => {
       const result = FacetListReducer(defaultState, { type: 'togglePreview' });
 
-      expect(result.showPreview).toBe(true);
+      expect(result.shouldShowPreview).toBe(true);
     });
 
     it('should toggle preview off', () => {
       const result = FacetListReducer(
-        { ...defaultState, showPreview: true },
+        { ...defaultState, shouldShowPreview: true },
         { type: 'togglePreview' }
       );
 
-      expect(result.showPreview).toBe(false);
+      expect(result.shouldShowPreview).toBe(false);
     });
 
     it('should set preview value', () => {

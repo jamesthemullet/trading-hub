@@ -1,4 +1,4 @@
-import type { Dispatch } from 'react';
+import type { Dispatch, ReactElement } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 
@@ -149,47 +149,50 @@ const ProductsLoader = ({
             ({ id: productId }) => id === productId
           );
 
+          const productContent = !product ? null : (
+            <Product
+              {...product}
+              index={index}
+              isPinnable={isPinnable}
+              pinnedProductsCount={pinnedProductsCount}
+              dispatch={dispatch}
+              isSelected={selectedProducts.includes(product.id)}
+              isSelectionDisabled={isSelectionDisabled}
+              onSelectProduct={onSelectProduct}
+            />
+          );
+
+          let missingProductContent = null;
+          if (!product) {
+            missingProductContent =
+              isLoading && !missingProductDetails.includes(id) ? (
+                <Skeleton
+                  key={id}
+                  aria-busy="true"
+                  data-testid="Product loader"
+                  width={235}
+                  height={320}
+                />
+              ) : (
+                <MissingProduct
+                  index={index}
+                  id={id}
+                  dispatch={dispatch}
+                  isProductNumberEnabled
+                  changeType={changeType}
+                  isSelected={selectedProducts.includes(id)}
+                  isSelectionDisabled={isSelectionDisabled}
+                  onSelectProduct={onSelectProduct}
+                />
+              );
+          }
+
           return (
             <div
               className={styles.productBox}
               key={`ruleset-changes-product-${id}`}
             >
-              {!product ? (
-                isLoading && !missingProductDetails.includes(id) ? (
-                  <Skeleton
-                    key={id}
-                    aria-busy="true"
-                    data-testid="Product loader"
-                    width={235}
-                    height={320}
-                  />
-                ) : (
-                  <MissingProduct
-                    index={index}
-                    id={id}
-                    dispatch={dispatch}
-                    isProductNumberEnabled
-                    isBlocked={changeType === 'block'}
-                    isBuried={changeType === 'bury'}
-                    isPinned={changeType === 'pin'}
-                    isBoosted={changeType === 'boost'}
-                    isSelected={selectedProducts.includes(id)}
-                    isSelectionDisabled={isSelectionDisabled}
-                    onSelectProduct={onSelectProduct}
-                  />
-                )
-              ) : (
-                <Product
-                  {...product}
-                  index={index}
-                  isPinnable={isPinnable}
-                  pinnedProductsCount={pinnedProductsCount}
-                  dispatch={dispatch}
-                  isSelected={selectedProducts.includes(product.id)}
-                  isSelectionDisabled={isSelectionDisabled}
-                  onSelectProduct={onSelectProduct}
-                />
-              )}
+              {productContent ?? missingProductContent}
             </div>
           );
         })}
@@ -243,7 +246,7 @@ export const RulesetChanges = ({
   onSelectProduct,
   selectedProducts,
   isSelectionDisabled,
-}: RulesetChangesProps) => {
+}: RulesetChangesProps): ReactElement => {
   const countOfAttributeChanges =
     merchandisingRules.boosts.numeric.length +
     merchandisingRules.boosts.alphanumeric.length +

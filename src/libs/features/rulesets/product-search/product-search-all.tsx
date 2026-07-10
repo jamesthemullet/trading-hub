@@ -1,4 +1,4 @@
-import type { Dispatch } from 'react';
+import type { Dispatch, ReactElement } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
 import type {
@@ -52,7 +52,7 @@ export const ProductSearchAll = ({
   rulesetType,
   categoryIds,
   searchTerms,
-}: ProductSearchProps) => {
+}: ProductSearchProps): ReactElement => {
   const [productSearchTerm, setProductSearchTerm] = useState('');
   const [products, setSearchProducts] = useState<ProductType[]>([]);
   const { searchForProduct } = useCategoryProductSearch();

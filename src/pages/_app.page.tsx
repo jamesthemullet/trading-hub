@@ -111,7 +111,7 @@ export default function App({
           <MantineProvider theme={theme}>
             <ErrorBoundary>
               <LoginCheck
-                autoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
+                shouldAutoLogin={process.env.NEXT_PUBLIC_AUTO_LOGIN !== 'false'}
               />
               <div className={styles.layout}>
                 <a href="#main-content" className={styles.skipLink}>

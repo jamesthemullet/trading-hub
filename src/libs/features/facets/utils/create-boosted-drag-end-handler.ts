@@ -22,7 +22,7 @@ export const createBoostedDragEndHandler =
     dispatch,
     onBeforeDispatch,
   }: CreateBoostedDragEndHandlerOptions) =>
-  ({ active, over }: DragEndEvent) => {
+  ({ active, over }: DragEndEvent): void => {
     if (!over || !isWriteEnabled || active.id === over.id) {
       return;
     }

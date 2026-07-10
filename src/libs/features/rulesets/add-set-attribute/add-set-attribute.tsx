@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import type { MerchandisingCountryCode } from '@/libs/api';
 import { ErrorMessage } from '@/libs/components';
 import type { AttributeEdit, RulesetAttribute } from '@/libs/components/types';
@@ -23,7 +25,7 @@ export const AddSetAttribute = ({
   searchTerms,
   isEditMode,
   editData,
-}: Props) => {
+}: Props): ReactElement => {
   const { attributes: numericAttributes, fetchError: numericAttributesError } =
     useAttributes({
       categories,

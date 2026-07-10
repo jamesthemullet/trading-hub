@@ -39,8 +39,7 @@ describe('useStickyBarFlag', () => {
     const { result } = renderHook(() => useStickyBarFlag(), {
       wrapper: createWrapper(),
     });
-
-    expect(result.current.stickyBarEnabled).toBe(false);
+    expect(result.current.isStickyBarEnabled).toBe(false);
     expect(result.current.stickyBarVariant).toBe('variant-a');
   });
 
@@ -51,8 +50,7 @@ describe('useStickyBarFlag', () => {
         stickyBarVariant: 'variant-b',
       }),
     });
-
-    expect(result.current.stickyBarEnabled).toBe(true);
+    expect(result.current.isStickyBarEnabled).toBe(true);
     expect(result.current.stickyBarVariant).toBe('variant-b');
   });
 });

@@ -1,6 +1,11 @@
 import { isValidRulesetType } from '@/libs/utils/ruleset-type';
 
 import type { RulesetType } from './use-recently-viewed-rulesets';
+import {
+  isRecord,
+  readLocalStorage,
+  writeLocalStorage,
+} from './utils/local-storage';
 
 const STORAGE_KEY = 'ruleset-visit-counts';
 export const MOST_VIEWED_DAYS = 30;
@@ -25,9 +30,6 @@ export type MostViewedRuleset = {
 
 const cutoff = (days: number): number => Date.now() - days * MS_PER_DAY;
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null;
-
 const isRulesetVisitRecord = (item: unknown): item is RulesetVisitRecord => {
   if (!isRecord(item)) return false;
 
@@ -43,19 +45,8 @@ const isRulesetVisitRecord = (item: unknown): item is RulesetVisitRecord => {
   );
 };
 
-const getStoredVisitRecords = (): RulesetVisitRecord[] => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-
-    return parsed.filter(isRulesetVisitRecord);
-  } catch {
-    return [];
-  }
-};
+const getStoredVisitRecords = (): RulesetVisitRecord[] =>
+  readLocalStorage(STORAGE_KEY, isRulesetVisitRecord);
 
 export const saveRulesetVisit = ({
   id,
@@ -68,32 +59,28 @@ export const saveRulesetVisit = ({
   url: string;
   type: RulesetType;
 }): void => {
-  try {
-    const records = getStoredVisitRecords();
-    const existing = records.find((record) => record.id === id);
-    const now = Date.now();
-    const threshold = cutoff(MOST_VIEWED_DAYS);
+  const records = getStoredVisitRecords();
+  const existing = records.find((record) => record.id === id);
+  const now = Date.now();
+  const threshold = cutoff(MOST_VIEWED_DAYS);
 
-    const updatedRecords = existing
-      ? records.map((record) =>
-          record.id === id
-            ? {
-                ...record,
-                label,
-                url,
-                visits: [
-                  ...record.visits.filter((timestamp) => timestamp > threshold),
-                  now,
-                ],
-              }
-            : record
-        )
-      : [...records, { id, label, url, type, visits: [now] }];
+  const updatedRecords = existing
+    ? records.map((record) =>
+        record.id === id
+          ? {
+              ...record,
+              label,
+              url,
+              visits: [
+                ...record.visits.filter((timestamp) => timestamp > threshold),
+                now,
+              ],
+            }
+          : record
+      )
+    : [...records, { id, label, url, type, visits: [now] }];
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedRecords));
-  } catch {
-    /* ignore storage errors (private browsing, quota exceeded) */
-  }
+  writeLocalStorage(STORAGE_KEY, updatedRecords);
 };
 
 export const getMostViewedRulesets = (
