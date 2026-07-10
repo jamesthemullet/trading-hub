@@ -31,6 +31,22 @@ export const searchAndWaitForResults = async (
   await expect(resultsCount).not.toHaveText(initialCount ?? '');
 };
 
+export const clickCreateAndConfirmReview = async (
+  page: Page
+): Promise<void> => {
+  await page.getByRole('button', { name: 'Create', exact: true }).click();
+
+  const reviewDialog = page
+    .getByRole('dialog')
+    .filter({ has: page.getByRole('heading', { name: 'Review changes' }) });
+
+  await reviewDialog.waitFor({ state: 'visible' });
+  await reviewDialog
+    .getByRole('button', { name: 'Save changes', exact: true })
+    .click();
+  await reviewDialog.waitFor({ state: 'hidden' });
+};
+
 export const clickSaveAndConfirmReviewIfPresent = async (
   page: Page
 ): Promise<void> => {

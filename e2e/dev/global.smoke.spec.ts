@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { clickCreateAndConfirmReview } from '../helpers';
+
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Global Ranking', () => {
@@ -30,14 +32,13 @@ test.describe('Global Ranking', () => {
       page.getByRole('heading', { name: 'Global Facet Rule Editor' })
     ).toBeVisible();
 
-    const [createResponse] = await Promise.all([
-      page.waitForResponse(
-        (r) =>
-          r.url().includes('/api/search/beta/merchandising/global/ruleset') &&
-          r.request().method() === 'POST'
-      ),
-      page.getByRole('button', { name: 'Create' }).click(),
-    ]);
+    const responsePromise = page.waitForResponse(
+      (r) =>
+        r.url().includes('/api/search/beta/merchandising/global/ruleset') &&
+        r.request().method() === 'POST'
+    );
+    await clickCreateAndConfirmReview(page);
+    const createResponse = await responsePromise;
     if (!createResponse.ok()) {
       throw new Error(`Create POST failed: ${createResponse.status()}`);
     }

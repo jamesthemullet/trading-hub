@@ -1185,7 +1185,49 @@ describe('FacetsList', () => {
       saveButton.click();
     });
 
+    const confirmButton = await screen.findByRole('button', {
+      name: 'Save changes',
+    });
+
+    act(() => {
+      confirmButton.click();
+    });
+
     expect(onSaveSpy).toHaveBeenCalledWith(expectedCall);
+  });
+
+  it('should cancel the review modal without saving', async () => {
+    const onSaveSpy = jest.fn();
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        facetType={FacetType.Global}
+        onSave={onSaveSpy}
+      />
+    );
+
+    const saveButton = await screen.findByRole('button', { name: 'Create' });
+    act(() => {
+      saveButton.click();
+    });
+
+    const confirmButton = await screen.findByRole('button', {
+      name: 'Save changes',
+    });
+    expect(confirmButton).toBeInTheDocument();
+
+    const dialog = screen.getByRole('dialog');
+    const cancelButton = within(dialog).getByRole('button', { name: 'Cancel' });
+    act(() => {
+      cancelButton.click();
+    });
+
+    expect(onSaveSpy).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('button', { name: 'Save changes' })
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('should route the user to the facet values page', async () => {

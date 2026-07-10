@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import {
+  clickCreateAndConfirmReview,
   clickSaveAndConfirmReviewIfPresent,
   searchAndWaitForResults,
 } from '../helpers';
@@ -53,7 +54,7 @@ test.describe('Category Ranking', () => {
     await page.getByText(TEST_CATEGORY_NAME).click();
     await page.getByRole('button', { name: 'Close' }).click();
 
-    await page.getByRole('button', { name: 'Create' }).click();
+    await clickCreateAndConfirmReview(page);
     await expect(
       page.getByRole('heading', { name: 'Categories' })
     ).toBeVisible();

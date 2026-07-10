@@ -23,4 +23,8 @@ export const LABEL_ICON: Partial<Record<string, string>> = {
   'Exclude attribute': '/trading-hub/asset/icon-exclude.svg',
   'Start date': '/trading-hub/asset/icon-calendar.svg',
   'End date': '/trading-hub/asset/icon-calendar.svg',
+  Included: '/trading-hub/asset/icon-include.svg',
+  Excluded: '/trading-hub/asset/icon-exclude.svg',
+  'Algo control': '/trading-hub/asset/icon-attribute.svg',
+  'Facet order': '/trading-hub/asset/icon-arrow-up.svg',
 };

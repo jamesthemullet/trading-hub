@@ -144,6 +144,10 @@ describe('Search Facet Management New', () => {
       submit.click();
     });
 
+    await user.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
+
     expect(await screen.findByText(NEW_RULE_BUTTON_TEXT)).toBeInTheDocument();
     expect(createRuleset).toHaveBeenCalledWith({
       searchTerms: ['red dress'],
@@ -251,6 +255,17 @@ describe('Search Facet Management New', () => {
       const submit = await screen.findByText(NEW_RULE_BUTTON_TEXT);
       act(() => {
         submit.click();
+      });
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      const confirmButton = await screen.findByRole('button', {
+        name: 'Save changes',
+      });
+      act(() => {
+        confirmButton.click();
       });
 
       expect(createRuleset).toHaveBeenCalledWith({

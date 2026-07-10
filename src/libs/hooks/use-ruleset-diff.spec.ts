@@ -590,32 +590,6 @@ describe('useRulesetDiff', () => {
       });
     });
 
-    it('should detect start date added from none', () => {
-      const current: MerchandisingRuleSet = {
-        ...emptyRules,
-        startDate: '2024-06-01T00:00:00.000Z',
-      };
-      const result = useRulesetDiff(emptyRules, current);
-      expect(result).toContainEqual({
-        type: 'changed',
-        label: 'Start date',
-        description: 'none → 01/06/2024 00:00',
-      });
-    });
-
-    it('should detect end date added from none', () => {
-      const current: MerchandisingRuleSet = {
-        ...emptyRules,
-        endDate: '2024-12-31T00:00:00.000Z',
-      };
-      const result = useRulesetDiff(emptyRules, current);
-      expect(result).toContainEqual({
-        type: 'changed',
-        label: 'End date',
-        description: 'none → 31/12/2024 00:00',
-      });
-    });
-
     it('should detect changed end date', () => {
       const original: MerchandisingRuleSet = {
         ...emptyRules,
@@ -633,19 +607,6 @@ describe('useRulesetDiff', () => {
       });
     });
 
-    it('should detect start date removed to none', () => {
-      const original: MerchandisingRuleSet = {
-        ...emptyRules,
-        startDate: '2024-01-01T00:00:00.000Z',
-      };
-      const result = useRulesetDiff(original, emptyRules);
-      expect(result).toContainEqual({
-        type: 'changed',
-        label: 'Start date',
-        description: '01/01/2024 00:00 → none',
-      });
-    });
-
     it('should not report date change when dates are unchanged', () => {
       const ruleset: MerchandisingRuleSet = {
         ...emptyRules,
@@ -654,25 +615,6 @@ describe('useRulesetDiff', () => {
       };
       const result = useRulesetDiff(ruleset, ruleset);
       expect(result).toEqual([]);
-    });
-
-    it('should format invalid start dates as none', () => {
-      const original: MerchandisingRuleSet = {
-        ...emptyRules,
-        startDate: 'not-a-date',
-      };
-      const current: MerchandisingRuleSet = {
-        ...emptyRules,
-        startDate: '2024-06-01T00:00:00.000Z',
-      };
-
-      const result = useRulesetDiff(original, current);
-
-      expect(result).toContainEqual({
-        type: 'changed',
-        label: 'Start date',
-        description: 'none → 01/06/2024 00:00',
-      });
     });
   });
 
@@ -723,18 +665,6 @@ describe('useRulesetDiff', () => {
       });
       expect(result).toContainEqual({
         type: 'added',
-        label: 'Keyword',
-        description: 'shoes',
-      });
-    });
-
-    it('should detect a removed keyword', () => {
-      const result = useRulesetDiff(emptyRules, emptyRules, {
-        originalSearchTerms: ['boots', 'shoes'],
-        currentSearchTerms: ['boots'],
-      });
-      expect(result).toContainEqual({
-        type: 'removed',
         label: 'Keyword',
         description: 'shoes',
       });

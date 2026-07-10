@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import {
+  clickCreateAndConfirmReview,
   clickSaveAndConfirmReviewIfPresent,
   searchAndWaitForResults,
 } from '../helpers';
@@ -52,7 +53,7 @@ test.describe('Search Ranking', () => {
     await expect(resultsButton).toBeVisible();
     await resultsButton.click();
 
-    await page.getByRole('button', { name: 'Create' }).click();
+    await clickCreateAndConfirmReview(page);
     await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
 
     await searchAndWaitForResults(page, 'Sequin Dress');

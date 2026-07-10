@@ -80,6 +80,8 @@ test.describe('global facets', () => {
 
     await page.getByRole('button', { name: 'Create', exact: true }).click();
 
+    await page.getByRole('button', { name: 'Save changes' }).click();
+
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('link', { name: 'Edit facet rule' }).click();
 

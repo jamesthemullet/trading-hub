@@ -105,6 +105,9 @@ describe('Global Facet Management New', () => {
 
     const createButton = screen.getByRole('button', { name: /create/i });
     await user.click(createButton);
+    await user.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
 
     expect(createGlobalRuleSet).toHaveBeenCalled();
 

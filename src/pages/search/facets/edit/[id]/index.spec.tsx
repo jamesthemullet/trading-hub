@@ -270,6 +270,9 @@ describe('Search Facet Management Editing', () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
 
     expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith(updateMock);
 
@@ -294,10 +297,10 @@ describe('Search Facet Management Editing', () => {
     );
     await user.click(irelandOption);
 
-    const saveButton = screen.getByRole('button', { name: 'Save' });
-    await user.click(saveButton);
-
     await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
 
     expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith({
       ...updateMock,
@@ -471,6 +474,9 @@ describe('Search Facet Management Editing', () => {
     renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
 
     expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith(updateMock);
   });
@@ -544,6 +550,17 @@ describe('Search Facet Management Editing', () => {
 
       act(() => {
         screen.getByRole('button', { name: /^Save$/ }).click();
+      });
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      const confirmButton = await screen.findByRole('button', {
+        name: 'Save changes',
+      });
+      act(() => {
+        confirmButton.click();
       });
 
       expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith({

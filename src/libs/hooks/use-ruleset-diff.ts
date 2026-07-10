@@ -5,29 +5,16 @@ import type {
   MerchandisingProductBoostBury,
   MerchandisingRuleSet,
 } from '@/libs/api';
+import {
+  createDiffItem,
+  diffDate,
+  type DiffItem,
+  diffStringList,
+} from '@/libs/hooks/utils/diff';
 
-import { format, isValid, parseISO } from 'date-fns';
 import isEqual from 'lodash/isEqual';
 
-export type DiffItem = {
-  type: 'added' | 'removed' | 'changed';
-  label: string;
-  description: string;
-};
-
-const createDiffItem = (
-  type: DiffItem['type'],
-  label: string,
-  description: string
-): DiffItem => ({ type, label, description });
-
-const formatDate = (date: string | undefined): string => {
-  if (!date) return 'none';
-  const parsedDate = parseISO(date);
-  if (!isValid(parsedDate)) return 'none';
-
-  return format(parsedDate, 'dd/MM/yyyy HH:mm');
-};
+export type { DiffItem };
 
 const formatAlphanumericAttribute = (
   attr: MerchandisingAlphanumericBoostBury | MerchandisingIncludeExclude
@@ -222,24 +209,8 @@ const diffDates = (
   original: MerchandisingRuleSet,
   current: MerchandisingRuleSet
 ): DiffItem[] => [
-  ...(original.startDate !== current.startDate
-    ? [
-        createDiffItem(
-          'changed',
-          'Start date',
-          `${formatDate(original.startDate)} → ${formatDate(current.startDate)}`
-        ),
-      ]
-    : []),
-  ...(original.endDate !== current.endDate
-    ? [
-        createDiffItem(
-          'changed',
-          'End date',
-          `${formatDate(original.endDate)} → ${formatDate(current.endDate)}`
-        ),
-      ]
-    : []),
+  ...diffDate(original.startDate, current.startDate, 'Start date'),
+  ...diffDate(original.endDate, current.endDate, 'End date'),
 ];
 
 export const useRulesetDiff = (
@@ -312,11 +283,6 @@ export const useRulesetDiff = (
       'Exclude attribute'
     ),
     ...diffDates(original, current),
-    ...originalSearchTerms
-      .filter((t) => !currentSearchTerms.includes(t))
-      .map((t) => createDiffItem('removed', 'Keyword', t)),
-    ...currentSearchTerms
-      .filter((t) => !originalSearchTerms.includes(t))
-      .map((t) => createDiffItem('added', 'Keyword', t)),
+    ...diffStringList(originalSearchTerms, currentSearchTerms, 'Keyword'),
   ];
 };

@@ -1,5 +1,12 @@
 import type { ReactElement } from 'react';
-import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 
 import type { MerchandisingRuleSet } from '@/libs/api';
 import {
@@ -12,6 +19,7 @@ import {
 } from '@/libs/components';
 import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
+import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetRow } from '@/libs/containers/facets/facet-row';
 import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
@@ -27,6 +35,7 @@ import {
   useGlobalFacetsList,
   useTypeSafeQuery,
 } from '@/libs/hooks';
+import { useFacetListDiff } from '@/libs/hooks/use-facet-list-diff';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
 import { track } from '@/libs/hooks/utils/analytics';
 import { DEBOUNCE_DELAY_MS } from '@/libs/hooks/utils/constants';
@@ -253,13 +262,7 @@ export const FacetsList = ({
     dispatchFacetList({ type: 'addSearchTerm', payload: term });
   };
 
-  const handleSave = () => {
-    onSave({
-      ...ruleset,
-      categoryIds: selectedCategories,
-      searchTerms: selectedSearchTerms,
-    });
-  };
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   const { callback: handleFilter } = useDebounce((val: string) => {
     dispatchFacetList({ type: 'setFilter', payload: val });
@@ -284,6 +287,46 @@ export const FacetsList = ({
   });
 
   const { facets: globalFacets } = useGlobalFacetsList();
+
+  const allFacetsForDiff = useMemo(
+    () => [...facets, ...globalFacets],
+    [facets, globalFacets]
+  );
+
+  const diffItems = useFacetListDiff(
+    initialRuleset.current.facets ?? [],
+    ruleset.facets ?? [],
+    initialRuleset.current.excludedFacets?.facets ?? [],
+    ruleset.excludedFacets?.facets ?? [],
+    allFacetsForDiff,
+    {
+      ...(facetType === FacetType.Category && {
+        originalCategories: categoriesInfo ?? [],
+        currentCategories: selectedCategoriesInfo,
+      }),
+      ...(facetType === FacetType.Search && {
+        originalSearchTerms: searchTerms ?? [],
+        currentSearchTerms: selectedSearchTerms,
+      }),
+      originalStartDate: initialRuleset.current.startDate,
+      currentStartDate: ruleset.startDate,
+      originalEndDate: initialRuleset.current.endDate,
+      currentEndDate: ruleset.endDate,
+    }
+  );
+
+  const handleSave = () => {
+    setIsReviewModalOpen(true);
+  };
+
+  const handleConfirmSave = () => {
+    onSave({
+      ...ruleset,
+      categoryIds: selectedCategories,
+      searchTerms: selectedSearchTerms,
+    });
+    setIsReviewModalOpen(false);
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -723,6 +766,13 @@ export const FacetsList = ({
       )}
 
       <FilteredResultsPanel filteredFacets={filteredFacets.length} />
+
+      <RulesetDiffModal
+        opened={isReviewModalOpen}
+        diffItems={diffItems}
+        onConfirm={handleConfirmSave}
+        onCancel={() => setIsReviewModalOpen(false)}
+      />
     </>
   );
 };
