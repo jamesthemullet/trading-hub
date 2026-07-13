@@ -26,5 +26,10 @@ export const LABEL_ICON: Partial<Record<string, string>> = {
   Included: '/trading-hub/asset/icon-include.svg',
   Excluded: '/trading-hub/asset/icon-exclude.svg',
   'Algo control': '/trading-hub/asset/icon-attribute.svg',
-  'Facet order': '/trading-hub/asset/icon-arrow-up.svg',
+  'Include only': '/trading-hub/asset/icon-include.svg',
+  'Exclude only': '/trading-hub/asset/icon-exclude.svg',
+  'Value order up': '/trading-hub/asset/icon-arrow-up.svg',
+  'Value order down': '/trading-hub/asset/icon-arrow-up.svg',
+  'Facet order up': '/trading-hub/asset/icon-arrow-up.svg',
+  'Facet order down': '/trading-hub/asset/icon-arrow-up.svg',
 };

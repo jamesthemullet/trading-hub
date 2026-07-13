@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -290,6 +290,11 @@ describe('Index', () => {
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
+    const dialog = await screen.findByRole('dialog');
+    await user.click(
+      within(dialog).getByRole('button', { name: 'Save changes' })
+    );
+
     expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith(updateMock);
 
     expect(defaultMockRouter.push).toHaveBeenCalledWith('/search');
@@ -478,6 +483,11 @@ describe('Index', () => {
       const saveButton = screen.getByRole('button', { name: 'Save' });
       await user.click(saveButton);
 
+      const dialog = await screen.findByRole('dialog');
+      await user.click(
+        within(dialog).getByRole('button', { name: 'Save changes' })
+      );
+
       expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalled();
       expect(defaultMockRouter.push).toHaveBeenCalledWith('/search');
     });
@@ -553,6 +563,11 @@ describe('Index', () => {
 
     const saveButton = await screen.findByRole('button', { name: 'Save' });
     await user.click(saveButton);
+
+    const dialog = await screen.findByRole('dialog');
+    await user.click(
+      within(dialog).getByRole('button', { name: 'Save changes' })
+    );
 
     expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalled();
     expect(defaultMockRouter.push).toHaveBeenCalledWith('/search');

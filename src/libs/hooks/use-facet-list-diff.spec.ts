@@ -170,7 +170,7 @@ describe('useFacetListDiff', () => {
   });
 
   describe('position changes within Included', () => {
-    it('detects a position change', () => {
+    it('detects a position change moving up', () => {
       const result = useFacetListDiff(
         [{ id: 'f1' }, { id: 'f2' }],
         [{ id: 'f2' }, { id: 'f1' }],
@@ -180,8 +180,23 @@ describe('useFacetListDiff', () => {
       );
       expect(result).toContainEqual({
         type: 'changed',
-        label: 'Facet order',
+        label: 'Facet order up',
         description: 'Size: position 2 → 1',
+      });
+    });
+
+    it('detects a position change moving down', () => {
+      const result = useFacetListDiff(
+        [{ id: 'f2' }, { id: 'f1' }],
+        [{ id: 'f1' }, { id: 'f2' }],
+        [],
+        [],
+        allFacets
+      );
+      expect(result).toContainEqual({
+        type: 'changed',
+        label: 'Facet order down',
+        description: 'Size: position 1 → 2',
       });
     });
 

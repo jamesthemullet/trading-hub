@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -216,6 +216,11 @@ describe('Index', () => {
 
     const saveButton = screen.getByRole('button', { name: 'Save' });
     await user.click(saveButton);
+
+    const dialog = await screen.findByRole('dialog');
+    await user.click(
+      within(dialog).getByRole('button', { name: 'Save changes' })
+    );
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
       categoryIds: ['SubCategory_428'],

@@ -98,10 +98,11 @@ export const useFacetListDiff = (
       const origIndex = origIncluded.indexOf(id);
       const currIndex = currIncluded.indexOf(id);
       if (origIndex !== currIndex) {
+        const direction = currIndex < origIndex ? 'up' : 'down';
         return [
           createDiffItem(
             'changed',
-            'Facet order',
+            `Facet order ${direction}`,
             `${displayName}: position ${origIndex + 1} → ${currIndex + 1}`
           ),
         ];

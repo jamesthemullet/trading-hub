@@ -11,7 +11,10 @@ import type { FeatureFlags } from '@/libs/components/feature-flag/feature-flag';
 import { FacetType } from '@/libs/constants/rule-types';
 import { renderWithProviders } from '@/test/render-with-providers';
 
-import { CategoryAndSearchFacetsPanelPageLayout } from './category-and-search-facet-attributes-page-layout';
+import {
+  CategoryAndSearchFacetsPanelPageLayout,
+  getFacetValuesOrEmpty,
+} from './category-and-search-facet-attributes-page-layout';
 import { appendUndoState, UNDO_HISTORY_LIMIT } from './undo-history';
 
 jest.mock('next/router', () => ({
@@ -84,6 +87,22 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
     jest.clearAllMocks();
   });
 
+  describe('getFacetValuesOrEmpty', () => {
+    it('returns a shared empty array when values are undefined', () => {
+      const first = getFacetValuesOrEmpty(undefined);
+      const second = getFacetValuesOrEmpty(undefined);
+
+      expect(first).toEqual([]);
+      expect(first).toBe(second);
+    });
+
+    it('returns the original array when values are provided', () => {
+      const values = ['13 - 14.4'];
+
+      expect(getFacetValuesOrEmpty(values)).toBe(values);
+    });
+  });
+
   it('renders the component with category facet type', () => {
     setup();
 
@@ -95,6 +114,31 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
     setup({ facetType: FacetType.Search });
 
     expect(screen.getByRole('searchbox')).toBeInTheDocument();
+  });
+
+  it('normalizes missing boosted and excluded arrays', async () => {
+    const user = userEvent.setup({ delay: null });
+    const onSave = jest.fn();
+
+    setup({
+      facet: {
+        id: '2',
+        boosted: undefined,
+        excludedValues: undefined,
+      },
+      attributeValues: [{ displayValue: 'Under 10' }],
+      onSave,
+      isDraftRuleset: false,
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
+
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ boosted: [], excludedValues: [] })
+    );
   });
 
   it('handles search input changes', async () => {
@@ -155,14 +199,95 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
     );
   });
 
-  it('calls onSave with current state when save button is clicked', async () => {
+  it('calls onSave with current state when save button is clicked for a draft ruleset', async () => {
     const user = userEvent.setup({ delay: null });
-    const { props } = setup({ facetType: FacetType.Category });
+    const { props } = setup({
+      facetType: FacetType.Category,
+      isDraftRuleset: true,
+    });
 
     const saveButton = screen.getByRole('button', { name: 'Save' });
     await user.click(saveButton);
 
     expect(props.onSave).toHaveBeenCalled();
+    expect(
+      screen.queryByRole('heading', { name: 'Review changes' })
+    ).not.toBeInTheDocument();
+  });
+
+  describe('review before save modal', () => {
+    it('shows review modal when save button is clicked for a non-draft ruleset', async () => {
+      const user = userEvent.setup({ delay: null });
+      const { props } = setup({
+        facetType: FacetType.Category,
+        isDraftRuleset: false,
+      });
+
+      const saveButton = screen.getByRole('button', { name: 'Save' });
+      await user.click(saveButton);
+
+      expect(props.onSave).not.toHaveBeenCalled();
+      expect(
+        await screen.findByRole('heading', { name: 'Review changes' })
+      ).toBeInTheDocument();
+    });
+
+    it('calls onSave when confirming in the review modal', async () => {
+      const user = userEvent.setup({ delay: null });
+      const { props } = setup({
+        facetType: FacetType.Category,
+        isDraftRuleset: false,
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Save' }));
+      await user.click(
+        await screen.findByRole('button', { name: 'Save changes' })
+      );
+
+      expect(props.onSave).toHaveBeenCalledWith(
+        expect.objectContaining({ id: facetMock.id })
+      );
+    });
+
+    it('dismisses review modal without saving when cancel is clicked', async () => {
+      const user = userEvent.setup({ delay: null });
+      const { props } = setup({
+        facetType: FacetType.Category,
+        isDraftRuleset: false,
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Save' }));
+      const dialog = await screen.findByRole('dialog');
+      await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+
+      await waitFor(() => {
+        expect(
+          screen.queryByRole('heading', { name: 'Review changes' })
+        ).not.toBeInTheDocument();
+      });
+      expect(props.onSave).not.toHaveBeenCalled();
+    });
+
+    it('shows diff items in the review modal', async () => {
+      const user = userEvent.setup({ delay: null });
+      setup({ facetType: FacetType.Category, isDraftRuleset: false });
+
+      const row = screen.getByTestId('included attribute 0 13 - 14.4');
+      const dropdown = within(row).getByLabelText(
+        /Select to set as included, excluded or algo control/i
+      );
+      await user.click(dropdown);
+      await user.click(
+        within(row).getByRole('menuitemradio', { name: 'Exclude only' })
+      );
+
+      await user.click(screen.getByRole('button', { name: 'Save' }));
+
+      const dialog = await screen.findByRole('dialog');
+      expect(
+        within(dialog).getByText('13 - 14.4 (Include only → Exclude only)')
+      ).toBeInTheDocument();
+    });
   });
 
   describe('unsaved changes modal', () => {
@@ -351,7 +476,10 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
 
     it('clears undo history after saving', async () => {
       const user = userEvent.setup({ delay: null });
-      const { props } = setup({ facetType: FacetType.Category });
+      const { props } = setup({
+        facetType: FacetType.Category,
+        isDraftRuleset: true,
+      });
 
       const row = screen.getByTestId('included attribute 0 13 - 14.4');
       const dropdown = within(row).getByLabelText(

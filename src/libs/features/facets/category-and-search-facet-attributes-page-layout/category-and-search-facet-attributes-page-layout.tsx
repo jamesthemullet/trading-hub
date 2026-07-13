@@ -7,10 +7,12 @@ import type {
   MerchandisingAttributeValuesResponse,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
+import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import { getFacetRoute, getNewFacetRoute } from '@/libs/constants';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetAttributesListActions } from '@/libs/containers';
 import { ModalUnsavedChanges } from '@/libs/containers/shared/modals';
+import { diffFacetValues } from '@/libs/hooks/utils/diff';
 import type { Action } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
 import { facetAttributesPageReducer } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
 
@@ -20,6 +22,11 @@ import without from 'lodash/without';
 import { FacetAttributesPageLayoutHeader } from '../facet-attributes-page-layout-header/facet-attributes-page-layout-header';
 import { SearchAndCategoryFacetAttributesList } from '../search-and-category-facet-attributes-list/search-and-category-facet-attributes-list';
 import { appendUndoState } from './undo-history';
+
+const EMPTY_VALUES: string[] = [];
+
+export const getFacetValuesOrEmpty = (values?: string[]): string[] =>
+  values ?? EMPTY_VALUES;
 
 type PageLayout = {
   attributeValues: MerchandisingAttributeValuesResponse['values'];
@@ -53,13 +60,16 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
   const router = useRouter();
 
   const processedFacet = useMemo(() => {
-    const intersectedValues = intersection(facet.boosted, facet.excludedValues);
+    const boosted = facet.boosted ?? [];
+    const excludedValues = facet.excludedValues ?? [];
+    const intersectedValues = intersection(boosted, excludedValues);
 
-    const boosted = without(facet.boosted, ...intersectedValues);
+    const deduplicatedBoosted = without(boosted, ...intersectedValues);
 
     return {
       ...facet,
-      ...(boosted.length > 0 && { boosted }),
+      boosted: deduplicatedBoosted,
+      excludedValues,
     };
   }, [facet]);
 
@@ -67,19 +77,21 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
     facetAttributesPageReducer,
     processedFacet
   );
+  const boostedValues = getFacetValuesOrEmpty(facetLocalState.boosted);
+  const excludedFacetValues = getFacetValuesOrEmpty(
+    facetLocalState.excludedValues
+  );
 
   const algoControlValues = attributeValues
-    .filter((value) => !facetLocalState.boosted!.includes(value.displayValue))
-    .filter(
-      (value) => !facetLocalState.excludedValues?.includes(value.displayValue)
-    );
-  const includedValues = facetLocalState.boosted!.map((value, index) => ({
+    .filter((value) => !boostedValues.includes(value.displayValue))
+    .filter((value) => !excludedFacetValues.includes(value.displayValue));
+  const includedValues = boostedValues.map((value, index) => ({
     displayValue: value,
     order: index + 1,
   }));
 
   const excludedValues = attributeValues.filter((value) =>
-    facetLocalState.excludedValues?.includes(value.displayValue)
+    excludedFacetValues.includes(value.displayValue)
   );
 
   const isUndoButtonVisible = facetType === FacetType.Category;
@@ -115,6 +127,18 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
 
   const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] =
     useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+
+  const diffItems = useMemo(
+    () =>
+      diffFacetValues(
+        processedFacet.boosted,
+        boostedValues,
+        processedFacet.excludedValues,
+        excludedFacetValues
+      ),
+    [boostedValues, excludedFacetValues, processedFacet]
+  );
 
   const navigateBack = useCallback(() => {
     if (isDraftRuleset) {
@@ -133,6 +157,16 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
   }, [hasChanges, navigateBack]);
 
   const handleSave = () => {
+    if (isDraftRuleset) {
+      onSave(facetLocalState);
+      setStateHistory([]);
+      return;
+    }
+    setIsReviewModalOpen(true);
+  };
+
+  const handleConfirmSave = () => {
+    setIsReviewModalOpen(false);
     onSave(facetLocalState);
     setStateHistory([]);
   };
@@ -175,6 +209,13 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
         opened={isUnsavedChangesModalOpen}
         onClose={navigateBack}
         onContinue={() => setIsUnsavedChangesModalOpen(false)}
+      />
+
+      <RulesetDiffModal
+        opened={isReviewModalOpen}
+        diffItems={diffItems}
+        onConfirm={handleConfirmSave}
+        onCancel={() => setIsReviewModalOpen(false)}
       />
     </>
   );

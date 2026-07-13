@@ -58,6 +58,9 @@ export const RulesetDiffModal = ({
                 const iconSrc =
                   LABEL_ICON[`${item.type}-${item.label}`] ??
                   LABEL_ICON[item.label];
+                const isDescendingOrderIcon =
+                  item.label === 'Value order down' ||
+                  item.label === 'Facet order down';
 
                 return (
                   <li
@@ -66,14 +69,18 @@ export const RulesetDiffModal = ({
                     data-type={item.type}
                   >
                     {iconSrc && (
-                      <Image
-                        src={iconSrc}
-                        width={16}
-                        height={16}
-                        alt=""
-                        data-testid="change-type-icon"
+                      <span
                         className={styles.diffItemIcon}
-                      />
+                        data-rotated={isDescendingOrderIcon || undefined}
+                      >
+                        <Image
+                          src={iconSrc}
+                          width={16}
+                          height={16}
+                          alt=""
+                          data-testid="change-type-icon"
+                        />
+                      </span>
                     )}
                     <div>
                       <Typography variant="bodySmall" isStrong>

@@ -103,6 +103,37 @@ describe('RulesetDiffModal', () => {
     expect(screen.getAllByTestId('change-type-icon')).toHaveLength(2);
   });
 
+  it('should mark descending order icons for rotation', () => {
+    renderWithProviders(
+      <RulesetDiffModal
+        opened
+        diffItems={[
+          {
+            type: 'changed',
+            label: 'Value order down',
+            description: 'Highest to lowest',
+          },
+          {
+            type: 'changed',
+            label: 'Facet order up',
+            description: 'Lowest to highest',
+          },
+        ]}
+        onConfirm={jest.fn()}
+        onCancel={jest.fn()}
+      />
+    );
+
+    const [descendingIcon, ascendingIcon] =
+      screen.getAllByTestId('change-type-icon');
+
+    expect(descendingIcon.closest('span')).toHaveAttribute(
+      'data-rotated',
+      'true'
+    );
+    expect(ascendingIcon.closest('span')).not.toHaveAttribute('data-rotated');
+  });
+
   it('should not render an icon for unknown labels', () => {
     renderWithProviders(
       <RulesetDiffModal

@@ -32,6 +32,11 @@
 
 .diffItemIcon {
   flex-shrink: 0;
+  display: flex;
+
+  &[data-rotated='true'] {
+    transform: rotate(180deg);
+  }
 }
 
 .buttons {
