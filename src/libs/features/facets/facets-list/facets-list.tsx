@@ -276,7 +276,11 @@ export const FacetsList = ({
     (category) => category.id
   );
 
-  const { facets, error: getFacetsDataError } = useFacetsList({
+  const {
+    facets,
+    isLoading: isFacetsLoading,
+    error: getFacetsDataError,
+  } = useFacetsList({
     query:
       facetType === FacetType.Category
         ? selectedCategories
@@ -286,7 +290,8 @@ export const FacetsList = ({
     countryCode: ruleset.countryCode || 'UK_IE',
   });
 
-  const { facets: globalFacets } = useGlobalFacetsList();
+  const { facets: globalFacets, isLoading: isGlobalFacetsLoading } =
+    useGlobalFacetsList();
 
   const allFacetsForDiff = useMemo(
     () => [...facets, ...globalFacets],
@@ -385,12 +390,19 @@ export const FacetsList = ({
       ruleset.facets?.map((facetConfig) => {
         const found = filteredFacets.find((f) => f.id === facetConfig.id);
         if (found) return found;
+        if (isFacetsLoading || isGlobalFacetsLoading) return undefined;
         const globalFacet = globalFacets.find((f) => f.id === facetConfig.id);
         if (globalFacet)
           return { ...globalFacet, isUnavailable: true as const };
         return undefined;
       }) || [],
-    [ruleset.facets, filteredFacets, globalFacets]
+    [
+      ruleset.facets,
+      filteredFacets,
+      globalFacets,
+      isFacetsLoading,
+      isGlobalFacetsLoading,
+    ]
   );
 
   const filteredIncludedFacetIds = useMemo(

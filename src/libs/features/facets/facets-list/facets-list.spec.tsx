@@ -1521,6 +1521,63 @@ describe('FacetsList', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('should not flash "currently not available" while context facets are still loading', () => {
+    const facetId = facetsListMock.facets[0].id;
+
+    jest
+      .mocked(useFacetsList)
+      .mockReturnValue({ facets: [], isLoading: true, error: '' });
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [{ id: facetId }],
+        }}
+        isNewRuleset={false}
+        facetType={FacetType.Search}
+        searchTerms={['socks']}
+      />
+    );
+
+    expect(
+      screen.queryByText('— currently not available')
+    ).not.toBeInTheDocument();
+  });
+
+  it('should not flash "currently not available" while global facets are still loading', () => {
+    const facetId = facetsListMock.facets[0].id;
+
+    jest
+      .mocked(useFacetsList)
+      .mockReturnValue({ facets: [], isLoading: false, error: '' });
+
+    jest.mocked(useGlobalFacetsList).mockReturnValue({
+      facets: facetsListMock.facets,
+      isLoading: true,
+      error: '',
+      onRefreshFacetList: jest.fn(),
+    });
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [{ id: facetId }],
+        }}
+        isNewRuleset={false}
+        facetType={FacetType.Search}
+        searchTerms={['socks']}
+      />
+    );
+
+    expect(
+      screen.queryByText('— currently not available')
+    ).not.toBeInTheDocument();
+  });
+
   it('should display an error message when useFacetsList returns an error', () => {
     jest.mocked(useFacetsList).mockReturnValue({
       facets: [],
