@@ -245,9 +245,19 @@ jobs:
           DYNATRACE_API_TOKEN="${{ secrets.DYNATRACE_API_TOKEN }}"
           SERVICE_NAME="trading-hub"
 
-          client_js_kb=$(du -sk .next/static/chunks 2>/dev/null | awk '{print $1}' || echo 0)
-          static_kb=$(du -sk .next/static 2>/dev/null | awk '{print $1}' || echo 0)
-          artifact_kb=$(du -sk .next/standalone/next.zip 2>/dev/null | awk '{print $1}' || echo 0)
+          client_js_kb=$(du -sk .next/static/chunks 2>/dev/null | awk 'NR == 1 { print $1 }' || true)
+          static_kb=$(du -sk .next/static 2>/dev/null | awk 'NR == 1 { print $1 }' || true)
+          artifact_path=".next/standalone/next.zip"
+
+          if [ ! -e "$artifact_path" ]; then
+            artifact_path=".next/standalone"
+          fi
+
+          artifact_kb=$(du -sk "$artifact_path" 2>/dev/null | awk 'NR == 1 { print $1 }' || true)
+
+          client_js_kb=${client_js_kb:-0}
+          static_kb=${static_kb:-0}
+          artifact_kb=${artifact_kb:-0}
 
           echo "Client JS chunks: ${client_js_kb} KB"
           echo "Static assets:    ${static_kb} KB"
@@ -269,9 +279,9 @@ jobs:
                 "runId": "${{ github.run_id }}",
                 "prNumber": "${{ github.event.number }}",
                 "actor": "${{ github.actor }}",
-                "clientJsKb": '"${client_js_kb}"',
-                "staticKb": '"${static_kb}"',
-                "artifactKb": '"${artifact_kb}"'
+                "clientJsKb": "'"${client_js_kb}"'",
+                "staticKb": "'"${static_kb}"'",
+                "artifactKb": "'"${artifact_kb}"'"
               },
               "attachRules": {
                 "tagRule": [
