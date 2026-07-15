@@ -68,6 +68,10 @@ describe('Index', () => {
   };
 
   beforeEach(() => {
+    mockError = undefined;
+    mockUpdateGlobalRuleSet = jest.fn(() =>
+      Promise.resolve({ status: 'success' })
+    );
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     jest.mocked(useGlobalRuleSetDetail).mockReturnValue({
       globalRuleSet: mockRuleData,
