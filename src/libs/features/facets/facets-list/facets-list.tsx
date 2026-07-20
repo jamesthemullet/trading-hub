@@ -388,20 +388,39 @@ export const FacetsList = ({
   const boostedFacets = useMemo(
     () =>
       ruleset.facets?.map((facetConfig) => {
-        const found = filteredFacets.find((f) => f.id === facetConfig.id);
-        if (found) return found;
-        if (isFacetsLoading || isGlobalFacetsLoading) return undefined;
-        const globalFacet = globalFacets.find((f) => f.id === facetConfig.id);
-        if (globalFacet)
-          return { ...globalFacet, isUnavailable: true as const };
-        return undefined;
+        // Ghost-facet detection must use the unfiltered facet lists, so a
+        // facet only matching the search filter isn't mistaken for one
+        // that's genuinely no longer available.
+        const found = facets.find((f) => f.id === facetConfig.id);
+        const isGlobalFacetsReady = !isFacetsLoading && !isGlobalFacetsLoading;
+        const resolvedFacet =
+          found ??
+          (isGlobalFacetsReady
+            ? globalFacets.find((f) => f.id === facetConfig.id)
+            : undefined);
+
+        if (!resolvedFacet) return undefined;
+
+        const matchesFilter =
+          !filter.length ||
+          resolvedFacet.displayValue
+            .toLowerCase()
+            .includes(filter.toLowerCase()) ||
+          resolvedFacet.indexPropertyName
+            .toLowerCase()
+            .includes(filter.toLowerCase());
+
+        if (!matchesFilter) return undefined;
+
+        return found ? found : { ...resolvedFacet, isUnavailable: true };
       }) || [],
     [
       ruleset.facets,
-      filteredFacets,
+      facets,
       globalFacets,
       isFacetsLoading,
       isGlobalFacetsLoading,
+      filter,
     ]
   );
 

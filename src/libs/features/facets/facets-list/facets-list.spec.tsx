@@ -1521,6 +1521,38 @@ describe('FacetsList', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('should remove a boosted facet that does not match the search filter, not mark it as unavailable', async () => {
+    const user = userEvent.setup({ delay: null });
+    const includedFacetId = facetsListMock.facets[0].id;
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [{ id: includedFacetId }],
+        }}
+        isNewRuleset={false}
+        facetType={FacetType.Search}
+        searchTerms={['socks']}
+      />
+    );
+
+    expect(screen.getByTestId('Row showing color as included')).toBeVisible();
+
+    const searchInput = screen.getByPlaceholderText('Search');
+    await user.type(searchInput, 'no-such-facet{Enter}');
+
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('Row showing color as included')
+      ).not.toBeInTheDocument();
+    });
+    expect(
+      screen.queryByText('— currently not available')
+    ).not.toBeInTheDocument();
+  });
+
   it('should not flash "currently not available" while context facets are still loading', () => {
     const facetId = facetsListMock.facets[0].id;
 
