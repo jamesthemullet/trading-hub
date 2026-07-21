@@ -149,13 +149,20 @@ test.describe('Category rulesets', () => {
   });
 
   test('edits facet values', async ({ page }) => {
-    page.goto('/category/facets/edit/5e1002e8-bb08-4215-b26f-b5f6814b010a');
+    await page.goto(
+      '/category/facets/edit/5e1002e8-bb08-4215-b26f-b5f6814b010a'
+    );
 
     await expect(
       page.getByRole('heading', { name: 'Facet Rule Editor' })
     ).toBeVisible();
 
-    await page.getByRole('link', { name: 'Edit values' }).first().click();
+    await page
+      .getByTestId('Row showing Colours as included')
+      .getByRole('link', { name: 'Edit values' })
+      .click();
+
+    await page.waitForURL('**/category/facets/values/edit/**');
 
     await expect(
       page.getByRole('heading', { name: 'Value settings of: Colours' })
