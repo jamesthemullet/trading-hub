@@ -27,7 +27,7 @@ describe('editable-label', () => {
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
           setError={jest.fn()}
-          showErrorState={false}
+          shouldShowErrorState={false}
           handleUpdatedValue={jest.fn()}
           isWriteEnabled
         />
@@ -47,7 +47,7 @@ describe('editable-label', () => {
           onCancel={mockCancel}
           setError={jest.fn()}
           handleUpdatedValue={jest.fn()}
-          showErrorState={false}
+          shouldShowErrorState={false}
           isWriteEnabled
         />
       );
@@ -84,7 +84,7 @@ describe('editable-label', () => {
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
           setError={jest.fn()}
-          showErrorState={false}
+          shouldShowErrorState={false}
           handleUpdatedValue={jest.fn()}
           isWriteEnabled
         />
@@ -132,7 +132,7 @@ describe('editable-label', () => {
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
           setError={jest.fn()}
-          showErrorState={false}
+          shouldShowErrorState={false}
           handleUpdatedValue={jest.fn()}
           isWriteEnabled
         />
@@ -175,7 +175,7 @@ describe('editable-label', () => {
           onDisplayValueChange={onDisplayValueChange}
           displayValue="color"
           setError={jest.fn()}
-          showErrorState
+          shouldShowErrorState
           handleUpdatedValue={jest.fn()}
           isWriteEnabled
         />
@@ -202,7 +202,7 @@ describe('editable-label', () => {
           canCancelEdit
           onCancel={mockCancel}
           setError={jest.fn()}
-          showErrorState={false}
+          shouldShowErrorState={false}
           handleUpdatedValue={jest.fn()}
           isWriteEnabled
         />

@@ -334,7 +334,7 @@ export const GlobalFacetAttributesPageLayout = ({
       )}
 
       <ModalUnsavedChanges
-        opened={isUnsavedChangesModalOpen}
+        isOpen={isUnsavedChangesModalOpen}
         onClose={navigateBack}
         onContinue={() => setIsUnsavedChangesModalOpen(false)}
       />

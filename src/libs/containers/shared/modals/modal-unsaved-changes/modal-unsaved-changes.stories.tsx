@@ -12,7 +12,7 @@ const meta: Meta<typeof ModalUnsavedChanges> = {
   component: ModalUnsavedChanges,
   tags: ['autodocs'],
   argTypes: {
-    opened: {
+    isOpen: {
       control: 'boolean',
       description: 'Controls whether the modal is open',
       defaultValue: true,
@@ -36,7 +36,7 @@ type Story = StoryObj<typeof ModalUnsavedChanges>;
 
 export const Default: Story = {
   args: {
-    opened: false,
+    isOpen: false,
     onClose: fn(),
     onContinue: fn(),
   },
@@ -51,7 +51,7 @@ const DefaultTemplate = (args: Story['args'] = {}) => {
         Open Unsaved Changes Modal
       </Button>
       <ModalUnsavedChanges
-        opened={isOpen}
+        isOpen={isOpen}
         onClose={() => {
           setIsOpen(false);
           args.onClose?.();

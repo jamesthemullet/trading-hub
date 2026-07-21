@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { Divider, Modal } from '@mantine/core';
 
 import { Button, Typography } from '@/libs/components';
@@ -10,7 +11,7 @@ const ConfirmationModal = ({
 }: {
   onCloseModal: () => void;
   handleModalConfirm: () => void;
-}) => {
+}): ReactElement => {
   return (
     <Modal.Body>
       <Modal.Title>

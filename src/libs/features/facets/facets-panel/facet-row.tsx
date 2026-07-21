@@ -117,7 +117,7 @@ export const FacetRow = memo(
                 onFacetDataChange({ value: newValue, facet })
               }
               canCancelEdit
-              showErrorState={!!errorMessage}
+              shouldShowErrorState={!!errorMessage}
               setError={(message) => setError(id, message)}
               disallowedErrorMessage={errorMessage}
               handleUpdatedValue={(event) => {

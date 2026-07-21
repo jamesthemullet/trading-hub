@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, ReactElement } from 'react';
 import { useCallback, useMemo, useReducer, useState } from 'react';
 import { useHotkeys } from '@mantine/hooks';
 import { useRouter } from 'next/router';
@@ -56,7 +56,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
   headerText,
   countryCode = 'UK_IE',
   isDraftRuleset = false,
-}: PageLayout) => {
+}: PageLayout): ReactElement => {
   const router = useRouter();
 
   const processedFacet = useMemo(() => {
@@ -206,7 +206,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
       />
 
       <ModalUnsavedChanges
-        opened={isUnsavedChangesModalOpen}
+        isOpen={isUnsavedChangesModalOpen}
         onClose={navigateBack}
         onContinue={() => setIsUnsavedChangesModalOpen(false)}
       />

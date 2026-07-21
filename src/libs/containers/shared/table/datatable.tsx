@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 import { Modal, Skeleton } from '@mantine/core';
 
@@ -76,7 +77,7 @@ export const DataTable = ({
   currentPageSize,
   onToggleFavourite,
   favouriteIds = [],
-}: DataTableProps) => {
+}: DataTableProps): ReactElement => {
   const [optionToggle, setOptionToggle] = useState('');
   const [ruleSetIdToEdit, setRuleSetIdToEdit] = useState('');
   const [ruleName, setRuleName] = useState('');
@@ -97,8 +98,8 @@ export const DataTable = ({
     setOptionToggle(optionToggle === id ? '' : id);
   };
 
-  const showBreadcrumbColumn = headings.includes('Breadcrumb');
-  const showScheduleColumn = headings.includes('Schedule');
+  const shouldShowBreadcrumbColumn = headings.includes('Breadcrumb');
+  const shouldShowScheduleColumn = headings.includes('Schedule');
 
   const setDuplicationName = ({
     categoriesInfo,
@@ -153,7 +154,7 @@ export const DataTable = ({
         <div
           className={styles.row}
           data-num-columns={headings.length}
-          data-show-breadcrumb={showBreadcrumbColumn}
+          data-show-breadcrumb={shouldShowBreadcrumbColumn}
         >
           {headings.map((heading) => (
             <div
@@ -258,7 +259,7 @@ export const DataTable = ({
                     className={styles.row}
                     key={id}
                     data-num-columns={headings.length}
-                    data-show-breadcrumb={showBreadcrumbColumn}
+                    data-show-breadcrumb={shouldShowBreadcrumbColumn}
                   >
                     <div className={styles.firstColumn}>
                       <div className={styles.flagAndIdentifier}>
@@ -291,7 +292,7 @@ export const DataTable = ({
                           {categoryPlpUrl}
                         </Typography>
                       )}
-                      {startDate && showScheduleColumn && (
+                      {startDate && shouldShowScheduleColumn && (
                         <div className={styles.schedulingDetailLeftSide}>
                           <Image
                             alt=""
@@ -308,7 +309,7 @@ export const DataTable = ({
                         </div>
                       )}
                     </div>
-                    {showBreadcrumbColumn && (
+                    {shouldShowBreadcrumbColumn && (
                       <div className={styles.breadcrumbColumn}>
                         {categoryPlpUrl && (
                           <span title={categoryPlpUrl}>
@@ -323,7 +324,7 @@ export const DataTable = ({
                         )}
                       </div>
                     )}
-                    {showScheduleColumn && (
+                    {shouldShowScheduleColumn && (
                       <div className={styles.schedulingColumn}>
                         {startDate ? (
                           <>

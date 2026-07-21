@@ -19,6 +19,7 @@ export * from './use-facets-filter';
 export * from './use-favourite-rulesets';
 export * from './use-get-categories';
 export * from './use-get-facet-attribute-values';
+export * from './use-overwritten-product-rules';
 export * from './use-preview';
 export * from './use-rule-set';
 export * from './use-rule-set-create';

@@ -2,13 +2,13 @@ import type { DatesRangeValue } from '@mantine/dates';
 
 import dayjs from 'dayjs';
 
-export const formatMonthYearDateRange = (range: DatesRangeValue) => {
+export const formatMonthYearDateRange = (range: DatesRangeValue): string => {
   return range
     .map((date) => (date ? dayjs(date).format('MMM YYYY') : ''))
     .join(' - ');
 };
 
-export const formatMonthDayDateRange = (range: DatesRangeValue) => {
+export const formatMonthDayDateRange = (range: DatesRangeValue): string => {
   return range
     .map((date) => (date ? dayjs(date).format('MMM DD') : ''))
     .join(' - ');
@@ -19,7 +19,7 @@ export const formatDateMonthYearTimeRange = (
   startTime: string,
   endTime: string,
   hasNoEndDateMessage: boolean
-) => {
+): string => {
   const dateFormat = 'DD/MM/YY';
 
   const startDate = range[0] ? dayjs(range[0]) : null;
@@ -39,7 +39,7 @@ export const formatMonthDayDateTimeRange = (
   range: DatesRangeValue,
   startTime?: string,
   endTime?: string
-) => {
+): string => {
   const dateFormat = 'MMM DD YYYY';
 
   const startDate = range[0] ? dayjs(range[0]) : null;

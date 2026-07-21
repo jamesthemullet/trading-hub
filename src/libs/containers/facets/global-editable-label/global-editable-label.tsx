@@ -146,8 +146,8 @@ export const GlobalEditableLabel = ({
           });
         }}
         canCancelEdit
-        showErrorState={!!error}
-        showEditState={editingValues.includes(displayName)}
+        shouldShowErrorState={!!error}
+        shouldShowEditState={editingValues.includes(displayName)}
         setError={(message) => handleError(message)}
         disallowedErrorMessage={error}
         handleUpdatedValue={(event) => {

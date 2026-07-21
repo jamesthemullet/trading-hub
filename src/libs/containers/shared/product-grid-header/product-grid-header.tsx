@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 
 import { Button, Typography } from '@/libs/components';
@@ -32,12 +33,12 @@ export const ProductGridHeader = ({
   title,
   rulesetType,
   isWriteEnabled,
-}: Props) => {
-  const [showModal, setShowModal] = useState(false);
+}: Props): ReactElement => {
+  const [shouldShowModal, setShouldShowModal] = useState(false);
 
   const onCancelChange = () => {
     if (hasChanges) {
-      setShowModal(true);
+      setShouldShowModal(true);
     } else {
       onCancel();
     }
@@ -75,10 +76,10 @@ export const ProductGridHeader = ({
         </div>
       </div>
 
-      {showModal && (
+      {shouldShowModal && (
         <ModalUnsavedChanges
           onClose={onCancel}
-          onContinue={() => setShowModal(false)}
+          onContinue={() => setShouldShowModal(false)}
         />
       )}
     </>

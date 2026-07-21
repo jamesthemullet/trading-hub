@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import { Button, ErrorMessage, InfoBox, Typography } from '@/libs/components';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
@@ -34,7 +36,9 @@ type NonGlobalHeaderProps = CommonHeaderProps & {
 
 type HeaderProps = GlobalHeaderProps | NonGlobalHeaderProps;
 
-export const FacetAttributesPageLayoutHeader = (props: HeaderProps) => {
+export const FacetAttributesPageLayoutHeader = (
+  props: HeaderProps
+): ReactElement => {
   const {
     displayName,
     facetType,

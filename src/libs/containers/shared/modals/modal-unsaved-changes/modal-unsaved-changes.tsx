@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { Modal } from '@mantine/core';
 
 import { Button } from '@/libs/components';
@@ -8,16 +9,16 @@ import styles from './modal-unsaved-changes.module.css';
 type Props = {
   onClose: () => void;
   onContinue: () => void;
-  opened?: boolean;
+  isOpen?: boolean;
 };
 
 export const ModalUnsavedChanges = ({
   onClose,
   onContinue,
-  opened = true,
-}: Props) => {
+  isOpen = true,
+}: Props): ReactElement => {
   return (
-    <Modal.Root opened={opened} onClose={onContinue} centered padding={10}>
+    <Modal.Root opened={isOpen} onClose={onContinue} centered padding={10}>
       <Modal.Overlay blur={3} />
       <Modal.Content>
         <Modal.Body>

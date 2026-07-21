@@ -5,6 +5,7 @@ import { Divider, Modal } from '@mantine/core';
 import type { MerchandisingRuleSet } from '@/libs/api';
 import { Button, Typography } from '@/libs/components';
 import type { RuleSetActions } from '@/libs/components/types';
+import { useOverwrittenProductRules } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
 
 import pluralize from 'pluralize';
@@ -70,31 +71,12 @@ export const BulkActions = ({
 
   const onCloseModal = () => setIsModalOpen(false);
 
-  const overwrittenPinnedRules = ruleset.rules.pinnedProducts.filter(({ id }) =>
-    selectedProducts.includes(id)
-  );
-  const overwrittenBoostRules = ruleset.rules.boosts.product.filter(({ id }) =>
-    selectedProducts.includes(id)
-  );
-  const overwrittenBuryRules = ruleset.rules.buries.product.filter(({ id }) =>
-    selectedProducts.includes(id)
-  );
-  const overwrittenBlockedRules = ruleset.rules.blockedProducts.filter(
-    ({ id }) => selectedProducts.includes(id)
-  );
-  const totalOverwrittenRules = [
-    ...overwrittenPinnedRules,
-    ...overwrittenBlockedRules,
-    ...overwrittenBoostRules,
-    ...overwrittenBuryRules,
-  ].length;
-
-  const allSelectedProductsBlocked =
-    selectedProducts.length === overwrittenBlockedRules.length;
-  const allSelectedProductsBoosted =
-    selectedProducts.length === overwrittenBoostRules.length;
-  const allSelectedProductsBuried =
-    selectedProducts.length === overwrittenBuryRules.length;
+  const {
+    totalOverwrittenRules,
+    areAllSelectedProductsBlocked,
+    areAllSelectedProductsBoosted,
+    areAllSelectedProductsBuried,
+  } = useOverwrittenProductRules(ruleset, selectedProducts);
 
   return (
     <>
@@ -149,7 +131,7 @@ export const BulkActions = ({
                   </Button>
                 )}
 
-                {!allSelectedProductsBoosted && (
+                {!areAllSelectedProductsBoosted && (
                   <Button
                     className={`${styles.productMenuButton} ${styles.iconBoost}`}
                     appearance="plain"
@@ -164,7 +146,7 @@ export const BulkActions = ({
                   </Button>
                 )}
 
-                {!allSelectedProductsBuried && (
+                {!areAllSelectedProductsBuried && (
                   <Button
                     className={`${styles.productMenuButton} ${styles.iconBury}`}
                     appearance="plain"
@@ -179,7 +161,7 @@ export const BulkActions = ({
                   </Button>
                 )}
 
-                {!allSelectedProductsBlocked && (
+                {!areAllSelectedProductsBlocked && (
                   <Button
                     className={`${styles.productMenuButton} ${styles.iconBlock}`}
                     appearance="plain"

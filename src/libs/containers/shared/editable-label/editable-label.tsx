@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useEffect, useId, useRef, useState } from 'react';
 
 import { Button } from '@/libs/components';
@@ -12,8 +13,8 @@ type EditableLabelProps = {
   displayValue: string;
   onDisplayValueChange: (newValue: string) => void;
   setError: (message: string) => void;
-  showErrorState: boolean;
-  showEditState?: boolean;
+  shouldShowErrorState: boolean;
+  shouldShowEditState?: boolean;
   handleUpdatedValue: (event: React.ChangeEvent<HTMLInputElement>) => void;
   canCancelEdit?: boolean;
   onCancel?: () => void;
@@ -26,14 +27,14 @@ export const EditableLabel = ({
   displayValue,
   onDisplayValueChange,
   setError,
-  showErrorState,
-  showEditState,
+  shouldShowErrorState,
+  shouldShowEditState,
   handleUpdatedValue,
   canCancelEdit,
   onCancel,
   disallowedErrorMessage,
   isWriteEnabled,
-}: EditableLabelProps) => {
+}: EditableLabelProps): ReactElement => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [originalValue, setOriginalValue] = useState(displayValue);
   const [value, setValue] = useState(displayValue);
@@ -47,10 +48,10 @@ export const EditableLabel = ({
   }, [isEditMode]);
 
   useEffect(() => {
-    if (showErrorState || showEditState) {
+    if (shouldShowErrorState || shouldShowEditState) {
       setIsEditMode(true);
     }
-  }, [showErrorState, showEditState]);
+  }, [shouldShowErrorState, shouldShowEditState]);
 
   useEffect(() => {
     if (!isEditMode) {
@@ -76,7 +77,7 @@ export const EditableLabel = ({
                 }}
                 value={value}
                 onKeyDown={(event) => {
-                  if (event.key === 'Enter' && !showErrorState) {
+                  if (event.key === 'Enter' && !shouldShowErrorState) {
                     setIsEditMode(false);
                     onDisplayValueChange(value);
                   }
@@ -87,11 +88,11 @@ export const EditableLabel = ({
                     if (onCancel) onCancel();
                   }
                 }}
-                aria-invalid={showErrorState}
+                aria-invalid={shouldShowErrorState}
                 className={`${styles.input} typographyBodySmall`}
               />
 
-              {showErrorState && (
+              {shouldShowErrorState && (
                 <Image
                   width={20}
                   height={20}
@@ -111,7 +112,7 @@ export const EditableLabel = ({
                   setIsEditMode(false);
                 }}
                 aria-label={`Save ${displayValue} change`}
-                isDisabled={showErrorState}
+                isDisabled={shouldShowErrorState}
               >
                 <Image
                   width={20}
@@ -176,7 +177,7 @@ export const EditableLabel = ({
           </>
         )}
       </div>
-      {showErrorState && (
+      {shouldShowErrorState && (
         <div className={styles.errorMessage}>
           <Typography variant="bodySmall">{disallowedErrorMessage}</Typography>
         </div>
