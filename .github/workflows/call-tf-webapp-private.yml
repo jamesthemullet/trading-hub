@@ -1,0 +1,42 @@
+name: bc-private-endpoint-migration-v2
+
+on:
+  workflow_dispatch:
+    inputs:
+      ENV:
+        description: Target environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - perf
+          - prod
+      ACTION:
+        description: |
+          Which action to run. Run them in order, validating between steps.
+        required: true
+        type: choice
+        default: step-1-create-temp-resources
+        options:
+          - step-1-create-temp-resources
+          - step-2-shift-customer-routes-to-temp
+          - step-3-arm-private-link
+          - step-4-cutover
+          - rollback
+          - step-5-cleanup
+
+permissions:
+  id-token: write # required for Azure OIDC login
+  contents: read # required for actions/checkout
+
+jobs:
+  call-private-endpoint-migration-v2:
+    uses: DigitalInnovation/brightcloud/.github/workflows/private-endpoint-webapp-v2.yml@copilot/add-private-endpoint-webapp
+    with:
+      ENV: ${{ inputs.ENV }}
+      ACTION: ${{ inputs.ACTION }}
+    secrets:
+      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+      BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
