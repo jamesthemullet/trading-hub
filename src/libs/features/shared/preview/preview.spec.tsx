@@ -241,6 +241,23 @@ describe('Preview', () => {
     expect(screen.getByText('Out of stock')).toBeVisible();
   });
 
+  it('should render a placeholder image when imageUrl is empty', () => {
+    jest.mocked(usePreview).mockReturnValue({
+      ...mockCategoryReturnValue,
+      data: {
+        ...mockCategoryReturnValue.data,
+        products: [{ ...mockProduct, imageUrl: [] }],
+      },
+    });
+    renderWithProviders(<Preview {...mockProps} />);
+
+    const image = screen.getByTestId('productImage');
+    expect(image).toHaveAttribute(
+      'src',
+      expect.stringContaining('data:image/svg+xml')
+    );
+  });
+
   it('calls the api with the supplied facet config', () => {
     const mockFacetConfig = [{ id: 'mockId', boosted: ['Red', 'Yellow'] }];
     renderWithProviders(

@@ -30,7 +30,7 @@ export const VisualEditor = ({
   isSelectionDisabled,
 }: Props): ReactElement => {
   const pinnedProductsCount = products.filter(
-    (product) => product.metadata.isPinned
+    (product) => product.metadata?.isPinned
   ).length;
 
   return (

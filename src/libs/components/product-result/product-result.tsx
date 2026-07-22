@@ -102,10 +102,10 @@ export const ProductResult = ({ productDisplay }: Props) => {
           )}
         </div>
 
-        {isIndexed && product?.imageUrl[0] && !imageError ? (
+        {isIndexed && product?.imageUrl?.[0] && !imageError ? (
           <Image
-            src={`${MNS_IMAGE_BASE}/${product.imageUrl[0]}`}
-            alt={product.title}
+            src={`${MNS_IMAGE_BASE}/${product.imageUrl?.[0]}`}
+            alt={product.title ?? ''}
             width={213}
             height={277}
             className={styles.productImage}

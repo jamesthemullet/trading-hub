@@ -22,6 +22,9 @@ import Image from 'next/image';
 
 import styles from './preview.module.css';
 
+const MISSING_IMAGE_SRC =
+  'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22307%22 height=%22400%22%3E%3Crect width=%22307%22 height=%22400%22 fill=%22%23cccccc%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23ffffff%22 font-family=%22sans-serif%22 font-size=%2240%22%3Emissing%20image%3C/text%3E%3C/svg%3E';
+
 export type Props = {
   countryCode: 'UK' | 'IE';
   facetConfig: MerchandisingRuleSetFacetConfigWithId[];
@@ -272,46 +275,53 @@ export const Preview = ({
 
               <section className={styles.products}>
                 {data.products.map(
-                  ({ productId, imageUrl, isInStock, brand, title, price }) => (
-                    <div
-                      className={styles.product}
-                      key={`product-${productId}`}
-                    >
-                      <div className={styles.productWrapper}>
-                        <div className={styles.productImage}>
-                          <Image
-                            src={`https://asset1.cxnmarksandspencer.com/is/image/mands/${imageUrl[0]}`}
-                            alt=""
-                            data-testid="productImage"
-                            width={100}
-                            height={176}
-                            sizes="100%"
-                            onError={(element) => {
-                              // eslint-disable-next-line functional/immutable-data
-                              element.currentTarget.src =
-                                'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22307%22 height=%22400%22%3E%3Crect width=%22307%22 height=%22400%22 fill=%22%23cccccc%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23ffffff%22 font-family=%22sans-serif%22 font-size=%2240%22%3Emissing%20image%3C/text%3E%3C/svg%3E';
-                            }}
-                          />
-                          {!isInStock && (
-                            <div className={styles.productOutOfStock}>
-                              <Typography variant="bodySmall">
-                                Out of stock
-                              </Typography>
-                            </div>
-                          )}
-                        </div>
-                        <div className={styles.productInfo}>
-                          <Typography variant="bodySmall" isStrong>
-                            {price}
-                          </Typography>
-                          <Typography variant="bodySmall" isStrong uppercase>
-                            {brand}
-                          </Typography>
-                          <Typography variant="bodySmall">{title}</Typography>
+                  ({ productId, imageUrl, isInStock, brand, title, price }) => {
+                    const firstImageUrl = imageUrl?.[0];
+
+                    return (
+                      <div
+                        className={styles.product}
+                        key={`product-${productId}`}
+                      >
+                        <div className={styles.productWrapper}>
+                          <div className={styles.productImage}>
+                            <Image
+                              src={
+                                firstImageUrl
+                                  ? `https://asset1.cxnmarksandspencer.com/is/image/mands/${firstImageUrl}`
+                                  : MISSING_IMAGE_SRC
+                              }
+                              alt=""
+                              data-testid="productImage"
+                              width={100}
+                              height={176}
+                              sizes="100%"
+                              onError={(element) => {
+                                // eslint-disable-next-line functional/immutable-data
+                                element.currentTarget.src = MISSING_IMAGE_SRC;
+                              }}
+                            />
+                            {!isInStock && (
+                              <div className={styles.productOutOfStock}>
+                                <Typography variant="bodySmall">
+                                  Out of stock
+                                </Typography>
+                              </div>
+                            )}
+                          </div>
+                          <div className={styles.productInfo}>
+                            <Typography variant="bodySmall" isStrong>
+                              {price}
+                            </Typography>
+                            <Typography variant="bodySmall" isStrong uppercase>
+                              {brand}
+                            </Typography>
+                            <Typography variant="bodySmall">{title}</Typography>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )
+                    );
+                  }
                 )}
               </section>
             </div>

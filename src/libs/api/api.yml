@@ -2539,6 +2539,13 @@ components:
       required:
         - rules
         - isEnabled
+    MerchandisingRuleSetHistory:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingRuleSet'
+        - type: object
+          properties:
+            rules:
+              $ref: '#/components/schemas/MerchandisingRulesWithInfo'
     MerchandisingRuleSetLite:
       type: object
       properties:
@@ -2601,6 +2608,27 @@ components:
                   - id
           required:
             - categoriesInfo
+    MerchandisingCategoryRulesetHistoryWithInfo:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingRuleSetHistory'
+        - $ref: '#/components/schemas/MerchandisingIdentifier'
+        - type: object
+          properties:
+            categoriesInfo:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  plpUrl:
+                    type: string
+                required:
+                  - id
+          required:
+            - categoriesInfo
     MerchandisingCategoryRulesetLiteWithInfo:
       allOf:
         - $ref: '#/components/schemas/MerchandisingRuleSetLite'
@@ -2626,6 +2654,10 @@ components:
       allOf:
         - $ref: '#/components/schemas/MerchandisingCategoryRulesetWithInfo'
         - $ref: '#/components/schemas/MerchandisingLastChanged'
+    MerchandisingReturnedCategoryRuleSetHistoryChange:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingCategoryRulesetHistoryWithInfo'
+        - $ref: '#/components/schemas/MerchandisingLastChanged'
     MerchandisingReturnedCategoryRuleSetLite:
       allOf:
         - $ref: '#/components/schemas/MerchandisingCategoryRulesetLiteWithInfo'
@@ -2634,6 +2666,18 @@ components:
       allOf:
         - $ref: '#/components/schemas/MerchandisingKeywordRuleSet'
         - $ref: '#/components/schemas/MerchandisingIdentifier'
+    MerchandisingKeywordRulesetHistoryWithInfo:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingRuleSetHistory'
+        - $ref: '#/components/schemas/MerchandisingIdentifier'
+        - type: object
+          properties:
+            searchTerms:
+              type: array
+              items:
+                type: string
+          required:
+            - searchTerms
     MerchandisingKeywordRuleSetLiteWithInfo:
       allOf:
         - $ref: '#/components/schemas/MerchandisingKeywordRuleSetLite'
@@ -2641,6 +2685,10 @@ components:
     MerchandisingReturnedKeywordRuleSet:
       allOf:
         - $ref: '#/components/schemas/MerchandisingKeywordRuleSetWithInfo'
+        - $ref: '#/components/schemas/MerchandisingLastChanged'
+    MerchandisingReturnedKeywordRuleSetHistoryChange:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingKeywordRulesetHistoryWithInfo'
         - $ref: '#/components/schemas/MerchandisingLastChanged'
     MerchandisingReturnedKeywordRuleSetLite:
       allOf:
@@ -2654,6 +2702,10 @@ components:
       allOf:
         - $ref: '#/components/schemas/MerchandisingRuleSet'
         - $ref: '#/components/schemas/MerchandisingIdentifier'
+    MerchandisingGlobalRulesetHistoryWithInfo:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingRuleSetHistory'
+        - $ref: '#/components/schemas/MerchandisingIdentifier'
     MerchandisingGlobalRuleSetLiteWithInfo:
       allOf:
         - $ref: '#/components/schemas/MerchandisingRuleSetLite'
@@ -2661,6 +2713,10 @@ components:
     MerchandisingReturnedGlobalRuleSet:
       allOf:
         - $ref: '#/components/schemas/MerchandisingGlobalRuleSetWithInfo'
+        - $ref: '#/components/schemas/MerchandisingLastChanged'
+    MerchandisingReturnedGlobalRuleSetHistoryChange:
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingGlobalRulesetHistoryWithInfo'
         - $ref: '#/components/schemas/MerchandisingLastChanged'
     MerchandisingReturnedGlobalRuleSetLite:
       allOf:
@@ -2677,7 +2733,7 @@ components:
               id:
                 type: string
               change:
-                $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSet'
+                $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSetHistoryChange'
             required:
               - id
               - change
@@ -2697,7 +2753,7 @@ components:
               id:
                 type: string
               change:
-                $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSet'
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSetHistoryChange'
             required:
               - id
               - change
@@ -2717,7 +2773,7 @@ components:
               id:
                 type: string
               change:
-                $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSet'
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSetHistoryChange'
             required:
               - id
               - change
@@ -2909,12 +2965,6 @@ components:
           type: boolean
       required:
         - id
-        - productId
-        - metadata
-        - price
-        - imageUrl
-        - title
-        - isInStock
     MerchandisingProductMetadata:
       type: object
       properties:

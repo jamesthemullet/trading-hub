@@ -49,7 +49,7 @@ const ProductStatus = () => {
         payload: {
           displayId: productDisplay.displayId,
           title: productDisplay.product?.title ?? null,
-          imageUrl: productDisplay.product?.imageUrl[0] ?? null,
+          imageUrl: productDisplay.product?.imageUrl?.[0] ?? null,
           mainStatusLabel: productDisplay.mainStatusLabel,
           mainStatusVariant: productDisplay.mainStatusVariant,
           searchedAt: Date.now(),

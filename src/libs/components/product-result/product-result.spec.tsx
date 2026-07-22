@@ -27,7 +27,7 @@ const operationalSection: SectionWithLabel<string | null> = {
   statusLabel: 'Operational',
 };
 
-const makeDisplay = (imageUrl: string[] = []): ProductDisplay => ({
+const makeDisplay = (imageUrl?: string[]): ProductDisplay => ({
   isIndexed: true,
   product: { ...baseProduct, imageUrl },
   displayId: 'P60538523',
@@ -135,9 +135,32 @@ describe('ProductResult', () => {
       expect(screen.getByAltText('Green Wool Coat')).toBeInTheDocument();
     });
 
+    it('should use empty string as alt text when product title is undefined', () => {
+      const display = makeDisplay(['image1.jpg']);
+      const { container } = renderWithProviders(
+        <ProductResult
+          productDisplay={{
+            ...display,
+            product: display.product
+              ? { ...display.product, title: undefined }
+              : null,
+          }}
+        />
+      );
+      const img = container.querySelector('.productImage');
+      expect(img).toHaveAttribute('alt', '');
+    });
+
     it('should render the placeholder when imageUrl is empty', () => {
       const { container } = renderWithProviders(
-        <ProductResult productDisplay={makeDisplay()} />
+        <ProductResult productDisplay={makeDisplay([])} />
+      );
+      expect(container.querySelector('.imagePlaceholder')).toBeInTheDocument();
+    });
+
+    it('should render the placeholder when imageUrl is undefined', () => {
+      const { container } = renderWithProviders(
+        <ProductResult productDisplay={makeDisplay(undefined)} />
       );
       expect(container.querySelector('.imagePlaceholder')).toBeInTheDocument();
     });

@@ -22,6 +22,9 @@ import Image from 'next/image';
 import { Input } from '../../shared';
 import styles from './product.module.css';
 
+const MISSING_IMAGE_SRC =
+  'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22400%22%3E%3Crect width=%22300%22 height=%22400%22 fill=%22%23cccccc%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23ffffff%22 font-family=%22sans-serif%22 font-size=%2240%22%3Emissing%20image%3C/text%3E%3C/svg%3E';
+
 const ProductDetails = ({
   imageUrl,
   brand,
@@ -41,12 +44,18 @@ const ProductDetails = ({
   ranking?: Array<MerchandisingRankingAttribute>;
 }) => {
   const productInfoVariant = isSearchResult ? 'labelLarge' : 'bodySmall';
+  const firstImageUrl = imageUrl?.[0];
+  const productName = [brand, title].filter(Boolean).join(' ');
 
   return (
     <>
       <div className={styles.productCard}>
         <Image
-          src={`https://asset1.cxnmarksandspencer.com/is/image/mands/${imageUrl[0]}`}
+          src={
+            firstImageUrl
+              ? `https://asset1.cxnmarksandspencer.com/is/image/mands/${firstImageUrl}`
+              : MISSING_IMAGE_SRC
+          }
           alt=""
           data-testid="productImage"
           width={100}
@@ -54,8 +63,7 @@ const ProductDetails = ({
           sizes="100%"
           onError={(element) => {
             // eslint-disable-next-line functional/immutable-data
-            element.currentTarget.src =
-              'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22400%22%3E%3Crect width=%22300%22 height=%22400%22 fill=%22%23cccccc%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23ffffff%22 font-family=%22sans-serif%22 font-size=%2240%22%3Emissing%20image%3C/text%3E%3C/svg%3E';
+            element.currentTarget.src = MISSING_IMAGE_SRC;
           }}
         />
         {isOutOfStock && (
@@ -70,16 +78,18 @@ const ProductDetails = ({
           isStrong={isBrandStrong ?? true}
           data-testid="product title"
         >
-          {brand} {title}
+          {productName}
         </Typography>
-        <Typography variant={productInfoVariant}>{price}</Typography>
-        <Typography
-          variant={productInfoVariant}
-          data-testid="product id"
-          align="right"
-        >
-          ID: {productId}
-        </Typography>
+        {price && <Typography variant={productInfoVariant}>{price}</Typography>}
+        {productId && (
+          <Typography
+            variant={productInfoVariant}
+            data-testid="product id"
+            align="right"
+          >
+            ID: {productId}
+          </Typography>
+        )}
       </div>
       {hasSupplementaryInfo && ranking && (
         <div className={styles.supplementaryInfo}>
@@ -191,7 +201,9 @@ export const Product = ({
   hasSupplementaryInfo = false,
   isSelected,
   isSelectionDisabled,
-  metadata: { isPinned, isBoosted, isBuried, isBlocked, ranking },
+  metadata: { isPinned, isBoosted, isBuried, isBlocked, ranking } = {
+    isPinned: false,
+  },
   onSelectProduct,
   pinnedProductsCount,
   price,
@@ -339,7 +351,7 @@ export const Product = ({
       )}
       <div className={styles.productHeader}>
         <Checkbox
-          label={`Select ${title}`}
+          label={`Select ${title || id}`}
           disabled={isSelectionDisabled}
           checked={isSelected}
           onChange={() => onSelectProduct?.({ id, isSelected })}

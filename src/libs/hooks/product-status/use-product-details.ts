@@ -80,7 +80,7 @@ export const getProductDetails = (
   const issues = data.issues;
   const product = isIndexed ? (data.products[0] as Product) : null;
 
-  const ranking = product?.metadata.ranking;
+  const ranking = product?.metadata?.ranking;
   const predictedRevenueScore = getRankingValue(
     ranking,
     'Predicted Revenue Score'

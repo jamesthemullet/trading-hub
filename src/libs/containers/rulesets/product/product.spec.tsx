@@ -77,6 +77,34 @@ describe('Product', () => {
       );
     });
 
+    it('should render the title without a stray space when brand is missing', () => {
+      render(<Product {...productProps} brand={undefined} />);
+
+      expect(screen.getByTestId('product title')).toHaveTextContent(
+        'product title'
+      );
+    });
+
+    it('should not render the product id when productId is missing', () => {
+      render(<Product {...productProps} productId={undefined} />);
+
+      expect(screen.queryByTestId('product id')).not.toBeInTheDocument();
+    });
+
+    it('should fall back to the product id for the checkbox label when title is missing', () => {
+      render(<Product {...productProps} title={undefined} />);
+
+      expect(
+        screen.getByLabelText(`Select ${productProps.id}`)
+      ).toBeInTheDocument();
+    });
+
+    it('should not render the price when price is missing', () => {
+      render(<Product {...productProps} price={undefined} />);
+
+      expect(screen.queryByText('£10')).not.toBeInTheDocument();
+    });
+
     it('should use fallback image on error', () => {
       render(<Product {...productProps} />);
 
@@ -88,6 +116,24 @@ describe('Product', () => {
         'src',
         expect.stringMatching(/^data:image\/svg\+xml/)
       );
+    });
+
+    it('should render a placeholder image when imageUrl is empty', () => {
+      renderWithProviders(<Product {...productProps} imageUrl={[]} />);
+
+      const image = screen.getByTestId('productImage');
+
+      expect(image).toHaveAttribute(
+        'src',
+        expect.stringMatching(/^data:image\/svg\+xml/)
+      );
+    });
+
+    it('should render correctly when metadata is undefined', () => {
+      renderWithProviders(<Product {...productProps} metadata={undefined} />);
+
+      expect(screen.getByTestId('product title')).toBeInTheDocument();
+      expect(screen.queryByTestId('Pinned product')).not.toBeInTheDocument();
     });
 
     it('should show pinned label', () => {
