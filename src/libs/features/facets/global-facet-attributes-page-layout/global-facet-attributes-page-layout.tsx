@@ -8,7 +8,6 @@ import type {
   MerchandisingCountryCode,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
-import { useStickyBarFlag } from '@/libs/components/feature-flag/feature-flag';
 import { ROUTES } from '@/libs/constants';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetAttributesListActions } from '@/libs/containers';
@@ -22,7 +21,6 @@ import { useCheckedRowsSelector } from '@/libs/stores/global-attributes-page/use
 
 import { FacetAttributesPageLayoutHeader } from '../facet-attributes-page-layout-header/facet-attributes-page-layout-header';
 import { GlobalFacetAttributesList } from '../global-facet-attributes-list/global-facet-attributes-list';
-import { GlobalFacetAttributesCompactBar } from './global-facet-attributes-compact-bar';
 import styles from './global-facet-attributes-page-layout.module.css';
 
 type PageLayout = {
@@ -52,10 +50,6 @@ export const GlobalFacetAttributesPageLayout = ({
 }: PageLayout): ReactElement => {
   const router = useRouter();
 
-  const { isStickyBarEnabled, stickyBarVariant } = useStickyBarFlag();
-  const isVariantA = isStickyBarEnabled && stickyBarVariant === 'variant-a';
-  const isVariantB = isStickyBarEnabled && stickyBarVariant === 'variant-b';
-  const shouldShowPinButton = isVariantA || isVariantB;
   const [isPinned, setIsPinned] = useState(false);
 
   // reducer
@@ -239,38 +233,7 @@ export const GlobalFacetAttributesPageLayout = ({
 
   return (
     <>
-      {/* Variant B: compact bar fades in sticky at top when pinned */}
-      {isVariantB && (
-        <div
-          className={`${styles.compactBar}${isPinned ? ` ${styles.compactBarVisible}` : ''}`}
-          aria-hidden={!isPinned}
-        >
-          <GlobalFacetAttributesCompactBar
-            onClose={handleClose}
-            onSave={handleSave}
-            onMergeClick={handleMerge}
-            onSearchChange={onSearchChange}
-            isWriteEnabled={isWriteEnabled}
-            isMergeDisabled={checkedRows.length < 2}
-            checkedRows={checkedRows.length}
-            isPinned={isPinned}
-            onTogglePin={() => setIsPinned((prev) => !prev)}
-          />
-        </div>
-      )}
-
-      {/* Full header + actions: sticky for variant A; collapses for variant B when pinned */}
-      <div
-        className={
-          [
-            isVariantA && isPinned ? styles.stickyContainer : '',
-            isVariantB ? styles.fullContentWrapper : '',
-            isVariantB && isPinned ? styles.fullContentCollapsed : '',
-          ]
-            .filter(Boolean)
-            .join(' ') || undefined
-        }
-      >
+      <div className={isPinned ? styles.stickyContainer : undefined}>
         <FacetAttributesPageLayoutHeader
           displayName={displayName}
           facetType={FacetType.Global}
@@ -287,7 +250,7 @@ export const GlobalFacetAttributesPageLayout = ({
           onMergeClick={handleMerge}
           isWriteEnabled={isWriteEnabled}
           checkedRows={checkedRows.length}
-          showPinButton={shouldShowPinButton && !(isVariantB && isPinned)}
+          showPinButton
           isPinned={isPinned}
           onTogglePin={() => setIsPinned((prev) => !prev)}
         />

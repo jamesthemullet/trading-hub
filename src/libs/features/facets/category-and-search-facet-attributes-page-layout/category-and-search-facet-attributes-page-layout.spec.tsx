@@ -367,6 +367,30 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
     });
   });
 
+  describe('sticky bar pin button', () => {
+    it('shows pin button', () => {
+      setup();
+
+      expect(
+        screen.getByRole('button', { name: 'Pin top bar' })
+      ).toBeInTheDocument();
+    });
+
+    it('toggles pin state when pin button is clicked', async () => {
+      const user = userEvent.setup({ delay: null });
+      setup();
+
+      const pinButton = screen.getByRole('button', { name: 'Pin top bar' });
+      expect(pinButton).toHaveAttribute('aria-pressed', 'false');
+
+      await user.click(pinButton);
+
+      expect(
+        screen.getByRole('button', { name: 'Unpin top bar' })
+      ).toHaveAttribute('aria-pressed', 'true');
+    });
+  });
+
   describe('undo button', () => {
     it('renders a disabled undo button when no changes made', () => {
       setup({ facetType: FacetType.Category });

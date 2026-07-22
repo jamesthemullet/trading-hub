@@ -113,6 +113,8 @@ export const FacetsList = ({
   const { getStringParam } = useTypeSafeQuery();
   const rulesetId = getStringParam('id');
 
+  const [isPinned, setIsPinned] = useState(false);
+
   const { getDraft, clearDraft } = useDraftRuleset();
 
   const defaultRuleset: MerchandisingRuleSet = {
@@ -496,199 +498,216 @@ export const FacetsList = ({
         />
       )}
 
-      <ProductGridHeader
-        canSave={
-          !!selectedCategoriesInfo.length ||
-          !!selectedSearchTerms.length ||
-          facetType === FacetType.Global
-        }
-        onSave={handleSave}
-        hasPreview={
-          !!selectedCategoriesInfo?.length || !!selectedSearchTerms?.length
-        }
-        onPreview={() => {
-          dispatchFacetList({ type: 'togglePreview' });
-          track({
-            event: `Preview ${facetType} facets - ${facetType === FacetType.Category ? previewValue : selectedSearchTerms.join(', ')}`,
-          });
-        }}
-        isNewRuleSet={!!isNewRuleset}
-        hasChanges={hasChanges}
-        onCancel={handleCancel}
-        title={
-          facetType === FacetType.Global
-            ? 'Global Facet Rule Editor'
-            : 'Facet Rule Editor'
-        }
-        shouldHidePreview={facetType === FacetType.Global}
-        rulesetType={facetType}
-        isWriteEnabled={isWriteEnabled}
-      />
+      <div className={isPinned ? styles.stickyContainer : undefined}>
+        <ProductGridHeader
+          canSave={
+            !!selectedCategoriesInfo.length ||
+            !!selectedSearchTerms.length ||
+            facetType === FacetType.Global
+          }
+          onSave={handleSave}
+          hasPreview={
+            !!selectedCategoriesInfo?.length || !!selectedSearchTerms?.length
+          }
+          onPreview={() => {
+            dispatchFacetList({ type: 'togglePreview' });
+            track({
+              event: `Preview ${facetType} facets - ${facetType === FacetType.Category ? previewValue : selectedSearchTerms.join(', ')}`,
+            });
+          }}
+          isNewRuleSet={!!isNewRuleset}
+          hasChanges={hasChanges}
+          onCancel={handleCancel}
+          title={
+            facetType === FacetType.Global
+              ? 'Global Facet Rule Editor'
+              : 'Facet Rule Editor'
+          }
+          shouldHidePreview={facetType === FacetType.Global}
+          rulesetType={facetType}
+          isWriteEnabled={isWriteEnabled}
+        />
 
-      {getFacetsDataError && (
-        <ErrorMessage>
-          Error retrieving facet list: {getFacetsDataError}
-        </ErrorMessage>
-      )}
+        {getFacetsDataError && (
+          <ErrorMessage>
+            Error retrieving facet list: {getFacetsDataError}
+          </ErrorMessage>
+        )}
 
-      <div className={styles.sectionWrapper}>
-        <Typography variant="bodyMedium" isStrong withMargin>
-          Rule scope
-        </Typography>
-        <div className={styles.scopeWrapper}>
-          <div>
-            <Typography as="p" withMargin variant="labelMedium">
-              Influence
-            </Typography>
-            <CombinedDropdown
-              variant={DropdownVariant.CountrySelector}
-              onChange={(country) => {
-                dispatch({
-                  type: 'changeCountry',
-                  payload: country as 'UK' | 'IE',
-                });
-                track({
-                  event: `Change ${facetType} facet influence to ${country}`,
-                });
-                // istanbul ignore else
-                if (country !== 'UK_IE') {
-                  dispatchFacetList({
-                    type: 'setPreviewCountryCode',
+        <div className={styles.sectionWrapper}>
+          <Typography variant="bodyMedium" isStrong withMargin>
+            Rule scope
+          </Typography>
+          <div className={styles.scopeWrapper}>
+            <div>
+              <Typography as="p" withMargin variant="labelMedium">
+                Influence
+              </Typography>
+              <CombinedDropdown
+                variant={DropdownVariant.CountrySelector}
+                onChange={(country) => {
+                  dispatch({
+                    type: 'changeCountry',
                     payload: country as 'UK' | 'IE',
                   });
-                }
-              }}
-              selectedCountryCode={ruleset.countryCode}
-              ariaLabel="Select country"
-            />
-          </div>
-          {facetType === FacetType.Category && (
-            <CategorySearch
-              selectedCategories={selectedCategories}
-              countryCode={ruleset.countryCode}
-              previewCategory={previewValue}
-              onClearSelection={onRemoveCategory}
-              onSelectCategory={onSelectCategory}
-              selectedCategoriesInfo={selectedCategoriesInfo}
-              selectPreviewCategory={handleSetPreviewValue}
-              isWriteEnabled={isWriteEnabled}
-            />
-          )}
-          {facetType === FacetType.Search && (
-            <SearchKeywords
-              title="Search Keywords"
-              searchTerms={selectedSearchTerms}
-              addSearchTerm={onAddSearchTerm}
-              removeSearchTerm={onRemoveSearchTerm}
-              previewSearchTerm={previewValue}
-              selectPreviewSearchTerm={handleSetPreviewValue}
-              isWriteEnabled={isWriteEnabled}
-            />
-          )}
-          {facetType !== FacetType.Global && (
-            <div className={styles.duration}>
-              <Typography as="p" withMargin variant="labelMedium">
-                Duration
-              </Typography>
-              <DateTimePickerModal
-                showCalendarIcon
-                onUpdateDateTimeRange={(dateTime) => {
-                  dispatch({
-                    type: 'dateTime',
-                    payload: {
-                      dateTime,
-                    },
+                  track({
+                    event: `Change ${facetType} facet influence to ${country}`,
                   });
+                  // istanbul ignore else
+                  if (country !== 'UK_IE') {
+                    dispatchFacetList({
+                      type: 'setPreviewCountryCode',
+                      payload: country as 'UK' | 'IE',
+                    });
+                  }
                 }}
-                dateTime={[
-                  ruleset.startDate ? new Date(ruleset.startDate) : null,
-                  ruleset.endDate ? new Date(ruleset.endDate) : null,
-                ]}
-                isWriteEnabled={isWriteEnabled}
+                selectedCountryCode={ruleset.countryCode}
+                ariaLabel="Select country"
               />
             </div>
-          )}
-          {facetType === FacetType.Search &&
-            ruleset.countryCode === 'UK_IE' && (
-              <div>
+            {facetType === FacetType.Category && (
+              <CategorySearch
+                selectedCategories={selectedCategories}
+                countryCode={ruleset.countryCode}
+                previewCategory={previewValue}
+                onClearSelection={onRemoveCategory}
+                onSelectCategory={onSelectCategory}
+                selectedCategoriesInfo={selectedCategoriesInfo}
+                selectPreviewCategory={handleSetPreviewValue}
+                isWriteEnabled={isWriteEnabled}
+              />
+            )}
+            {facetType === FacetType.Search && (
+              <SearchKeywords
+                title="Search Keywords"
+                searchTerms={selectedSearchTerms}
+                addSearchTerm={onAddSearchTerm}
+                removeSearchTerm={onRemoveSearchTerm}
+                previewSearchTerm={previewValue}
+                selectPreviewSearchTerm={handleSetPreviewValue}
+                isWriteEnabled={isWriteEnabled}
+              />
+            )}
+            {facetType !== FacetType.Global && (
+              <div className={styles.duration}>
                 <Typography as="p" withMargin variant="labelMedium">
-                  Preview Country
+                  Duration
                 </Typography>
-                <CombinedDropdown
-                  variant={DropdownVariant.Generic}
-                  label={`${selectedPreviewCountryCode} view`}
-                  width={155}
-                  icon={`icon-${selectedPreviewCountryCode?.toLowerCase()}-flag`}
-                  ariaLabel="Select country for preview"
-                >
-                  <Button
-                    className={dropdownStyles.dropdownOption}
-                    data-hover-grey
-                    type="button"
-                    onClick={() => {
-                      track({ event: 'Change search facets preview to IE' });
-                      dispatchFacetList({
-                        type: 'setPreviewCountryCode',
-                        payload: 'IE',
-                      });
-                    }}
-                    role="menuitemradio"
-                    aria-checked={selectedPreviewCountryCode === 'IE'}
-                  >
-                    <Image
-                      src="/trading-hub/asset/icon-ie-flag.svg"
-                      width={20}
-                      height={20}
-                      alt="IE flag"
-                    />
-                    <Typography as="span" variant="bodySmall">
-                      &nbsp; IE view
-                    </Typography>
-                  </Button>
-                  <Button
-                    className={dropdownStyles.dropdownOption}
-                    data-hover-grey
-                    type="button"
-                    onClick={() => {
-                      track({ event: 'Change search facets preview to UK' });
-                      dispatchFacetList({
-                        type: 'setPreviewCountryCode',
-                        payload: 'UK',
-                      });
-                    }}
-                    role="menuitemradio"
-                    aria-checked={selectedPreviewCountryCode === 'UK'}
-                  >
-                    <Image
-                      src="/trading-hub/asset/icon-uk-flag.svg"
-                      width={20}
-                      height={20}
-                      alt="UK flag"
-                    />
-                    &nbsp; UK view
-                  </Button>
-                </CombinedDropdown>
+                <DateTimePickerModal
+                  showCalendarIcon
+                  onUpdateDateTimeRange={(dateTime) => {
+                    dispatch({
+                      type: 'dateTime',
+                      payload: {
+                        dateTime,
+                      },
+                    });
+                  }}
+                  dateTime={[
+                    ruleset.startDate ? new Date(ruleset.startDate) : null,
+                    ruleset.endDate ? new Date(ruleset.endDate) : null,
+                  ]}
+                  isWriteEnabled={isWriteEnabled}
+                />
               </div>
             )}
-        </div>
-
-        <FacetsPanelAccordion
-          boostedCount={boostedFacets.length}
-          excludedCount={excludedFacets.length}
-          nonBoostedExcludedCount={defaultFacets.length}
-        />
-      </div>
-
-      {(selectedCategories.length > 0 || selectedSearchTerms.length > 0) && (
-        <div className={styles.sectionWrapper}>
-          <div className={styles.searchWrapper}>
-            <Search
-              onChange={(e) => handleFilter(e.target.value.trim())}
-              placeholder="Search"
-            />
+            {facetType === FacetType.Search &&
+              ruleset.countryCode === 'UK_IE' && (
+                <div>
+                  <Typography as="p" withMargin variant="labelMedium">
+                    Preview Country
+                  </Typography>
+                  <CombinedDropdown
+                    variant={DropdownVariant.Generic}
+                    label={`${selectedPreviewCountryCode} view`}
+                    width={155}
+                    icon={`icon-${selectedPreviewCountryCode?.toLowerCase()}-flag`}
+                    ariaLabel="Select country for preview"
+                  >
+                    <Button
+                      className={dropdownStyles.dropdownOption}
+                      data-hover-grey
+                      type="button"
+                      onClick={() => {
+                        track({ event: 'Change search facets preview to IE' });
+                        dispatchFacetList({
+                          type: 'setPreviewCountryCode',
+                          payload: 'IE',
+                        });
+                      }}
+                      role="menuitemradio"
+                      aria-checked={selectedPreviewCountryCode === 'IE'}
+                    >
+                      <Image
+                        src="/trading-hub/asset/icon-ie-flag.svg"
+                        width={20}
+                        height={20}
+                        alt="IE flag"
+                      />
+                      <Typography as="span" variant="bodySmall">
+                        &nbsp; IE view
+                      </Typography>
+                    </Button>
+                    <Button
+                      className={dropdownStyles.dropdownOption}
+                      data-hover-grey
+                      type="button"
+                      onClick={() => {
+                        track({ event: 'Change search facets preview to UK' });
+                        dispatchFacetList({
+                          type: 'setPreviewCountryCode',
+                          payload: 'UK',
+                        });
+                      }}
+                      role="menuitemradio"
+                      aria-checked={selectedPreviewCountryCode === 'UK'}
+                    >
+                      <Image
+                        src="/trading-hub/asset/icon-uk-flag.svg"
+                        width={20}
+                        height={20}
+                        alt="UK flag"
+                      />
+                      &nbsp; UK view
+                    </Button>
+                  </CombinedDropdown>
+                </div>
+              )}
           </div>
+
+          <FacetsPanelAccordion
+            boostedCount={boostedFacets.length}
+            excludedCount={excludedFacets.length}
+            nonBoostedExcludedCount={defaultFacets.length}
+          />
         </div>
-      )}
+
+        {(selectedCategories.length > 0 || selectedSearchTerms.length > 0) && (
+          <div className={styles.sectionWrapper}>
+            <div className={styles.searchWrapper}>
+              <Search
+                onChange={(e) => handleFilter(e.target.value.trim())}
+                placeholder="Search"
+              />
+              <Button
+                appearance="icon"
+                aria-label={isPinned ? 'Unpin top bar' : 'Pin top bar'}
+                aria-pressed={isPinned}
+                className={`${styles.pinButton}${isPinned ? ` ${styles.pinButtonActive}` : ''}`}
+                onClick={() => setIsPinned((prev) => !prev)}
+              >
+                <Image
+                  src="/trading-hub/asset/icon-pin.svg"
+                  width={14}
+                  height={19}
+                  alt=""
+                  className={styles.pinIcon}
+                />
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className={styles.attributesTable}>
         <div className={styles.facetTableRow} data-with-reorder>

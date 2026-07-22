@@ -7,7 +7,6 @@ import {
   useAuthorizationFlag,
   useFavouriteRulesetsFlag,
   useProfilePageFlag,
-  useStickyBarFlag,
 } from './feature-flag';
 
 const createWrapper = (overrides: Partial<typeof defaultFeatureFlags> = {}) => {
@@ -31,27 +30,6 @@ describe('useAuthorizationFlag', () => {
     });
 
     expect(result.current).toBe(false);
-  });
-});
-
-describe('useStickyBarFlag', () => {
-  it('should return defaults when flag is off', () => {
-    const { result } = renderHook(() => useStickyBarFlag(), {
-      wrapper: createWrapper(),
-    });
-    expect(result.current.isStickyBarEnabled).toBe(false);
-    expect(result.current.stickyBarVariant).toBe('variant-a');
-  });
-
-  it('should return enabled state and variant when flag is on', () => {
-    const { result } = renderHook(() => useStickyBarFlag(), {
-      wrapper: createWrapper({
-        hasStickyBar: true,
-        stickyBarVariant: 'variant-b',
-      }),
-    });
-    expect(result.current.isStickyBarEnabled).toBe(true);
-    expect(result.current.stickyBarVariant).toBe('variant-b');
   });
 });
 

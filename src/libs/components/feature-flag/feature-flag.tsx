@@ -10,13 +10,9 @@ type AuthorizationRoleOverride = {
   globalOverride: GlobalRoleOverride;
 };
 
-export type StickyBarVariant = 'variant-a' | 'variant-b';
-
 export type FeatureFlags = {
   hasAuthorization: boolean;
   authorizationRoleOverride: AuthorizationRoleOverride;
-  hasStickyBar: boolean;
-  stickyBarVariant: StickyBarVariant;
   hasProfilePage: boolean;
   hasFavouriteRulesets: boolean;
 };
@@ -28,8 +24,6 @@ export const defaultFeatureFlags: FeatureFlags = {
     searchOverride: 'No Override',
     globalOverride: 'No Override',
   },
-  hasStickyBar: false,
-  stickyBarVariant: 'variant-a',
   hasProfilePage: false,
   hasFavouriteRulesets: false,
 };
@@ -59,24 +53,6 @@ export const useAuthorizationRoleOverride = () => {
   }, [featureFlags.authorizationRoleOverride]);
 
   return authorizationRoleOverride;
-};
-
-export const useStickyBarFlag = () => {
-  const featureFlags = useContext(FeatureFlagContext);
-  const [isStickyBarEnabled, setIsStickyBarEnabled] = useState(false);
-  const [stickyBarVariant, setStickyBarVariant] = useState<StickyBarVariant>(
-    featureFlags.stickyBarVariant
-  );
-
-  useEffect(() => {
-    setIsStickyBarEnabled(featureFlags.hasStickyBar);
-  }, [featureFlags.hasStickyBar]);
-
-  useEffect(() => {
-    setStickyBarVariant(featureFlags.stickyBarVariant);
-  }, [featureFlags.stickyBarVariant]);
-
-  return { isStickyBarEnabled, stickyBarVariant };
 };
 
 export const useProfilePageFlag = () => {

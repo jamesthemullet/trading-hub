@@ -14,8 +14,6 @@ const FeatureFlags = () => {
     [
       'flagAuthorization',
       'flagAuthorizationRoleOverride',
-      'flagStickyBar',
-      'flagStickyBarVariant',
       'flagProfilePage',
       'flagFavouriteRulesets',
     ],
@@ -24,12 +22,7 @@ const FeatureFlags = () => {
     }
   );
 
-  const {
-    flagAuthorization,
-    flagStickyBar,
-    flagProfilePage,
-    flagFavouriteRulesets,
-  } = cookies;
+  const { flagAuthorization, flagProfilePage, flagFavouriteRulesets } = cookies;
 
   return (
     <div className={styles.wrapper}>
@@ -102,34 +95,6 @@ const FeatureFlags = () => {
                   ...cookies.flagAuthorizationRoleOverride,
                   globalOverride: value,
                 })
-              );
-            }}
-          />
-        </Stack>
-      )}
-      <div className={styles.flag}>
-        <Typography>Sticky Bar:&nbsp;</Typography>
-        <Toggle
-          aria-label="Toggle sticky bar feature flag"
-          checked={flagStickyBar}
-          onChange={() => {
-            setCookie('flagStickyBar', JSON.stringify(!flagStickyBar));
-          }}
-        />
-      </div>
-      {cookies.flagStickyBar && (
-        <Stack w={400}>
-          <Select
-            label="Sticky bar variant"
-            data={[
-              { value: 'variant-a', label: 'Variant A' },
-              { value: 'variant-b', label: 'Variant B' },
-            ]}
-            value={cookies.flagStickyBarVariant ?? 'variant-a'}
-            onChange={(value) => {
-              setCookie(
-                'flagStickyBarVariant',
-                JSON.stringify(value ?? 'variant-a')
               );
             }}
           />

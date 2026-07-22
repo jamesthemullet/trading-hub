@@ -14,6 +14,7 @@ import type {
   MerchandisingReturnedFacet,
 } from '@/libs/api';
 import {
+  Button,
   CombinedDropdown,
   DropdownVariant,
   Search,
@@ -52,6 +53,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import Image from 'next/image';
 
 import { FacetRow } from './facet-row';
 import styles from './facets-panel.module.css';
@@ -91,6 +93,8 @@ export const FacetsPanel = ({
   onFacetDataChange,
 }: FacetsPanelProps): ReactElement => {
   const { getStringParam } = useTypeSafeQuery();
+
+  const [isPinned, setIsPinned] = useState(false);
 
   const [facetPanelLocalState, dispatch] = useReducer(facetsPanelReducer, {
     includedFacets: [],
@@ -366,60 +370,77 @@ export const FacetsPanel = ({
 
   return (
     <>
-      <ProductGridHeader
-        canSave
-        onSave={handleSave}
-        hasPreview={false}
-        isNewRuleSet={false}
-        hasChanges
-        onCancel={onCancel}
-        shouldHidePreview
-        title={title}
-        isWriteEnabled={isWriteEnabled}
-        rulesetType="global"
-      />
+      <div className={isPinned ? styles.stickyContainer : undefined}>
+        <ProductGridHeader
+          canSave
+          onSave={handleSave}
+          hasPreview={false}
+          isNewRuleSet={false}
+          hasChanges
+          onCancel={onCancel}
+          shouldHidePreview
+          title={title}
+          isWriteEnabled={isWriteEnabled}
+          rulesetType="global"
+        />
 
-      <div className={styles.sectionWrapper}>
-        <div className={styles.lowerHeading}>
-          <Typography variant="bodyMedium" isStrong withMargin>
-            Rule scope
-          </Typography>
-        </div>
-        <div className={styles.scopeWrapper}>
-          <div>
-            <Typography variant="bodySmall" withMargin>
-              Influence
+        <div className={styles.sectionWrapper}>
+          <div className={styles.lowerHeading}>
+            <Typography variant="bodyMedium" isStrong withMargin>
+              Rule scope
             </Typography>
+          </div>
+          <div className={styles.scopeWrapper}>
+            <div>
+              <Typography variant="bodySmall" withMargin>
+                Influence
+              </Typography>
 
-            <CombinedDropdown
-              variant={DropdownVariant.CountrySelector}
-              onChange={(country) => {
-                dispatch({
-                  type: 'CHANGE_COUNTRY',
-                  payload: country as MerchandisingCountryCode,
-                });
-              }}
-              selectedCountryCode={facetPanelLocalState.countryCode}
-              ariaLabel="Select country"
-            />
+              <CombinedDropdown
+                variant={DropdownVariant.CountrySelector}
+                onChange={(country) => {
+                  dispatch({
+                    type: 'CHANGE_COUNTRY',
+                    payload: country as MerchandisingCountryCode,
+                  });
+                }}
+                selectedCountryCode={facetPanelLocalState.countryCode}
+                ariaLabel="Select country"
+              />
+            </div>
+
+            <InfoBox text="You are currently editing all pages on the M&S website and app" />
           </div>
 
-          <InfoBox text="You are currently editing all pages on the M&S website and app" />
+          <FacetsPanelAccordion
+            boostedCount={boostedCount}
+            excludedCount={excludedCount}
+            nonBoostedExcludedCount={nonBoostedExcludedCount}
+          />
         </div>
 
-        <FacetsPanelAccordion
-          boostedCount={boostedCount}
-          excludedCount={excludedCount}
-          nonBoostedExcludedCount={nonBoostedExcludedCount}
-        />
-      </div>
-
-      <div className={styles.sectionWrapper}>
-        <div className={styles.searchWrapper}>
-          <Search
-            onChange={(e) => handleSearch(e.target.value.trim())}
-            placeholder="Search"
-          />
+        <div className={styles.sectionWrapper}>
+          <div className={styles.searchWrapper}>
+            <Search
+              onChange={(e) => handleSearch(e.target.value.trim())}
+              placeholder="Search"
+            />
+            <Button
+              appearance="icon"
+              aria-label={isPinned ? 'Unpin top bar' : 'Pin top bar'}
+              aria-pressed={isPinned}
+              className={`${styles.pinButton}${isPinned ? ` ${styles.pinButtonActive}` : ''}`}
+              onClick={() => setIsPinned((prev) => !prev)}
+            >
+              <Image
+                src="/trading-hub/asset/icon-pin.svg"
+                width={14}
+                height={19}
+                alt=""
+                className={styles.pinIcon}
+              />
+            </Button>
+          </div>
         </div>
       </div>
 

@@ -72,27 +72,29 @@ export const FacetAttributesListActions = ({
         )}
       </div>
 
-      <div className={styles.searchWrapper}>
-        <Search onChange={onSearchChange} placeholder="Search" fullWidth />
-      </div>
+      <div className={styles.searchAndPinWrapper}>
+        <div className={styles.searchWrapper}>
+          <Search onChange={onSearchChange} placeholder="Search" fullWidth />
+        </div>
 
-      {showPinButton && (
-        <Button
-          appearance="icon"
-          aria-label={isPinned ? 'Unpin top bar' : 'Pin top bar'}
-          aria-pressed={isPinned}
-          className={`${styles.pinButton}${isPinned ? ` ${styles.pinButtonActive}` : ''}`}
-          onClick={onTogglePin}
-        >
-          <Image
-            src="/trading-hub/asset/icon-pin.svg"
-            width={14}
-            height={19}
-            alt=""
-            className={styles.pinIcon}
-          />
-        </Button>
-      )}
+        {showPinButton && (
+          <Button
+            appearance="icon"
+            aria-label={isPinned ? 'Unpin top bar' : 'Pin top bar'}
+            aria-pressed={isPinned}
+            className={`${styles.pinButton}${isPinned ? ` ${styles.pinButtonActive}` : ''}`}
+            onClick={onTogglePin}
+          >
+            <Image
+              src="/trading-hub/asset/icon-pin.svg"
+              width={14}
+              height={19}
+              alt=""
+              className={styles.pinIcon}
+            />
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

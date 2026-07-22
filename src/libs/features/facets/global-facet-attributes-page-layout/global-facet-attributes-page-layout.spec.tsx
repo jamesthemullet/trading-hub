@@ -376,32 +376,10 @@ describe('GlobalFacetAttributesPageLayout', () => {
     });
   });
 
-  describe('sticky bar (variants)', () => {
-    it('does not show pin button when hasStickyBar flag is off', () => {
+  describe('sticky bar pin button', () => {
+    it('shows pin button', () => {
       renderWithProviders(
         <GlobalFacetAttributesPageLayout {...defaultProps} />
-      );
-      expect(
-        screen.queryByRole('button', { name: 'Pin top bar' })
-      ).not.toBeInTheDocument();
-    });
-
-    it('shows pin button when hasStickyBar flag is on with variant-b', () => {
-      renderWithProviders(
-        <GlobalFacetAttributesPageLayout {...defaultProps} />,
-        ['Glob.W'],
-        { featureFlags: { hasStickyBar: true, stickyBarVariant: 'variant-b' } }
-      );
-      expect(
-        screen.getByRole('button', { name: 'Pin top bar' })
-      ).toBeInTheDocument();
-    });
-
-    it('shows pin button when hasStickyBar flag is on with variant-a', () => {
-      renderWithProviders(
-        <GlobalFacetAttributesPageLayout {...defaultProps} />,
-        ['Glob.W'],
-        { featureFlags: { hasStickyBar: true, stickyBarVariant: 'variant-a' } }
       );
       expect(
         screen.getByRole('button', { name: 'Pin top bar' })
@@ -411,9 +389,7 @@ describe('GlobalFacetAttributesPageLayout', () => {
     it('toggles pin state when pin button is clicked', async () => {
       const user = userEvent.setup();
       renderWithProviders(
-        <GlobalFacetAttributesPageLayout {...defaultProps} />,
-        ['Glob.W'],
-        { featureFlags: { hasStickyBar: true, stickyBarVariant: 'variant-a' } }
+        <GlobalFacetAttributesPageLayout {...defaultProps} />
       );
 
       const pinButton = screen.getByRole('button', { name: 'Pin top bar' });
@@ -424,73 +400,6 @@ describe('GlobalFacetAttributesPageLayout', () => {
       expect(
         screen.getByRole('button', { name: 'Unpin top bar' })
       ).toHaveAttribute('aria-pressed', 'true');
-    });
-  });
-
-  describe('sticky bar (variant B)', () => {
-    it('does not show compact bar controls when not pinned', () => {
-      renderWithProviders(
-        <GlobalFacetAttributesPageLayout {...defaultProps} />,
-        ['Glob.W'],
-        { featureFlags: { hasStickyBar: true, stickyBarVariant: 'variant-b' } }
-      );
-      expect(
-        screen.queryByRole('button', { name: 'Unpin top bar' })
-      ).not.toBeInTheDocument();
-    });
-
-    it('shows compact bar with unpin button when pinned', async () => {
-      const user = userEvent.setup();
-      renderWithProviders(
-        <GlobalFacetAttributesPageLayout {...defaultProps} />,
-        ['Glob.W'],
-        { featureFlags: { hasStickyBar: true, stickyBarVariant: 'variant-b' } }
-      );
-
-      await user.click(screen.getByRole('button', { name: 'Pin top bar' }));
-
-      expect(
-        screen.getByRole('button', { name: 'Unpin top bar' })
-      ).toBeInTheDocument();
-    });
-
-    it('navigates back when compact bar close is clicked', async () => {
-      const user = userEvent.setup();
-      renderWithProviders(
-        <GlobalFacetAttributesPageLayout {...defaultProps} />,
-        ['Glob.W'],
-        { featureFlags: { hasStickyBar: true, stickyBarVariant: 'variant-b' } }
-      );
-
-      await user.click(screen.getByRole('button', { name: 'Pin top bar' }));
-
-      const cancelButtons = screen.getAllByRole('button', { name: 'Cancel' });
-      const compactBarCancel = cancelButtons[0];
-      await user.click(compactBarCancel);
-
-      expect(mockRouter.push).toHaveBeenCalledWith(
-        `/global/facets/edit/${ruleSetId}`
-      );
-    });
-
-    it('unpins when compact bar unpin button is clicked', async () => {
-      const user = userEvent.setup();
-      renderWithProviders(
-        <GlobalFacetAttributesPageLayout {...defaultProps} />,
-        ['Glob.W'],
-        { featureFlags: { hasStickyBar: true, stickyBarVariant: 'variant-b' } }
-      );
-
-      await user.click(screen.getByRole('button', { name: 'Pin top bar' }));
-
-      const unpinButton = screen.getByRole('button', {
-        name: 'Unpin top bar',
-      });
-      await user.click(unpinButton);
-
-      expect(
-        screen.queryByRole('button', { name: 'Unpin top bar' })
-      ).not.toBeInTheDocument();
     });
   });
 });

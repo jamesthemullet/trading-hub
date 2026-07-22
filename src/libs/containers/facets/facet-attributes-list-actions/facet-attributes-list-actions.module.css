@@ -51,6 +51,14 @@
   font-style: italic;
 }
 
+.searchAndPinWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--mns-spacing-4);
+  flex-grow: 1;
+  justify-content: flex-end;
+}
+
 .searchWrapper {
   justify-content: flex-end;
   display: flex;

@@ -21,6 +21,7 @@ import without from 'lodash/without';
 
 import { FacetAttributesPageLayoutHeader } from '../facet-attributes-page-layout-header/facet-attributes-page-layout-header';
 import { SearchAndCategoryFacetAttributesList } from '../search-and-category-facet-attributes-list/search-and-category-facet-attributes-list';
+import styles from './category-and-search-facet-attributes-page-layout.module.css';
 import { appendUndoState } from './undo-history';
 
 const EMPTY_VALUES: string[] = [];
@@ -58,6 +59,8 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
   isDraftRuleset = false,
 }: PageLayout): ReactElement => {
   const router = useRouter();
+
+  const [isPinned, setIsPinned] = useState(false);
 
   const processedFacet = useMemo(() => {
     const boosted = facet.boosted ?? [];
@@ -173,28 +176,33 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
 
   return (
     <>
-      <FacetAttributesPageLayoutHeader
-        algoControlValues={algoControlValues.length}
-        includedValues={includedValues.length}
-        excludedValues={excludedValues.length}
-        displayName={displayName}
-        facetType={facetType}
-        headerText={headerText}
-        onClose={handleClose}
-        onSave={handleSave}
-        isWriteEnabled={isWriteEnabled}
-        isUndoButtonVisible={isUndoButtonVisible}
-        isUndoDisabled={!hasChanges}
-        onUndo={handleUndo}
-        countryCode={countryCode}
-        isDraftRuleset={isDraftRuleset}
-      />
+      <div className={isPinned ? styles.stickyContainer : undefined}>
+        <FacetAttributesPageLayoutHeader
+          algoControlValues={algoControlValues.length}
+          includedValues={includedValues.length}
+          excludedValues={excludedValues.length}
+          displayName={displayName}
+          facetType={facetType}
+          headerText={headerText}
+          onClose={handleClose}
+          onSave={handleSave}
+          isWriteEnabled={isWriteEnabled}
+          isUndoButtonVisible={isUndoButtonVisible}
+          isUndoDisabled={!hasChanges}
+          onUndo={handleUndo}
+          countryCode={countryCode}
+          isDraftRuleset={isDraftRuleset}
+        />
 
-      <FacetAttributesListActions
-        onSearchChange={onSearchChange}
-        isMergeHidden
-        isWriteEnabled={isWriteEnabled}
-      />
+        <FacetAttributesListActions
+          onSearchChange={onSearchChange}
+          isMergeHidden
+          isWriteEnabled={isWriteEnabled}
+          showPinButton
+          isPinned={isPinned}
+          onTogglePin={() => setIsPinned((prev) => !prev)}
+        />
+      </div>
 
       <SearchAndCategoryFacetAttributesList
         boostedValues={includedValues}

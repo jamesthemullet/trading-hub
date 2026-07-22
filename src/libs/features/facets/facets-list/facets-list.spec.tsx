@@ -228,6 +228,42 @@ describe('FacetsList', () => {
     ).toBeVisible();
   });
 
+  describe('sticky bar pin button', () => {
+    const categoriesInfo = [
+      {
+        id: categoryId1,
+        name: categoryName1,
+        plpUrl: categoryPath1,
+      },
+    ];
+
+    it('shows pin button when a category is selected', () => {
+      renderWithProviders(
+        <FacetsList {...defaultFacetProps} categoriesInfo={categoriesInfo} />
+      );
+
+      expect(
+        screen.getByRole('button', { name: 'Pin top bar' })
+      ).toBeInTheDocument();
+    });
+
+    it('toggles pin state when pin button is clicked', async () => {
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <FacetsList {...defaultFacetProps} categoriesInfo={categoriesInfo} />
+      );
+
+      const pinButton = screen.getByRole('button', { name: 'Pin top bar' });
+      expect(pinButton).toHaveAttribute('aria-pressed', 'false');
+
+      await user.click(pinButton);
+
+      expect(
+        screen.getByRole('button', { name: 'Unpin top bar' })
+      ).toHaveAttribute('aria-pressed', 'true');
+    });
+  });
+
   it('should add and set a category', async () => {
     const user = userEvent.setup({ delay: null });
     renderWithProviders(<FacetsList {...defaultFacetProps} />);

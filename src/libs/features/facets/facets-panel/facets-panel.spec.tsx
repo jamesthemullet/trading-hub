@@ -401,4 +401,28 @@ describe('Facet Panel', () => {
 
     expect(screen.getByText('color is not a unique value')).toBeVisible();
   });
+
+  describe('sticky bar pin button', () => {
+    it('shows pin button', () => {
+      renderWithProviders(<FacetsPanel {...defaultProps} />);
+
+      expect(
+        screen.getByRole('button', { name: 'Pin top bar' })
+      ).toBeInTheDocument();
+    });
+
+    it('toggles pin state when pin button is clicked', async () => {
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(<FacetsPanel {...defaultProps} />);
+
+      const pinButton = screen.getByRole('button', { name: 'Pin top bar' });
+      expect(pinButton).toHaveAttribute('aria-pressed', 'false');
+
+      await user.click(pinButton);
+
+      expect(
+        screen.getByRole('button', { name: 'Unpin top bar' })
+      ).toHaveAttribute('aria-pressed', 'true');
+    });
+  });
 });
