@@ -13,4 +13,5 @@ frontdoor_waf_mode   = "Prevention"
 akamai_enabled       = true
 
 private_vault = true
+private_webapp = true
 # Bump me for update of Bright Cloud latest changes 1
