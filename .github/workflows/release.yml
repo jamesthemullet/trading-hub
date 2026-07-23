@@ -67,17 +67,7 @@ jobs:
           name: node-app
           path: .next/standalone/next.zip
   determine-runner-nonprod:
-    environment: deveun
-    runs-on: ubuntu-latest
-    outputs:
-      runner_label: ${{ steps.set-runner.outputs.runner_label }}
-    steps:
-      - id: set-runner
-        run: |
-          echo "runner_label=${{ vars.GIT_ACTIONS_RUNNER_LABEL || 'ubuntu-latest' }}" >> "$GITHUB_OUTPUT"
-
-  determine-runner-prod:
-    environment: prodeun
+    environment: Nonprod
     runs-on: ubuntu-latest
     outputs:
       runner_label: ${{ steps.set-runner.outputs.runner_label }}
@@ -229,6 +219,16 @@ jobs:
     secrets:
       helix-password: ${{ secrets.BMC_HELIX_API_PASSWORD }}
       dynatrace-api-token: ${{ secrets.DYNATRACE_ACCESS_TOKEN_PROD }}
+
+  determine-runner-prod:
+    environment: Prod
+    runs-on: ubuntu-latest
+    outputs:
+      runner_label: ${{ steps.set-runner.outputs.runner_label }}
+    steps:
+      - id: set-runner
+        run: |
+          echo "runner_label=${{ vars.GIT_ACTIONS_RUNNER_LABEL || 'ubuntu-latest' }}" >> "$GITHUB_OUTPUT"
 
   deploy-prod:
     runs-on: ${{ needs.determine-runner-prod.outputs.runner_label }}
