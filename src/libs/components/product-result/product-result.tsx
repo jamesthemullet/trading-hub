@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Typography } from '@/libs/components';
+import { CopyMessageBox } from '@/libs/components/copy-message-box/copy-message-box';
 import { InfoCard } from '@/libs/components/info-card/info-card';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
 import { StatusBadge } from '@/libs/components/status-badge/status-badge';
@@ -11,7 +12,6 @@ import type {
 
 import Image from 'next/image';
 
-import { CopyMessageBox } from './copy-message-box';
 import styles from './product-result.module.css';
 
 type InfoCardContainerProps = {

@@ -54,4 +54,11 @@ describe('CopyMessageBox', () => {
     ).toBeInTheDocument();
     jest.useRealTimers();
   });
+
+  it('renders the message in a preformatted block when isMultiline is true', () => {
+    renderWithProviders(<CopyMessageBox message={message} isMultiline />);
+
+    const preformattedMessage = screen.getByText(message, { selector: 'pre' });
+    expect(preformattedMessage).toBeInTheDocument();
+  });
 });

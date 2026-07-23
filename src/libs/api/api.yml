@@ -1132,6 +1132,75 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
+  /search/merchandising/v1/{catalogue}/global/ruleset/{ruleSetId}:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Global
+      summary: Update Global Rule Set (optimistic locking)
+      description: >-
+        Persists merchandising rules using optimistic locking. The request body must include the
+        version last read by the caller; if it no longer matches the stored version a 409 Conflict
+        is returned with the current entity state.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchandisingRuleSet'
+      parameters:
+        - in: path
+          name: catalogue
+          schema:
+            type: string
+            enum: ['CLOTHING_AND_HOME']
+          required: true
+          description: The catalogue the ruleset applies to
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to update
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSet'
+        '409':
+          description: Version conflict - the entity has been modified by another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/global/ruleset/{ruleSetId}/history:
     get:
       security:
@@ -2536,6 +2605,13 @@ components:
           description: An array of the facets to display for these categories, optionally overriding config such as excludes and boosts.
         excludedFacets:
           $ref: '#/components/schemas/MerchandisingExcludedFacets'
+        version:
+          type: integer
+          format: int32
+          description: >-
+            Optimistic-locking version. Returned on all responses; required on v1 update requests and
+            must match the current stored version or a 409 Conflict is returned.
+          example: 0
       required:
         - rules
         - isEnabled
@@ -3227,6 +3303,13 @@ components:
           type: string
         message:
           type: string
+        currentEntity:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: >-
+            The current server-side state of the entity, returned on a 409 version conflict so the
+            caller can retry with the up-to-date version. Absent for non-conflict errors.
       required:
         - status
         - message

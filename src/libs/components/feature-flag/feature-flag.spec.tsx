@@ -6,6 +6,7 @@ import {
   FeatureFlagContext,
   useAuthorizationFlag,
   useFavouriteRulesetsFlag,
+  useOptimisticLockingFlag,
   useProfilePageFlag,
 } from './feature-flag';
 
@@ -73,6 +74,24 @@ describe('useFavouriteRulesetsFlag', () => {
         </FeatureFlagContext.Provider>
       ),
     });
+    expect(result.current).toBe(true);
+  });
+});
+
+describe('useOptimisticLockingFlag', () => {
+  it('should return false by default', () => {
+    const { result } = renderHook(() => useOptimisticLockingFlag(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(result.current).toBe(false);
+  });
+
+  it('should return true when flag is enabled', () => {
+    const { result } = renderHook(() => useOptimisticLockingFlag(), {
+      wrapper: createWrapper({ hasOptimisticLocking: true }),
+    });
+
     expect(result.current).toBe(true);
   });
 });

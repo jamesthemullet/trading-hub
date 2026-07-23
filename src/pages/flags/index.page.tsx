@@ -16,13 +16,19 @@ const FeatureFlags = () => {
       'flagAuthorizationRoleOverride',
       'flagProfilePage',
       'flagFavouriteRulesets',
+      'flagOptimisticLocking',
     ],
     {
       doNotUpdate: true,
     }
   );
 
-  const { flagAuthorization, flagProfilePage, flagFavouriteRulesets } = cookies;
+  const {
+    flagAuthorization,
+    flagProfilePage,
+    flagFavouriteRulesets,
+    flagOptimisticLocking,
+  } = cookies;
 
   return (
     <div className={styles.wrapper}>
@@ -119,6 +125,19 @@ const FeatureFlags = () => {
             setCookie(
               'flagFavouriteRulesets',
               JSON.stringify(!flagFavouriteRulesets)
+            );
+          }}
+        />
+      </div>
+      <div className={styles.flag}>
+        <Typography>Optimistic Locking:&nbsp;</Typography>
+        <Toggle
+          aria-label="Toggle optimistic locking feature flag"
+          checked={flagOptimisticLocking}
+          onChange={() => {
+            setCookie(
+              'flagOptimisticLocking',
+              JSON.stringify(!flagOptimisticLocking)
             );
           }}
         />

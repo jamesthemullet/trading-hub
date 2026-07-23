@@ -60,6 +60,7 @@ jest.mock('@/libs/hooks/global/history/use-global-history', () => ({
 describe('Index', () => {
   const mockRouter = {
     push: jest.fn(),
+    reload: jest.fn(),
     query: {},
     events: {
       on: jest.fn(),
@@ -141,6 +142,7 @@ describe('Index', () => {
         countryCode: 'UK_IE',
       },
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+      shouldUseV1: false,
     };
     const user = userEvent.setup({ delay: null });
 
@@ -200,6 +202,7 @@ describe('Index', () => {
         countryCode: 'UK_IE',
       },
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+      shouldUseV1: false,
     };
     const user = userEvent.setup({ delay: null });
 
@@ -235,6 +238,115 @@ describe('Index', () => {
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
     expect(mockRouter.push).toHaveBeenCalledWith('/global');
+  });
+
+  describe('Optimistic locking conflict', () => {
+    const currentEntity: MerchandisingReturnedGlobalRuleSet = {
+      ...mockRuleData,
+      version: 7,
+      lastChanged: { date: '2024-02-02T00:00:00Z', user: 'Other User' },
+    };
+
+    beforeEach(() => {
+      mockError = undefined;
+      jest.mocked(useGlobalRuleSetDetail).mockReturnValue({
+        globalRuleSet: mockRuleData,
+        error: '',
+        isLoading: false,
+      });
+    });
+
+    const openConflictModal = async () => {
+      const user = userEvent.setup({ delay: null });
+
+      renderWithProviders(<Page id={ruleSetId} />, undefined, {
+        featureFlags: { hasOptimisticLocking: true },
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Save' }));
+      await user.click(
+        await screen.findByRole('button', { name: 'Save changes' })
+      );
+
+      expect(
+        await screen.findByRole('dialog', {
+          name: 'This ruleset was changed by someone else',
+        })
+      ).toBeInTheDocument();
+
+      return user;
+    };
+
+    it('uses the v1 endpoint and shows the conflict modal on a 409', async () => {
+      mockUpdateGlobalRuleSet = jest
+        .fn()
+        .mockResolvedValue({ status: 'conflict', currentEntity });
+
+      await openConflictModal();
+
+      expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(
+        expect.objectContaining({ shouldUseV1: true })
+      );
+      expect(
+        screen.getByRole('dialog', {
+          name: 'This ruleset was changed by someone else',
+        })
+      ).toHaveTextContent('Other User');
+      expect(mockRouter.push).not.toHaveBeenCalled();
+    });
+
+    it('overwrites with the local changes using the server version', async () => {
+      mockUpdateGlobalRuleSet = jest
+        .fn()
+        .mockResolvedValueOnce({ status: 'conflict', currentEntity })
+        .mockResolvedValueOnce({ status: 'success' });
+
+      const user = await openConflictModal();
+
+      await user.click(
+        screen.getByRole('button', { name: 'Overwrite with my changes' })
+      );
+
+      expect(mockUpdateGlobalRuleSet).toHaveBeenLastCalledWith(
+        expect.objectContaining({ version: 7, shouldUseV1: true })
+      );
+      await waitFor(() =>
+        expect(mockRouter.push).toHaveBeenCalledWith('/global')
+      );
+    });
+
+    it('discards the local changes and reloads on discard', async () => {
+      mockUpdateGlobalRuleSet = jest
+        .fn()
+        .mockResolvedValue({ status: 'conflict', currentEntity });
+
+      const user = await openConflictModal();
+
+      await user.click(
+        screen.getByRole('button', { name: 'Discard my changes' })
+      );
+
+      expect(mockRouter.reload).toHaveBeenCalled();
+    });
+
+    it('dismisses the conflict modal without saving', async () => {
+      mockUpdateGlobalRuleSet = jest
+        .fn()
+        .mockResolvedValue({ status: 'conflict', currentEntity });
+
+      const user = await openConflictModal();
+
+      await user.keyboard('{Escape}');
+
+      await waitFor(() =>
+        expect(
+          screen.queryByRole('heading', {
+            name: 'This ruleset was changed by someone else',
+          })
+        ).not.toBeInTheDocument()
+      );
+      expect(mockRouter.push).not.toHaveBeenCalled();
+    });
   });
 
   it('loads the mock data', async () => {
