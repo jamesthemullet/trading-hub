@@ -66,13 +66,32 @@ jobs:
         with:
           name: node-app
           path: .next/standalone/next.zip
+  determine-runner-nonprod:
+    environment: deveun
+    runs-on: ubuntu-latest
+    outputs:
+      runner_label: ${{ steps.set-runner.outputs.runner_label }}
+    steps:
+      - id: set-runner
+        run: |
+          echo "runner_label=${{ vars.GIT_ACTIONS_RUNNER_LABEL || 'ubuntu-latest' }}" >> "$GITHUB_OUTPUT"
+
+  determine-runner-prod:
+    environment: prodeun
+    runs-on: ubuntu-latest
+    outputs:
+      runner_label: ${{ steps.set-runner.outputs.runner_label }}
+    steps:
+      - id: set-runner
+        run: |
+          echo "runner_label=${{ vars.GIT_ACTIONS_RUNNER_LABEL || 'ubuntu-latest' }}" >> "$GITHUB_OUTPUT"
 
   deploy-dev:
-    runs-on: ubuntu-latest
+    runs-on: ${{ needs.determine-runner-nonprod.outputs.runner_label }}
     permissions:
       contents: read
       id-token: write
-    needs: build
+    needs: [build, determine-runner-nonprod]
     name: Deploy to Azure Web App (dev)
     environment:
       name: deveun
@@ -212,11 +231,18 @@ jobs:
       dynatrace-api-token: ${{ secrets.DYNATRACE_ACCESS_TOKEN_PROD }}
 
   deploy-prod:
-    runs-on: ubuntu-latest
+    runs-on: ${{ needs.determine-runner-prod.outputs.runner_label }}
     permissions:
       contents: read
       id-token: write
-    needs: [build, deploy-dev, dev-e2e-tests, automated-cab-start]
+    needs:
+      [
+        build,
+        deploy-dev,
+        dev-e2e-tests,
+        automated-cab-start,
+        determine-runner-prod,
+      ]
     name: Deploy to Azure Web App (production)
     environment:
       name: prodeun

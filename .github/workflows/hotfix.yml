@@ -66,12 +66,32 @@ jobs:
           name: node-app
           path: .next/standalone/next.zip
 
-  deploy-dev:
+  determine-runner-nonprod:
+    environment: Nonprod
     runs-on: ubuntu-latest
+    outputs:
+      runner_label: ${{ steps.set-runner.outputs.runner_label }}
+    steps:
+      - id: set-runner
+        run: |
+          echo "runner_label=${{ vars.GIT_ACTIONS_RUNNER_LABEL || '<your-default-runner-label>' }}" >> "$GITHUB_OUTPUT"
+
+  determine-runner-prod:
+    environment: prodeun
+    runs-on: ubuntu-latest
+    outputs:
+      runner_label: ${{ steps.set-runner.outputs.runner_label }}
+    steps:
+      - id: set-runner
+        run: |
+          echo "runner_label=${{ vars.GIT_ACTIONS_RUNNER_LABEL || 'ubuntu-latest' }}" >> "$GITHUB_OUTPUT"
+
+  deploy-dev:
+    runs-on: ${{ needs.determine-runner-nonprod.outputs.runner_label }}
     permissions:
       id-token: write
       contents: read
-    needs: build
+    needs: [build, determine-runner-nonprod]
     name: Deploy to Azure Web App (dev)
     environment:
       name: deveun
@@ -166,11 +186,11 @@ jobs:
         run: rm next.zip
 
   deploy-prod:
-    runs-on: ubuntu-latest
+    runs-on: ${{ needs.determine-runner-prod.outputs.runner_label }}
     permissions:
       id-token: write
       contents: read
-    needs: [build, deploy-dev]
+    needs: [build, deploy-dev, determine-runner-prod]
     name: Deploy to Azure Web App (production)
     environment:
       name: prodeun
