@@ -24,7 +24,7 @@ const meta: Meta<typeof DateTimePickerModal> = {
       control: 'text',
       description: 'Label displayed on the input field',
     },
-    showCalendarIcon: {
+    shouldShowCalendarIcon: {
       control: 'boolean',
       description: 'Shows or hides the calendar icon',
     },
@@ -39,7 +39,7 @@ export const Default: Story = {
   args: {
     dateTime: [null, null],
     label: 'Select a date range',
-    showCalendarIcon: true,
+    shouldShowCalendarIcon: true,
     isWriteEnabled: true,
     onUpdateDateTimeRange: fn(),
   },

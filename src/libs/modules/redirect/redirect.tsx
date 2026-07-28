@@ -201,7 +201,7 @@ export const Redirect = ({
               Duration
             </Typography>
             <DateTimePickerModal
-              showCalendarIcon
+              shouldShowCalendarIcon
               dateTime={[
                 redirect.startDate ? new Date(redirect.startDate) : null,
                 redirect.endDate ? new Date(redirect.endDate) : null,

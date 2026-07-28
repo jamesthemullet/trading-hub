@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, ReactElement } from 'react';
 import { useRef } from 'react';
 import { ActionIcon } from '@mantine/core';
 import type { DatePickerProps } from '@mantine/dates';
@@ -31,7 +31,7 @@ export const DatePicker = (
     setStartTime?: (time: string) => void;
     setEndTime?: (time: string) => void;
   } & Omit<DatePickerProps<'range'>, 'onChange'>
-) => {
+): ReactElement => {
   const {
     value,
     onChange,

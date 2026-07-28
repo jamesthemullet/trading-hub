@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 import { MantineProvider, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -19,19 +20,19 @@ export const DateTimePickerModal = ({
   dateTime,
   onUpdateDateTimeRange,
   label,
-  showCalendarIcon,
+  shouldShowCalendarIcon,
   isWriteEnabled,
 }: {
   dateTime?: [Date | null, Date | null];
   onUpdateDateTimeRange: (dateTime: [Date | null, Date | null]) => void;
   isWriteEnabled: boolean;
   label?: string;
-  showCalendarIcon?: boolean;
-}) => {
+  shouldShowCalendarIcon?: boolean;
+}): ReactElement => {
   const [tempDateRange, setTempDateRange] = useState<
     [Date | null, Date | null]
   >(dateTime || [new Date(), null]);
-  const [opened, { open, close }] = useDisclosure(false);
+  const [isOpen, { open, close }] = useDisclosure(false);
 
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>(
     dateTime || [null, null]
@@ -92,7 +93,7 @@ export const DateTimePickerModal = ({
           aria-label="Select date range"
         />
 
-        {showCalendarIcon && (
+        {shouldShowCalendarIcon && (
           <div className={styles.calendarIconContainer}>
             <Image
               alt=""
@@ -106,7 +107,7 @@ export const DateTimePickerModal = ({
       </div>
 
       <MantineProvider>
-        <Modal.Root opened={opened} onClose={close} size="auto" withinPortal>
+        <Modal.Root opened={isOpen} onClose={close} size="auto" withinPortal>
           <Modal.Overlay backgroundOpacity={0.3} blur={3} />
           <Modal.Content
             role="dialog"

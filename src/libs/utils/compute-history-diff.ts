@@ -51,7 +51,9 @@ export type RulesetSnapshot = {
 const serialise = (value: unknown): string => JSON.stringify(value ?? null);
 
 const labelAlphanumericRule = (rule: AlphanumericRule): string =>
-  rule.fields.map((f) => `${f.field}: ${f.values.join(', ')}`).join(' + ');
+  rule.fields
+    .map((field) => `${field.field}: ${field.values.join(', ')}`)
+    .join(' + ');
 
 const diffById = (
   current: ProductRule[] = [],
@@ -59,13 +61,15 @@ const diffById = (
   addLabel: (id: string) => string,
   removeLabel: (id: string) => string
 ): string[] => {
-  const currentIds = new Set(current.map((p) => p.id));
-  const previousIds = new Set(previous.map((p) => p.id));
+  const currentIds = new Set(current.map((product) => product.id));
+  const previousIds = new Set(previous.map((product) => product.id));
   return [
-    ...current.filter((p) => !previousIds.has(p.id)).map((p) => addLabel(p.id)),
+    ...current
+      .filter((product) => !previousIds.has(product.id))
+      .map((product) => addLabel(product.id)),
     ...previous
-      .filter((p) => !currentIds.has(p.id))
-      .map((p) => removeLabel(p.id)),
+      .filter((product) => !currentIds.has(product.id))
+      .map((product) => removeLabel(product.id)),
   ];
 };
 
@@ -76,19 +80,21 @@ const diffProductBoostBury = (
   removeLabel: (id: string) => string,
   weightLabel: (id: string, currentWeight: number, prevWeight: number) => string
 ): string[] => {
-  const currentById = new Map(current.map((p) => [p.id, p]));
-  const previousById = new Map(previous.map((p) => [p.id, p]));
+  const currentById = new Map(current.map((product) => [product.id, product]));
+  const previousById = new Map(
+    previous.map((product) => [product.id, product])
+  );
   return [
     ...current
-      .filter((p) => !previousById.has(p.id))
-      .map((p) => addLabel(p.id)),
+      .filter((product) => !previousById.has(product.id))
+      .map((product) => addLabel(product.id)),
     ...previous
-      .filter((p) => !currentById.has(p.id))
-      .map((p) => removeLabel(p.id)),
-    ...current.flatMap((p) => {
-      const prev = previousById.get(p.id);
-      if (prev === undefined || prev.weight === p.weight) return [];
-      return [weightLabel(p.id, p.weight, prev.weight)];
+      .filter((product) => !currentById.has(product.id))
+      .map((product) => removeLabel(product.id)),
+    ...current.flatMap((product) => {
+      const prev = previousById.get(product.id);
+      if (prev === undefined || prev.weight === product.weight) return [];
+      return [weightLabel(product.id, product.weight, prev.weight)];
     }),
   ];
 };
@@ -104,19 +110,19 @@ const diffByField = (
     prevWeight: number
   ) => string
 ): string[] => {
-  const currentByField = new Map(current.map((r) => [r.field, r]));
-  const previousByField = new Map(previous.map((r) => [r.field, r]));
+  const currentByField = new Map(current.map((rule) => [rule.field, rule]));
+  const previousByField = new Map(previous.map((rule) => [rule.field, rule]));
   return [
     ...current
-      .filter((r) => !previousByField.has(r.field))
-      .map((r) => addLabel(r.field)),
+      .filter((rule) => !previousByField.has(rule.field))
+      .map((rule) => addLabel(rule.field)),
     ...previous
-      .filter((r) => !currentByField.has(r.field))
-      .map((r) => removeLabel(r.field)),
-    ...current.flatMap((r) => {
-      const prev = previousByField.get(r.field);
-      if (prev === undefined || prev.weight === r.weight) return [];
-      return [weightChangeLabel(r.field, r.weight, prev.weight)];
+      .filter((rule) => !currentByField.has(rule.field))
+      .map((rule) => removeLabel(rule.field)),
+    ...current.flatMap((rule) => {
+      const prev = previousByField.get(rule.field);
+      if (prev === undefined || prev.weight === rule.weight) return [];
+      return [weightChangeLabel(rule.field, rule.weight, prev.weight)];
     }),
   ];
 };
@@ -134,23 +140,25 @@ const diffAlphanumeric = (
     prevRule: AlphanumericRule
   ) => string
 ): string[] => {
-  const serialiseFields = (r: AlphanumericRule) => serialise(r.fields);
+  const serialiseFields = (rule: AlphanumericRule) => serialise(rule.fields);
   const previousByFields = new Map(
-    previous.map((r) => [serialiseFields(r), r])
+    previous.map((rule) => [serialiseFields(rule), rule])
   );
-  const currentByFields = new Map(current.map((r) => [serialiseFields(r), r]));
+  const currentByFields = new Map(
+    current.map((rule) => [serialiseFields(rule), rule])
+  );
   return [
     ...current
-      .filter((r) => !previousByFields.has(serialiseFields(r)))
+      .filter((rule) => !previousByFields.has(serialiseFields(rule)))
       .map(addLabel),
     ...previous
-      .filter((r) => !currentByFields.has(serialiseFields(r)))
+      .filter((rule) => !currentByFields.has(serialiseFields(rule)))
       .map(removeLabel),
     ...(weightChangeLabel
-      ? current.flatMap((r) => {
-          const prev = previousByFields.get(serialiseFields(r));
-          if (prev === undefined || prev.weight === r.weight) return [];
-          return [weightChangeLabel(r, prev)];
+      ? current.flatMap((rule) => {
+          const prev = previousByFields.get(serialiseFields(rule));
+          if (prev === undefined || prev.weight === rule.weight) return [];
+          return [weightChangeLabel(rule, prev)];
         })
       : []),
   ];
@@ -174,8 +182,8 @@ const getFacetStatus = (
   includedFacets: FacetRule[] = [],
   excludedFacets: ExcludedFacetRule[] = []
 ): 'included' | 'algo control' | 'excluded' => {
-  if (includedFacets.some((f) => f.id === id)) return 'included';
-  if (excludedFacets.some((f) => f.id === id)) return 'excluded';
+  if (includedFacets.some((facet) => facet.id === id)) return 'included';
+  if (excludedFacets.some((facet) => facet.id === id)) return 'excluded';
   return 'algo control';
 };
 
@@ -184,17 +192,21 @@ const diffFacetStatus = (
   previous: RulesetSnapshot,
   facetLabel: (id: string) => string
 ): string[] => {
-  const currentById = new Map((current.facets ?? []).map((f) => [f.id, f]));
-  const previousById = new Map((previous.facets ?? []).map((f) => [f.id, f]));
+  const currentById = new Map(
+    (current.facets ?? []).map((facet) => [facet.id, facet])
+  );
+  const previousById = new Map(
+    (previous.facets ?? []).map((facet) => [facet.id, facet])
+  );
 
   const allIds = new Set([
-    ...(current.facets ?? []).map((f) => f.id),
-    ...(previous.facets ?? []).map((f) => f.id),
+    ...(current.facets ?? []).map((facet) => facet.id),
+    ...(previous.facets ?? []).map((facet) => facet.id),
     ...(current.excludedFacets?.facets ?? [])
-      .map((f) => f.id)
+      .map((facet) => facet.id)
       .filter((id): id is string => id !== undefined),
     ...(previous.excludedFacets?.facets ?? [])
-      .map((f) => f.id)
+      .map((facet) => facet.id)
       .filter((id): id is string => id !== undefined),
   ]);
 
@@ -224,17 +236,27 @@ const diffFacetStatus = (
     const prevExcluded = prev?.excludedValues ?? [];
 
     const boostedAdded = curBoosted
-      .filter((v) => !prevBoosted.includes(v) && !curExcluded.includes(v))
-      .map((v) => `'${v}' value set to included in '${name}' facet`);
+      .filter(
+        (value) => !prevBoosted.includes(value) && !curExcluded.includes(value)
+      )
+      .map((value) => `'${value}' value set to included in '${name}' facet`);
     const boostedRemoved = prevBoosted
-      .filter((v) => !curBoosted.includes(v) && !curExcluded.includes(v))
-      .map((v) => `'${v}' value set to algo control in '${name}' facet`);
+      .filter(
+        (value) => !curBoosted.includes(value) && !curExcluded.includes(value)
+      )
+      .map(
+        (value) => `'${value}' value set to algo control in '${name}' facet`
+      );
     const excludedAdded = curExcluded
-      .filter((v) => !prevExcluded.includes(v))
-      .map((v) => `'${v}' value set to excluded in '${name}' facet`);
+      .filter((value) => !prevExcluded.includes(value))
+      .map((value) => `'${value}' value set to excluded in '${name}' facet`);
     const excludedRemoved = prevExcluded
-      .filter((v) => !curExcluded.includes(v) && !curBoosted.includes(v))
-      .map((v) => `'${v}' value set to algo control in '${name}' facet`);
+      .filter(
+        (value) => !curExcluded.includes(value) && !curBoosted.includes(value)
+      )
+      .map(
+        (value) => `'${value}' value set to algo control in '${name}' facet`
+      );
 
     return [
       ...statusChange,
@@ -342,11 +364,11 @@ export const computeHistoryDiff = (
     ...(serialise(current.searchTerms) !== serialise(previous.searchTerms)
       ? [
           ...(current.searchTerms ?? [])
-            .filter((t) => !(previous.searchTerms ?? []).includes(t))
-            .map((t) => `'${t}' search term added`),
+            .filter((term) => !(previous.searchTerms ?? []).includes(term))
+            .map((term) => `'${term}' search term added`),
           ...(previous.searchTerms ?? [])
-            .filter((t) => !(current.searchTerms ?? []).includes(t))
-            .map((t) => `'${t}' search term removed`),
+            .filter((term) => !(current.searchTerms ?? []).includes(term))
+            .map((term) => `'${term}' search term removed`),
         ]
       : []),
     ...(current.type !== previous.type && current.type
@@ -355,11 +377,11 @@ export const computeHistoryDiff = (
     ...(serialise(current.keywords) !== serialise(previous.keywords)
       ? [
           ...(current.keywords ?? [])
-            .filter((k) => !(previous.keywords ?? []).includes(k))
-            .map((k) => `'${k}' keyword added`),
+            .filter((keyword) => !(previous.keywords ?? []).includes(keyword))
+            .map((keyword) => `'${keyword}' keyword added`),
           ...(previous.keywords ?? [])
-            .filter((k) => !(current.keywords ?? []).includes(k))
-            .map((k) => `'${k}' keyword removed`),
+            .filter((keyword) => !(current.keywords ?? []).includes(keyword))
+            .map((keyword) => `'${keyword}' keyword removed`),
         ]
       : []),
     ...(current.destinationUrl !== previous.destinationUrl &&

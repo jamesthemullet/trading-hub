@@ -269,7 +269,7 @@ describe('DateTimePickerModal', () => {
       <DateTimePickerModal
         isWriteEnabled
         onUpdateDateTimeRange={onUpdateDateTimeRange}
-        showCalendarIcon
+        shouldShowCalendarIcon
       />
     );
 

@@ -526,7 +526,7 @@ export const Ruleset = ({
                   Duration
                 </Typography>
                 <DateTimePickerModal
-                  showCalendarIcon
+                  shouldShowCalendarIcon
                   onUpdateDateTimeRange={(
                     dateTime: [Date | null, Date | null]
                   ) =>

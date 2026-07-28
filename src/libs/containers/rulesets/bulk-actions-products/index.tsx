@@ -1,4 +1,4 @@
-import type { Dispatch } from 'react';
+import type { Dispatch, ReactElement } from 'react';
 import { useState } from 'react';
 import { Divider, Modal } from '@mantine/core';
 
@@ -31,8 +31,9 @@ export const BulkActions = ({
   ruleset,
   selectedProducts,
   rulesetType,
-}: BulkActionsTypes) => {
-  const [showBulkActionsMenu, setShowBulkActionsMenu] = useState(false);
+}: BulkActionsTypes): ReactElement => {
+  const [shouldShowBulkActionsMenu, setShouldShowBulkActionsMenu] =
+    useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [actionToPerform, setActionToPerform] = useState<ActionType>('block');
   const [changeToPerform, setChangeToPerform] = useState<ChangeType>('add');
@@ -46,7 +47,7 @@ export const BulkActions = ({
         change: 'add',
       },
     });
-    setShowBulkActionsMenu(false);
+    setShouldShowBulkActionsMenu(false);
     track({
       event: `Bulk Action - ${rulesetType} - ${type} - ${selectedProducts.length} ${pluralize('item', selectedProducts.length)}`,
     });
@@ -62,7 +63,7 @@ export const BulkActions = ({
         change: 'remove',
       },
     });
-    setShowBulkActionsMenu(false);
+    setShouldShowBulkActionsMenu(false);
     track({
       event: `Bulk Action - ${rulesetType} - restore - ${selectedProducts.length} ${pluralize('item', selectedProducts.length)}`,
     });
@@ -96,19 +97,21 @@ export const BulkActions = ({
           <Button
             theme="primary"
             isInline
-            onClick={() => setShowBulkActionsMenu(!showBulkActionsMenu)}
+            onClick={() =>
+              setShouldShowBulkActionsMenu(!shouldShowBulkActionsMenu)
+            }
           >
             Bulk actions
           </Button>
 
-          {showBulkActionsMenu && (
+          {shouldShowBulkActionsMenu && (
             <>
               <Button
                 className={styles.productMenuOverlay}
                 type="submit"
                 aria-label="select available bulk actions"
                 onClick={() => {
-                  setShowBulkActionsMenu(false);
+                  setShouldShowBulkActionsMenu(false);
                 }}
               />
               <div className={styles.productMenu}>

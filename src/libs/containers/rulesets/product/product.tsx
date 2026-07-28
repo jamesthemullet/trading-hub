@@ -4,6 +4,7 @@ import type {
   DetailedHTMLProps,
   Dispatch,
   HTMLAttributes,
+  ReactElement,
   ReactNode,
 } from 'react';
 import { useEffect, useRef, useState } from 'react';
@@ -209,7 +210,7 @@ export const Product = ({
   price,
   productId,
   title,
-}: ProductProps) => {
+}: ProductProps): ReactElement => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLockToPositionMenuOpen, setIsLockToPositionMenuOpen] =
     useState(false);
@@ -736,7 +737,10 @@ export const MissingProduct = ({
   isSelectionDisabled: boolean;
   isProductNumberEnabled?: boolean;
   changeType?: 'pin' | 'boost' | 'bury' | 'block';
-} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
+} & DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>): ReactElement => {
   const isPinned = changeType === 'pin';
   const isBoosted = changeType === 'boost';
   const isBuried = changeType === 'bury';

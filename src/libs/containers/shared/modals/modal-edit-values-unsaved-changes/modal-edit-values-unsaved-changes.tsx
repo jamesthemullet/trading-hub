@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { Modal } from '@mantine/core';
 
 import { Button } from '@/libs/components';
@@ -15,7 +16,7 @@ export const ModalEditValuesUnsavedChanges = ({
   onConfirm,
   onCancel,
   isNewlyIncluded = false,
-}: Props) => {
+}: Props): ReactElement => {
   return (
     <Modal.Root opened onClose={onCancel} centered padding={10} size={460}>
       <Modal.Overlay blur={3} />

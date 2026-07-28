@@ -115,6 +115,11 @@ export const AddAttribute = ({
     }
   }, [isEditMode, editData]);
 
+  const filteredNumericAttributes = numericAttributes.filter(
+    (attribute: MerchandisingAttributeResponseItem) =>
+      attribute.name.toLowerCase().includes(numericSearchValue.toLowerCase())
+  );
+
   return (
     <div className={styles.modalContainer}>
       <section className={styles.modalSide} data-side="left">
@@ -252,26 +257,17 @@ export const AddAttribute = ({
                 Relevant attributes
               </Typography>
             </div>
-            {numericAttributes.filter(
-              (attribute: MerchandisingAttributeResponseItem) =>
-                attribute.name
-                  .toLowerCase()
-                  .includes(numericSearchValue.toLowerCase())
-            ).length > 0 ? (
+            {filteredNumericAttributes.length > 0 ? (
               <RadioButtons
                 hasDivider
                 isBold
                 size="small"
-                values={numericAttributes
-                  .filter((attribute: MerchandisingAttributeResponseItem) =>
-                    attribute.name
-                      .toLowerCase()
-                      .includes(numericSearchValue.toLowerCase())
-                  )
-                  .map((attribute: MerchandisingAttributeResponseItem) => ({
+                values={filteredNumericAttributes.map(
+                  (attribute: MerchandisingAttributeResponseItem) => ({
                     name: attribute.name,
                     isSelected: selectedNumericField === attribute.name,
-                  }))}
+                  })
+                )}
                 onSelect={(name) =>
                   dispatch({ type: 'selectNumericField', payload: name })
                 }

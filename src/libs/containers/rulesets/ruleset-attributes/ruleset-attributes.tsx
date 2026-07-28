@@ -1,4 +1,4 @@
-import type { Dispatch } from 'react';
+import type { Dispatch, ReactElement } from 'react';
 import { useState } from 'react';
 
 import type {
@@ -36,7 +36,7 @@ export const RulesetAttributes = ({
   searchTerms,
   isWriteEnabled,
   rulesetType,
-}: RulesetAttributesProps) => {
+}: RulesetAttributesProps): ReactElement => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [editData, setEditData] = useState<AttributeEdit | null>(null);

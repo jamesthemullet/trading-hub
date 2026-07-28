@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, ReactElement } from 'react';
 import { useRef } from 'react';
 import { ActionIcon } from '@mantine/core';
 import type { DatePickerProps } from '@mantine/dates';
@@ -32,7 +32,7 @@ export const DatePickerSingle = ({
   startTime: string;
   setStartTime: (time: string) => void;
   onChange: (val: Date | null) => void;
-} & Omit<DatePickerProps<'default'>, 'onChange'>) => {
+} & Omit<DatePickerProps<'default'>, 'onChange'>): ReactElement => {
   const startTimeRef = useRef<HTMLInputElement>(null);
 
   const isToggleEnabled = value === null;

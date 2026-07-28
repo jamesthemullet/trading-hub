@@ -403,7 +403,7 @@ export const FacetsList = ({
 
         if (!resolvedFacet) return undefined;
 
-        const matchesFilter =
+        const doesMatchFilter =
           !filter.length ||
           resolvedFacet.displayValue
             .toLowerCase()
@@ -412,7 +412,7 @@ export const FacetsList = ({
             .toLowerCase()
             .includes(filter.toLowerCase());
 
-        if (!matchesFilter) return undefined;
+        if (!doesMatchFilter) return undefined;
 
         return found ? found : { ...resolvedFacet, isUnavailable: true };
       }) || [],
@@ -594,7 +594,7 @@ export const FacetsList = ({
                   Duration
                 </Typography>
                 <DateTimePickerModal
-                  showCalendarIcon
+                  shouldShowCalendarIcon
                   onUpdateDateTimeRange={(dateTime) => {
                     dispatch({
                       type: 'dateTime',
