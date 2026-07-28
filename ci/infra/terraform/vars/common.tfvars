@@ -34,3 +34,5 @@ site_config = {
 
 frontdoor_sku    = "Premium_AzureFrontDoor"
 use_frontdoor_v2 = true
+private_vault = true
+private_webapp = true
