@@ -280,7 +280,7 @@ jobs:
           command: |
             set -x
             SHORT_COMMIT_SHA=$(git rev-parse --short HEAD)
-            VERSION_CHECK_URL="https://stage-merchandising-hub.search.marksandspencer.app/version.txt"
+            VERSION_CHECK_URL="https://prod-trading-hub-v1-eun-layer3-app-preprod.azurewebsites.net/version.txt"
             VERSION=$(curl "${VERSION_CHECK_URL}")
             APP_COMMIT_SHA=${SHORT_COMMIT_SHA}
             echo ${VERSION} | grep ${APP_COMMIT_SHA}
