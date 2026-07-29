@@ -223,6 +223,7 @@ jobs:
   determine-runner-prod:
     environment: Prod
     runs-on: ubuntu-latest
+    needs: automated-cab-start
     outputs:
       runner_label: ${{ steps.set-runner.outputs.runner_label }}
     steps:
