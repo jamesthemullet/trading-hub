@@ -370,6 +370,62 @@ describe('HistoryPage', () => {
     expect(items[1].changes).toEqual([]);
   });
 
+  it('should include the product name embedded in a rule when computing diffs', () => {
+    renderWithProviders(
+      <HistoryPage
+        title="Category History"
+        breadcrumbs={['Categories', 'Ranking rules']}
+        accessType="Cat"
+        ruleType={RuleType.CategoryRanking}
+        history={{
+          pagination: { totalItems: 2 },
+          changes: [
+            {
+              id: 'change-1',
+              change: {
+                id: 'ruleset-1',
+                lastChanged: { date: '2024-01-02T00:00:00Z', user: 'user-1' },
+                rules: {
+                  pinnedProducts: [],
+                  blockedProducts: [],
+                  boosts: {
+                    product: [
+                      {
+                        id: 'boost-1',
+                        weight: 1,
+                        brand: 'M&S',
+                        title: 'Jeans',
+                      },
+                    ],
+                    numeric: [],
+                    alphanumeric: [],
+                  },
+                  buries: { product: [], numeric: [], alphanumeric: [] },
+                  includes: { alphanumeric: [] },
+                  excludes: { alphanumeric: [] },
+                },
+              },
+            },
+            {
+              id: 'change-2',
+              change: {
+                id: 'ruleset-1',
+                lastChanged: { date: '2024-01-01T00:00:00Z', user: 'user-2' },
+              },
+            },
+          ],
+        }}
+        isLoading={false}
+        error=""
+      />
+    );
+
+    const { items } = mockHistoryList.mock.calls[0][0] as {
+      items: Array<{ id: string; changes: string[] }>;
+    };
+    expect(items[0].changes).toContain('boost-1 boosted\nM&S Jeans');
+  });
+
   it('should resolve facet IDs to display names in diff descriptions', () => {
     const { useGlobalFacetsList } = jest.requireMock(
       '@/libs/hooks/global/facets/use-global-facets-list'

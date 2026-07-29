@@ -5,11 +5,15 @@ import type {
   MerchandisingExcludedFacets,
   MerchandisingNumericBoostBury,
   MerchandisingPinnedProduct,
+  MerchandisingProduct,
   MerchandisingProductBoostBury,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 
-type ProductRule = MerchandisingPinnedProduct | MerchandisingBlockedProduct;
+type ProductInfo = Pick<MerchandisingProduct, 'title' | 'brand'>;
+type ProductRule = (MerchandisingPinnedProduct | MerchandisingBlockedProduct) &
+  ProductInfo;
+type ProductBoostBury = MerchandisingProductBoostBury & ProductInfo;
 type NumericRule = MerchandisingNumericBoostBury;
 type AlphanumericRule = {
   fields: MerchandisingAlphanumericBoostBuryField[];
@@ -20,15 +24,15 @@ type ExcludedFacetRule = MerchandisingExcludedFacet;
 
 export type RulesetSnapshot = {
   rules?: {
-    pinnedProducts?: MerchandisingPinnedProduct[];
-    blockedProducts?: MerchandisingBlockedProduct[];
+    pinnedProducts?: ProductRule[];
+    blockedProducts?: ProductRule[];
     boosts?: {
-      product?: MerchandisingProductBoostBury[];
+      product?: ProductBoostBury[];
       numeric?: MerchandisingNumericBoostBury[];
       alphanumeric?: AlphanumericRule[];
     };
     buries?: {
-      product?: MerchandisingProductBoostBury[];
+      product?: ProductBoostBury[];
       numeric?: MerchandisingNumericBoostBury[];
       alphanumeric?: AlphanumericRule[];
     };
@@ -55,30 +59,38 @@ const labelAlphanumericRule = (rule: AlphanumericRule): string =>
     .map((field) => `${field.field}: ${field.values.join(', ')}`)
     .join(' + ');
 
+const productDisplayName = (product: ProductInfo): string =>
+  [product.brand, product.title].filter(Boolean).join(' ');
+
 const diffById = (
   current: ProductRule[] = [],
   previous: ProductRule[] = [],
-  addLabel: (id: string) => string,
-  removeLabel: (id: string) => string
+  addLabel: (id: string, name: string) => string,
+  removeLabel: (id: string, name: string) => string
 ): string[] => {
   const currentIds = new Set(current.map((product) => product.id));
   const previousIds = new Set(previous.map((product) => product.id));
   return [
     ...current
       .filter((product) => !previousIds.has(product.id))
-      .map((product) => addLabel(product.id)),
+      .map((product) => addLabel(product.id, productDisplayName(product))),
     ...previous
       .filter((product) => !currentIds.has(product.id))
-      .map((product) => removeLabel(product.id)),
+      .map((product) => removeLabel(product.id, productDisplayName(product))),
   ];
 };
 
 const diffProductBoostBury = (
-  current: MerchandisingProductBoostBury[] = [],
-  previous: MerchandisingProductBoostBury[] = [],
-  addLabel: (id: string) => string,
-  removeLabel: (id: string) => string,
-  weightLabel: (id: string, currentWeight: number, prevWeight: number) => string
+  current: ProductBoostBury[] = [],
+  previous: ProductBoostBury[] = [],
+  addLabel: (id: string, name: string) => string,
+  removeLabel: (id: string, name: string) => string,
+  weightLabel: (
+    id: string,
+    name: string,
+    currentWeight: number,
+    prevWeight: number
+  ) => string
 ): string[] => {
   const currentById = new Map(current.map((product) => [product.id, product]));
   const previousById = new Map(
@@ -87,14 +99,15 @@ const diffProductBoostBury = (
   return [
     ...current
       .filter((product) => !previousById.has(product.id))
-      .map((product) => addLabel(product.id)),
+      .map((product) => addLabel(product.id, productDisplayName(product))),
     ...previous
       .filter((product) => !currentById.has(product.id))
-      .map((product) => removeLabel(product.id)),
+      .map((product) => removeLabel(product.id, productDisplayName(product))),
     ...current.flatMap((product) => {
       const prev = previousById.get(product.id);
       if (prev === undefined || prev.weight === product.weight) return [];
-      return [weightLabel(product.id, product.weight, prev.weight)];
+      const name = productDisplayName(product) || productDisplayName(prev);
+      return [weightLabel(product.id, name, product.weight, prev.weight)];
     }),
   ];
 };
@@ -278,35 +291,43 @@ export const computeHistoryDiff = (
   }
 
   const facetLabel = (id: string): string => facetNames[id] ?? id;
+  const withName = (line: string, name: string): string =>
+    name ? `${line}\n${name}` : line;
 
   return [
     ...diffById(
       current.rules?.pinnedProducts,
       previous.rules?.pinnedProducts,
-      (id) => `${id} pinned`,
-      (id) => `${id} unpinned`
+      (id, name) => withName(`${id} pinned`, name),
+      (id, name) => withName(`${id} unpinned`, name)
     ),
     ...diffById(
       current.rules?.blockedProducts,
       previous.rules?.blockedProducts,
-      (id) => `${id} blocked`,
-      (id) => `${id} unblocked`
+      (id, name) => withName(`${id} blocked`, name),
+      (id, name) => withName(`${id} unblocked`, name)
     ),
     ...diffProductBoostBury(
       current.rules?.boosts?.product,
       previous.rules?.boosts?.product,
-      (id) => `${id} boosted`,
-      (id) => `${id} boost removed`,
-      (id, cur, prev) =>
-        `${id} boost weight ${weightDirection(cur, prev)} to ${cur}`
+      (id, name) => withName(`${id} boosted`, name),
+      (id, name) => withName(`${id} boost removed`, name),
+      (id, name, cur, prev) =>
+        withName(
+          `${id} boost weight ${weightDirection(cur, prev)} to ${cur}`,
+          name
+        )
     ),
     ...diffProductBoostBury(
       current.rules?.buries?.product,
       previous.rules?.buries?.product,
-      (id) => `${id} buried`,
-      (id) => `${id} bury removed`,
-      (id, cur, prev) =>
-        `${id} bury weight ${weightDirection(cur, prev)} to ${cur}`
+      (id, name) => withName(`${id} buried`, name),
+      (id, name) => withName(`${id} bury removed`, name),
+      (id, name, cur, prev) =>
+        withName(
+          `${id} bury weight ${weightDirection(cur, prev)} to ${cur}`,
+          name
+        )
     ),
     ...diffByField(
       current.rules?.boosts?.numeric,

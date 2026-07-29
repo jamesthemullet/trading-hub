@@ -77,6 +77,29 @@ describe('computeHistoryDiff', () => {
         '12345678 unpinned'
       );
     });
+
+    it('includes the product name on a new line when title/brand are present on the rule', () => {
+      const current = {
+        ...baseSnapshot,
+        rules: {
+          ...emptyRules,
+          pinnedProducts: [{ id: '12345678', brand: 'M&S', title: 'Jeans' }],
+        },
+      };
+      expect(computeHistoryDiff(current, baseSnapshot)).toContain(
+        '12345678 pinned\nM&S Jeans'
+      );
+    });
+
+    it('falls back to just the id when no title/brand are provided', () => {
+      const current = {
+        ...baseSnapshot,
+        rules: { ...emptyRules, pinnedProducts: [{ id: '12345678' }] },
+      };
+      expect(computeHistoryDiff(current, baseSnapshot)).toContain(
+        '12345678 pinned'
+      );
+    });
   });
 
   describe('blocked products', () => {
@@ -157,6 +180,39 @@ describe('computeHistoryDiff', () => {
       };
       expect(computeHistoryDiff(current, previous)).toContain(
         '11112222 boost weight increased to 3'
+      );
+    });
+
+    it('falls back to the previous entry name when the current entry has no title/brand', () => {
+      const current = {
+        ...baseSnapshot,
+        rules: {
+          ...emptyRules,
+          boosts: {
+            ...emptyRules.boosts,
+            product: [{ id: '11112222', weight: 3 }],
+          },
+        },
+      };
+      const previous = {
+        ...baseSnapshot,
+        rules: {
+          ...emptyRules,
+          boosts: {
+            ...emptyRules.boosts,
+            product: [
+              {
+                id: '11112222',
+                weight: 2,
+                title: 'Jumper',
+                brand: 'Autograph',
+              },
+            ],
+          },
+        },
+      };
+      expect(computeHistoryDiff(current, previous)).toContain(
+        '11112222 boost weight increased to 3\nAutograph Jumper'
       );
     });
   });

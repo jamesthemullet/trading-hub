@@ -53,6 +53,21 @@ type HistoryRowProps = {
   facetType: FacetType | null;
 };
 
+const DiffLine = ({ desc }: { desc: string }) => {
+  const [line, ...rest] = desc.split('\n');
+  const productName = rest.join('\n');
+  return (
+    <div className={styles.diffItem}>
+      <Typography variant="bodyMedium">{line}</Typography>
+      {productName && (
+        <Typography variant="bodySmall" className={styles.diffProductName}>
+          {productName}
+        </Typography>
+      )}
+    </div>
+  );
+};
+
 const HistoryRow = ({
   item,
   absoluteIndex,
@@ -98,14 +113,8 @@ const HistoryRow = ({
         {visibleDiffs.length > 0 ? (
           <>
             {visibleDiffs.map((desc, i) => (
-              <Typography
-                // eslint-disable-next-line react/no-array-index-key
-                key={`${i}-${desc}`}
-                variant="bodyMedium"
-                className={styles.diffItem}
-              >
-                {desc}
-              </Typography>
+              // eslint-disable-next-line react/no-array-index-key
+              <DiffLine key={`${i}-${desc}`} desc={desc} />
             ))}
             {hasOverflow && (
               <Button

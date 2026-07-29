@@ -47,6 +47,10 @@
   min-width: 0;
 }
 
+.diffProductName {
+  color: var(--color-surface-on-surface-variant);
+}
+
 .toggleLink {
   padding: 0;
   text-decoration: underline;

@@ -17,7 +17,10 @@ describe('HistoryList', () => {
       id: 'change-1',
       date: '2024-01-15T14:30:00Z',
       user: 'John Doe',
-      changes: ['12345678 pinned', '87654321 boosted'],
+      changes: [
+        '12345678 pinned',
+        '87654321 boosted\nM&S Collection Cotton Rich Jumper',
+      ],
     },
     {
       rulesetId: 'ruleset-1',
@@ -58,13 +61,16 @@ describe('HistoryList', () => {
     expect(screen.getAllByText('View')).toHaveLength(2);
   });
 
-  it('should render change descriptions for items with changes', () => {
+  it('should render change descriptions for items with changes, including a product name on a secondary line', () => {
     renderWithProviders(
       <HistoryList items={mockItems} ruleType={RuleType.CategoryRanking} />
     );
 
     expect(screen.getByText('12345678 pinned')).toBeInTheDocument();
     expect(screen.getByText('87654321 boosted')).toBeInTheDocument();
+    expect(
+      screen.getByText('M&S Collection Cotton Rich Jumper')
+    ).toBeInTheDocument();
     expect(screen.getByText('Disabled')).toBeInTheDocument();
   });
 
