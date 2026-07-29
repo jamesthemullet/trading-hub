@@ -213,6 +213,7 @@ const Page = (): ReactElement => {
           headerText={searchTermsArray?.join(', ')}
           countryCode={countryCode}
           isDraftRuleset={isDraft}
+          lastChanged={ruleSet.lastChanged}
         />
       )}
     </>

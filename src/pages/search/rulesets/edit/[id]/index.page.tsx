@@ -108,6 +108,7 @@ const Page = ({ id }: PageProps): ReactElement => {
       {!isLoading && rulesetData && (
         <Ruleset
           isEnabled={rulesetData.isEnabled}
+          lastChanged={rulesetData.lastChanged}
           onCancel={() => router.push('/search')}
           onSave={saveRuleSet}
           originalRuleset={isHistoryView ? undefined : ruleSet}

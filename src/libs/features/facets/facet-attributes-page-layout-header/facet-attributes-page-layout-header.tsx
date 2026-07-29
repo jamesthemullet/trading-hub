@@ -1,6 +1,13 @@
 import type { ReactElement } from 'react';
 
-import { Button, ErrorMessage, InfoBox, Typography } from '@/libs/components';
+import type { LastChanged } from '@/libs/components';
+import {
+  Button,
+  ErrorMessage,
+  InfoBox,
+  LastSavedBy,
+  Typography,
+} from '@/libs/components';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsPanelAccordion } from '@/libs/containers/facets/facets-panel-accordion/facets-panel-accordion';
 import { getFlagFromCountryCode } from '@/libs/utils/get-flag-from-country-code';
@@ -20,6 +27,7 @@ type CommonHeaderProps = {
   isUndoButtonVisible?: boolean;
   isUndoDisabled?: boolean;
   onUndo?: () => void;
+  lastChanged?: LastChanged;
 };
 
 type GlobalHeaderProps = CommonHeaderProps & {
@@ -50,6 +58,7 @@ export const FacetAttributesPageLayoutHeader = (
     countryCode,
     isUndoButtonVisible = false,
     isUndoDisabled = true,
+    lastChanged,
   } = props;
 
   return (
@@ -98,6 +107,8 @@ export const FacetAttributesPageLayoutHeader = (
       <Typography as="h1" variant="titleLarge">
         Value settings of: {displayName}
       </Typography>
+
+      <LastSavedBy lastChanged={lastChanged} className={styles.lastSaved} />
 
       {error && <ErrorMessage>Error updating facet: {error}</ErrorMessage>}
 

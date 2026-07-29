@@ -111,6 +111,7 @@ const Page = ({ id }: PageProps): ReactElement => {
         rulesetData && (
           <Ruleset
             isEnabled={rulesetData.isEnabled}
+            lastChanged={rulesetData.lastChanged}
             onSave={saveRuleSet}
             onCancel={() => router.push('/category')}
             originalRuleset={isHistoryView ? undefined : ruleSetDetail}

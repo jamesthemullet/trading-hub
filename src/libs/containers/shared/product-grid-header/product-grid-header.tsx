@@ -1,7 +1,8 @@
 import type { ReactElement } from 'react';
 import { useState } from 'react';
 
-import { Button, Typography } from '@/libs/components';
+import type { LastChanged } from '@/libs/components';
+import { Button, LastSavedBy, Typography } from '@/libs/components';
 import { track } from '@/libs/hooks/utils/analytics';
 
 import { ModalUnsavedChanges } from '../modals';
@@ -12,6 +13,7 @@ type Props = {
   hasChanges: boolean;
   hasPreview: boolean;
   isNewRuleSet: boolean;
+  lastChanged?: LastChanged;
   onCancel: () => void;
   onPreview?: () => void;
   onSave: () => void;
@@ -26,6 +28,7 @@ export const ProductGridHeader = ({
   hasChanges,
   hasPreview,
   isNewRuleSet,
+  lastChanged,
   onCancel,
   onPreview,
   onSave,
@@ -49,9 +52,14 @@ export const ProductGridHeader = ({
   return (
     <>
       <div className={styles.ruleSetOptions}>
-        <Typography as="h1" isStrong variant="titleMedium">
-          {title}
-        </Typography>
+        <div className={styles.titleColumn}>
+          <Typography as="h1" isStrong variant="titleMedium">
+            {title}
+          </Typography>
+
+          <LastSavedBy lastChanged={lastChanged} className={styles.lastSaved} />
+        </div>
+
         <div className={styles.actions}>
           <Button onClick={onCancelChange}>Cancel</Button>
           {!shouldHidePreview && (

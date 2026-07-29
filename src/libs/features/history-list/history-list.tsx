@@ -26,11 +26,13 @@ const DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
   month: 'short',
   day: 'numeric',
   year: 'numeric',
+  timeZone: 'UTC',
 };
 
 const TIME_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
   hour: '2-digit',
   minute: '2-digit',
+  timeZone: 'UTC',
 };
 
 type HistoryItem = {

@@ -147,6 +147,7 @@ const Page = ({ id }: PageProps): ReactElement => {
           <>
             <Ruleset
               isEnabled={rulesetData.isEnabled}
+              lastChanged={rulesetData.lastChanged}
               originalRuleset={isHistoryView ? undefined : globalRuleSet}
               onSave={({
                 ruleSetId,

@@ -167,6 +167,7 @@ const Page = ({ id }: PageProps): ReactElement => {
           }}
           onCancel={handleCancel}
           isWriteEnabled={hasWriteAccess && !isHistoryView}
+          lastChanged={rulesetData?.lastChanged}
         />
       )}
       <Modal.Root

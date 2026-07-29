@@ -142,6 +142,7 @@ const Page = ({ id }: { id: string }): ReactElement => {
           onCancel={handleCancel}
           onSave={handleSave}
           isWriteEnabled={hasWriteAccess && !isHistoryView}
+          lastChanged={rulesetData?.lastChanged}
         />
       )}
     </>

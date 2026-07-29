@@ -7,6 +7,7 @@ import type {
   MerchandisingAttributeValuesResponse,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
+import type { LastChanged } from '@/libs/components';
 import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import { getFacetRoute, getNewFacetRoute } from '@/libs/constants';
 import { FacetType } from '@/libs/constants/rule-types';
@@ -42,6 +43,7 @@ type PageLayout = {
   headerText?: string;
   countryCode?: string;
   isDraftRuleset?: boolean;
+  lastChanged?: LastChanged;
 };
 
 export const CategoryAndSearchFacetsPanelPageLayout = ({
@@ -57,6 +59,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
   headerText,
   countryCode = 'UK_IE',
   isDraftRuleset = false,
+  lastChanged,
 }: PageLayout): ReactElement => {
   const router = useRouter();
 
@@ -192,6 +195,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
           onUndo={handleUndo}
           countryCode={countryCode}
           isDraftRuleset={isDraftRuleset}
+          lastChanged={lastChanged}
         />
 
         <FacetAttributesListActions

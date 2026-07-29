@@ -1,18 +1,30 @@
 .ruleSetOptions {
   display: flex;
-
-  h1 {
-    padding: var(--mns-spacing-2) var(--mns-spacing-1-5) var(--mns-spacing-1-5);
-  }
+  align-items: center;
 
   button {
     min-width: 110px;
   }
 }
 
+.titleColumn {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: var(--mns-spacing-1-5);
+
+  h1 {
+    padding: var(--mns-spacing-2) var(--mns-spacing-1-5) var(--mns-spacing-0-5);
+  }
+}
+
 .actions {
   display: flex;
+  align-items: center;
   gap: var(--mns-spacing-2);
   margin-left: auto;
-  padding: var(--mns-spacing-1-5);
+  padding: 0 var(--mns-spacing-1-5);
+}
+
+.lastSaved {
+  padding: 0 var(--mns-spacing-1-5);
 }

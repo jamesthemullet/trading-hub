@@ -12,6 +12,11 @@
   }
 }
 
+.lastSaved {
+  padding-left: var(--mns-spacing-2-5);
+  margin: 0 0 var(--mns-spacing-1-5);
+}
+
 .flagAndButtons {
   display: flex;
   justify-content: space-between;

@@ -226,6 +226,7 @@ const Page = (): ReactElement => {
             headerText={categoriesArray?.join(', ')}
             countryCode={countryCode}
             isDraftRuleset={isDraft}
+            lastChanged={ruleSetDetail.lastChanged}
           />
         )}
     </>

@@ -9,6 +9,7 @@ import {
 } from 'react';
 
 import type { MerchandisingRuleSet } from '@/libs/api';
+import type { LastChanged } from '@/libs/components';
 import {
   Button,
   CombinedDropdown,
@@ -98,6 +99,7 @@ export type FacetsListProps = {
     plpUrl?: string;
   }>;
   searchTerms?: string[];
+  lastChanged?: LastChanged;
 };
 
 export const FacetsList = ({
@@ -109,6 +111,7 @@ export const FacetsList = ({
   onCancel,
   onSave,
   isWriteEnabled,
+  lastChanged,
 }: FacetsListProps): ReactElement => {
   const { getStringParam } = useTypeSafeQuery();
   const rulesetId = getStringParam('id');
@@ -526,6 +529,7 @@ export const FacetsList = ({
           shouldHidePreview={facetType === FacetType.Global}
           rulesetType={facetType}
           isWriteEnabled={isWriteEnabled}
+          lastChanged={lastChanged}
         />
 
         {getFacetsDataError && (

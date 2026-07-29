@@ -10,6 +10,7 @@ export * from './facet-order-input/facet-order-input';
 export * from './filtered-results-panel/filtered-results-panel';
 export * from './heading/heading';
 export * from './infoBox/info-box';
+export * from './last-saved-by/last-saved-by';
 export * from './loader/loader';
 export * from './navigation/navigation';
 export * from './navigation-menu/navigation-menu';

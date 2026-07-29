@@ -181,6 +181,47 @@ describe('ProductGridHeader', () => {
     expect(mockCancel).not.toHaveBeenCalled();
   });
 
+  it('should not show last saved info when lastChanged is not provided', () => {
+    renderWithProviders(<ProductGridHeader {...defaultProps} />);
+
+    expect(screen.queryByText(/Last saved by/)).not.toBeInTheDocument();
+  });
+
+  it('should show last saved info when lastChanged is provided', () => {
+    renderWithProviders(
+      <ProductGridHeader
+        {...defaultProps}
+        lastChanged={{ date: '2024-01-01T12:30:00Z', user: 'test-user' }}
+      />
+    );
+
+    expect(screen.getByText(/Last saved by:/)).toBeVisible();
+    expect(screen.getByText('test-user')).toBeVisible();
+    expect(screen.getByText(/Jan 1, 2024/)).toBeVisible();
+  });
+
+  it('should not show last saved info when lastChanged has an invalid date', () => {
+    renderWithProviders(
+      <ProductGridHeader
+        {...defaultProps}
+        lastChanged={{ date: 'not-a-date', user: 'test-user' }}
+      />
+    );
+
+    expect(screen.queryByText(/Last saved by/)).not.toBeInTheDocument();
+  });
+
+  it('should not show last saved info when lastChanged has no user', () => {
+    renderWithProviders(
+      <ProductGridHeader
+        {...defaultProps}
+        lastChanged={{ date: '2024-01-01T12:30:00Z', user: '' }}
+      />
+    );
+
+    expect(screen.queryByText(/Last saved by/)).not.toBeInTheDocument();
+  });
+
   it('should not show preview button', () => {
     const mockCancel = jest.fn();
     renderWithProviders(

@@ -7,6 +7,7 @@ import type {
   MerchandisingReturnedFacet,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
+import type { LastChanged } from '@/libs/components';
 import { ErrorMessage } from '@/libs/components';
 import { FacetsPanelSkeleton } from '@/libs/containers';
 import { FacetsPanel } from '@/libs/features/facets/facets-panel/facets-panel';
@@ -24,6 +25,7 @@ type GlobalFacetsPanelProps = {
     countryCode: MerchandisingCountryCode;
   }) => void;
   onCancel: () => void;
+  lastChanged?: LastChanged;
 };
 
 const GlobalFacetsPanel = ({
@@ -34,6 +36,7 @@ const GlobalFacetsPanel = ({
   isWriteEnabled,
   onSave,
   onCancel,
+  lastChanged,
 }: GlobalFacetsPanelProps): ReactElement => {
   const {
     facets,
@@ -139,6 +142,7 @@ const GlobalFacetsPanel = ({
           onCancel={onCancel}
           onFacetDataChange={onFacetDataChange}
           isWriteEnabled={isWriteEnabled}
+          lastChanged={lastChanged}
         />
       )}
     </>

@@ -13,6 +13,7 @@ import type {
   MerchandisingExcludedFacets,
   MerchandisingReturnedFacet,
 } from '@/libs/api';
+import type { LastChanged } from '@/libs/components';
 import {
   Button,
   CombinedDropdown,
@@ -79,6 +80,7 @@ type FacetsPanelProps = {
     value: string;
     facet: MerchandisingReturnedFacet;
   }) => void;
+  lastChanged?: LastChanged;
 };
 
 export const FacetsPanel = ({
@@ -91,6 +93,7 @@ export const FacetsPanel = ({
   onSave,
   onCancel,
   onFacetDataChange,
+  lastChanged,
 }: FacetsPanelProps): ReactElement => {
   const { getStringParam } = useTypeSafeQuery();
 
@@ -382,6 +385,7 @@ export const FacetsPanel = ({
           title={title}
           isWriteEnabled={isWriteEnabled}
           rulesetType="global"
+          lastChanged={lastChanged}
         />
 
         <div className={styles.sectionWrapper}>

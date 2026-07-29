@@ -11,6 +11,7 @@ import type {
   MerchandisingRuleSet,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
+import type { LastChanged } from '@/libs/components';
 import {
   Button,
   CombinedDropdown,
@@ -51,6 +52,7 @@ const MAX_PINNED_PRODUCTS_ALLOWED = 100;
 export const Ruleset = ({
   endDate,
   isEnabled,
+  lastChanged,
   onCancel,
   onCreate,
   onCreateGlobalRuleset,
@@ -69,6 +71,7 @@ export const Ruleset = ({
   isWriteEnabled,
 }: {
   isEnabled: boolean;
+  lastChanged?: LastChanged;
   onSave?: ({
     ruleSetId,
     ruleSet,
@@ -439,6 +442,7 @@ export const Ruleset = ({
         title="Product Grid"
         rulesetType={rulesetType}
         isWriteEnabled={isWriteEnabled}
+        lastChanged={lastChanged}
       />
 
       {

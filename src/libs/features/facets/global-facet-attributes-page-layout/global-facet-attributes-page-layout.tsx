@@ -242,6 +242,7 @@ export const GlobalFacetAttributesPageLayout = ({
           error={updateGlobalFacetError}
           isWriteEnabled={isWriteEnabled}
           countryCode={countryCode}
+          lastChanged={facet?.lastChanged}
         />
 
         <FacetAttributesListActions
