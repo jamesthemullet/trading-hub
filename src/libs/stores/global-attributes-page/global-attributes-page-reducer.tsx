@@ -1,3 +1,5 @@
+import type { MerchandisingGlobalOnlyFacetConfig } from '@/libs/api';
+
 type FacetDisplayType = 'included' | 'algoControl' | 'excluded';
 
 export type FormattedRow = {
@@ -6,6 +8,39 @@ export type FormattedRow = {
   isMergeGroup: boolean;
   order?: number;
   isChecked: boolean;
+};
+
+type MergeGroupConfig = NonNullable<
+  MerchandisingGlobalOnlyFacetConfig['merged']
+>[number];
+
+// Applies any configured merge group to a raw attribute value row so it is
+// consistently displayed as its merged displayValue, regardless of whether
+// the row came from the initial page load or a later search.
+const formatRowWithMergeGroup = (
+  row: { displayValue: string },
+  merged: MergeGroupConfig[]
+): FormattedRow => {
+  const match = merged.find((merge) =>
+    merge.mergedValues
+      ? merge.mergedValues.includes(row.displayValue) ||
+        merge.displayValue === row.displayValue
+      : merge.displayValue === row.displayValue
+  );
+
+  return match?.displayValue && match.mergedValues
+    ? {
+        displayName: match.displayValue,
+        attributes: match.mergedValues,
+        isMergeGroup: true,
+        isChecked: false,
+      }
+    : {
+        displayName: row.displayValue,
+        attributes: [row.displayValue],
+        isMergeGroup: false,
+        isChecked: false,
+      };
 };
 
 type FormattedBoostedRow = {
@@ -68,10 +103,7 @@ type InitialiseState = {
     boostedValues: { displayValue: string }[];
     nonBoostedExcludedValues: { displayValue: string }[];
     excludedValues: { displayValue: string }[];
-    merged: {
-      displayValue?: string;
-      mergedValues?: string[];
-    }[];
+    merged: MergeGroupConfig[];
   };
 };
 
@@ -196,10 +228,7 @@ export type GlobalAttributesPageState = {
   boostedRows: FormattedBoostedRow[];
   nonBoostedExcludedRows: FormattedRow[];
   excludedRows: FormattedRow[];
-  merged: {
-    displayValue?: string;
-    mergedValues?: string[];
-  }[];
+  merged: MergeGroupConfig[];
   errorStates: {
     [key: string]: string;
   };
@@ -308,28 +337,8 @@ export const globalAttributesPageReducer = (
         merged,
       } = action.payload;
 
-      const formatRow = (row: { displayValue: string }): FormattedRow => {
-        const match = merged.find((merge) =>
-          merge.mergedValues
-            ? merge.mergedValues.includes(row.displayValue) ||
-              merge.displayValue === row.displayValue
-            : merge.displayValue === row.displayValue
-        );
-
-        return match?.displayValue && match.mergedValues
-          ? {
-              displayName: match.displayValue,
-              attributes: match.mergedValues,
-              isMergeGroup: true,
-              isChecked: false,
-            }
-          : {
-              displayName: row.displayValue,
-              attributes: [row.displayValue],
-              isMergeGroup: false,
-              isChecked: false,
-            };
-      };
+      const formatRow = (row: { displayValue: string }): FormattedRow =>
+        formatRowWithMergeGroup(row, merged);
 
       const getUniqueRows = (
         rows: FormattedRow[],
@@ -385,23 +394,27 @@ export const globalAttributesPageReducer = (
 
     case 'ADD_NONBOOSTEDEXCLUDED_VALUES': {
       const { values } = action.payload;
+      const existingRows = [
+        ...state.boostedRows,
+        ...state.excludedRows,
+        ...state.nonBoostedExcludedRows,
+      ];
       const existingValues = new Set(
-        [
-          ...state.boostedRows,
-          ...state.excludedRows,
-          ...state.nonBoostedExcludedRows,
-        ].flatMap((row) => row.attributes)
+        existingRows.flatMap((row) => row.attributes)
+      );
+      const existingDisplayNames = new Set(
+        existingRows.map((row) => row.displayName)
       );
 
-      const valuesToAdd = values
-        .map((row) => row.displayValue)
-        .filter((displayValue) => !existingValues.has(displayValue))
-        .map((displayValue) => ({
-          displayName: displayValue,
-          attributes: [displayValue],
-          isMergeGroup: false,
-          isChecked: false,
-        }));
+      const formattedValuesToAdd = values
+        .filter(({ displayValue }) => !existingValues.has(displayValue))
+        .map((row) => formatRowWithMergeGroup(row, state.merged));
+
+      const valuesToAdd = formattedValuesToAdd.filter(
+        (row, index, self) =>
+          !existingDisplayNames.has(row.displayName) &&
+          index === self.findIndex((r) => r.displayName === row.displayName)
+      );
 
       if (valuesToAdd.length === 0) {
         return state;

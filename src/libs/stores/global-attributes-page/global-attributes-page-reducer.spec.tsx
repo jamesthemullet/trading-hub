@@ -879,6 +879,60 @@ describe('Global Attribute Reducer', () => {
         },
       ]);
     });
+
+    it('should apply an existing merge group to newly added search results and collapse duplicates', () => {
+      const state: GlobalAttributesPageState = {
+        ...mockState,
+      };
+
+      const action = {
+        type: 'ADD_NONBOOSTEDEXCLUDED_VALUES' as const,
+        payload: {
+          values: [
+            { displayValue: 'Magic tummy control' },
+            { displayValue: 'Firm control' },
+          ],
+        },
+      };
+
+      const result = globalAttributesPageReducer(state, action);
+
+      expect(result.nonBoostedExcludedRows).toEqual([
+        ...state.nonBoostedExcludedRows,
+        {
+          displayName: 'Control',
+          attributes: ['Magic tummy control', 'Firm control', 'Light control'],
+          isMergeGroup: true,
+          isChecked: false,
+        },
+      ]);
+    });
+
+    it('should not add a duplicate row when a partially-added merge group displayName already exists', () => {
+      const state: GlobalAttributesPageState = {
+        ...mockState,
+        nonBoostedExcludedRows: [
+          ...mockState.nonBoostedExcludedRows,
+          {
+            displayName: 'Control',
+            attributes: ['Magic tummy control'],
+            isMergeGroup: true,
+            isChecked: false,
+          },
+        ],
+      };
+
+      const action = {
+        type: 'ADD_NONBOOSTEDEXCLUDED_VALUES' as const,
+        payload: {
+          values: [{ displayValue: 'Firm control' }],
+        },
+      };
+
+      const result = globalAttributesPageReducer(state, action);
+
+      expect(result).toBe(state);
+    });
   });
 
   describe('CHANGE_ROW_ORDER', () => {
