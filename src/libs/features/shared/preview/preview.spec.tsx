@@ -169,6 +169,7 @@ const mockCategoryReturnValue = {
 
 const NEW_RULE_CHANGE = 'with new rule change';
 const CURRENT_STATE = 'current state';
+const SIDE_BY_SIDE = 'side by side';
 
 describe('Preview', () => {
   const mockProps: Props = {
@@ -333,6 +334,37 @@ describe('Preview', () => {
     expect(screen.getAllByText(NEW_RULE_CHANGE)[1]).toBeInTheDocument();
   });
 
+  it('should show side by side option with both current and new rule products', async () => {
+    const user = userEvent.setup();
+
+    jest.mocked(usePreview).mockImplementation(({ merchandisingRules }) => ({
+      ...mockCategoryReturnValue,
+      data: {
+        ...mockCategoryReturnValue.data,
+        products:
+          merchandisingRules === mockProps.merchandisingRules
+            ? [{ ...mockProduct, title: 'newRuleProduct' }]
+            : [{ ...mockProduct, title: 'currentStateProduct' }],
+      },
+    }));
+
+    renderWithProviders(<Preview {...mockProps} />);
+
+    const toggleButton = screen.getAllByText(NEW_RULE_CHANGE)[0];
+
+    await user.click(toggleButton);
+
+    const sideBySideButton = screen.getByText(SIDE_BY_SIDE);
+
+    await user.click(sideBySideButton);
+
+    expect(screen.getAllByText(SIDE_BY_SIDE)[0]).toBeVisible();
+    expect(screen.getByText('Current state')).toBeInTheDocument();
+    expect(screen.getByText('With new rule change')).toBeInTheDocument();
+    expect(screen.getByText('currentStateProduct')).toBeInTheDocument();
+    expect(screen.getByText('newRuleProduct')).toBeInTheDocument();
+  });
+
   it('should show more facets', () => {
     renderWithProviders(<Preview {...mockProps} />);
 
@@ -494,6 +526,7 @@ describe('Preview', () => {
       categoryId: 'SubCat_123',
       countryCode: 'UK',
       facetConfig: [],
+      isEnabled: true,
       merchandisingRules: {
         blockedProducts: [],
         boosts: {

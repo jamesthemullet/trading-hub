@@ -235,6 +235,32 @@
   padding: var(--mns-spacing-1) 0;
 }
 
+.sideBySideWrapper {
+  display: flex;
+  gap: var(--mns-spacing-2);
+  padding-top: var(--mns-spacing-2);
+}
+
+.sideBySideColumn {
+  flex: 1;
+  min-width: 0;
+}
+
+.sideBySideDivider {
+  width: 1px;
+  background-color: var(--color-state-disabled-disabled);
+  flex-shrink: 0;
+}
+
+.sideBySideHeader {
+  margin-bottom: var(--mns-spacing-2);
+
+  p {
+    padding-bottom: var(--mns-spacing-1);
+    border-bottom: solid 2px var(--color-state-success-success);
+  }
+}
+
 .facetItem {
   display: flex;
   margin-bottom: var(--mns-spacing-1);

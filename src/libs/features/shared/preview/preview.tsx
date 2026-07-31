@@ -5,6 +5,7 @@ import { Modal } from '@mantine/core';
 import type {
   MerchandisingExcludedFacets,
   MerchandisingFacet,
+  MerchandisingProduct,
   MerchandisingRules,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
@@ -24,6 +25,21 @@ import styles from './preview.module.css';
 
 const MISSING_IMAGE_SRC =
   'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22307%22 height=%22400%22%3E%3Crect width=%22307%22 height=%22400%22 fill=%22%23cccccc%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23ffffff%22 font-family=%22sans-serif%22 font-size=%2240%22%3Emissing%20image%3C/text%3E%3C/svg%3E';
+
+const EMPTY_MERCHANDISING_RULES: MerchandisingRules = {
+  pinnedProducts: [],
+  blockedProducts: [],
+  boosts: { alphanumeric: [], numeric: [], product: [] },
+  buries: { alphanumeric: [], numeric: [], product: [] },
+  includes: {
+    alphanumeric: [],
+  },
+  excludes: {
+    alphanumeric: [],
+  },
+};
+
+const EMPTY_FACET_CONFIG: MerchandisingRuleSetFacetConfigWithId[] = [];
 
 export type Props = {
   countryCode: 'UK' | 'IE';
@@ -118,6 +134,65 @@ const FacetInfo = ({
   );
 };
 
+type ViewMode = 'newRuleChange' | 'currentState' | 'sideBySide';
+
+const VIEW_MODE_LABEL: Record<ViewMode, string> = {
+  newRuleChange: 'with new rule change',
+  currentState: 'current state',
+  sideBySide: 'side by side',
+};
+
+const ProductGrid = ({
+  products,
+}: {
+  products: MerchandisingProduct[];
+}): ReactElement => (
+  <section className={styles.products}>
+    {products.map(({ productId, imageUrl, isInStock, brand, title, price }) => {
+      const firstImageUrl = imageUrl?.[0];
+
+      return (
+        <div className={styles.product} key={`product-${productId}`}>
+          <div className={styles.productWrapper}>
+            <div className={styles.productImage}>
+              <Image
+                src={
+                  firstImageUrl
+                    ? `https://asset1.cxnmarksandspencer.com/is/image/mands/${firstImageUrl}`
+                    : MISSING_IMAGE_SRC
+                }
+                alt=""
+                data-testid="productImage"
+                width={100}
+                height={176}
+                sizes="100%"
+                onError={(element) => {
+                  // eslint-disable-next-line functional/immutable-data
+                  element.currentTarget.src = MISSING_IMAGE_SRC;
+                }}
+              />
+              {!isInStock && (
+                <div className={styles.productOutOfStock}>
+                  <Typography variant="bodySmall">Out of stock</Typography>
+                </div>
+              )}
+            </div>
+            <div className={styles.productInfo}>
+              <Typography variant="bodySmall" isStrong>
+                {price}
+              </Typography>
+              <Typography variant="bodySmall" isStrong uppercase>
+                {brand}
+              </Typography>
+              <Typography variant="bodySmall">{title}</Typography>
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </section>
+);
+
 export const Preview = ({
   categoryId,
   countryCode,
@@ -128,38 +203,39 @@ export const Preview = ({
   previewTitle,
   searchTerm,
 }: Props): ReactElement => {
-  const [hasRules, setHasRules] = useState(true);
-  const [rules, setRules] = useState(merchandisingRules);
+  const [viewMode, setViewMode] = useState<ViewMode>('newRuleChange');
   const [shouldShowAllFacets, setShouldShowAllFacets] = useState(false);
   const [openFacetId, setOpenFacetId] = useState('');
 
-  const emptyRules: MerchandisingRules = {
-    pinnedProducts: [],
-    blockedProducts: [],
-    boosts: { alphanumeric: [], numeric: [], product: [] },
-    buries: { alphanumeric: [], numeric: [], product: [] },
-    includes: {
-      alphanumeric: [],
-    },
-    excludes: {
-      alphanumeric: [],
-    },
-  };
-
-  const { data, isLoading, setFacetConfigRules } = usePreview({
+  const commonPreviewArgs = {
     ...(categoryId && { categoryId }),
     ...(searchTerm && { searchTerm }),
     countryCode,
-    merchandisingRules: rules,
-    facetConfig,
     excludedFacets,
+  };
+
+  const isSideBySide = viewMode === 'sideBySide';
+
+  const newRuleChange = usePreview({
+    ...commonPreviewArgs,
+    merchandisingRules,
+    facetConfig,
+    isEnabled: viewMode !== 'currentState',
   });
 
-  const toggleView = (withMerchandisingRules: boolean) => {
-    setHasRules(withMerchandisingRules);
-    setRules(withMerchandisingRules ? merchandisingRules : emptyRules);
-    setFacetConfigRules(withMerchandisingRules ? facetConfig : []);
-  };
+  const currentState = usePreview({
+    ...commonPreviewArgs,
+    merchandisingRules: EMPTY_MERCHANDISING_RULES,
+    facetConfig: EMPTY_FACET_CONFIG,
+    excludedFacets: undefined,
+    isEnabled: viewMode !== 'newRuleChange',
+  });
+
+  const activeData =
+    viewMode === 'currentState' ? currentState.data : newRuleChange.data;
+  const isLoading = isSideBySide
+    ? currentState.isLoading || newRuleChange.isLoading
+    : (viewMode === 'currentState' ? currentState : newRuleChange).isLoading;
 
   return (
     <Modal.Root opened onClose={onClose} centered padding={0} size="1280px">
@@ -189,17 +265,17 @@ export const Preview = ({
                   <CombinedDropdown
                     variant={DropdownVariant.Generic}
                     width={220}
-                    label={`${hasRules ? 'with new rule change' : 'current state'}`}
+                    label={VIEW_MODE_LABEL[viewMode]}
                     ariaLabel="Preview type selector"
                   >
                     <Button
                       className={styles.item}
                       type="button"
                       onClick={() => {
-                        toggleView(true);
+                        setViewMode('newRuleChange');
                       }}
                       role="menuitemradio"
-                      aria-checked={hasRules}
+                      aria-checked={viewMode === 'newRuleChange'}
                     >
                       <Typography variant="bodySmall" align="center">
                         with new rule change
@@ -209,13 +285,26 @@ export const Preview = ({
                       className={styles.item}
                       type="button"
                       onClick={() => {
-                        toggleView(false);
+                        setViewMode('currentState');
                       }}
                       role="menuitemradio"
-                      aria-checked={!hasRules}
+                      aria-checked={viewMode === 'currentState'}
                     >
                       <Typography variant="bodySmall" align="center">
                         current state
+                      </Typography>
+                    </Button>
+                    <Button
+                      className={styles.item}
+                      type="button"
+                      onClick={() => {
+                        setViewMode('sideBySide');
+                      }}
+                      role="menuitemradio"
+                      aria-checked={viewMode === 'sideBySide'}
+                    >
+                      <Typography variant="bodySmall" align="center">
+                        side by side
                       </Typography>
                     </Button>
                   </CombinedDropdown>
@@ -224,106 +313,86 @@ export const Preview = ({
             </section>
             <div className={styles.content}>
               <Typography>{previewTitle}</Typography>
-              <div className={styles.facetRowWrapper}>
-                <div className={styles.facetContainer}>
-                  {data.facets
-                    .slice(0, shouldShowAllFacets ? data.facets.length : 5)
-                    .map((facet: MerchandisingFacet) => (
-                      <FacetInfo
-                        key={facet.id}
-                        facet={facet}
-                        isDropdownOpen={openFacetId === facet.id}
-                        setIsDropdownOpen={(id: string) => {
-                          setOpenFacetId(openFacetId === id ? '' : id);
-                        }}
-                        currency={countryCode === 'UK' ? '£' : '€'}
-                      />
-                    ))}
+
+              {isSideBySide ? (
+                <div className={styles.sideBySideWrapper}>
+                  <div className={styles.sideBySideColumn}>
+                    <div className={styles.sideBySideHeader}>
+                      <Typography variant="bodyMedium" isStrong>
+                        Current state
+                      </Typography>
+                    </div>
+                    <ProductGrid products={currentState.data.products} />
+                  </div>
+                  <div className={styles.sideBySideDivider} />
+                  <div className={styles.sideBySideColumn}>
+                    <div className={styles.sideBySideHeader}>
+                      <Typography variant="bodyMedium" isStrong>
+                        With new rule change
+                      </Typography>
+                    </div>
+                    <ProductGrid products={newRuleChange.data.products} />
+                  </div>
                 </div>
-                {data.facets.length > 5 && (
-                  <Button
-                    className={styles.showAllButton}
-                    appearance="plain"
-                    type="button"
-                    onClick={() => setShouldShowAllFacets(!shouldShowAllFacets)}
-                  >
-                    <Image
-                      src="https://static.marksandspencer.com/icons/svgs/FilterSwitch-v2.svg"
-                      alt="filterSwitch"
-                      width={32}
-                      height={32}
-                    />
-                    <Typography as="span" isStrong>
-                      {shouldShowAllFacets ? 'Fewer' : 'All'} Filters
-                    </Typography>
-                  </Button>
-                )}
-              </div>
-
-              {!!data.pagination.totalItems && (
-                <div className={styles.itemsFound}>
-                  <Typography variant="bodySmall">
-                    1 to{' '}
-                    {data.pagination.totalItems &&
-                    data.pagination.totalItems < 140
-                      ? data.pagination.totalItems
-                      : 140}{' '}
-                    of {data.pagination.totalItems} items
-                  </Typography>
-                </div>
-              )}
-
-              <section className={styles.products}>
-                {data.products.map(
-                  ({ productId, imageUrl, isInStock, brand, title, price }) => {
-                    const firstImageUrl = imageUrl?.[0];
-
-                    return (
-                      <div
-                        className={styles.product}
-                        key={`product-${productId}`}
+              ) : (
+                <>
+                  <div className={styles.facetRowWrapper}>
+                    <div className={styles.facetContainer}>
+                      {activeData.facets
+                        .slice(
+                          0,
+                          shouldShowAllFacets ? activeData.facets.length : 5
+                        )
+                        .map((facet: MerchandisingFacet) => (
+                          <FacetInfo
+                            key={facet.id}
+                            facet={facet}
+                            isDropdownOpen={openFacetId === facet.id}
+                            setIsDropdownOpen={(id: string) => {
+                              setOpenFacetId(openFacetId === id ? '' : id);
+                            }}
+                            currency={countryCode === 'UK' ? '£' : '€'}
+                          />
+                        ))}
+                    </div>
+                    {activeData.facets.length > 5 && (
+                      <Button
+                        className={styles.showAllButton}
+                        appearance="plain"
+                        type="button"
+                        onClick={() =>
+                          setShouldShowAllFacets(!shouldShowAllFacets)
+                        }
                       >
-                        <div className={styles.productWrapper}>
-                          <div className={styles.productImage}>
-                            <Image
-                              src={
-                                firstImageUrl
-                                  ? `https://asset1.cxnmarksandspencer.com/is/image/mands/${firstImageUrl}`
-                                  : MISSING_IMAGE_SRC
-                              }
-                              alt=""
-                              data-testid="productImage"
-                              width={100}
-                              height={176}
-                              sizes="100%"
-                              onError={(element) => {
-                                // eslint-disable-next-line functional/immutable-data
-                                element.currentTarget.src = MISSING_IMAGE_SRC;
-                              }}
-                            />
-                            {!isInStock && (
-                              <div className={styles.productOutOfStock}>
-                                <Typography variant="bodySmall">
-                                  Out of stock
-                                </Typography>
-                              </div>
-                            )}
-                          </div>
-                          <div className={styles.productInfo}>
-                            <Typography variant="bodySmall" isStrong>
-                              {price}
-                            </Typography>
-                            <Typography variant="bodySmall" isStrong uppercase>
-                              {brand}
-                            </Typography>
-                            <Typography variant="bodySmall">{title}</Typography>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  }
-                )}
-              </section>
+                        <Image
+                          src="https://static.marksandspencer.com/icons/svgs/FilterSwitch-v2.svg"
+                          alt="filterSwitch"
+                          width={32}
+                          height={32}
+                        />
+                        <Typography as="span" isStrong>
+                          {shouldShowAllFacets ? 'Fewer' : 'All'} Filters
+                        </Typography>
+                      </Button>
+                    )}
+                  </div>
+
+                  {!!activeData.pagination.totalItems && (
+                    <div className={styles.itemsFound}>
+                      <Typography variant="bodySmall">
+                        1 to{' '}
+                        {activeData.pagination.totalItems &&
+                        activeData.pagination.totalItems < 140
+                          ? activeData.pagination.totalItems
+                          : 140}{' '}
+                        of {activeData.pagination.totalItems} items
+                      </Typography>
+                    </div>
+                  )}
+
+                  <ProductGrid products={activeData.products} />
+                </>
+              )}
             </div>
 
             {isLoading && <Loader />}

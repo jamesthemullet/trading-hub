@@ -18,6 +18,7 @@ export const usePreview = ({
   merchandisingRules,
   searchTerm,
   excludedFacets,
+  isEnabled = true,
 }: {
   countryCode: 'UK' | 'IE';
   facetConfig: Array<MerchandisingRuleSetFacetConfigWithId>;
@@ -25,6 +26,7 @@ export const usePreview = ({
   categoryId?: string;
   searchTerm?: string;
   excludedFacets?: MerchandisingExcludedFacets;
+  isEnabled?: boolean;
 }): {
   data: MerchandisingSearchPreviewResponseBeta;
   error: string;
@@ -80,7 +82,7 @@ export const usePreview = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!categoryId && !searchTerm) {
+      if (!isEnabled || (!categoryId && !searchTerm)) {
         return;
       }
 
@@ -125,6 +127,7 @@ export const usePreview = ({
     countryCode,
     excludedFacets,
     facetConfigRules,
+    isEnabled,
     merchandisingRules,
     searchTerm,
   ]);

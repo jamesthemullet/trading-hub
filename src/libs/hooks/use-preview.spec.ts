@@ -276,6 +276,22 @@ describe('useRuleSet', () => {
     });
   });
 
+  it('should not fetch data when isEnabled is false', async () => {
+    renderHook(() =>
+      usePreview({
+        categoryId: mockCategoryId,
+        countryCode: 'UK',
+        merchandisingRules: mockMerchandisingRules,
+        facetConfig: [],
+        isEnabled: false,
+      })
+    );
+
+    await waitFor(() => {
+      expect(getRuleSetPreviewMock).not.toHaveBeenCalled();
+    });
+  });
+
   it('should refetch data', async () => {
     getRuleSetPreviewMock.mockReturnValue({
       data: mockSearchData,
