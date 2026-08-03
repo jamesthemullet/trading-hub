@@ -112,6 +112,82 @@ test.describe('global facets', () => {
     await expect(page.getByTestId('Label for Hue')).toBeVisible();
   });
 
+  test('preserves merged facet values after renaming a facet', async ({
+    page,
+  }) => {
+    const facetId = 'f0bc2d42-563e-11ef-a364-000000000000';
+    const ageFacet = mockGlobalFacet.facets.find(
+      (facet) => facet.id === facetId
+    )!;
+
+    let facetListState = mockGlobalFacet.facets;
+    let lastPutBody: Record<string, unknown> = {};
+
+    await page.route(
+      '*/**/api/search/beta/merchandising/facet*',
+      async (route) => {
+        if (route.request().url().includes(facetId)) {
+          return route.fallback();
+        }
+        await route.fulfill({
+          status: 200,
+          json: { facets: facetListState },
+        });
+      }
+    );
+
+    await page.route(
+      `*/**/api/search/beta/merchandising/facet/${facetId}`,
+      async (route) => {
+        if (route.request().method() === 'PUT') {
+          lastPutBody = route.request().postDataJSON();
+          const updatedFacet = { ...ageFacet, ...lastPutBody };
+          facetListState = facetListState.map((facet) =>
+            facet.id === facetId ? updatedFacet : facet
+          );
+          await route.fulfill({ status: 200, json: updatedFacet });
+          return;
+        }
+        await route.fallback();
+      }
+    );
+
+    await page.goto('/global/facets/edit/b118cd93-1767-447b-ace5-74084bcf56eb');
+
+    await expect(
+      page.getByTestId('Row showing Age as algoControl')
+    ).toBeVisible();
+
+    await page.getByLabel('Edit display name for Age').click();
+    await page.getByLabel('Edit Age input field').fill('Hue');
+    await page.getByLabel('Save Age change').click();
+
+    await expect(page.getByTestId('Label for Hue')).toBeVisible();
+
+    // The rename must not drop the facet's existing merged value config.
+    await expect
+      .poll(() => lastPutBody)
+      .toMatchObject({
+        displayValue: 'Hue',
+        merged: ageFacet.merged,
+      });
+
+    await page
+      .getByTestId('Row showing Hue as algoControl')
+      .getByRole('link', { name: 'Edit values' })
+      .click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Value settings of: Hue' })
+    ).toBeVisible();
+
+    await checkAccessibility(page);
+
+    await expect(
+      page.getByLabel('Edit display name for Name your mergey')
+    ).toBeVisible();
+  });
+
   test('includes and excludes facets', async ({ page }) => {
     await page.goto('/global/facets/edit/b118cd93-1767-447b-ace5-74084bcf56eb');
     await expect(

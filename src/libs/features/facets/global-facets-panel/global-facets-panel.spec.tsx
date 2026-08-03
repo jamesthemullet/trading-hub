@@ -5,7 +5,7 @@ import type { NextRouter } from 'next/router';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingReturnedCategoryRuleSet } from '@/libs/api';
-import { useGetFacetAttributeValues } from '@/libs/hooks';
+import { useGetFacetAttributeValues, useGlobalFacetUpdate } from '@/libs/hooks';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -62,6 +62,10 @@ const mockUseFacetsList = {
   onRefreshFacetList: jest.fn(),
 };
 
+const handleGlobalFacetUpdateMock = jest.fn().mockResolvedValue({
+  status: 'ok',
+});
+
 const mockRouter: Partial<NextRouter> = {
   query: { id: 'test-ruleset-id' },
   push: jest.fn(),
@@ -78,6 +82,7 @@ jest.mock('@/libs/hooks', () => ({
   useGlobalFacetsList: () => {
     return mockUseFacetsList;
   },
+  useGlobalFacetUpdate: jest.fn(),
 }));
 
 jest.mock('next/router', () => ({
@@ -150,6 +155,8 @@ const facetsPanelLocalStateMock = {
 
 describe('Global Facet Panel', () => {
   beforeEach(() => {
+    mockUseFacetsList.facets = facetsListMock.facets;
+
     jest
       .mocked(useReducer)
       .mockReturnValue([facetsPanelLocalStateMock, dispatchMock]);
@@ -160,6 +167,10 @@ describe('Global Facet Panel', () => {
       isLoading: false,
     });
     jest.mocked(useRouter).mockReturnValue(mockRouter as NextRouter);
+    jest.mocked(useGlobalFacetUpdate).mockReturnValue({
+      handleGlobalFacetUpdate: handleGlobalFacetUpdateMock,
+      error: '',
+    });
   });
 
   afterEach(() => {
@@ -338,6 +349,99 @@ describe('Global Facet Panel', () => {
         orders: {},
       },
       type: 'INITIALISE_STATE',
+    });
+  });
+
+  it('should preserve the merged group config when renaming a facet', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <GlobalFacetsPanel
+        ruleSetIncludedFacets={mockRuleData.facets}
+        ruleSetExcludedFacets={mockRuleData.excludedFacets}
+        isLoading={false}
+        isWriteEnabled
+        countryCode="UK_IE"
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+      />
+    );
+
+    await user.click(
+      await screen.findByLabelText('Edit display name for color')
+    );
+
+    const inputField = await screen.findByLabelText('Edit color input field');
+
+    await user.clear(inputField);
+    await user.type(inputField, 'colour');
+    await user.keyboard('{enter}');
+
+    await waitFor(() => {
+      expect(handleGlobalFacetUpdateMock).toHaveBeenCalledWith({
+        facetId: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+        data: expect.objectContaining({
+          displayValue: 'colour',
+          merged: [
+            {
+              displayValue: 'test merged group',
+              mergedValues: ['merged 1', 'merged 2'],
+            },
+          ],
+        }),
+      });
+    });
+  });
+
+  it('should send merged as undefined when the facet has no merged property', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    const originalFacet = facetsListMock.facets[0];
+    const facetWithoutMerged = {
+      type: originalFacet.type,
+      id: originalFacet.id,
+      indexPropertyName: originalFacet.indexPropertyName,
+      displayValue: originalFacet.displayValue,
+      lastChanged: originalFacet.lastChanged,
+      boosted: originalFacet.boosted,
+      excludedValues: originalFacet.excludedValues,
+    };
+
+    mockUseFacetsList.facets = [
+      facetWithoutMerged,
+      ...facetsListMock.facets.slice(1),
+    ];
+
+    renderWithProviders(
+      <GlobalFacetsPanel
+        ruleSetIncludedFacets={mockRuleData.facets}
+        ruleSetExcludedFacets={mockRuleData.excludedFacets}
+        isLoading={false}
+        isWriteEnabled
+        countryCode="UK_IE"
+        onSave={onSaveSpy}
+        onCancel={onCancelSpy}
+      />
+    );
+
+    await user.click(
+      await screen.findByLabelText('Edit display name for color')
+    );
+
+    const inputField = await screen.findByLabelText('Edit color input field');
+
+    await user.clear(inputField);
+    await user.type(inputField, 'colour');
+    await user.keyboard('{enter}');
+
+    await waitFor(() => {
+      expect(handleGlobalFacetUpdateMock).toHaveBeenCalledWith({
+        facetId: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+        data: expect.objectContaining({
+          displayValue: 'colour',
+          merged: undefined,
+        }),
+      });
     });
   });
 });

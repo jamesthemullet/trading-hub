@@ -408,6 +408,12 @@ describe('Global Facet Management Editing', () => {
           indexPropertyName: 'color',
           boosted: ['Cotton', 'Duck Down'],
           excludedValues: ['Ducky Downy'],
+          merged: [
+            {
+              displayValue: 'test merged group',
+              mergedValues: ['merged 1', 'merged 2'],
+            },
+          ],
         },
         facetId: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
       });

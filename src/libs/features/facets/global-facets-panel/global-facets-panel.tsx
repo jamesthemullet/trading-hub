@@ -7,8 +7,8 @@ import type {
   MerchandisingReturnedFacet,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
-import type { LastChanged } from '@/libs/components';
 import { ErrorMessage } from '@/libs/components';
+import type { LastChanged } from '@/libs/components/last-saved-by/last-saved-by';
 import { FacetsPanelSkeleton } from '@/libs/containers';
 import { FacetsPanel } from '@/libs/features/facets/facets-panel/facets-panel';
 import { useGlobalFacetsList, useGlobalFacetUpdate } from '@/libs/hooks';
@@ -94,6 +94,8 @@ const GlobalFacetsPanel = ({
       [facet.id]: value,
     }));
 
+    const merged = 'merged' in facet ? facet.merged : undefined;
+
     const response = await handleGlobalFacetUpdate({
       facetId: facet.id,
       data: {
@@ -101,6 +103,7 @@ const GlobalFacetsPanel = ({
         indexPropertyName: facet.indexPropertyName,
         excludedValues: facet.excludedValues,
         boosted: facet.boosted,
+        merged,
       },
     });
 
