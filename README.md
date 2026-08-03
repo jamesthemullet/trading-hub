@@ -8,12 +8,20 @@ Merchandising UI for trading teams. Also known as the Merchandising Hub/Merch Hu
 
 ![Continuous Deployment](https://github.com/DigitalInnovation/trading-hub/actions/workflows/release.yml/badge.svg?branch=main)
 
+### Quick Start
+```bash
+pnpm install
+pnpm run dev
+```
+See [Local Development](./docs/local-development.md) for full setup details, including authentication configuration.
+
 ### Getting Started
 - [Overview](./docs/overview.md): High-level overview of the project.
 - [Local Development](./docs/local-development.md): Guide to setting up the project locally.
 - [Authentication for Local Development](./docs/auth-local-dev.md): Steps to configure authentication for local development.
 
 ### Project Structure
+- [Architecture](./docs/architecture.md): High-level architecture overview.
 - [Project Structure](./docs/project-structure.md): Explanation of the directory structure and module layout.
 - [Modules](./docs/modules.md): Details about the major modules in the project.
 
@@ -33,7 +41,6 @@ Merchandising UI for trading teams. Also known as the Merchandising Hub/Merch Hu
 
 ### Additional Resources
 - [Dynatrace](./docs/dynatrace.md): Monitoring and performance insights.
-- [Authentication](./docs/authentication.md): Authentication details for the project.
 - [Snyk](./docs/snyk.md): Snyk configuration and usage.
 
 ### Contributors
