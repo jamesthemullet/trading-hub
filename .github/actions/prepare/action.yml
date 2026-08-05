@@ -9,14 +9,10 @@ runs:
       run: |
         set -x
         NODE_VERSION=$(jq -r '.engines.node' < package.json)
-        PNPM_VERSION=$(jq -r '.packageManager' < package.json | sed 's/pnpm@//')
         echo "node-version=${NODE_VERSION}" >> "$GITHUB_OUTPUT"
-        echo "pnpm-version=${PNPM_VERSION}" >> "$GITHUB_OUTPUT"
 
     - name: Install pnpm
       uses: pnpm/action-setup@v6
-      with:
-        version: ${{ steps.get-versions-from-package-json.outputs.pnpm-version }}
 
     - name: Set up node
       uses: actions/setup-node@v7.0.0
