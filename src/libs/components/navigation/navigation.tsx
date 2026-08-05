@@ -46,17 +46,26 @@ export const Navigation = () => {
     {
       title: 'Global Ranking Rules',
       path: '/global',
+      pathExcludes: 'facet-config',
       icon: '/trading-hub/asset/menu-globe.svg',
       activeIcon: '/trading-hub/asset/menu-globe-active.svg',
       alt: 'Global Ranking Rules',
       shortTitle: 'Global',
     },
     {
+      title: 'Global Facet Config',
+      path: '/global/facet-config',
+      icon: '/trading-hub/asset/menu-globe.svg',
+      activeIcon: '/trading-hub/asset/menu-globe-active.svg',
+      alt: 'Global Facet Config',
+      shortTitle: 'Facet Config',
+    },
+    {
       title: 'Product Status',
       path: '/product-status',
       icon: '/trading-hub/asset/menu-product-status.svg',
       activeIcon: '/trading-hub/asset/menu-product-status.svg',
-      alt: '',
+      alt: 'Product Status',
       shortTitle: 'Product Status',
     },
   ];

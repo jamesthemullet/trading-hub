@@ -42,6 +42,9 @@ export const ROUTES = {
         EDIT: (id: string) => `/global/facets/values/edit/${id}`,
       },
     },
+    FACET_CONFIG: '/global/facet-config',
+    FACET_CONFIG_VALUES: (id: string) =>
+      `/global/facet-config/values/edit/${id}`,
     RULESETS: {
       NEW: '/global/rulesets/new',
       EDIT: (id: string) => `/global/rulesets/edit/${id}`,

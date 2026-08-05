@@ -275,6 +275,19 @@ describe('TablePanel', () => {
       });
       expect(track).toHaveBeenCalledWith({ event: 'Add redirect rule' });
     });
+
+    it('should track creating a new global ranking rule', async () => {
+      renderWithProviders(<TablePanel {...defaultProps} />);
+
+      const createButton = await screen.findByText('Add ranking rule');
+      act(() => {
+        createButton.click();
+      });
+
+      expect(track).toHaveBeenCalledWith({
+        event: 'Add global ranking rule',
+      });
+    });
   });
 
   describe('toggle functionality', () => {

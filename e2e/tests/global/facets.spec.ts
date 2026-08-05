@@ -61,51 +61,17 @@ test.describe('global facets', () => {
         await route.fulfill({ status: 200, json });
       }
     );
-    await page.goto('/global');
   });
 
   test('edits a facet name', async ({ page }) => {
-    await page.goto('/global');
-    await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
-
-    await checkAccessibility(page);
+    await page.goto('/global/facet-config');
     await expect(
-      page.getByRole('link', { name: 'Add facet rule' })
-    ).toBeVisible();
-    await page.getByRole('link', { name: 'Add facet rule' }).click();
-
-    await expect(
-      page.getByRole('heading', { name: 'Facet Rule Editor' })
-    ).toBeVisible();
-
-    await page.getByRole('button', { name: 'Create', exact: true }).click();
-
-    await page.getByRole('button', { name: 'Save changes' }).click();
-
-    await page.getByRole('button', { name: 'More options' }).first().click();
-    await page.getByRole('link', { name: 'Edit facet rule' }).click();
-
-    await expect(
-      page.getByText(
-        'You are currently editing all pages on the M&S website and app'
-      )
+      page.getByRole('heading', { name: 'Global Facet Configuration' })
     ).toBeVisible();
 
     await checkAccessibility(page);
 
-    await page
-      .getByTestId('Row showing Age as algoControl')
-      .getByTestId('button to open facet order dropdown')
-      .click();
-
-    await checkAccessibility(page);
-
-    await page
-      .getByTestId('Row showing Age as algoControl')
-      .getByRole('menuitemradio', { name: 'Include only', exact: true })
-      .click();
     await page.getByLabel('Edit display name for Age').click();
-    await page.getByLabel('Edit Age input field').press('ArrowLeft');
     await page.getByLabel('Edit Age input field').fill('Hue');
     await page.getByLabel('Save Age change').click();
 
@@ -152,11 +118,9 @@ test.describe('global facets', () => {
       }
     );
 
-    await page.goto('/global/facets/edit/b118cd93-1767-447b-ace5-74084bcf56eb');
+    await page.goto('/global/facet-config');
 
-    await expect(
-      page.getByTestId('Row showing Age as algoControl')
-    ).toBeVisible();
+    await expect(page.getByTestId(`facet-config-row-${facetId}`)).toBeVisible();
 
     await page.getByLabel('Edit display name for Age').click();
     await page.getByLabel('Edit Age input field').fill('Hue');
@@ -173,7 +137,7 @@ test.describe('global facets', () => {
       });
 
     await page
-      .getByTestId('Row showing Hue as algoControl')
+      .getByTestId(`facet-config-row-${facetId}`)
       .getByRole('link', { name: 'Edit values' })
       .click();
 
@@ -226,8 +190,9 @@ test.describe('global facets', () => {
   test('edits facet values by repositioning, including and excluding', async ({
     page,
   }) => {
-    await page.goto('/global/facets/edit/b118cd93-1767-447b-ace5-74084bcf56eb');
-    await page.getByRole('link', { name: 'Edit values' }).nth(1).click();
+    await page.goto(
+      '/global/facet-config/values/edit/f0bc2d42-563e-11ef-a364-000000000000?displayName=Age'
+    );
 
     await expect(
       page.getByRole('heading', { name: 'Value settings of: Age' })
@@ -273,8 +238,9 @@ test.describe('global facets', () => {
   });
 
   test('merges facet values', async ({ page }) => {
-    await page.goto('/global/facets/edit/b118cd93-1767-447b-ace5-74084bcf56eb');
-    await page.getByRole('link', { name: 'Edit values' }).nth(1).click();
+    await page.goto(
+      '/global/facet-config/values/edit/f0bc2d42-563e-11ef-a364-000000000000?displayName=Age'
+    );
 
     await expect(
       page.getByRole('heading', { name: 'Value settings of: Age' })
@@ -334,8 +300,7 @@ test.describe('global facets', () => {
 });
 
 const MATERIAL_TYPE_FACET_ID = 'a1b2c3d4-1234-5678-0000-000000000002';
-const RULESET_ID = 'b118cd93-1767-447b-ace5-74084bcf56eb';
-const materialTypeValuesEditorUrl = `/global/facets/values/edit/${MATERIAL_TYPE_FACET_ID}?ruleSetId=${RULESET_ID}&displayName=Material+Type&countryCode=UK_IE`;
+const materialTypeValuesEditorUrl = `/global/facet-config/values/edit/${MATERIAL_TYPE_FACET_ID}?displayName=Material+Type`;
 
 test.describe('global Material Type facet value merging', () => {
   test.beforeEach(async ({ page }) => {

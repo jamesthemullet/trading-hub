@@ -1,6 +1,6 @@
 import type { MerchandisingRuleSetFacetConfigWithId } from '@/libs/api';
 import { toArrayWithSwappedElements } from '@/libs/features/facets/utils/swap-array-elements';
-import type { FacetDisplayType } from '@/libs/stores/facets-panel/facets-panel-reducer';
+import type { FacetDisplayType } from '@/types/facets';
 
 type MoveRowUpAction = {
   type: 'MOVE_BOOSTED_ROW_UP';

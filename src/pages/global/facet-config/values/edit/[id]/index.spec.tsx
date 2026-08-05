@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import { useGlobalFacetsList } from '@/libs/hooks';
 import { useGetFacetAttributeValues } from '@/libs/hooks/use-get-facet-attribute-values';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
-import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import Page from './index.page';
@@ -27,8 +26,6 @@ describe('Index', () => {
     (useRouter as jest.Mock).mockReturnValue({
       query: {
         id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-        searchTerms: 'dress',
-        ruleSetId,
         displayName: 'Color',
       },
     });
@@ -49,7 +46,7 @@ describe('Index', () => {
     jest.clearAllMocks();
   });
 
-  it('should render new facet values page', async () => {
+  it('should render the facet config values page', async () => {
     renderWithProviders(<Page />);
 
     await waitFor(() => {

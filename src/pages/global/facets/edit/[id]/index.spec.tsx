@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -204,13 +204,17 @@ describe('Global Facet Management Editing', () => {
     expect(screen.getByText('Attribute')).toBeVisible();
     expect(screen.getByText('Display name')).toBeVisible();
     expect(screen.getByText('Order')).toBeVisible();
-    expect(screen.getByText('Value options')).toBeVisible();
   });
 
   it('should cancel changes to a facet', async () => {
     const user = userEvent.setup({ delay: null });
 
     renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getAllByText('Exclude only')[0]);
+    await waitFor(() => {
+      expect(screen.getByTestId('Row showing color as excluded')).toBeVisible();
+    });
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
@@ -245,61 +249,20 @@ describe('Global Facet Management Editing', () => {
     await waitFor(() => {
       expect(
         screen.getByRole('heading', {
-          name: 'Apply global changes',
+          name: 'Review changes',
         })
       ).toBeVisible();
     });
 
-    await user.click(screen.getByRole('button', { name: 'Apply action' }));
+    await user.click(screen.getByRole('button', { name: 'Save changes' }));
 
     expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith({
-      ruleSetId: '123',
+      ruleSetId,
       ruleSet: {
         facets: [
-          {
-            boosted: ['Cotton', 'Duck Down'],
-            excludedValues: ['Ducky Downy'],
-            displayValue: 'color',
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-            indexPropertyName: 'color',
-            lastChanged: {
-              date: '2021-01-01T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [
-              {
-                displayValue: 'test merged group',
-                mergedValues: ['merged 1', 'merged 2'],
-              },
-            ],
-            type: 'root',
-          },
-          {
-            boosted: undefined,
-            excludedValues: undefined,
-            displayValue: 'brand',
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86',
-            indexPropertyName: 'brand',
-            lastChanged: {
-              date: '2021-01-03T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [],
-            type: 'root',
-          },
-          {
-            boosted: undefined,
-            excludedValues: undefined,
-            displayValue: 'category',
-            id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87',
-            indexPropertyName: 'category',
-            lastChanged: {
-              date: '2021-01-04T08:34:15Z',
-              user: 'Test User',
-            },
-            merged: [],
-            type: 'root',
-          },
+          { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84' },
+          { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a86' },
+          { id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a87' },
         ],
         rules: mockMerchandisingRules,
         excludedFacets: {
@@ -327,24 +290,32 @@ describe('Global Facet Management Editing', () => {
     await waitFor(() => {
       expect(
         screen.getByRole('heading', {
-          name: 'Apply global changes',
+          name: 'Review changes',
         })
       ).toBeVisible();
     });
 
-    await user.click(
-      screen.getByRole('button', { name: 'Close confirmation modal' })
-    );
+    const dialog = screen.getByRole('dialog');
+    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
 
     expect(mockUpdateGlobalRuleSet).not.toHaveBeenCalled();
   });
 
   it('should render skeleton when loading', () => {
-    jest.mocked(useGlobalFacetsList).mockReturnValue({
-      isLoading: true,
-      facets: [],
+    jest.mocked(useGlobalRuleSetDetail).mockReturnValue({
+      globalRuleSet: {
+        id: '123',
+        isEnabled: true,
+        lastChanged: {
+          date: '2021-01-01',
+          user: 'Test user',
+        },
+        rules: mockMerchandisingRules,
+        facets: [],
+        excludedFacets: { facets: [] },
+      },
       error: '',
-      onRefreshFacetList: jest.fn(),
+      isLoading: true,
     });
 
     renderWithProviders(<Page id={ruleSetId} />);
@@ -352,6 +323,22 @@ describe('Global Facet Management Editing', () => {
     expect(() => screen.getByRole('button', { name: 'Save' })).toThrow(
       'Unable to find an accessible element with the role "button"'
     );
+  });
+
+  it('should render without a current ruleset when viewing a history entry that cannot be found', async () => {
+    (useRouter as jest.Mock).mockReturnValue({
+      ...mockRouter,
+      query: { history: 'true', historyId: 'non-existent-history-id' },
+    });
+    jest.mocked(useGlobalHistory).mockReturnValue({
+      history: { changes: [], pagination: { totalItems: 0 } },
+      isLoading: false,
+      error: '',
+    });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    expect(await screen.findByRole('button', { name: 'Cancel' })).toBeVisible();
   });
 
   it('should filter on the facet list', async () => {
@@ -372,88 +359,6 @@ describe('Global Facet Management Editing', () => {
     await waitFor(() => {
       expect(screen.queryAllByText('size').length).toBe(0);
     });
-  });
-
-  it('should edit a display value', async () => {
-    renderWithProviders(<Page id={ruleSetId} />);
-
-    const editButton = screen.getByLabelText('Edit display name for color');
-
-    act(() => {
-      editButton.click();
-    });
-
-    const editColorInput = await screen.findByLabelText(
-      'Edit color input field'
-    );
-
-    await waitFor(async () => {
-      expect(editColorInput).toBeVisible();
-    });
-
-    expect(editColorInput).toHaveValue('color');
-    await userEvent.clear(editColorInput);
-    await userEvent.type(editColorInput, 'colour');
-
-    const saveButton = screen.getByLabelText('Save color change');
-
-    act(() => {
-      saveButton.click();
-    });
-
-    await waitFor(() => {
-      expect(mockUpdateGlobalFacet).toHaveBeenCalledWith({
-        data: {
-          displayValue: 'colour',
-          indexPropertyName: 'color',
-          boosted: ['Cotton', 'Duck Down'],
-          excludedValues: ['Ducky Downy'],
-          merged: [
-            {
-              displayValue: 'test merged group',
-              mergedValues: ['merged 1', 'merged 2'],
-            },
-          ],
-        },
-        facetId: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
-      });
-    });
-  });
-
-  it('should show an error if failing to edit a display value', async () => {
-    updateGlobalFacet.error = 'Failed to update facet';
-    mockUpdateGlobalFacet.mockResolvedValue({ status: 'error' });
-    renderWithProviders(<Page id={ruleSetId} />);
-
-    const editButton = screen.getByLabelText('Edit display name for color');
-
-    act(() => {
-      editButton.click();
-    });
-
-    const editColorInput = await screen.findByLabelText(
-      'Edit color input field'
-    );
-
-    await waitFor(async () => {
-      expect(editColorInput).toBeVisible();
-    });
-
-    expect(editColorInput).toHaveValue('color');
-    await userEvent.clear(editColorInput);
-    await userEvent.type(editColorInput, 'colour');
-
-    const saveButton = screen.getByLabelText('Save color change');
-
-    act(() => {
-      saveButton.click();
-    });
-
-    expect(
-      await screen.findByText(
-        'Error whilst updating global facet: Failed to update facet'
-      )
-    ).toBeVisible();
   });
 
   it('should update status on dropdown change to exclude only, and re-order by status', async () => {
@@ -719,6 +624,10 @@ describe('Global Facet Management Editing', () => {
       expect(screen.getByTestId('Row showing color as included')).toBeVisible();
 
       await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+      await userEvent.click(
+        await screen.findByRole('button', { name: 'Save changes' })
+      );
 
       await waitFor(async () => {
         expect(

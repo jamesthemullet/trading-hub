@@ -104,6 +104,12 @@ describe('Navigation', () => {
     expect(screen.getByTitle('Product Status')).toBeInTheDocument();
   });
 
+  it('should always show Global Facet Config nav item', () => {
+    renderWithProviders(<Navigation />);
+
+    expect(screen.getByTitle('Global Facet Config')).toBeInTheDocument();
+  });
+
   it('should not show Profile link when flag is off', () => {
     renderWithProviders(<Navigation />);
 
@@ -147,12 +153,14 @@ describe('Navigation', () => {
       '/trading-hub/asset/menu-search-v2.svg',
       '/trading-hub/asset/menu-redirect-arrow.svg',
       '/trading-hub/asset/menu-globe.svg',
+      '/trading-hub/asset/menu-globe.svg',
     ],
     [
       '/search',
       '/trading-hub/asset/menu-category-ranking-v2.svg',
       '/trading-hub/asset/menu-search-v2-active.svg',
       '/trading-hub/asset/menu-redirect-arrow.svg',
+      '/trading-hub/asset/menu-globe.svg',
       '/trading-hub/asset/menu-globe.svg',
     ],
     [
@@ -161,6 +169,7 @@ describe('Navigation', () => {
       '/trading-hub/asset/menu-search-v2.svg',
       '/trading-hub/asset/menu-redirect-arrow-active.svg',
       '/trading-hub/asset/menu-globe.svg',
+      '/trading-hub/asset/menu-globe.svg',
     ],
     [
       '/global',
@@ -168,10 +177,19 @@ describe('Navigation', () => {
       '/trading-hub/asset/menu-search-v2.svg',
       '/trading-hub/asset/menu-redirect-arrow.svg',
       '/trading-hub/asset/menu-globe-active.svg',
+      '/trading-hub/asset/menu-globe.svg',
+    ],
+    [
+      '/global/facet-config',
+      '/trading-hub/asset/menu-category-ranking-v2.svg',
+      '/trading-hub/asset/menu-search-v2.svg',
+      '/trading-hub/asset/menu-redirect-arrow.svg',
+      '/trading-hub/asset/menu-globe.svg',
+      '/trading-hub/asset/menu-globe-active.svg',
     ],
   ])(
     'should activate the category menu icon',
-    async (url, icon1, icon2, icon3, icon4) => {
+    async (url, icon1, icon2, icon3, icon4, icon5) => {
       jest.mocked(usePathname).mockReturnValue(url);
 
       renderWithProviders(<Navigation />);
@@ -191,6 +209,11 @@ describe('Navigation', () => {
       expect(
         (await screen.findByRole('link', { name: 'Global' })).childNodes[0]
       ).toHaveAttribute('src', icon4);
+
+      expect(
+        (await screen.findByRole('link', { name: 'Facet Config' }))
+          .childNodes[0]
+      ).toHaveAttribute('src', icon5);
     }
   );
 });

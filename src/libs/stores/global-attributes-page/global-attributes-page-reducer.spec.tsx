@@ -1,4 +1,4 @@
-import type { FacetDisplayType } from '@/libs/stores/facets-panel/facets-panel-reducer';
+import type { FacetDisplayType } from '@/types/facets';
 
 import type {
   GlobalAttributesPageState,

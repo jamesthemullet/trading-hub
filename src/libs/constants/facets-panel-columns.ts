@@ -13,7 +13,4 @@ export const COLUMNS: {
   {
     label: 'Order',
   },
-  {
-    label: 'Value options',
-  },
 ];

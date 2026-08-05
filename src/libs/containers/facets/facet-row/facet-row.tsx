@@ -209,6 +209,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
       <div className={styles.tableCol}>
         {displayType === 'included' &&
           !isUnavailable &&
+          props.facetType !== FacetType.Global &&
           (() => {
             const baseUrl = getFacetRoute(props.facetType, 'valuesEdit', id);
             const ruleSetIdParam = !props.rulesetId ? 'draft' : props.rulesetId;

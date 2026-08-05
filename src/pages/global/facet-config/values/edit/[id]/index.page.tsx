@@ -1,5 +1,4 @@
-import type { ChangeEvent, ReactElement } from 'react';
-import { useMemo, useState } from 'react';
+import { type ChangeEvent, type ReactElement, useMemo, useState } from 'react';
 
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
 import { GlobalFacetAttributesPageLayout } from '@/libs/features';
@@ -12,14 +11,10 @@ import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import Head from 'next/head';
 
 const Page = (): ReactElement => {
-  const { getStringParam, getCountryCodeParam, getBooleanParam } =
-    useTypeSafeQuery();
+  const { getStringParam } = useTypeSafeQuery();
 
   const facetId = getStringParam('id');
-  const ruleSetId = getStringParam('ruleSetId');
   const displayName = getStringParam('displayName');
-  const countryCode = getCountryCodeParam('countryCode');
-  const isReadOnly = getBooleanParam('readOnly');
 
   const [searchQuery, setSearchQuery] = useState('');
   const { callback: handleSearch } = useDebounce(
@@ -33,7 +28,7 @@ const Page = (): ReactElement => {
     useGetFacetAttributeValues({
       facetId,
       query: '',
-      countryCode,
+      countryCode: 'UK_IE',
     });
 
   const {
@@ -42,7 +37,7 @@ const Page = (): ReactElement => {
   } = useGetFacetAttributeValues({
     facetId,
     query: searchQuery,
-    countryCode,
+    countryCode: 'UK_IE',
   });
 
   const { facets, error: globalFacetsListError } = useGlobalFacetsList();
@@ -62,13 +57,13 @@ const Page = (): ReactElement => {
     <>
       <Head>
         <title>
-          Merchandising Hub | M&S | Edit Global Ruleset Facet Values
+          Merchandising Hub | M&amp;S | Global Facet Config - Edit Values
         </title>
       </Head>
       <Heading
         breadcrumbs={[
           'Global',
-          'Facet Management Editor',
+          'Facet Configuration',
           `Facet values settings: ${displayName}`,
         ]}
       />
@@ -93,11 +88,10 @@ const Page = (): ReactElement => {
           searchedAttributeValues={searchedAttributeValues}
           facetId={facetId}
           displayName={displayName}
-          ruleSetId={ruleSetId}
-          countryCode={countryCode}
+          countryCode="UK_IE"
           searchQuery={searchQuery}
           onSearchChange={handleSearch}
-          isWriteEnabled={hasWriteAccess && !isReadOnly}
+          isWriteEnabled={hasWriteAccess}
         />
       )}
     </>

@@ -218,6 +218,12 @@ describe('FacetsList', () => {
     jest
       .mocked(useFacetsList)
       .mockReturnValue({ facets: [], isLoading: false, error: '' });
+    jest.mocked(useGlobalFacetsList).mockReturnValue({
+      facets: [],
+      isLoading: false,
+      error: '',
+      onRefreshFacetList: jest.fn(),
+    });
 
     renderWithProviders(
       <FacetsList {...defaultFacetProps} facetType={FacetType.Global} />
@@ -226,6 +232,20 @@ describe('FacetsList', () => {
     expect(
       screen.getByText('Please create the ruleset before editing facets.')
     ).toBeVisible();
+  });
+
+  it('should not render the Value options column heading when facetType is global', () => {
+    renderWithProviders(
+      <FacetsList {...defaultFacetProps} facetType={FacetType.Global} />
+    );
+
+    expect(screen.queryByText('Value options')).not.toBeInTheDocument();
+  });
+
+  it('should render the Value options column heading for non-global facet types', () => {
+    renderWithProviders(<FacetsList {...defaultFacetProps} />);
+
+    expect(screen.getByText('Value options')).toBeVisible();
   });
 
   describe('sticky bar pin button', () => {
@@ -240,6 +260,16 @@ describe('FacetsList', () => {
     it('shows pin button when a category is selected', () => {
       renderWithProviders(
         <FacetsList {...defaultFacetProps} categoriesInfo={categoriesInfo} />
+      );
+
+      expect(
+        screen.getByRole('button', { name: 'Pin top bar' })
+      ).toBeInTheDocument();
+    });
+
+    it('shows pin button for global facet rulesets', () => {
+      renderWithProviders(
+        <FacetsList {...defaultFacetProps} facetType={FacetType.Global} />
       );
 
       expect(

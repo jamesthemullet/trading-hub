@@ -29,7 +29,6 @@ type PageLayout = {
   searchedAttributeValues?: MerchandisingAttributeValuesResponse['values'];
   facetId: string;
   displayName: string;
-  ruleSetId: string;
   countryCode: MerchandisingCountryCode | undefined;
   searchQuery: string;
   onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -42,7 +41,6 @@ export const GlobalFacetAttributesPageLayout = ({
   searchedAttributeValues = [],
   facetId,
   displayName,
-  ruleSetId,
   countryCode = 'UK_IE',
   searchQuery,
   onSearchChange,
@@ -125,8 +123,8 @@ export const GlobalFacetAttributesPageLayout = ({
   const [hasChanges, setHasChanges] = useState(false);
 
   const navigateBack = useCallback(() => {
-    router.push(ROUTES.GLOBAL.FACETS.EDIT(ruleSetId));
-  }, [router, ruleSetId]);
+    router.push(ROUTES.GLOBAL.FACET_CONFIG);
+  }, [router]);
 
   const handleClose = useCallback(() => {
     if (hasChanges) {
@@ -136,18 +134,15 @@ export const GlobalFacetAttributesPageLayout = ({
     navigateBack();
   }, [hasChanges, navigateBack]);
 
-  const trackingDispatch: typeof dispatch = useCallback(
-    (action) => {
-      if (
-        action.type !== 'TOGGLE_ALL_ATTRIBUTES' &&
-        action.type !== 'TOGGLE_SELECTED_ATTRIBUTE'
-      ) {
-        setHasChanges(true);
-      }
-      dispatch(action);
-    },
-    [dispatch]
-  );
+  const trackingDispatch: typeof dispatch = useCallback((action) => {
+    if (
+      action.type !== 'TOGGLE_ALL_ATTRIBUTES' &&
+      action.type !== 'TOGGLE_SELECTED_ATTRIBUTE'
+    ) {
+      setHasChanges(true);
+    }
+    dispatch(action);
+  }, []);
 
   // istanbul ignore next
   const onCloseModal = () => setIsConfirmationModalOpen(false);
@@ -184,7 +179,7 @@ export const GlobalFacetAttributesPageLayout = ({
       return;
     }
 
-    router.push(ROUTES.GLOBAL.FACETS.EDIT(ruleSetId));
+    router.push(ROUTES.GLOBAL.FACET_CONFIG);
   };
 
   // edit modal logic

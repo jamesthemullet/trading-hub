@@ -295,8 +295,11 @@ export const FacetsList = ({
     countryCode: ruleset.countryCode || 'UK_IE',
   });
 
-  const { facets: globalFacets, isLoading: isGlobalFacetsLoading } =
-    useGlobalFacetsList();
+  const {
+    facets: globalFacets,
+    isLoading: isGlobalFacetsLoading,
+    error: getGlobalFacetsDataError,
+  } = useGlobalFacetsList();
 
   const allFacetsForDiff = useMemo(
     () => [...facets, ...globalFacets],
@@ -382,13 +385,16 @@ export const FacetsList = ({
     });
   }, initialFacetOrders);
 
+  const availableFacets =
+    facetType === FacetType.Global ? globalFacets : facets;
+
   const filteredFacets = filter.length
-    ? facets.filter(
+    ? availableFacets.filter(
         (facet) =>
           facet.displayValue.toLowerCase().includes(filter.toLowerCase()) ||
           facet.indexPropertyName.toLowerCase().includes(filter.toLowerCase())
       )
-    : facets;
+    : availableFacets;
 
   const boostedFacets = useMemo(
     () =>
@@ -396,7 +402,7 @@ export const FacetsList = ({
         // Ghost-facet detection must use the unfiltered facet lists, so a
         // facet only matching the search filter isn't mistaken for one
         // that's genuinely no longer available.
-        const found = facets.find((f) => f.id === facetConfig.id);
+        const found = availableFacets.find((f) => f.id === facetConfig.id);
         const isGlobalFacetsReady = !isFacetsLoading && !isGlobalFacetsLoading;
         const resolvedFacet =
           found ??
@@ -421,7 +427,7 @@ export const FacetsList = ({
       }) || [],
     [
       ruleset.facets,
-      facets,
+      availableFacets,
       globalFacets,
       isFacetsLoading,
       isGlobalFacetsLoading,
@@ -535,6 +541,13 @@ export const FacetsList = ({
         {getFacetsDataError && (
           <ErrorMessage>
             Error retrieving facet list: {getFacetsDataError}
+          </ErrorMessage>
+        )}
+
+        {facetType === FacetType.Global && getGlobalFacetsDataError && (
+          <ErrorMessage>
+            Error whilst retrieving global facet list:{' '}
+            {getGlobalFacetsDataError}
           </ErrorMessage>
         )}
 
@@ -686,7 +699,9 @@ export const FacetsList = ({
           />
         </div>
 
-        {(selectedCategories.length > 0 || selectedSearchTerms.length > 0) && (
+        {(selectedCategories.length > 0 ||
+          selectedSearchTerms.length > 0 ||
+          facetType === FacetType.Global) && (
           <div className={styles.sectionWrapper}>
             <div className={styles.searchWrapper}>
               <Search
@@ -715,7 +730,10 @@ export const FacetsList = ({
 
       <div className={styles.attributesTable}>
         <div className={styles.facetTableRow} data-with-reorder>
-          {COLUMNS.map(({ label }) => (
+          {COLUMNS.filter(
+            ({ label }) =>
+              label !== 'Value options' || facetType !== FacetType.Global
+          ).map(({ label }) => (
             <div key={`column-${label}`} className={styles.tableCol}>
               <Typography isStrong variant="bodySmall">
                 {label}
@@ -826,6 +844,7 @@ export const FacetsList = ({
         diffItems={diffItems}
         onConfirm={handleConfirmSave}
         onCancel={() => setIsReviewModalOpen(false)}
+        showGlobalWarning={facetType === FacetType.Global}
       />
     </>
   );

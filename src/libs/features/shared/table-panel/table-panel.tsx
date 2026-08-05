@@ -210,36 +210,38 @@ export const TablePanel = <
 
         {isWriteEnabled && (
           <>
-            {ruleType !== RuleType.Redirect && facetType && (
-              <div className={styles.buttonGroup}>
-                <Button
-                  as="a"
-                  isInline
-                  theme="outlined"
-                  icon="plus-simple-green"
-                  href={getNewFacetRoute(facetType)}
-                  onClick={() => {
-                    track({ event: `Add ${ruleType} facet rule` });
-                    clearDraft();
-                  }}
-                >
-                  Add facet rule
-                </Button>
+            {(ruleType === RuleType.CategoryRanking ||
+              ruleType === RuleType.SearchRanking) &&
+              facetType && (
+                <div className={styles.buttonGroup}>
+                  <Button
+                    as="a"
+                    isInline
+                    theme="outlined"
+                    icon="plus-simple-green"
+                    href={getNewFacetRoute(facetType)}
+                    onClick={() => {
+                      track({ event: `Add ${ruleType} facet rule` });
+                      clearDraft();
+                    }}
+                  >
+                    Add facet rule
+                  </Button>
 
-                <Button
-                  as="a"
-                  isInline
-                  theme="filled"
-                  icon="plus-simple-white"
-                  href={getNewRulesetRoute(ruleType)}
-                  onClick={() =>
-                    track({ event: `Add ${ruleType} ranking rule` })
-                  }
-                >
-                  Add ranking rule
-                </Button>
-              </div>
-            )}
+                  <Button
+                    as="a"
+                    isInline
+                    theme="filled"
+                    icon="plus-simple-white"
+                    href={getNewRulesetRoute(ruleType)}
+                    onClick={() =>
+                      track({ event: `Add ${ruleType} ranking rule` })
+                    }
+                  >
+                    Add ranking rule
+                  </Button>
+                </div>
+              )}
             {ruleType === RuleType.Redirect && (
               <div className={styles.buttonGroup}>
                 <Button
@@ -251,6 +253,22 @@ export const TablePanel = <
                   onClick={() => track({ event: 'Add redirect rule' })}
                 >
                   Add redirect rule
+                </Button>
+              </div>
+            )}
+            {ruleType === RuleType.Global && (
+              <div className={styles.buttonGroup}>
+                <Button
+                  as="a"
+                  isInline
+                  theme="filled"
+                  icon="plus-simple-white"
+                  href={getNewRulesetRoute(ruleType)}
+                  onClick={() =>
+                    track({ event: `Add ${ruleType} ranking rule` })
+                  }
+                >
+                  Add ranking rule
                 </Button>
               </div>
             )}

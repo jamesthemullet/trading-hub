@@ -160,6 +160,24 @@ describe('FacetRow', () => {
     await user.click(editButton);
   });
 
+  it('should not render an edit/view values button for global facets', () => {
+    renderWithProviders(
+      <FacetRow
+        {...includedProps}
+        displayType="included"
+        isDragDisabled={false}
+        facetType={FacetType.Global}
+      />
+    );
+
+    expect(
+      screen.queryByRole('link', { name: 'Edit values' })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'View values' })
+    ).not.toBeInTheDocument();
+  });
+
   it('should render excluded facet type correctly', () => {
     renderWithProviders(<FacetRow {...defaultProps} displayType="excluded" />);
 

@@ -69,6 +69,17 @@ describe('GlobalFacetAttributesPageLayout', () => {
     expect(screen.getByText('Value settings of: Color')).toBeInTheDocument();
   });
 
+  it('uses default country code when countryCode is undefined', () => {
+    renderWithProviders(
+      <GlobalFacetAttributesPageLayout
+        {...defaultProps}
+        countryCode={undefined}
+      />
+    );
+
+    expect(screen.getByText('Value settings of: Color')).toBeInTheDocument();
+  });
+
   it('navigates back to global facets page on cancel', async () => {
     const user = userEvent.setup();
     renderWithProviders(
@@ -81,9 +92,17 @@ describe('GlobalFacetAttributesPageLayout', () => {
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });
     await user.click(cancelButton);
 
-    expect(mockRouter.push).toHaveBeenCalledWith(
-      `/global/facets/edit/${ruleSetId}`
-    );
+    expect(mockRouter.push).toHaveBeenCalledWith(`/global/facet-config`);
+  });
+
+  it('navigates back to facet config on cancel (default props)', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<GlobalFacetAttributesPageLayout {...defaultProps} />);
+
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' });
+    await user.click(cancelButton);
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/global/facet-config');
   });
 
   describe('unsaved changes modal', () => {
@@ -127,9 +146,7 @@ describe('GlobalFacetAttributesPageLayout', () => {
         await screen.findByRole('button', { name: 'Close without saving' })
       );
 
-      expect(mockRouter.push).toHaveBeenCalledWith(
-        `/global/facets/edit/${ruleSetId}`
-      );
+      expect(mockRouter.push).toHaveBeenCalledWith(`/global/facet-config`);
     });
 
     it('dismisses modal when continuing editing', async () => {
@@ -370,9 +387,7 @@ describe('GlobalFacetAttributesPageLayout', () => {
     });
 
     await waitFor(() => {
-      expect(mockRouter.push).toHaveBeenCalledWith(
-        `/global/facets/edit/${ruleSetId}`
-      );
+      expect(mockRouter.push).toHaveBeenCalledWith(`/global/facet-config`);
     });
   });
 

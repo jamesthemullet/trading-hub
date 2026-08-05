@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import type { FacetRowDisplayValue } from '../stores/facets-panel/facets-panel-reducer';
+import type { FacetRowDisplayValue } from '@/types/facets';
 
 export const useFacetsFilter = (
   facets: FacetRowDisplayValue[]

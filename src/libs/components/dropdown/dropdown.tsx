@@ -5,7 +5,7 @@ import type { MerchandisingCountryCode } from '@/libs/api';
 import type { RuleTypeFilter } from '@/libs/components/types';
 import { useOnOutsideClick } from '@/libs/hooks';
 import { track } from '@/libs/hooks/utils/analytics';
-import type { FacetDisplayType } from '@/libs/stores/facets-panel/facets-panel-reducer';
+import type { FacetDisplayType } from '@/types/facets';
 
 import Image from 'next/image';
 

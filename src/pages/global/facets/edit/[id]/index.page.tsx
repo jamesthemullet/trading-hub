@@ -1,19 +1,13 @@
 import type { ReactElement } from 'react';
-import { useEffect, useState } from 'react';
-import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
-import type {
-  MerchandisingCountryCode,
-  MerchandisingExcludedFacets,
-  MerchandisingReturnedFacet,
-  MerchandisingRuleSetFacetConfigWithId,
-} from '@/libs/api';
+import type { MerchandisingRuleSet } from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ROUTES } from '@/libs/constants/routes';
-import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
-import GlobalFacetsPanel from '@/libs/features/facets/global-facets-panel/global-facets-panel';
+import { FacetType } from '@/libs/constants/rule-types';
+import { FacetsPanelSkeleton } from '@/libs/containers';
+import { FacetsList } from '@/libs/features';
 import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { useGlobalHistory } from '@/libs/hooks/global/history/use-global-history';
 import { useAccess } from '@/libs/hooks/use-access';
@@ -32,7 +26,6 @@ const Page = ({ id }: PageProps): ReactElement => {
   const isHistoryView = router.query.history === 'true';
   const currentPage = Number(router.query.currentPage) || 1;
   const currentPageSize = Number(router.query.currentPageSize) || 20;
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     globalRuleSet,
@@ -60,41 +53,24 @@ const Page = ({ id }: PageProps): ReactElement => {
     currentData: { data: globalRuleSet, isLoading: isCurrentLoading },
   });
 
-  const [includedFacetsToSave, setIncludedFacetsToSave] = useState<
-    MerchandisingReturnedFacet[]
-  >([]);
-  const [excludedFacetsToSave, setExcludedFacetsToSave] = useState<
-    MerchandisingExcludedFacets | undefined
-  >();
-
-  const [countryCodeToSave, setCountryCodeToSave] =
-    useState<MerchandisingCountryCode>('UK_IE');
-
-  const onCloseModal = () => setIsModalOpen(false);
-
-  const [facetsFromGlobalRuleSet, setFacetsFromGlobalRuleSet] = useState<
-    MerchandisingRuleSetFacetConfigWithId[] | []
-  >([]);
-
-  useEffect(() => {
-    // istanbul ignore else
-    if (rulesetData?.facets) {
-      setFacetsFromGlobalRuleSet(rulesetData.facets);
-    }
-  }, [rulesetData]);
-
   const { saveGlobalRuleset, error: savingGlobalRulesetError } =
     useGlobalRuleSetUpdate();
 
-  const handleSave = async () => {
+  const handleSave = async ({
+    facets,
+    rules,
+    isEnabled,
+    excludedFacets,
+    countryCode,
+  }: MerchandisingRuleSet) => {
     const response = await saveGlobalRuleset({
-      ruleSetId: globalRuleSet.id,
+      ruleSetId: id,
       ruleSet: {
-        facets: includedFacetsToSave,
-        rules: globalRuleSet.rules,
-        isEnabled: globalRuleSet.isEnabled,
-        excludedFacets: excludedFacetsToSave,
-        countryCode: countryCodeToSave,
+        facets,
+        rules,
+        isEnabled,
+        excludedFacets,
+        countryCode,
       },
     });
 
@@ -120,11 +96,6 @@ const Page = ({ id }: PageProps): ReactElement => {
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
   }
-
-  const handleModalConfirm = async () => {
-    setIsModalOpen(false);
-    handleSave();
-  };
 
   return (
     <>
@@ -153,37 +124,33 @@ const Page = ({ id }: PageProps): ReactElement => {
         </ErrorMessage>
       )}
 
-      {!globalRulesetError && !historyError && (
-        <GlobalFacetsPanel
-          ruleSetIncludedFacets={facetsFromGlobalRuleSet}
-          ruleSetExcludedFacets={rulesetData?.excludedFacets}
-          isLoading={isLoading}
-          countryCode={rulesetData?.countryCode ?? 'UK_IE'}
-          onSave={({ countryCode, includedFacets, excludedFacets }) => {
-            setCountryCodeToSave(countryCode);
-            setIncludedFacetsToSave(includedFacets);
-            setExcludedFacetsToSave(excludedFacets);
-            setIsModalOpen(true);
-          }}
-          onCancel={handleCancel}
-          isWriteEnabled={hasWriteAccess && !isHistoryView}
-          lastChanged={rulesetData?.lastChanged}
-        />
-      )}
-      <Modal.Root
-        centered
-        opened={isModalOpen}
-        onClose={onCloseModal}
-        padding={10}
-      >
-        <Modal.Overlay blur={3} />
-        <Modal.Content>
-          <ConfirmationModal
-            onCloseModal={onCloseModal}
-            handleModalConfirm={handleModalConfirm}
+      {!globalRulesetError &&
+        !historyError &&
+        (isLoading ? (
+          <FacetsPanelSkeleton
+            title="Global Facet Rule Editor"
+            aria-busy="true"
           />
-        </Modal.Content>
-      </Modal.Root>
+        ) : (
+          <FacetsList
+            facetType={FacetType.Global}
+            isNewRuleset={false}
+            currentRuleset={
+              rulesetData
+                ? {
+                    ...rulesetData,
+                    excludedFacets: rulesetData.excludedFacets ?? {
+                      facets: [],
+                    },
+                  }
+                : rulesetData
+            }
+            onCancel={handleCancel}
+            onSave={handleSave}
+            isWriteEnabled={hasWriteAccess && !isHistoryView}
+            lastChanged={rulesetData?.lastChanged}
+          />
+        ))}
     </>
   );
 };
