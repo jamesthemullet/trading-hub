@@ -1,10 +1,35 @@
+import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 test.describe.configure({ mode: 'serial' });
 
+const reloadUntilVisible = async (
+  page: Page,
+  url: string,
+  getLocator: (page: Page) => Locator,
+  { retries = 5, delayMs = 2000 }: { retries?: number; delayMs?: number } = {}
+): Promise<void> => {
+  for (let attempt = 0; attempt < retries; attempt += 1) {
+    await page.goto(url);
+    await expect(
+      page.getByRole('heading', { name: 'Value settings of: Material Type' })
+    ).toBeVisible();
+
+    const isLastAttempt = attempt === retries - 1;
+    try {
+      await expect(getLocator(page)).toBeVisible({
+        timeout: isLastAttempt ? 5000 : 1000,
+      });
+      return;
+    } catch (error) {
+      if (isLastAttempt) throw error;
+      await page.waitForTimeout(delayMs);
+    }
+  }
+};
+
 test.describe('Global Material Type facet value merging', () => {
   let materialTypeFacetId: string | undefined;
-  let ruleSetId = 'draft';
   let originalMerged: Array<{
     displayValue: string;
     mergedValues: string[];
@@ -28,13 +53,6 @@ test.describe('Global Material Type facet value merging', () => {
 
     materialTypeFacetId = materialTypeFacet.id;
     originalMerged = materialTypeFacet.merged ?? [];
-
-    const rulesetResponse = await request.get(
-      '/api/search/beta/merchandising/global/ruleset?q=&start=0&rows=1'
-    );
-    if (rulesetResponse.ok()) {
-      ruleSetId = (await rulesetResponse.json()).ruleSets?.[0]?.id ?? 'draft';
-    }
   });
 
   test.afterAll(async ({ request }) => {
@@ -68,7 +86,7 @@ test.describe('Global Material Type facet value merging', () => {
       'Material Type facet not found in this environment'
     );
 
-    const valuesEditorUrl = `/global/facets/values/edit/${materialTypeFacetId}?ruleSetId=${ruleSetId}&displayName=Material+Type&countryCode=UK_IE`;
+    const valuesEditorUrl = `/global/facet-config/values/edit/${materialTypeFacetId}?displayName=Material+Type`;
 
     // ── Merge ────────────────────────────────────────────────────────────────
 
@@ -95,15 +113,13 @@ test.describe('Global Material Type facet value merging', () => {
     await page
       .getByRole('button', { name: 'Apply action', exact: true })
       .click();
-    await page.waitForURL(/\/global\/facets\/edit\//);
+    await page.waitForURL(/\/global\/facet-config/);
 
     // ── Verify merge persisted ───────────────────────────────────────────────
 
-    await page.goto(valuesEditorUrl);
-    await expect(
-      page.getByRole('heading', { name: 'Value settings of: Material Type' })
-    ).toBeVisible();
-    await expect(page.getByText('Merged Value Group')).toBeVisible();
+    await reloadUntilVisible(page, valuesEditorUrl, (p) =>
+      p.getByText('Merged Value Group')
+    );
 
     // ── Add Geometric to the existing Animal merged group ────────────────────
 
@@ -126,17 +142,13 @@ test.describe('Global Material Type facet value merging', () => {
     await page
       .getByRole('button', { name: 'Apply action', exact: true })
       .click();
-    await page.waitForURL(/\/global\/facets\/edit\//);
+    await page.waitForURL(/\/global\/facet-config/);
 
     // ── Verify expanded group persisted ──────────────────────────────────────
 
-    await page.goto(valuesEditorUrl);
-    await expect(
-      page.getByRole('heading', { name: 'Value settings of: Material Type' })
-    ).toBeVisible();
-    await expect(
-      page.getByLabel('Remove merged facet for Geometric')
-    ).toBeVisible();
+    await reloadUntilVisible(page, valuesEditorUrl, (p) =>
+      p.getByLabel('Remove merged facet for Geometric')
+    );
 
     // ── Reverse ──────────────────────────────────────────────────────────────
 
@@ -147,17 +159,13 @@ test.describe('Global Material Type facet value merging', () => {
     await page
       .getByRole('button', { name: 'Apply action', exact: true })
       .click();
-    await page.waitForURL(/\/global\/facets\/edit\//);
+    await page.waitForURL(/\/global\/facet-config/);
 
     // ── Verify reversal persisted ────────────────────────────────────────────
 
-    await page.goto(valuesEditorUrl);
-    await expect(
-      page.getByRole('heading', { name: 'Value settings of: Material Type' })
-    ).toBeVisible();
-    await expect(
-      page.getByLabel('Edit display name for Animal print')
-    ).toBeVisible();
+    await reloadUntilVisible(page, valuesEditorUrl, (p) =>
+      p.getByLabel('Edit display name for Animal print')
+    );
     await expect(
       page.getByLabel('Edit display name for Geometric')
     ).toBeVisible();

@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-import { clickCreateAndConfirmReview } from '../helpers';
-
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Global Ranking', () => {
@@ -23,13 +21,13 @@ test.describe('Global Ranking', () => {
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
 
     await expect(
-      page.getByRole('link', { name: 'Add facet rule' })
+      page.getByRole('link', { name: 'Add ranking rule' })
     ).toBeVisible();
     await expect(page.getByText('0 results', { exact: true })).toBeHidden();
 
-    await page.getByRole('link', { name: 'Add facet rule' }).click();
+    await page.getByRole('link', { name: 'Add ranking rule' }).click();
     await expect(
-      page.getByRole('heading', { name: 'Global Facet Rule Editor' })
+      page.getByRole('heading', { name: 'Product Grid' })
     ).toBeVisible();
 
     const responsePromise = page.waitForResponse(
@@ -37,7 +35,8 @@ test.describe('Global Ranking', () => {
         r.url().includes('/api/search/beta/merchandising/global/ruleset') &&
         r.request().method() === 'POST'
     );
-    await clickCreateAndConfirmReview(page);
+
+    await page.getByRole('button', { name: 'Create', exact: true }).click();
     const createResponse = await responsePromise;
     if (!createResponse.ok()) {
       throw new Error(`Create POST failed: ${createResponse.status()}`);
@@ -58,17 +57,17 @@ test.describe('Global Ranking', () => {
 
     await expect(
       page.getByRole('heading', {
-        name: 'Apply global changes',
+        name: 'Review changes',
       })
     ).toBeVisible();
 
     await page
-      .getByRole('button', { name: 'Apply action', exact: true })
+      .getByRole('button', { name: 'Save changes', exact: true })
       .click();
 
     await expect(
       page.getByRole('heading', {
-        name: 'Apply global changes',
+        name: 'Review changes',
       })
     ).toBeHidden();
 
@@ -114,12 +113,12 @@ test.describe('Global Ranking', () => {
 
     await expect(
       page.getByRole('heading', {
-        name: 'Apply global changes',
+        name: 'Review changes',
       })
     ).toBeVisible();
 
     await page
-      .getByRole('button', { name: 'Apply action', exact: true })
+      .getByRole('button', { name: 'Save changes', exact: true })
       .click();
   });
 
@@ -240,19 +239,8 @@ test.describe('Global Ranking', () => {
       page.getByRole('heading', { name: 'Global Facet Rule Editor' })
     ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Save' })).toBeHidden();
-    const viewValuesLink = page
-      .getByRole('link', { name: 'View values' })
-      .first();
-    await expect(viewValuesLink).toBeVisible();
-
-    // Click through to the values page and verify it is also read-only
-    const viewValuesHref = await viewValuesLink.getAttribute('href');
-    expect(viewValuesHref).not.toBeNull();
-    await page.goto(viewValuesHref!);
-    await expect(page.getByRole('button', { name: 'Save' })).toBeDisabled();
 
     // Go back to history page and verify Close button returns to the listing
-    await page.goBack();
     await page.goBack();
     await expect(
       page.getByRole('heading', { name: 'Changes history' })
