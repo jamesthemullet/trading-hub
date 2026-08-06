@@ -153,6 +153,7 @@ jobs:
               "AZURE_AD_CLIENT_ID=${{ secrets._AZURE_AD_CLIENT_ID }}" \
               "AZURE_AD_CLIENT_SECRET=${{ secrets._AZURE_AD_CLIENT_SECRET }}" \
               "AZURE_AD_TENANT_ID=${{ secrets._AZURE_AD_TENANT_ID }}" \
+              "FLAGS_ALLOWED_EMAILS=${{ secrets.FLAGS_ALLOWED_EMAILS }}" \
               "WEBSITES_PORT=4200"
         env:
           AZURE_CORE_USE_MSAL_HTTP_CACHE: false
@@ -253,6 +254,7 @@ jobs:
               "AZURE_AD_CLIENT_SECRET=${{ secrets._AZURE_AD_CLIENT_SECRET }}" \
               "AZURE_AD_TENANT_ID=${{ secrets._AZURE_AD_TENANT_ID }}" \
               "CLARITY_KEY=${{ secrets.CLARITY_KEY }}" \
+              "FLAGS_ALLOWED_EMAILS=${{ secrets.FLAGS_ALLOWED_EMAILS }}" \
               "WEBSITES_PORT=4200"
         env:
           AZURE_CORE_USE_MSAL_HTTP_CACHE: false
