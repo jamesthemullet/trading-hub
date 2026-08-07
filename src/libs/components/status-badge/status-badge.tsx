@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import { Typography } from '@/libs/components';
 
 import Image from 'next/image';
@@ -58,7 +60,7 @@ export type OperationalStatusVariant =
   | 'issue-detected'
   | 'push-available';
 
-export const StatusBadge = ({ variant, label }: Props) => {
+export const StatusBadge = ({ variant, label }: Props): ReactElement => {
   const { icon, alt } = variantConfig[variant];
 
   return (

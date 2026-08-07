@@ -4,14 +4,10 @@ import type {
   MerchandisingAttributeValuesResponse,
   MerchandisingCountryCode,
 } from '@/libs/api';
-import { search } from '@/libs/api';
 
 import uniqBy from 'lodash/uniqBy';
 
-import {
-  convertCategoryIdToCatalogue,
-  convertCountryCodeToCatalogues,
-} from '../utils/convert-country-code-to-catalogues';
+import { buildFacetAttributeValuesRequests } from './utils/build-facet-attribute-values-requests';
 import { handleError } from './utils/error';
 
 type Props = {
@@ -55,31 +51,15 @@ export const useGetFacetAttributeValues = ({
         if (!countryCode) {
           throw new Error('Invalid or missing country code parameter');
         }
-        const catalogues = convertCountryCodeToCatalogues(countryCode);
 
-        const promises = categories
-          ? categories.map((categoryId) =>
-              search()
-                .betaMerchandisingFacetAttributeValuesList(facetId, {
-                  categoryId,
-                  ...(query && { q: query }),
-                  start: 0,
-                  rows: 500,
-                  catalogue: convertCategoryIdToCatalogue(categoryId),
-                })
-                .then((response) => response.data.values)
-            )
-          : catalogues.map((catalogue) =>
-              search()
-                .betaMerchandisingFacetAttributeValuesList(facetId, {
-                  ...(query && { q: query }),
-                  start: 0,
-                  rows: 500,
-                  catalogue,
-                  searchTerm: searchTerms,
-                })
-                .then((response) => response.data.values)
-            );
+        const promises = buildFacetAttributeValuesRequests({
+          facetId,
+          countryCode,
+          query,
+          rows: 999,
+          categories,
+          searchTerms,
+        });
 
         const results = await Promise.all(promises);
 

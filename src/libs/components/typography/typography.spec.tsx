@@ -19,7 +19,7 @@ describe('Typography', () => {
         variant="headlineLarge"
         as="h1"
         isStrong
-        withMargin
+        hasMargin
         className="custom-class"
         role="heading"
       >

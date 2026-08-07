@@ -91,7 +91,8 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
 
   const isIncludedFacet = displayType === 'included';
 
-  const [showUnsavedChangesModal, setShowUnsavedChangesModal] = useState(false);
+  const [shouldShowUnsavedChangesModal, setShouldShowUnsavedChangesModal] =
+    useState(false);
   const [pendingEditValuesHref, setPendingEditValuesHref] = useState('');
 
   const handleEditValuesForNewRuleset = useCallback(() => {
@@ -131,7 +132,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
       if (hasChanges) {
         e.preventDefault();
         setPendingEditValuesHref(href);
-        setShowUnsavedChangesModal(true);
+        setShouldShowUnsavedChangesModal(true);
       } else {
         handleEditValuesForNewRuleset();
       }
@@ -140,7 +141,7 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
   );
 
   const handleModalConfirm = useCallback(() => {
-    setShowUnsavedChangesModal(false);
+    setShouldShowUnsavedChangesModal(false);
     handleEditValuesForNewRuleset();
     router.push(pendingEditValuesHref);
   }, [handleEditValuesForNewRuleset, pendingEditValuesHref, router]);
@@ -276,10 +277,10 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
         <SortableRow key={id} id={id} disabled={props.isDragDisabled}>
           {(sortableProps) => renderRow(sortableProps)}
         </SortableRow>
-        {showUnsavedChangesModal && (
+        {shouldShowUnsavedChangesModal && (
           <ModalEditValuesUnsavedChanges
             onConfirm={handleModalConfirm}
-            onCancel={() => setShowUnsavedChangesModal(false)}
+            onCancel={() => setShouldShowUnsavedChangesModal(false)}
             isNewlyIncluded={isNewlyIncluded}
           />
         )}

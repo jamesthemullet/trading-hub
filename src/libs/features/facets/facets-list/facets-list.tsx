@@ -552,12 +552,12 @@ export const FacetsList = ({
         )}
 
         <div className={styles.sectionWrapper}>
-          <Typography variant="bodyMedium" isStrong withMargin>
+          <Typography variant="bodyMedium" isStrong hasMargin>
             Rule scope
           </Typography>
           <div className={styles.scopeWrapper}>
             <div>
-              <Typography as="p" withMargin variant="labelMedium">
+              <Typography as="p" hasMargin variant="labelMedium">
                 Influence
               </Typography>
               <CombinedDropdown
@@ -607,7 +607,7 @@ export const FacetsList = ({
             )}
             {facetType !== FacetType.Global && (
               <div className={styles.duration}>
-                <Typography as="p" withMargin variant="labelMedium">
+                <Typography as="p" hasMargin variant="labelMedium">
                   Duration
                 </Typography>
                 <DateTimePickerModal
@@ -631,7 +631,7 @@ export const FacetsList = ({
             {facetType === FacetType.Search &&
               ruleset.countryCode === 'UK_IE' && (
                 <div>
-                  <Typography as="p" withMargin variant="labelMedium">
+                  <Typography as="p" hasMargin variant="labelMedium">
                     Preview Country
                   </Typography>
                   <CombinedDropdown

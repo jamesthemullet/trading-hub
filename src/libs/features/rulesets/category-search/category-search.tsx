@@ -254,7 +254,7 @@ export const CategorySearch = ({
 
   return (
     <div>
-      <Typography as="p" withMargin variant="labelMedium">
+      <Typography as="p" hasMargin variant="labelMedium">
         Category
         <Count aria-label="number of categories">
           {selectedCategories.length}
@@ -377,7 +377,7 @@ export const CategorySearch = ({
         <Modal.Content aria-label="Category search modal">
           <Modal.Body>
             <div className={styles.modalWrapper}>
-              <Typography variant="titleSmall" isStrong withMargin as="h2">
+              <Typography variant="titleSmall" isStrong hasMargin as="h2">
                 Search Categories
               </Typography>
 

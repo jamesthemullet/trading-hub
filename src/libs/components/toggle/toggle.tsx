@@ -1,4 +1,8 @@
-import type { DetailedHTMLProps, InputHTMLAttributes } from 'react';
+import type {
+  DetailedHTMLProps,
+  InputHTMLAttributes,
+  ReactElement,
+} from 'react';
 
 import styles from './toggle.module.css';
 
@@ -9,7 +13,7 @@ type ToggleProps = Omit<
   'aria-label': string;
 };
 
-export const Toggle = (props: ToggleProps) => {
+export const Toggle = (props: ToggleProps): ReactElement => {
   return (
     <label className={styles.toggle} title="Toggle">
       <input type="checkbox" {...props} />

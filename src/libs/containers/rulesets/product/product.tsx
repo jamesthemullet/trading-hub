@@ -512,7 +512,7 @@ export const Product = ({
                     <Typography
                       variant="bodySmall"
                       isStrong
-                      withMargin
+                      hasMargin
                       aria-label="Boost weight heading"
                     >
                       Boost amount
@@ -632,12 +632,12 @@ export const Product = ({
                 <Typography
                   variant="bodySmall"
                   isStrong
-                  withMargin
+                  hasMargin
                   aria-label="Pinning heading"
                 >
                   Slot position
                 </Typography>
-                <Typography variant="bodySmall" withMargin>
+                <Typography variant="bodySmall" hasMargin>
                   Select the position number you want to set for this product.
                 </Typography>
                 <form

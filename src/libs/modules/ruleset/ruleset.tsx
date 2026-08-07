@@ -11,7 +11,6 @@ import type {
   MerchandisingRuleSet,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
-import type { LastChanged } from '@/libs/components';
 import {
   Button,
   CombinedDropdown,
@@ -23,6 +22,7 @@ import {
 } from '@/libs/components';
 import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
 import { InfoBox } from '@/libs/components/infoBox/info-box';
+import type { LastChanged } from '@/libs/components/last-saved-by/last-saved-by';
 import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import { BulkActions } from '@/libs/containers/rulesets/bulk-actions-products';
 import { DateTimePickerModal } from '@/libs/containers/shared/calendar/date-time-picker-modal';
@@ -449,7 +449,7 @@ export const Ruleset = ({
         <>
           <div className={styles.categoryPanel}>
             <div className={styles.influenceWrapper}>
-              <Typography as="p" withMargin variant="labelMedium">
+              <Typography as="p" hasMargin variant="labelMedium">
                 Influence
               </Typography>
               <CombinedDropdown
@@ -526,7 +526,7 @@ export const Ruleset = ({
             )}
             {rulesetType !== 'global' && (
               <div>
-                <Typography as="p" withMargin variant="labelMedium">
+                <Typography as="p" hasMargin variant="labelMedium">
                   Duration
                 </Typography>
                 <DateTimePickerModal

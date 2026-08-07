@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 
 import { Button, Typography } from '@/libs/components';
@@ -15,7 +16,7 @@ export const FacetsPanelAccordion = ({
   boostedCount,
   excludedCount,
   nonBoostedExcludedCount,
-}: FacetsPanelAccordionProps) => {
+}: FacetsPanelAccordionProps): ReactElement => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (

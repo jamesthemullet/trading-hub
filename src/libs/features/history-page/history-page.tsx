@@ -128,7 +128,7 @@ export const HistoryPage = ({
       </div>
 
       <div className={styles.labelWrapper}>
-        <Typography variant="bodySmall" withMargin>
+        <Typography variant="bodySmall" hasMargin>
           {identifier}
         </Typography>
       </div>

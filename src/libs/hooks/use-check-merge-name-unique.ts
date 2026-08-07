@@ -1,14 +1,10 @@
 import { useState } from 'react';
 
 import type { MerchandisingCountryCode } from '@/libs/api';
-import { search } from '@/libs/api';
 
 import uniqBy from 'lodash/uniqBy';
 
-import {
-  convertCategoryIdToCatalogue,
-  convertCountryCodeToCatalogues,
-} from '../utils/convert-country-code-to-catalogues';
+import { buildFacetAttributeValuesRequests } from './utils/build-facet-attribute-values-requests';
 
 export const MAX_FACET_ATTRIBUTE_ROWS = 1000;
 
@@ -41,29 +37,13 @@ export const useCheckMergeNameUnique = (): {
     localAttributeValues?: string[];
   }) => {
     try {
-      const catalogues = convertCountryCodeToCatalogues(countryCode);
-      const promises = categories
-        ? categories.map((categoryId) =>
-            search()
-              .betaMerchandisingFacetAttributeValuesList(facetId, {
-                categoryId,
-                ...(searchQuery && { q: searchQuery }),
-                start: 0,
-                rows: MAX_FACET_ATTRIBUTE_ROWS,
-                catalogue: convertCategoryIdToCatalogue(categoryId),
-              })
-              .then((response) => response.data.values)
-          )
-        : catalogues.map((catalogue) =>
-            search()
-              .betaMerchandisingFacetAttributeValuesList(facetId, {
-                ...(searchQuery && { q: searchQuery }),
-                start: 0,
-                rows: MAX_FACET_ATTRIBUTE_ROWS,
-                catalogue,
-              })
-              .then((response) => response.data.values)
-          );
+      const promises = buildFacetAttributeValuesRequests({
+        facetId,
+        countryCode,
+        query: searchQuery,
+        rows: MAX_FACET_ATTRIBUTE_ROWS,
+        categories,
+      });
 
       const results = await Promise.all(promises);
 

@@ -197,7 +197,7 @@ export const BulkActions = ({
               Apply new bulk action
             </Typography>
 
-            <Typography withMargin variant="bodySmall">
+            <Typography hasMargin variant="bodySmall">
               Are you sure you want to proceed? This action will apply to{' '}
               <Typography as="span" isStrong variant="bodySmall">
                 {selectedProducts.length}&nbsp;

@@ -1,4 +1,5 @@
-import { type Dispatch, useEffect, useState } from 'react';
+import type { Dispatch, ReactElement } from 'react';
+import { useEffect, useState } from 'react';
 
 import type {
   MerchandisingCountryCode,
@@ -40,7 +41,7 @@ export const GlobalEditableLabel = ({
   dispatch: Dispatch<GlobalAttributesPageReducer>;
   setEditingValues: React.Dispatch<React.SetStateAction<string[]>>;
   isWriteEnabled: boolean;
-}) => {
+}): ReactElement => {
   const [error, setError] = useState<string>('');
   const allBoostedValues = boostedRows.map((row) => row.displayName);
   const allExcludedValues = excludedRows.map((row) => row.displayName);

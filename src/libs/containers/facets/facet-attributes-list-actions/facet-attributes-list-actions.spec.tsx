@@ -85,8 +85,10 @@ describe('FacetAttributesListActions', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('renders pin button when showPinButton is true', () => {
-      render(<FacetAttributesListActions {...defaultProps} showPinButton />);
+    it('renders pin button when shouldShowPinButton is true', () => {
+      render(
+        <FacetAttributesListActions {...defaultProps} shouldShowPinButton />
+      );
       expect(
         screen.getByRole('button', { name: 'Pin top bar' })
       ).toBeInTheDocument();
@@ -96,7 +98,7 @@ describe('FacetAttributesListActions', () => {
       render(
         <FacetAttributesListActions
           {...defaultProps}
-          showPinButton
+          shouldShowPinButton
           isPinned={false}
         />
       );
@@ -106,7 +108,11 @@ describe('FacetAttributesListActions', () => {
 
     it('shows pinned state when isPinned is true', () => {
       render(
-        <FacetAttributesListActions {...defaultProps} showPinButton isPinned />
+        <FacetAttributesListActions
+          {...defaultProps}
+          shouldShowPinButton
+          isPinned
+        />
       );
       expect(
         screen.getByRole('button', { name: 'Unpin top bar' })
@@ -119,7 +125,7 @@ describe('FacetAttributesListActions', () => {
       render(
         <FacetAttributesListActions
           {...defaultProps}
-          showPinButton
+          shouldShowPinButton
           onTogglePin={onTogglePin}
         />
       );

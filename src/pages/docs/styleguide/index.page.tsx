@@ -399,7 +399,7 @@ const StyleGuide = (): ReactElement => {
         <Typography as="h2" variant="headlineLarge" isStrong>
           Typography
         </Typography>
-        <Typography variant="bodyMedium" withMargin>
+        <Typography variant="bodyMedium" hasMargin>
           Typography scales based on the Colleague Design System using New MS
           London font.
         </Typography>
@@ -444,7 +444,7 @@ const StyleGuide = (): ReactElement => {
         <Typography as="h2" variant="headlineLarge" isStrong>
           Buttons
         </Typography>
-        <Typography variant="bodyMedium" withMargin>
+        <Typography variant="bodyMedium" hasMargin>
           Button components with various themes and states.
         </Typography>
 
@@ -465,7 +465,7 @@ const StyleGuide = (): ReactElement => {
         <Typography as="h2" variant="headlineLarge" isStrong>
           Color Palette
         </Typography>
-        <Typography variant="bodyMedium" withMargin>
+        <Typography variant="bodyMedium" hasMargin>
           Colors from the Colleague Design System organized by category.
         </Typography>
 
@@ -596,7 +596,7 @@ const StyleGuide = (): ReactElement => {
         <Typography as="h2" variant="headlineLarge" isStrong>
           Spacing Scale
         </Typography>
-        <Typography variant="bodyMedium" withMargin>
+        <Typography variant="bodyMedium" hasMargin>
           Base unit: 8px. Use the spacing function or CSS variables for
           consistent spacing.
         </Typography>

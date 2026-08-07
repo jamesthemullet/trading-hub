@@ -1,4 +1,4 @@
-import type { Dispatch, KeyboardEvent, RefCallback } from 'react';
+import type { Dispatch, KeyboardEvent, ReactElement, RefCallback } from 'react';
 import { useEffect, useState } from 'react';
 
 import {
@@ -58,7 +58,7 @@ export const GlobalFacetAttribute = ({
   onInputChange: handleInputChange,
   onInputBlur: handleInputBlur,
   onInputKeyDown: handleInputKeyDown,
-}: GlobalFacetAttributeProps) => {
+}: GlobalFacetAttributeProps): ReactElement => {
   const maxVisible = 4;
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAwaitingUpdate, setIsAwaitingUpdate] = useState(false);

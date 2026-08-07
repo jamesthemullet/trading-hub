@@ -32,12 +32,12 @@ export const RulesetDiffModal = ({
       <Modal.Content aria-labelledby={titleId}>
         <Modal.Body>
           <Modal.Title component="div" id={titleId}>
-            <Typography as="h2" variant="titleMedium" isStrong withMargin>
+            <Typography as="h2" variant="titleMedium" isStrong hasMargin>
               Review changes
             </Typography>
           </Modal.Title>
 
-          <Typography variant="bodySmall" withMargin>
+          <Typography variant="bodySmall" hasMargin>
             The following changes will go live on the M&S website and app.
             Please review before saving.
           </Typography>
@@ -49,7 +49,7 @@ export const RulesetDiffModal = ({
           />
 
           {diffItems.length === 0 ? (
-            <Typography variant="bodySmall" withMargin>
+            <Typography variant="bodySmall" hasMargin>
               No changes detected.
             </Typography>
           ) : (

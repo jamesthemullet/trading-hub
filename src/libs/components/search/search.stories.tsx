@@ -34,7 +34,7 @@ export const FullWidth: Story = {
   args: {
     placeholder: 'Search...',
     name: 'search',
-    fullWidth: true,
+    isFullWidth: true,
   },
 };
 
@@ -80,7 +80,7 @@ export const FullWidthWithValue: Story = {
   args: {
     placeholder: 'Search...',
     name: 'search',
-    fullWidth: true,
+    isFullWidth: true,
     value: 'Example search',
   },
 };

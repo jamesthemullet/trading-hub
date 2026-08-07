@@ -53,12 +53,12 @@ export const ConflictModal = ({
       <Modal.Content>
         <Modal.Body>
           <Modal.Title component="div">
-            <Typography as="h2" variant="titleMedium" isStrong withMargin>
+            <Typography as="h2" variant="titleMedium" isStrong hasMargin>
               This ruleset was changed by someone else
             </Typography>
           </Modal.Title>
 
-          <Typography variant="bodySmall" withMargin>
+          <Typography variant="bodySmall" hasMargin>
             {changedBy
               ? `Someone else (${changedBy}) saved changes to this ruleset since you opened it.`
               : 'Someone else saved changes to this ruleset since you opened it.'}{' '}
@@ -73,12 +73,12 @@ export const ConflictModal = ({
           />
 
           {diffItems.length === 0 ? (
-            <Typography variant="bodySmall" withMargin>
+            <Typography variant="bodySmall" hasMargin>
               The specific changes could not be determined.
             </Typography>
           ) : (
             <>
-              <Typography variant="bodySmall" isStrong withMargin>
+              <Typography variant="bodySmall" isStrong hasMargin>
                 Changes made since you opened this ruleset
               </Typography>
               <ul className={styles.diffList}>

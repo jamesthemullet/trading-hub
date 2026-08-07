@@ -170,7 +170,7 @@ export const Redirect = ({
         </Typography>
         <div className={styles.row}>
           <div>
-            <Typography as="p" withMargin variant="labelMedium">
+            <Typography as="p" hasMargin variant="labelMedium">
               Influence
             </Typography>
             <CombinedDropdown
@@ -197,7 +197,7 @@ export const Redirect = ({
             isWriteEnabled={isWriteEnabled}
           />
           <div className={styles.duration}>
-            <Typography as="p" withMargin variant="labelMedium">
+            <Typography as="p" hasMargin variant="labelMedium">
               Duration
             </Typography>
             <DateTimePickerModal

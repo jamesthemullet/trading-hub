@@ -15,12 +15,12 @@ const ConfirmationModal = ({
   return (
     <Modal.Body>
       <Modal.Title>
-        <Typography as="span" variant="titleMedium" withMargin isStrong>
+        <Typography as="span" variant="titleMedium" hasMargin isStrong>
           Apply global changes
         </Typography>
       </Modal.Title>
 
-      <Typography variant="bodySmall" withMargin>
+      <Typography variant="bodySmall" hasMargin>
         This action will apply live changes on the M&S website and app. Do you
         want to proceed?
       </Typography>

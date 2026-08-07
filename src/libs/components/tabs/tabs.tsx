@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import { Button } from '../button/button';
 import { Typography } from '../typography/typography';
 import styles from './tabs.module.css';
@@ -8,7 +10,11 @@ type Props = {
   tabs: { title: string; count?: number }[];
 };
 
-export const Tabs = ({ tabs, onTabChange, currentTab }: Props) => {
+export const Tabs = ({
+  tabs,
+  onTabChange,
+  currentTab,
+}: Props): ReactElement => {
   return (
     <div className={styles.tabsContainerWrapper}>
       <div className={styles.tabsWrapper} data-tabs={tabs.length}>

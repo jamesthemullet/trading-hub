@@ -565,7 +565,7 @@ export const DataTable = ({
           aria-label={`Modal to confirm ${ruleSetEditOption === 'delete' ? 'deleting of rule' : 'duplicating of rule'}`}
         >
           <Modal.Body>
-            <Typography as="h2" withMargin variant="bodyMedium">
+            <Typography as="h2" hasMargin variant="bodyMedium">
               {ruleSetEditOption === 'delete'
                 ? 'Do you want to delete this rule?'
                 : `Create a duplicate ${ruleType === RuleType.Redirect ? 'redirect' : ''} rule`}
@@ -573,7 +573,7 @@ export const DataTable = ({
 
             {ruleSetEditOption === 'duplicate' && (
               <>
-                <Typography withMargin variant="bodyMedium">
+                <Typography hasMargin variant="bodyMedium">
                   Are you sure you want to create a duplicate of {ruleName}?
                 </Typography>
                 <Typography variant="bodyMedium">

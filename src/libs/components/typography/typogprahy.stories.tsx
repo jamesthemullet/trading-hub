@@ -13,7 +13,7 @@ const meta: Meta<typeof Typography> = {
       description: 'Bold text',
       control: 'boolean',
     },
-    withMargin: {
+    hasMargin: {
       description: 'Adds margin to component',
       control: 'boolean',
     },
@@ -46,7 +46,7 @@ export const Default: Story = {
     variant: 'bodyMedium',
     as: 'p',
     isStrong: false,
-    withMargin: false,
+    hasMargin: false,
   } satisfies DefaultStoryArgs,
   render: (args: DefaultStoryArgs) => <Typography {...args} />,
 } satisfies Story;

@@ -1,4 +1,9 @@
-import { type ActionDispatch, useEffect, useState } from 'react';
+import {
+  type ActionDispatch,
+  type ReactElement,
+  useEffect,
+  useState,
+} from 'react';
 import { Modal } from '@mantine/core';
 
 import { Button, Typography } from '@/libs/components';
@@ -40,7 +45,7 @@ export const GlobalFacetAttributesEditModal = ({
   error,
   handleError,
   onSave,
-}: GlobalFacetAttributesEditModalProps) => {
+}: GlobalFacetAttributesEditModalProps): ReactElement => {
   const {
     currentMergeValues: attributes,
     displayValue: displayName,

@@ -116,7 +116,7 @@ export const ProductSearchAll = ({
             onChange={(e) => {
               handleSearch(e.target.value);
             }}
-            fullWidth
+            isFullWidth
           />
         </div>
         <div className={styles.infoContainer} data-ruleset-type={rulesetType}>

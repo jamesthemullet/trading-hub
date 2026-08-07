@@ -1,4 +1,9 @@
-import { type ChangeEventHandler, type RefObject, useState } from 'react';
+import {
+  type ChangeEventHandler,
+  type ReactElement,
+  type RefObject,
+  useState,
+} from 'react';
 
 import { Input, type InputProps } from '@/libs/containers/shared/input/input';
 
@@ -13,7 +18,7 @@ type SearchProps = {
   value?: string | number | readonly string[] | undefined;
   onChange?: ChangeEventHandler<HTMLInputElement>;
   placeholder?: string;
-  fullWidth?: boolean;
+  isFullWidth?: boolean;
 };
 
 export const Search = ({
@@ -22,8 +27,8 @@ export const Search = ({
   value,
   onChange,
   placeholder,
-  fullWidth,
-}: SearchProps) => {
+  isFullWidth,
+}: SearchProps): ReactElement => {
   const [currentValue, setCurrentValue] = useState('');
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +38,7 @@ export const Search = ({
   };
 
   return (
-    <div className={styles.searchBoxContainer} data-full-width={fullWidth}>
+    <div className={styles.searchBoxContainer} data-full-width={isFullWidth}>
       <SearchBox
         inputProps={{
           isLabelHidden: true,
@@ -59,7 +64,7 @@ type SearchBoxProps = {
   } & InputProps;
 };
 
-export const SearchBox = ({ inputProps }: SearchBoxProps) => {
+export const SearchBox = ({ inputProps }: SearchBoxProps): ReactElement => {
   const handleClear = () => {
     if (inputProps.onChange) {
       const syntheticEvent = {

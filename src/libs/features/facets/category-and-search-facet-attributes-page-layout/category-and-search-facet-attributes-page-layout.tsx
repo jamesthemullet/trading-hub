@@ -202,7 +202,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
           onSearchChange={onSearchChange}
           isMergeHidden
           isWriteEnabled={isWriteEnabled}
-          showPinButton
+          shouldShowPinButton
           isPinned={isPinned}
           onTogglePin={() => setIsPinned((prev) => !prev)}
         />

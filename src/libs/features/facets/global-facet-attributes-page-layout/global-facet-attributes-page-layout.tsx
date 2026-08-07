@@ -246,7 +246,7 @@ export const GlobalFacetAttributesPageLayout = ({
           onMergeClick={handleMerge}
           isWriteEnabled={isWriteEnabled}
           checkedRows={checkedRows.length}
-          showPinButton
+          shouldShowPinButton
           isPinned={isPinned}
           onTogglePin={() => setIsPinned((prev) => !prev)}
         />

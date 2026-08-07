@@ -128,7 +128,7 @@ export const SearchKeywords = ({
   return (
     <>
       <div>
-        <Typography withMargin variant="labelMedium">
+        <Typography hasMargin variant="labelMedium">
           {title}
           <Count aria-label="number of keywords">{searchTerms.length}</Count>
         </Typography>
@@ -224,7 +224,7 @@ export const SearchKeywords = ({
           <Modal.Body>
             <div className={styles.modal}>
               <div className={styles.modalWrapper}>
-                <Typography variant="titleSmall" isStrong withMargin as="h2">
+                <Typography variant="titleSmall" isStrong hasMargin as="h2">
                   {title}
                 </Typography>
                 {isWriteEnabled && (

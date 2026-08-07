@@ -15,7 +15,11 @@ type SortableRowProps = {
   children: (args: SortableRowRenderArgs) => ReactElement;
 };
 
-export const SortableRow = ({ id, disabled, children }: SortableRowProps) => {
+export const SortableRow = ({
+  id,
+  disabled,
+  children,
+}: SortableRowProps): ReactElement => {
   const {
     attributes,
     listeners,

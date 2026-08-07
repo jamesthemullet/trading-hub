@@ -109,7 +109,7 @@ export const RulesetAttributes = ({
           data-testid="Ruleset attributes"
         >
           {(!!alphanumericBoost.length || !!alphanumericBuries.length) && (
-            <Typography variant="bodyMedium" isStrong withMargin>
+            <Typography variant="bodyMedium" isStrong hasMargin>
               Product Description Attribute Rules
             </Typography>
           )}
@@ -249,7 +249,7 @@ export const RulesetAttributes = ({
               />
             ))}
           {(!!numericBoosts.length || !!numericBury.length) && (
-            <Typography variant="bodyMedium" isStrong withMargin>
+            <Typography variant="bodyMedium" isStrong hasMargin>
               Numeric Attribute Rules
             </Typography>
           )}

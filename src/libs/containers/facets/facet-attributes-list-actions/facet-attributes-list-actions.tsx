@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, ReactElement } from 'react';
 
 import { Button, Search } from '@/libs/components';
 import { Typography } from '@/libs/components/typography/typography';
@@ -14,7 +14,7 @@ export const FacetAttributesListActions = ({
   isMergeHidden = false,
   isMergeDisabled = true,
   checkedRows = 0,
-  showPinButton = false,
+  shouldShowPinButton = false,
   isPinned = false,
   onTogglePin,
 }: {
@@ -24,10 +24,10 @@ export const FacetAttributesListActions = ({
   isMergeHidden?: boolean;
   isMergeDisabled?: boolean;
   checkedRows?: number;
-  showPinButton?: boolean;
+  shouldShowPinButton?: boolean;
   isPinned?: boolean;
   onTogglePin?: () => void;
-}) => {
+}): ReactElement => {
   const isDisabled = isMergeDisabled || !isWriteEnabled;
   return (
     <div className={styles.container}>
@@ -74,10 +74,10 @@ export const FacetAttributesListActions = ({
 
       <div className={styles.searchAndPinWrapper}>
         <div className={styles.searchWrapper}>
-          <Search onChange={onSearchChange} placeholder="Search" fullWidth />
+          <Search onChange={onSearchChange} placeholder="Search" isFullWidth />
         </div>
 
-        {showPinButton && (
+        {shouldShowPinButton && (
           <Button
             appearance="icon"
             aria-label={isPinned ? 'Unpin top bar' : 'Pin top bar'}

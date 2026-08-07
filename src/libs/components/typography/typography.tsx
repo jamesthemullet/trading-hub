@@ -1,10 +1,11 @@
-import styles from './typography.module.css';
+import type { ReactElement } from 'react';
 
+import styles from './typography.module.css';
 type TypographyBaseProps = {
   id?: string;
   isStrong?: boolean;
-  uppercase?: boolean;
-  withMargin?: boolean;
+  isUppercase?: boolean;
+  hasMargin?: boolean;
   variant?:
     | 'bodyLarge'
     | 'bodyMedium'
@@ -46,19 +47,19 @@ export const Typography = ({
   variant = 'bodyMedium',
   children,
   isStrong = false,
-  uppercase = false,
-  withMargin = false,
+  isUppercase = false,
+  hasMargin = false,
   className,
   ...rest
-}: TypographyProps) => (
+}: TypographyProps): ReactElement => (
   <Component
     className={
       className ? `${styles.typography} ${className}` : styles.typography
     }
     data-variant={variant}
     data-strong={isStrong}
-    data-uppercase={uppercase}
-    data-with-margin={withMargin}
+    data-uppercase={isUppercase}
+    data-with-margin={hasMargin}
     data-align={align}
     {...rest}
   >

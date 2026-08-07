@@ -181,7 +181,7 @@ const ProductGrid = ({
               <Typography variant="bodySmall" isStrong>
                 {price}
               </Typography>
-              <Typography variant="bodySmall" isStrong uppercase>
+              <Typography variant="bodySmall" isStrong isUppercase>
                 {brand}
               </Typography>
               <Typography variant="bodySmall">{title}</Typography>

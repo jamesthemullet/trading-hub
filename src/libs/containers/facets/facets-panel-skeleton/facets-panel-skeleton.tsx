@@ -1,10 +1,15 @@
+import type { ReactElement } from 'react';
 import { Skeleton } from '@mantine/core';
 
 import { Typography } from '@/libs/components';
 import { COLUMNS } from '@/libs/constants/facets-panel-columns';
 import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 
-export const FacetsPanelSkeleton = ({ title }: { title: string }) => {
+export const FacetsPanelSkeleton = ({
+  title,
+}: {
+  title: string;
+}): ReactElement => {
   const placeholderRows = ['row-1', 'row-2', 'row-3', 'row-4', 'row-5'];
 
   return (

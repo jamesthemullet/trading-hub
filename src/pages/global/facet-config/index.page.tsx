@@ -153,7 +153,7 @@ const FacetConfig = (): ReactElement => {
       ) : (
         <>
           <div className={styles.sectionWrapper}>
-            <Typography variant="bodyMedium" withMargin>
+            <Typography variant="bodyMedium" hasMargin>
               Manage facet display names and merge groups. Changes here apply
               across all global rulesets.
             </Typography>
