@@ -109,6 +109,14 @@ export const Ruleset = ({
 }): ReactElement => {
   const categoryIds = categoriesInfo?.map((category) => category.id);
 
+  /**
+   * IE_ categories should be deprioritised as the default preview - prefer
+   * the first non-IE_ category if one exists, falling back to the first
+   * category otherwise (e.g. when every selected category is IE_).
+   */
+  const defaultPreviewCategoryId =
+    categoryIds?.find((id) => !id.includes('IE_')) ?? categoryIds?.[0];
+
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>(
     categoryIds ?? []
   );
@@ -130,7 +138,7 @@ export const Ruleset = ({
   const [pendingSave, setPendingSave] = useState<(() => void) | null>(null);
 
   const defaultPreviewCountryCode =
-    categoryIds?.[0].includes('IE_') ||
+    defaultPreviewCategoryId?.includes('IE_') ||
     (rulesetType === 'search' && countryCode === 'IE')
       ? 'IE'
       : 'UK';
@@ -169,7 +177,7 @@ export const Ruleset = ({
   };
 
   const [previewValue, setPreviewValue] = useState(
-    categoryIds?.[0] ?? searchTerms?.[0]
+    defaultPreviewCategoryId ?? searchTerms?.[0]
   );
 
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);

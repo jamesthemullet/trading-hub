@@ -612,6 +612,49 @@ describe('Ruleset', () => {
         expect.objectContaining({ countryCode: 'IE' })
       );
     });
+
+    it('should default the preview to the first non-IE_ category when categoriesInfo has a mix of categories', () => {
+      renderWithProviders(
+        <Ruleset
+          {...defaultProps}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetType="category"
+          categoriesInfo={[
+            { id: categoryId3, name: categoryName1, plpUrl: categoryPath1 },
+            { id: categoryId1, name: categoryName1, plpUrl: categoryPath1 },
+          ]}
+        />
+      );
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          categoryId: categoryId1,
+          countryCode: 'UK',
+        })
+      );
+    });
+
+    it('should fall back to the first category when every category in categoriesInfo is IE_', () => {
+      renderWithProviders(
+        <Ruleset
+          {...defaultProps}
+          onSave={jest.fn()}
+          onCancel={jest.fn()}
+          rulesetType="category"
+          categoriesInfo={[
+            { id: categoryId3, name: categoryName1, plpUrl: categoryPath1 },
+          ]}
+        />
+      );
+
+      expect(usePreview).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          categoryId: categoryId3,
+          countryCode: 'IE',
+        })
+      );
+    });
   });
 
   describe('keyword search', () => {

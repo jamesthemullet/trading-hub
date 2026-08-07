@@ -29,6 +29,20 @@ const SEARCH_DEBOUNCE_WAIT = 500;
 const DEFAULT_DROPDOWN_WIDTH = 250;
 const ACTIVE_DROPDOWN_WIDTH = 320;
 
+const DEPRIORITISED_CATEGORY_PREFIX = 'IE_';
+
+const isDeprioritisedCategory = (id?: string): boolean =>
+  Boolean(id?.startsWith(DEPRIORITISED_CATEGORY_PREFIX));
+
+const sortDeprioritisingIeCategories = <T extends { id?: string }>(
+  categories: T[]
+): T[] =>
+  [...categories].sort(
+    (a, b) =>
+      Number(isDeprioritisedCategory(a.id)) -
+      Number(isDeprioritisedCategory(b.id))
+  );
+
 type CategoryRowProps = {
   category: Required<MerchandisingCategory>;
   onAddCategory: (category: {
@@ -331,25 +345,25 @@ export const CategorySearch = ({
             aria-label="Select category to preview"
             onKeyDown={handleOnKeyDown}
           >
-            {selectedCategoriesInfo
-              .filter((cat) => cat.id !== previewCategory)
-              .map((category) => (
-                <Button
-                  className={dropdownStyles.dropdownOption}
-                  type="button"
-                  key={category.id}
-                  data-hover-grey
-                  role="menuitem"
-                  onClick={() => {
-                    setIsDropdownOpen(false);
-                    selectPreviewCategory(category.id);
-                  }}
-                >
-                  <Typography as="span" variant="bodySmall">
-                    {category.id} {formatHTMLStrings(category.name)}
-                  </Typography>
-                </Button>
-              ))}
+            {sortDeprioritisingIeCategories(
+              selectedCategoriesInfo.filter((cat) => cat.id !== previewCategory)
+            ).map((category) => (
+              <Button
+                className={dropdownStyles.dropdownOption}
+                type="button"
+                key={category.id}
+                data-hover-grey
+                role="menuitem"
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  selectPreviewCategory(category.id);
+                }}
+              >
+                <Typography as="span" variant="bodySmall">
+                  {category.id} {formatHTMLStrings(category.name)}
+                </Typography>
+              </Button>
+            ))}
           </div>
         </div>
 
