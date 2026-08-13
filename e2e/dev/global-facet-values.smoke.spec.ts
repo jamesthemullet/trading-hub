@@ -108,10 +108,10 @@ test.describe('Global Material Type facet value merging', () => {
     await expect(page.getByRole('dialog')).toBeHidden();
     await expect(page.getByText('Merged Value Group')).toBeVisible();
 
-    // Persist to the API via the confirmation modal
+    // Persist to the API via the review changes modal
     await page.getByRole('button', { name: 'Save', exact: true }).click();
     await page
-      .getByRole('button', { name: 'Apply action', exact: true })
+      .getByRole('button', { name: 'Save changes', exact: true })
       .click();
     await page.waitForURL(/\/global\/facet-config/);
 
@@ -140,7 +140,7 @@ test.describe('Global Material Type facet value merging', () => {
 
     await page.getByRole('button', { name: 'Save', exact: true }).click();
     await page
-      .getByRole('button', { name: 'Apply action', exact: true })
+      .getByRole('button', { name: 'Save changes', exact: true })
       .click();
     await page.waitForURL(/\/global\/facet-config/);
 
@@ -157,7 +157,7 @@ test.describe('Global Material Type facet value merging', () => {
 
     await page.getByRole('button', { name: 'Save', exact: true }).click();
     await page
-      .getByRole('button', { name: 'Apply action', exact: true })
+      .getByRole('button', { name: 'Save changes', exact: true })
       .click();
     await page.waitForURL(/\/global\/facet-config/);
 

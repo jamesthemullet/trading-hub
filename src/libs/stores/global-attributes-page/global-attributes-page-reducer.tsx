@@ -241,6 +241,21 @@ export type GlobalAttributesPageState = {
   };
 };
 
+export const INITIAL_STATE: GlobalAttributesPageState = {
+  boostedRows: [],
+  excludedRows: [],
+  nonBoostedExcludedRows: [],
+  merged: [],
+  errorStates: {},
+  currentMerge: {
+    isOpen: false,
+    displayValue: '',
+    mergedValues: [],
+    demergedValues: [],
+    currentMergeValues: [],
+  },
+};
+
 export const globalAttributesPageReducer = (
   state: GlobalAttributesPageState,
   action: GlobalAttributesPageReducer

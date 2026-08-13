@@ -1,6 +1,5 @@
 import type { ChangeEvent, ReactElement } from 'react';
-import { useCallback, useEffect, useReducer, useState } from 'react';
-import { Modal } from '@mantine/core';
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
@@ -8,20 +7,43 @@ import type {
   MerchandisingCountryCode,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
+import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import { ROUTES } from '@/libs/constants';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetAttributesListActions } from '@/libs/containers';
 import { GlobalFacetAttributesEditModal } from '@/libs/containers/facets/global-facet-attributes-edit-modal/global-facet-attributes-edit-modal';
 import { ModalUnsavedChanges } from '@/libs/containers/shared/modals';
-import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { useGlobalFacetUpdate } from '@/libs/hooks';
+import { useGlobalFacetAttributesDiff } from '@/libs/hooks/use-global-facet-attributes-diff';
 import { useGlobalFacetAttributesEditModal } from '@/libs/hooks/use-global-facet-attributes-edit-modal';
-import { globalAttributesPageReducer } from '@/libs/stores/global-attributes-page/global-attributes-page-reducer';
+import {
+  globalAttributesPageReducer,
+  INITIAL_STATE,
+} from '@/libs/stores/global-attributes-page/global-attributes-page-reducer';
 import { useCheckedRowsSelector } from '@/libs/stores/global-attributes-page/use-checked-rows-selector';
 
 import { FacetAttributesPageLayoutHeader } from '../facet-attributes-page-layout-header/facet-attributes-page-layout-header';
 import { GlobalFacetAttributesList } from '../global-facet-attributes-list/global-facet-attributes-list';
 import styles from './global-facet-attributes-page-layout.module.css';
+
+const buildInitialPayload = (
+  facet: MerchandisingReturnedGlobalFacet,
+  attributeValues: MerchandisingAttributeValuesResponse['values']
+) => ({
+  boostedValues:
+    facet?.boosted?.map((value) => ({ displayValue: value })) || [],
+  excludedValues:
+    facet?.excludedValues?.map((value) => ({ displayValue: value })) || [],
+  nonBoostedExcludedValues: attributeValues.filter(
+    ({ displayValue }) =>
+      !facet?.boosted?.includes(displayValue) &&
+      !facet?.excludedValues?.includes(displayValue)
+  ),
+  merged:
+    facet?.merged ||
+    // istanbul ignore next
+    [],
+});
 
 type PageLayout = {
   facet: MerchandisingReturnedGlobalFacet;
@@ -53,20 +75,12 @@ export const GlobalFacetAttributesPageLayout = ({
   // reducer
   const [globalAttributesLocalState, dispatch] = useReducer(
     globalAttributesPageReducer,
-    {
-      boostedRows: [],
-      excludedRows: [],
-      nonBoostedExcludedRows: [],
-      merged: [],
-      errorStates: {},
-      currentMerge: {
-        isOpen: false,
-        displayValue: '',
-        mergedValues: [],
-        demergedValues: [],
-        currentMergeValues: [],
-      },
-    }
+    INITIAL_STATE,
+    (initialState) =>
+      globalAttributesPageReducer(initialState, {
+        type: 'INITIALISE_STATE',
+        payload: buildInitialPayload(facet, attributeValues),
+      })
   );
   const checkedRows = useCheckedRowsSelector(globalAttributesLocalState);
 
@@ -84,24 +98,24 @@ export const GlobalFacetAttributesPageLayout = ({
   useEffect(() => {
     dispatch({
       type: 'INITIALISE_STATE',
-      payload: {
-        boostedValues:
-          facet?.boosted?.map((value) => ({ displayValue: value })) || [],
-        excludedValues:
-          facet?.excludedValues?.map((value) => ({ displayValue: value })) ||
-          [],
-        nonBoostedExcludedValues: attributeValues.filter(
-          ({ displayValue }) =>
-            !facet?.boosted?.includes(displayValue) &&
-            !facet?.excludedValues?.includes(displayValue)
-        ),
-        merged:
-          facet?.merged ||
-          // istanbul ignore next
-          [],
-      },
+      payload: buildInitialPayload(facet, attributeValues),
     });
   }, [facet, attributeValues]);
+
+  // Snapshot of the facet's pre-edit state, used to build the review diff.
+  const originalState = useMemo(
+    () =>
+      globalAttributesPageReducer(INITIAL_STATE, {
+        type: 'INITIALISE_STATE',
+        payload: buildInitialPayload(facet, attributeValues),
+      }),
+    [facet, attributeValues]
+  );
+
+  const diffItems = useGlobalFacetAttributesDiff(
+    originalState,
+    globalAttributesLocalState
+  );
 
   useEffect(() => {
     if (!searchQuery.trim() || searchedAttributeValues.length === 0) {
@@ -117,7 +131,7 @@ export const GlobalFacetAttributesPageLayout = ({
   }, [searchQuery, searchedAttributeValues]);
 
   // save logic
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] =
     useState(false);
   const [hasChanges, setHasChanges] = useState(false);
@@ -144,15 +158,12 @@ export const GlobalFacetAttributesPageLayout = ({
     dispatch(action);
   }, []);
 
-  // istanbul ignore next
-  const onCloseModal = () => setIsConfirmationModalOpen(false);
-
   const handleSave = () => {
-    setIsConfirmationModalOpen(true);
+    setIsReviewModalOpen(true);
   };
 
-  const handleModalConfirm = async () => {
-    setIsConfirmationModalOpen(false);
+  const handleConfirmSave = async () => {
+    setIsReviewModalOpen(false);
     await onSave();
   };
 
@@ -267,20 +278,13 @@ export const GlobalFacetAttributesPageLayout = ({
         isWriteEnabled={isWriteEnabled}
       />
 
-      <Modal.Root
-        centered
-        opened={isConfirmationModalOpen}
-        onClose={onCloseModal}
-        padding={10}
-      >
-        <Modal.Overlay blur={3} />
-        <Modal.Content>
-          <ConfirmationModal
-            onCloseModal={onCloseModal}
-            handleModalConfirm={handleModalConfirm}
-          />
-        </Modal.Content>
-      </Modal.Root>
+      <RulesetDiffModal
+        opened={isReviewModalOpen}
+        diffItems={diffItems}
+        onConfirm={handleConfirmSave}
+        onCancel={() => setIsReviewModalOpen(false)}
+        showGlobalWarning
+      />
 
       {globalAttributesLocalState.currentMerge.isOpen && (
         <GlobalFacetAttributesEditModal

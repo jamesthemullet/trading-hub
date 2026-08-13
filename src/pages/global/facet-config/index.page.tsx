@@ -12,11 +12,13 @@ import {
 } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
+import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import { ROUTES } from '@/libs/constants/routes';
 import { EditableLabel } from '@/libs/containers/shared/editable-label/editable-label';
 import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { useGlobalFacetsList, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
+import { createDiffItem } from '@/libs/hooks/utils/diff';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Head from 'next/head';
@@ -40,6 +42,11 @@ const FacetConfig = (): ReactElement => {
   >({});
 
   const [searchQuery, setSearchQuery] = useState('');
+
+  const [pendingDisplayNameChange, setPendingDisplayNameChange] = useState<{
+    facet: MerchandisingReturnedFacet;
+    value: string;
+  } | null>(null);
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearchQuery(val);
@@ -121,6 +128,36 @@ const FacetConfig = (): ReactElement => {
     }
   };
 
+  const handleReviewModalClose = useCallback(() => {
+    setPendingDisplayNameChange(null);
+  }, []);
+
+  const handleReviewModalConfirm = async () => {
+    // istanbul ignore next -- unreachable: RulesetDiffModal (and its "Save
+    // changes" button that calls this handler) only renders when
+    // `opened={!!pendingDisplayNameChange}` is true, so this is only here
+    // to satisfy TypeScript narrowing.
+    if (!pendingDisplayNameChange) return;
+
+    const change = pendingDisplayNameChange;
+    setPendingDisplayNameChange(null);
+    await onFacetDataChange(change);
+  };
+
+  const displayNameDiffItems = useMemo(
+    () =>
+      pendingDisplayNameChange
+        ? [
+            createDiffItem(
+              'changed',
+              'Display name',
+              `${pendingDisplayNameChange.facet.displayValue} → ${pendingDisplayNameChange.value}`
+            ),
+          ]
+        : [],
+    [pendingDisplayNameChange]
+  );
+
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
   }
@@ -199,9 +236,13 @@ const FacetConfig = (): ReactElement => {
                       <EditableLabel
                         displayValue={facet.displayValue}
                         onCancel={() => setError(facet.id, '')}
-                        onDisplayValueChange={(newValue) =>
-                          onFacetDataChange({ value: newValue, facet })
-                        }
+                        onDisplayValueChange={(newValue) => {
+                          if (newValue === facet.displayValue) return;
+                          setPendingDisplayNameChange({
+                            value: newValue,
+                            facet,
+                          });
+                        }}
                         canCancelEdit
                         shouldShowErrorState={!!errorMessage}
                         setError={(message) => setError(facet.id, message)}
@@ -264,6 +305,14 @@ const FacetConfig = (): ReactElement => {
           <FilteredResultsPanel filteredFacets={filteredFacets.length} />
         </>
       )}
+
+      <RulesetDiffModal
+        opened={!!pendingDisplayNameChange}
+        diffItems={displayNameDiffItems}
+        onConfirm={handleReviewModalConfirm}
+        onCancel={handleReviewModalClose}
+        showGlobalWarning
+      />
     </>
   );
 };

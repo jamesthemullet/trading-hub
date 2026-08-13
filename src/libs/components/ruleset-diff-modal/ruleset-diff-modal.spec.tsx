@@ -134,6 +134,58 @@ describe('RulesetDiffModal', () => {
     expect(ascendingIcon.closest('span')).not.toHaveAttribute('data-rotated');
   });
 
+  it('should not prefix "Amended merge group" with the change type label', () => {
+    renderWithProviders(
+      <RulesetDiffModal
+        opened
+        diffItems={[
+          {
+            type: 'removed',
+            label: 'Amended merge group',
+            description: "Green removed from 'Colours' merge group",
+          },
+        ]}
+        onConfirm={jest.fn()}
+        onCancel={jest.fn()}
+      />
+    );
+
+    expect(screen.getByText('Amended merge group')).toBeInTheDocument();
+    expect(
+      screen.queryByText('Removed Amended merge group')
+    ).not.toBeInTheDocument();
+  });
+
+  it('should render icons for merge group changes, including a simultaneous add and remove', () => {
+    renderWithProviders(
+      <RulesetDiffModal
+        opened
+        diffItems={[
+          {
+            type: 'added',
+            label: 'Merged group',
+            description: 'Colours: Red, Blue',
+          },
+          {
+            type: 'changed',
+            label: 'Amended merge group',
+            description:
+              "Green added, Yellow removed from 'Colours' merge group",
+          },
+          {
+            type: 'changed',
+            label: 'Changed value',
+            description: 'Colours → Primary Colours',
+          },
+        ]}
+        onConfirm={jest.fn()}
+        onCancel={jest.fn()}
+      />
+    );
+
+    expect(screen.getAllByTestId('change-type-icon')).toHaveLength(3);
+  });
+
   it('should not render an icon for unknown labels', () => {
     renderWithProviders(
       <RulesetDiffModal

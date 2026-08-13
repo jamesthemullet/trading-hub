@@ -6,7 +6,7 @@ import type { DiffItem } from '@/libs/hooks/use-ruleset-diff';
 
 import Image from 'next/image';
 
-import { DIFF_TYPE_LABEL, LABEL_ICON } from './ruleset-diff-modal.constants';
+import { getDiffItemHeading, LABEL_ICON } from './ruleset-diff-modal.constants';
 import styles from './ruleset-diff-modal.module.css';
 
 type RulesetDiffModalProps = {
@@ -84,7 +84,7 @@ export const RulesetDiffModal = ({
                     )}
                     <div>
                       <Typography variant="bodySmall" isStrong>
-                        {DIFF_TYPE_LABEL[item.type]} {item.label}
+                        {getDiffItemHeading(item)}
                       </Typography>
                       <Typography variant="bodySmall">
                         {item.description}

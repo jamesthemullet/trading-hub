@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
@@ -146,7 +146,17 @@ describe('Global Facet Config', () => {
         name: 'Edit display name for Colour',
       })
     );
+
+    const input = screen.getByRole('textbox', {
+      name: 'Edit Colour input field',
+    });
+    await userEvent.clear(input);
+    await userEvent.type(input, 'Colour Updated');
     await userEvent.keyboard('{Enter}');
+
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
 
     expect(
       await screen.findByText('Error whilst updating facet:', { exact: false })
@@ -229,11 +239,50 @@ describe('Global Facet Config', () => {
       await userEvent.type(input, 'Colour Updated');
       await userEvent.keyboard('{Enter}');
 
+      expect(
+        await screen.findByText('Colour → Colour Updated')
+      ).toBeInTheDocument();
+
+      await userEvent.click(
+        screen.getByRole('button', { name: 'Save changes' })
+      );
+
       await waitFor(() => {
         expect(
           screen.queryByText('Error whilst updating facet:', { exact: false })
         ).not.toBeInTheDocument();
       });
+    });
+
+    it('should cancel the review modal without saving', async () => {
+      renderWithProviders(<FacetConfig />);
+
+      await userEvent.click(
+        await screen.findByRole('button', {
+          name: 'Edit display name for Colour',
+        })
+      );
+
+      const input = screen.getByRole('textbox', {
+        name: 'Edit Colour input field',
+      });
+      await userEvent.clear(input);
+      await userEvent.type(input, 'Colour Updated');
+      await userEvent.keyboard('{Enter}');
+
+      const dialog = await screen.findByRole('dialog');
+      await userEvent.click(
+        within(dialog).getByRole('button', { name: 'Cancel' })
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.queryByRole('button', { name: 'Save changes' })
+        ).not.toBeInTheDocument();
+      });
+
+      expect(screen.getByText('Colour')).toBeVisible();
+      expect(screen.queryByText('Colour Updated')).not.toBeInTheDocument();
     });
 
     it('should revert display name override when update fails', async () => {
@@ -257,6 +306,10 @@ describe('Global Facet Config', () => {
       await userEvent.clear(input);
       await userEvent.type(input, 'New Name');
       await userEvent.keyboard('{Enter}');
+
+      await userEvent.click(
+        await screen.findByRole('button', { name: 'Save changes' })
+      );
 
       expect(
         await screen.findByText('Error whilst updating facet:', {
@@ -294,6 +347,10 @@ describe('Global Facet Config', () => {
       await userEvent.clear(input);
       await userEvent.type(input, 'Colour Updated');
       await userEvent.keyboard('{Enter}');
+
+      await userEvent.click(
+        await screen.findByRole('button', { name: 'Save changes' })
+      );
 
       await waitFor(() => {
         expect(requestBody).toMatchObject({
@@ -353,6 +410,10 @@ describe('Global Facet Config', () => {
       await userEvent.clear(input);
       await userEvent.type(input, 'Brand New');
       await userEvent.keyboard('{Enter}');
+
+      await userEvent.click(
+        await screen.findByRole('button', { name: 'Save changes' })
+      );
 
       await waitFor(() => {
         expect(requestBody).toMatchObject({ displayValue: 'Brand New' });
@@ -434,6 +495,22 @@ describe('Global Facet Config', () => {
 
       expect(
         screen.queryByRole('textbox', { name: 'Edit Colour input field' })
+      ).not.toBeInTheDocument();
+    });
+
+    it('should not open the review modal when the display name is unchanged', async () => {
+      renderWithProviders(<FacetConfig />);
+
+      await userEvent.click(
+        await screen.findByRole('button', {
+          name: 'Edit display name for Colour',
+        })
+      );
+      await userEvent.keyboard('{Enter}');
+
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: 'Save changes' })
       ).not.toBeInTheDocument();
     });
   });

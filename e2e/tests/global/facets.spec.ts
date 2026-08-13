@@ -75,6 +75,11 @@ test.describe('global facets', () => {
     await page.getByLabel('Edit Age input field').fill('Hue');
     await page.getByLabel('Save Age change').click();
 
+    await expect(
+      page.getByRole('heading', { name: 'Review changes' })
+    ).toBeVisible();
+    await page.getByRole('button', { name: 'Save changes' }).click();
+
     await expect(page.getByTestId('Label for Hue')).toBeVisible();
   });
 
@@ -125,6 +130,11 @@ test.describe('global facets', () => {
     await page.getByLabel('Edit display name for Age').click();
     await page.getByLabel('Edit Age input field').fill('Hue');
     await page.getByLabel('Save Age change').click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Review changes' })
+    ).toBeVisible();
+    await page.getByRole('button', { name: 'Save changes' }).click();
 
     await expect(page.getByTestId('Label for Hue')).toBeVisible();
 

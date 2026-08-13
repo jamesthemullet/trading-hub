@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import { FacetType } from '@/libs/constants/rule-types';
-import { useGlobalFacetUpdate } from '@/libs/hooks';
+import { useCheckMergeNameUnique, useGlobalFacetUpdate } from '@/libs/hooks';
 import type { UseGlobalFacetUpdate } from '@/libs/hooks/global/facets/use-global-facet-update';
 import { facetsListMock } from '@/pages/api/search/mocks';
 import { mockGlobalRuleData } from '@/test/data/mock-use-rule-set-preview.data';
@@ -19,6 +19,7 @@ jest.mock('next/router', () => ({
 jest.mock('@/libs/hooks', () => ({
   ...jest.requireActual('@/libs/hooks'),
   useGlobalFacetUpdate: jest.fn(),
+  useCheckMergeNameUnique: jest.fn(),
 }));
 
 const mockRouter = {
@@ -57,6 +58,12 @@ describe('GlobalFacetAttributesPageLayout', () => {
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     jest.mocked(useGlobalFacetUpdate).mockReturnValue(updateGlobalFacet);
+    jest.mocked(useCheckMergeNameUnique).mockReturnValue({
+      error: '',
+      checkMergeNameUnique: jest
+        .fn()
+        .mockResolvedValue({ isUniqueValue: true, error: undefined }),
+    });
   });
 
   afterEach(() => {
@@ -181,13 +188,10 @@ describe('GlobalFacetAttributesPageLayout', () => {
     const saveButton = screen.getByRole('button', { name: 'Save' });
     await user.click(saveButton);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: /Apply action/i })
-      ).toBeInTheDocument();
+    const dialog = await screen.findByRole('dialog');
+    const confirmButton = within(dialog).getByRole('button', {
+      name: 'Save changes',
     });
-
-    const confirmButton = screen.getByRole('button', { name: /Apply action/i });
     await user.click(confirmButton);
 
     expect(mockUpdateGlobalFacet).toHaveBeenCalledWith({
@@ -207,13 +211,13 @@ describe('GlobalFacetAttributesPageLayout', () => {
 
     await waitFor(
       () => {
-        expect(screen.queryByText(/Apply action/i)).not.toBeInTheDocument();
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
       },
       { timeout: 3000 }
     );
   });
 
-  it('should close the confirmation modal when cancel button on modal clicked', async () => {
+  it('should close the review modal when cancel button on modal clicked', async () => {
     const user = userEvent.setup();
 
     renderWithProviders(<GlobalFacetAttributesPageLayout {...defaultProps} />);
@@ -221,20 +225,11 @@ describe('GlobalFacetAttributesPageLayout', () => {
     const saveButton = screen.getByRole('button', { name: 'Save' });
     await user.click(saveButton);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: /Apply action/i })
-      ).toBeInTheDocument();
-    });
-
-    await user.click(
-      screen.getByRole('button', { name: 'Close confirmation modal' })
-    );
+    const dialog = await screen.findByRole('dialog');
+    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
 
     await waitFor(() => {
-      expect(
-        screen.queryByRole('button', { name: /Apply action/i })
-      ).not.toBeVisible();
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     });
   });
 
@@ -250,18 +245,15 @@ describe('GlobalFacetAttributesPageLayout', () => {
     const saveButton = screen.getByRole('button', { name: 'Save' });
     await user.click(saveButton);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: /Apply action/i })
-      ).toBeInTheDocument();
+    const dialog = await screen.findByRole('dialog');
+    const confirmButton = within(dialog).getByRole('button', {
+      name: 'Save changes',
     });
-
-    const confirmButton = screen.getByRole('button', { name: /Apply action/i });
     await user.click(confirmButton);
 
     await waitFor(
       () => {
-        expect(screen.queryByText(/Apply action/i)).not.toBeInTheDocument();
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
       },
       { timeout: 3000 }
     );
@@ -299,6 +291,50 @@ describe('GlobalFacetAttributesPageLayout', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByLabelText('Remove merged facet for 10 - 12.9')
+    ).toBeInTheDocument();
+  });
+
+  it('shows a new merge group in the review changes modal', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(<GlobalFacetAttributesPageLayout {...defaultProps} />);
+
+    await user.click(screen.getByLabelText('Select 13 - 14.4 to merge'));
+    await user.click(screen.getByLabelText('Select 10 - 12.9 to merge'));
+
+    const mergeButton = screen.getByRole('button', { name: 'Merge' });
+    await waitFor(() => {
+      expect(mergeButton).toBeEnabled();
+    });
+    await user.click(mergeButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit merge')).toBeInTheDocument();
+    });
+
+    const mergeNameInput = screen.getByDisplayValue('13 - 14.4');
+    await user.clear(mergeNameInput);
+    await user.type(mergeNameInput, 'Combined Sizes');
+
+    const editMergeDialog = screen.getByRole('dialog', {
+      name: 'Edit facet attribute values modal',
+    });
+    await user.click(
+      within(editMergeDialog).getByRole('button', { name: 'Save' })
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText('Edit merge')).not.toBeInTheDocument();
+    });
+
+    const saveButton = screen.getByRole('button', { name: 'Save' });
+    await user.click(saveButton);
+
+    const dialog = await screen.findByRole('dialog');
+    expect(
+      within(dialog).getByText(
+        'Combined Sizes: 13 - 14.4, 10 - 12.9 (Algo control)'
+      )
     ).toBeInTheDocument();
   });
 
@@ -367,13 +403,10 @@ describe('GlobalFacetAttributesPageLayout', () => {
     const saveButton = screen.getByRole('button', { name: 'Save' });
     await user.click(saveButton);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: /Apply action/i })
-      ).toBeInTheDocument();
+    const dialog = await screen.findByRole('dialog');
+    const confirmButton = within(dialog).getByRole('button', {
+      name: 'Save changes',
     });
-
-    const confirmButton = screen.getByRole('button', { name: /Apply action/i });
     await user.click(confirmButton);
 
     expect(mockUpdateGlobalFacet).toHaveBeenCalledWith({
