@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { type ReactElement, useId } from 'react';
 
 import type {
   MerchandisingAlphanumericBoostBury,
@@ -36,7 +36,7 @@ export const AlphanumericAttribute = ({
   onEdit?: (args: {
     fields: MerchandisingAlphanumericBoostBuryField[];
   }) => void;
-}) => {
+}): ReactElement => {
   const strengthInputId = useId();
 
   const handleStartChanges = () => {

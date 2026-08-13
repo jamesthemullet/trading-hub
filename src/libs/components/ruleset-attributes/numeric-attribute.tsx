@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { type ReactElement, useId } from 'react';
 
 import type { MerchandisingNumericBoostBury } from '@/libs/api';
 import { Typography } from '@/libs/components';
@@ -28,7 +28,7 @@ export const NumericAttribute = ({
   onDelete?: ({ field, weight }: MerchandisingNumericBoostBury) => void;
   onEdit?: (args: { field: MerchandisingNumericBoostBury }) => void;
   setWeight?: (weight: number) => void;
-}) => {
+}): ReactElement => {
   const strengthInputId = useId();
 
   const handleStartChanges = () => {

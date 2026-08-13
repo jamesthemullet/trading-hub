@@ -25,7 +25,7 @@ export const GlobalEditableLabel = ({
   nonBoostedExcludedRows,
   excludedRows,
   countryCode,
-  merged,
+  merged = [],
   dispatch,
   setEditingValues,
   isWriteEnabled,
@@ -73,11 +73,14 @@ export const GlobalEditableLabel = ({
 
     const trimmedNewValue = newValue.trim();
 
-    const existingMergeGroup = merged!.findIndex(
+    const existingMergeGroup = merged.findIndex(
       (val) => val.displayValue === oldValue
     );
 
-    const otherMergeGroups = merged!.toSpliced(existingMergeGroup);
+    const otherMergeGroups =
+      existingMergeGroup > -1
+        ? merged.toSpliced(existingMergeGroup, 1)
+        : merged;
 
     const isInOtherMergeGroups = otherMergeGroups
       .flatMap((group) =>
@@ -98,7 +101,7 @@ export const GlobalEditableLabel = ({
       countryCode,
       exceptions:
         existingMergeGroup > -1
-          ? merged![existingMergeGroup].mergedValues
+          ? merged[existingMergeGroup].mergedValues
           : undefined,
       localAttributeValues: [
         ...boostedRows.map((row) => row.displayName),

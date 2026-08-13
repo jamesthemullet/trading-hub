@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import { Typography } from '../typography/typography';
 import styles from './radio-buttons.module.css';
 
@@ -20,7 +22,7 @@ export const RadioButtons = ({
   values,
   onSelect,
   size = 'default',
-}: Props) => (
+}: Props): ReactElement => (
   <div>
     {values.map(({ name, isSelected }) => (
       <label className={styles.row} key={name} data-has-divider={hasDivider}>

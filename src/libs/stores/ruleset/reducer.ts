@@ -6,6 +6,28 @@ import type {
 } from '@/libs/api';
 import type { RuleSetActions } from '@/libs/components/types';
 
+type AttributeListPayload<TData> = {
+  change: 'add' | 'modify' | 'remove';
+  index: number;
+  data: TData;
+};
+
+const updateAttributeList = <TData>(
+  values: TData[],
+  payload: AttributeListPayload<TData>
+): TData[] => {
+  switch (payload.change) {
+    case 'remove':
+      return values.filter((_el, index) => index !== payload.index);
+    case 'modify':
+      return values.map((attr, index) =>
+        index === payload.index ? payload.data : attr
+      );
+    default:
+      return [...values, payload.data];
+  }
+};
+
 export const rulesetReducer = (
   state: MerchandisingRuleSet,
   action: RuleSetActions
@@ -84,18 +106,8 @@ export const rulesetReducer = (
     case 'numericAttribute': {
       const { payload } = action;
 
-      const update = (values: MerchandisingNumericBoostBury[]) => {
-        switch (payload.change) {
-          case 'remove':
-            return values.filter((_el, index) => index !== payload.index);
-          case 'modify':
-            return values.map((attr, index) =>
-              index === payload.index ? payload.data : attr
-            );
-          default:
-            return [...values, payload.data];
-        }
-      };
+      const update = (values: MerchandisingNumericBoostBury[]) =>
+        updateAttributeList(values, payload);
 
       return payload.operation === 'boost'
         ? {
@@ -122,19 +134,8 @@ export const rulesetReducer = (
     case 'alphanumericBoostBuryAttribute': {
       const { payload } = action;
 
-      const update = (values: MerchandisingAlphanumericBoostBury[]) => {
-        switch (payload.change) {
-          case 'remove':
-            return values.filter((_el, index) => index !== payload.index);
-          case 'modify':
-            return values.map((attr, index) =>
-              index === payload.index ? payload.data : attr
-            );
-          case 'add':
-          default:
-            return [...values, payload.data];
-        }
-      };
+      const update = (values: MerchandisingAlphanumericBoostBury[]) =>
+        updateAttributeList(values, payload);
 
       return payload.operation === 'boost'
         ? {
@@ -161,19 +162,8 @@ export const rulesetReducer = (
     case 'alphanumericIncludeExcludeAttribute': {
       const { payload } = action;
 
-      const update = (values: MerchandisingIncludeExclude[]) => {
-        switch (payload.change) {
-          case 'remove':
-            return values.filter((_el, index) => index !== payload.index);
-          case 'modify':
-            return values.map((attr, index) =>
-              index === payload.index ? payload.data : attr
-            );
-          case 'add':
-          default:
-            return [...values, payload.data];
-        }
-      };
+      const update = (values: MerchandisingIncludeExclude[]) =>
+        updateAttributeList(values, payload);
 
       return payload.operation === 'include'
         ? {

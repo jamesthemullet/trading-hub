@@ -1,5 +1,4 @@
-import type { ReactElement } from 'react';
-import { useState } from 'react';
+import { type ReactElement, useState } from 'react';
 
 import { Button, Typography } from '@/libs/components';
 import { color } from '@/libs/utils/constants';

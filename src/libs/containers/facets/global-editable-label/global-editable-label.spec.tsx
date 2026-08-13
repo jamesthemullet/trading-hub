@@ -142,6 +142,52 @@ describe('Global Editable label', () => {
     });
   });
 
+  it('should default merged to an empty array when the prop is undefined', async () => {
+    jest.mocked(useCheckMergeNameUnique).mockReturnValue({
+      checkMergeNameUnique: jest.fn().mockResolvedValue({
+        isUniqueValue: true,
+        error: undefined,
+      }),
+      error: '',
+    });
+
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+    renderWithProviders(
+      <GlobalEditableLabel {...defaultProps} merged={undefined} />
+    );
+
+    const editButton = await screen.findByLabelText(
+      `Edit display name for test attribute`
+    );
+
+    await user.click(editButton);
+
+    await act(async () => {
+      jest.advanceTimersByTime(debounceTime);
+    });
+
+    const inputField = await screen.findByRole('textbox', {
+      name: `Edit test attribute input field`,
+    });
+
+    await user.clear(inputField);
+    await user.type(inputField, 'new name');
+
+    await user.keyboard('{enter}');
+
+    await act(async () => {
+      jest.advanceTimersByTime(debounceTime);
+    });
+
+    expect(dispatchMock).toHaveBeenCalledWith({
+      type: 'AMEND_DISPLAY_NAME',
+      payload: {
+        oldValue: 'test attribute',
+        newValue: 'new name',
+      },
+    });
+  });
+
   it('should not update the name if the value is unchanged', async () => {
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
     renderWithProviders(<GlobalEditableLabel {...defaultProps} />);

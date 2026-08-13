@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import { Button, Typography } from '@/libs/components';
 
 import Image from 'next/image';
@@ -18,7 +20,7 @@ export const AttributeWeight = ({
   canEditWeight?: boolean;
   onDelete?: () => void;
   onStartChanges: () => void;
-}) => {
+}): ReactElement => {
   return (
     <>
       {canEditWeight && (
