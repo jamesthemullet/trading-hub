@@ -1,30 +1,28 @@
-import type {
-  MerchandisingAlphanumericBoostBury,
-  MerchandisingIncludeExclude,
-  MerchandisingNumericBoostBury,
-  MerchandisingRuleSet,
-} from '@/libs/api';
+import type { MerchandisingRuleSet } from '@/libs/api';
 import type { RuleSetActions } from '@/libs/components/types';
 
-type AttributeListPayload<TData> = {
+type CollectionChangePayload<T> = {
   change: 'add' | 'modify' | 'remove';
   index: number;
-  data: TData;
+  data: T;
 };
 
-const updateAttributeList = <TData>(
-  values: TData[],
-  payload: AttributeListPayload<TData>
-): TData[] => {
-  switch (payload.change) {
+// Applies an add/modify/remove change to a boost/bury/include/exclude
+// attribute collection, shared by every attribute-type action below.
+const updateCollectionByChange = <T>(
+  values: T[],
+  { change, index, data }: CollectionChangePayload<T>
+): T[] => {
+  switch (change) {
     case 'remove':
-      return values.filter((_el, index) => index !== payload.index);
+      return values.filter((_el, valueIndex) => valueIndex !== index);
     case 'modify':
-      return values.map((attr, index) =>
-        index === payload.index ? payload.data : attr
+      return values.map((value, valueIndex) =>
+        valueIndex === index ? data : value
       );
+    case 'add':
     default:
-      return [...values, payload.data];
+      return [...values, data];
   }
 };
 
@@ -106,9 +104,6 @@ export const rulesetReducer = (
     case 'numericAttribute': {
       const { payload } = action;
 
-      const update = (values: MerchandisingNumericBoostBury[]) =>
-        updateAttributeList(values, payload);
-
       return payload.operation === 'boost'
         ? {
             ...state,
@@ -116,7 +111,10 @@ export const rulesetReducer = (
               ...rules,
               boosts: {
                 ...rules.boosts,
-                numeric: update(rules.boosts.numeric),
+                numeric: updateCollectionByChange(
+                  rules.boosts.numeric,
+                  payload
+                ),
               },
             },
           }
@@ -126,7 +124,10 @@ export const rulesetReducer = (
               ...rules,
               buries: {
                 ...rules.buries,
-                numeric: update(rules.buries.numeric),
+                numeric: updateCollectionByChange(
+                  rules.buries.numeric,
+                  payload
+                ),
               },
             },
           };
@@ -134,9 +135,6 @@ export const rulesetReducer = (
     case 'alphanumericBoostBuryAttribute': {
       const { payload } = action;
 
-      const update = (values: MerchandisingAlphanumericBoostBury[]) =>
-        updateAttributeList(values, payload);
-
       return payload.operation === 'boost'
         ? {
             ...state,
@@ -144,7 +142,10 @@ export const rulesetReducer = (
               ...rules,
               boosts: {
                 ...rules.boosts,
-                alphanumeric: update(rules.boosts.alphanumeric),
+                alphanumeric: updateCollectionByChange(
+                  rules.boosts.alphanumeric,
+                  payload
+                ),
               },
             },
           }
@@ -154,16 +155,16 @@ export const rulesetReducer = (
               ...rules,
               buries: {
                 ...rules.buries,
-                alphanumeric: update(rules.buries.alphanumeric),
+                alphanumeric: updateCollectionByChange(
+                  rules.buries.alphanumeric,
+                  payload
+                ),
               },
             },
           };
     }
     case 'alphanumericIncludeExcludeAttribute': {
       const { payload } = action;
-
-      const update = (values: MerchandisingIncludeExclude[]) =>
-        updateAttributeList(values, payload);
 
       return payload.operation === 'include'
         ? {
@@ -172,7 +173,10 @@ export const rulesetReducer = (
               ...rules,
               includes: {
                 ...rules.includes,
-                alphanumeric: update(rules.includes.alphanumeric ?? []),
+                alphanumeric: updateCollectionByChange(
+                  rules.includes.alphanumeric ?? [],
+                  payload
+                ),
               },
             },
           }
@@ -182,7 +186,10 @@ export const rulesetReducer = (
               ...rules,
               excludes: {
                 ...rules.excludes,
-                alphanumeric: update(rules.excludes.alphanumeric ?? []),
+                alphanumeric: updateCollectionByChange(
+                  rules.excludes.alphanumeric ?? [],
+                  payload
+                ),
               },
             },
           };

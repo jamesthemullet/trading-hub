@@ -307,11 +307,11 @@ const FacetConfig = (): ReactElement => {
       )}
 
       <RulesetDiffModal
-        opened={!!pendingDisplayNameChange}
+        isOpen={!!pendingDisplayNameChange}
         diffItems={displayNameDiffItems}
         onConfirm={handleReviewModalConfirm}
         onCancel={handleReviewModalClose}
-        showGlobalWarning
+        shouldShowGlobalWarning
       />
     </>
   );

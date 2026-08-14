@@ -22,7 +22,7 @@ describe('RulesetDiffModal', () => {
   it('should render the modal when opened', () => {
     renderWithProviders(
       <RulesetDiffModal
-        opened
+        isOpen
         diffItems={mockDiffItems}
         onConfirm={jest.fn()}
         onCancel={jest.fn()}
@@ -41,7 +41,7 @@ describe('RulesetDiffModal', () => {
   it('should not render the modal when closed', () => {
     renderWithProviders(
       <RulesetDiffModal
-        opened={false}
+        isOpen={false}
         diffItems={mockDiffItems}
         onConfirm={jest.fn()}
         onCancel={jest.fn()}
@@ -56,7 +56,7 @@ describe('RulesetDiffModal', () => {
   it('should display diff items', () => {
     renderWithProviders(
       <RulesetDiffModal
-        opened
+        isOpen
         diffItems={mockDiffItems}
         onConfirm={jest.fn()}
         onCancel={jest.fn()}
@@ -77,7 +77,7 @@ describe('RulesetDiffModal', () => {
   it('should render icons for known labels', () => {
     renderWithProviders(
       <RulesetDiffModal
-        opened
+        isOpen
         diffItems={mockDiffItems}
         onConfirm={jest.fn()}
         onCancel={jest.fn()}
@@ -90,7 +90,7 @@ describe('RulesetDiffModal', () => {
   it('should render icons for added and removed keyword labels', () => {
     renderWithProviders(
       <RulesetDiffModal
-        opened
+        isOpen
         diffItems={[
           { type: 'added', label: 'Keyword', description: 'boots' },
           { type: 'removed', label: 'Keyword', description: 'shoes' },
@@ -106,7 +106,7 @@ describe('RulesetDiffModal', () => {
   it('should mark descending order icons for rotation', () => {
     renderWithProviders(
       <RulesetDiffModal
-        opened
+        isOpen
         diffItems={[
           {
             type: 'changed',
@@ -137,7 +137,7 @@ describe('RulesetDiffModal', () => {
   it('should not prefix "Amended merge group" with the change type label', () => {
     renderWithProviders(
       <RulesetDiffModal
-        opened
+        isOpen
         diffItems={[
           {
             type: 'removed',
@@ -159,7 +159,7 @@ describe('RulesetDiffModal', () => {
   it('should render icons for merge group changes, including a simultaneous add and remove', () => {
     renderWithProviders(
       <RulesetDiffModal
-        opened
+        isOpen
         diffItems={[
           {
             type: 'added',
@@ -189,7 +189,7 @@ describe('RulesetDiffModal', () => {
   it('should not render an icon for unknown labels', () => {
     renderWithProviders(
       <RulesetDiffModal
-        opened
+        isOpen
         diffItems={[
           {
             type: 'changed',
@@ -208,7 +208,7 @@ describe('RulesetDiffModal', () => {
   it('should show "No changes detected" when diff is empty', () => {
     renderWithProviders(
       <RulesetDiffModal
-        opened
+        isOpen
         diffItems={[]}
         onConfirm={jest.fn()}
         onCancel={jest.fn()}
@@ -222,9 +222,9 @@ describe('RulesetDiffModal', () => {
   it('should show the global warning text when showGlobalWarning is true', () => {
     renderWithProviders(
       <RulesetDiffModal
-        opened
+        isOpen
         diffItems={mockDiffItems}
-        showGlobalWarning
+        shouldShowGlobalWarning
         onConfirm={jest.fn()}
         onCancel={jest.fn()}
       />
@@ -240,7 +240,7 @@ describe('RulesetDiffModal', () => {
   it('should not show the global warning text by default', () => {
     renderWithProviders(
       <RulesetDiffModal
-        opened
+        isOpen
         diffItems={mockDiffItems}
         onConfirm={jest.fn()}
         onCancel={jest.fn()}
@@ -260,7 +260,7 @@ describe('RulesetDiffModal', () => {
 
     renderWithProviders(
       <RulesetDiffModal
-        opened
+        isOpen
         diffItems={mockDiffItems}
         onConfirm={mockConfirm}
         onCancel={jest.fn()}
@@ -278,7 +278,7 @@ describe('RulesetDiffModal', () => {
 
     renderWithProviders(
       <RulesetDiffModal
-        opened
+        isOpen
         diffItems={mockDiffItems}
         onConfirm={jest.fn()}
         onCancel={mockCancel}

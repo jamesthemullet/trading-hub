@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useId } from 'react';
 import { Divider, Modal } from '@mantine/core';
 
@@ -10,24 +11,24 @@ import { getDiffItemHeading, LABEL_ICON } from './ruleset-diff-modal.constants';
 import styles from './ruleset-diff-modal.module.css';
 
 type RulesetDiffModalProps = {
-  opened: boolean;
+  isOpen: boolean;
   diffItems: DiffItem[];
   onConfirm: () => void;
   onCancel: () => void;
-  showGlobalWarning?: boolean;
+  shouldShowGlobalWarning?: boolean;
 };
 
 export const RulesetDiffModal = ({
-  opened,
+  isOpen,
   diffItems,
   onConfirm,
   onCancel,
-  showGlobalWarning = false,
-}: RulesetDiffModalProps) => {
+  shouldShowGlobalWarning = false,
+}: RulesetDiffModalProps): ReactElement => {
   const titleId = useId();
 
   return (
-    <Modal.Root opened={opened} onClose={onCancel} centered padding={20}>
+    <Modal.Root opened={isOpen} onClose={onCancel} centered padding={20}>
       <Modal.Overlay blur={3} />
       <Modal.Content aria-labelledby={titleId}>
         <Modal.Body>
@@ -102,7 +103,7 @@ export const RulesetDiffModal = ({
             mb="sm"
           />
 
-          {showGlobalWarning && (
+          {shouldShowGlobalWarning && (
             <Typography variant="bodySmall">
               This action will apply live changes on the M&S website and app. Do
               you want to proceed?

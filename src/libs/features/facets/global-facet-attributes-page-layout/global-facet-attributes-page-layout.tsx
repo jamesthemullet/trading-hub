@@ -279,11 +279,11 @@ export const GlobalFacetAttributesPageLayout = ({
       />
 
       <RulesetDiffModal
-        opened={isReviewModalOpen}
+        isOpen={isReviewModalOpen}
         diffItems={diffItems}
         onConfirm={handleConfirmSave}
         onCancel={() => setIsReviewModalOpen(false)}
-        showGlobalWarning
+        shouldShowGlobalWarning
       />
 
       {globalAttributesLocalState.currentMerge.isOpen && (

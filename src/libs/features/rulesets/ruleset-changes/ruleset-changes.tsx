@@ -1,12 +1,7 @@
 import type { Dispatch, ReactElement } from 'react';
-import { useCallback, useEffect, useState } from 'react';
 import { Skeleton } from '@mantine/core';
 
-import type {
-  MerchandisingCountryCode,
-  MerchandisingProduct as ProductType,
-  MerchandisingRules,
-} from '@/libs/api';
+import type { MerchandisingCountryCode, MerchandisingRules } from '@/libs/api';
 import { Button, Typography } from '@/libs/components';
 import { Checkbox } from '@/libs/components/checkboxes/checkbox';
 import { AlphanumericAttribute } from '@/libs/components/ruleset-attributes/alphanumeric-attribute';
@@ -16,13 +11,11 @@ import {
   MissingProduct,
   Product,
 } from '@/libs/containers/rulesets/product/product';
-import { useCategoryProductSearch } from '@/libs/hooks';
 
 import styles from './ruleset-changes.module.css';
+import { useProductsLoader } from './use-products-loader';
 
-const PRODUCTS_TO_LOAD = 8;
 const PRODUCTS_TO_LOAD_INCREMENT = 4;
-const MAXIMUM_PRODUCTS_TO_LOAD_BACKEND_SUPPORTS = 10;
 
 type ProductRule = { id: string };
 
@@ -59,59 +52,13 @@ const ProductsLoader = ({
   selectedProducts: string[];
   isSelectionDisabled: boolean;
 }) => {
-  const [productDetails, setProductDetails] = useState<ProductType[]>([]);
-  const [missingProductDetails, setMissingProductDetails] = useState<string[]>(
-    []
-  );
-  const [productsShown, setProductsShown] = useState(PRODUCTS_TO_LOAD);
-
-  const { searchForProduct, isLoading } = useCategoryProductSearch();
-
-  const fetch = useCallback(
-    async (productIds: string[]) => {
-      const data = await searchForProduct({
-        productIds,
-        merchandisingRules,
-        countryCode,
-      });
-      return data.products;
-    },
-    [searchForProduct, merchandisingRules, countryCode]
-  );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const productsToGet = [...products]
-        .splice(0, productsShown)
-        .filter(
-          (product) => !productDetails.find(({ id }) => id === product.id)
-        )
-        .filter(
-          (product) => !missingProductDetails.find((id) => id === product.id)
-        )
-        .map((product) => product.id);
-
-      if (productsToGet.length === 0) {
-        return;
-      }
-
-      const productsToFetch = productsToGet.slice(
-        0,
-        MAXIMUM_PRODUCTS_TO_LOAD_BACKEND_SUPPORTS
-      );
-      const data = await fetch(productsToFetch);
-
-      const missingProducts = productsToFetch.filter((id) =>
-        data.filter((x) => x.id.includes(id))
-      );
-
-      setMissingProductDetails((prev) => [...prev, ...missingProducts]);
-
-      setProductDetails((prev) => [...prev, ...data]);
-    };
-
-    fetchData();
-  }, [products, productsShown, missingProductDetails, productDetails, fetch]);
+  const {
+    productDetails,
+    missingProductDetails,
+    productsShown,
+    setProductsShown,
+    isLoading,
+  } = useProductsLoader({ products, merchandisingRules, countryCode });
 
   const onSelectAllProducts = () => {
     const allProductIds = products.map(({ id }) => id);

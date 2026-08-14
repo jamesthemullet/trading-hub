@@ -22,6 +22,7 @@ import Image from 'next/image';
 
 import { Input } from '../../shared';
 import styles from './product.module.css';
+import { useBoostWeightMenu } from './use-boost-weight-menu';
 
 const MISSING_IMAGE_SRC =
   'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22400%22%3E%3Crect width=%22300%22 height=%22400%22 fill=%22%23cccccc%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23ffffff%22 font-family=%22sans-serif%22 font-size=%2240%22%3Emissing%20image%3C/text%3E%3C/svg%3E';
@@ -214,11 +215,22 @@ export const Product = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLockToPositionMenuOpen, setIsLockToPositionMenuOpen] =
     useState(false);
-  const [isBoostWeightMenuOpen, setIsBoostWeightMenuOpen] = useState(false);
   const [positionToLockTo, setPositionToLockTo] = useState<number>();
-  const [boostWeight, setBoostWeight] = useState(100);
-  const [boostWeightError, setBoostWeightError] = useState('');
   const [error, setError] = useState('');
+  const {
+    isBoostWeightMenuOpen,
+    boostWeight,
+    boostWeightError,
+    boostWeightInputRef,
+    openBoostWeightMenu,
+    closeBoostWeightMenu,
+    onBoostWeightChange,
+    confirmBoost,
+  } = useBoostWeightMenu({
+    id,
+    dispatch,
+    onConfirm: () => setIsMenuOpen(false),
+  });
   const totalPinnedProducts =
     pinnedProductsCount || /* istanbul ignore next */ 0;
   const slotPositionInputId = `slot-position-${id}`;
@@ -274,7 +286,6 @@ export const Product = ({
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const boostWeightInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -283,54 +294,11 @@ export const Product = ({
   }, [isLockToPositionMenuOpen]);
 
   useEffect(() => {
-    if (boostWeightInputRef.current) {
-      boostWeightInputRef.current.focus();
-    }
-  }, [isBoostWeightMenuOpen]);
-
-  useEffect(() => {
     if (!isMenuOpen) {
       setIsLockToPositionMenuOpen(false);
-      setIsBoostWeightMenuOpen(false);
+      closeBoostWeightMenu();
     }
-  }, [isMenuOpen]);
-
-  const onBoostWeightChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    const trimmedValue = value.trim();
-
-    if (!trimmedValue) {
-      setBoostWeightError('');
-      setBoostWeight(0);
-      return;
-    }
-
-    const parsed = Number(trimmedValue);
-    const isValidBoostWeight =
-      Number.isInteger(parsed) && parsed >= 1 && parsed <= 100;
-
-    setBoostWeight(parsed);
-
-    if (!isValidBoostWeight) {
-      setBoostWeightError('Please enter a whole number between 1 and 100');
-    } else {
-      setBoostWeightError('');
-    }
-  };
-
-  const confirmBoost = () => {
-    dispatch({
-      type: 'product',
-      payload: {
-        ids: [id],
-        operation: 'boost',
-        change: 'add',
-        weight: boostWeight,
-      },
-    });
-    setIsMenuOpen(false);
-    setIsBoostWeightMenuOpen(false);
-  };
+  }, [isMenuOpen, closeBoostWeightMenu]);
 
   return (
     <div
@@ -485,9 +453,7 @@ export const Product = ({
                     icon="boost"
                     onClick={() => {
                       if (canSetBoostWeight) {
-                        setBoostWeight(100);
-                        setBoostWeightError('');
-                        setIsBoostWeightMenuOpen(true);
+                        openBoostWeightMenu();
                       } else {
                         dispatch({
                           type: 'product',
@@ -562,7 +528,7 @@ export const Product = ({
                         className={styles.lockActions}
                         data-is-search-result={isSearchResult}
                       >
-                        <Button onClick={() => setIsBoostWeightMenuOpen(false)}>
+                        <Button onClick={() => closeBoostWeightMenu()}>
                           <Typography
                             as="span"
                             variant={lockActionLabelVariant}

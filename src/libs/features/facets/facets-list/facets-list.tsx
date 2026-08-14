@@ -840,11 +840,11 @@ export const FacetsList = ({
       <FilteredResultsPanel filteredFacets={filteredFacets.length} />
 
       <RulesetDiffModal
-        opened={isReviewModalOpen}
+        isOpen={isReviewModalOpen}
         diffItems={diffItems}
         onConfirm={handleConfirmSave}
         onCancel={() => setIsReviewModalOpen(false)}
-        showGlobalWarning={facetType === FacetType.Global}
+        shouldShowGlobalWarning={facetType === FacetType.Global}
       />
     </>
   );

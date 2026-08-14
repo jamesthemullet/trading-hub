@@ -224,7 +224,7 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
       />
 
       <RulesetDiffModal
-        opened={isReviewModalOpen}
+        isOpen={isReviewModalOpen}
         diffItems={diffItems}
         onConfirm={handleConfirmSave}
         onCancel={() => setIsReviewModalOpen(false)}
