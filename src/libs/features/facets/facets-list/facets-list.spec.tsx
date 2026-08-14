@@ -795,6 +795,61 @@ describe('FacetsList', () => {
     });
   });
 
+  it('should default category facets preview to the first non-IE_ category', () => {
+    const categoriesInfo = [
+      {
+        id: 'IE_category_facet',
+        name: categoryName1,
+        plpUrl: categoryPath1,
+      },
+      {
+        id: 'UK_category_facet',
+        name: categoryName1,
+        plpUrl: categoryPath1,
+      },
+    ];
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={mockRuleset}
+        isNewRuleset={false}
+        categoriesInfo={categoriesInfo}
+      />
+    );
+
+    expect(
+      screen.getByRole('button', {
+        name: /UK_category_facet, select category/i,
+      })
+    ).toBeVisible();
+  });
+
+  it('should fall back to the first category facets preview when all categories are IE_', () => {
+    const categoriesInfo = [
+      {
+        id: 'IE_category_facet',
+        name: categoryName1,
+        plpUrl: categoryPath1,
+      },
+    ];
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={mockRuleset}
+        isNewRuleset={false}
+        categoriesInfo={categoriesInfo}
+      />
+    );
+
+    expect(
+      screen.getByRole('button', {
+        name: /IE_category_facet, select category/i,
+      })
+    ).toBeVisible();
+  });
+
   it('should show and close the preview modal for search terms', async () => {
     renderWithProviders(
       <FacetsList

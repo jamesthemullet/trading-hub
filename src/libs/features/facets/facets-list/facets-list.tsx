@@ -42,6 +42,10 @@ import { track } from '@/libs/hooks/utils/analytics';
 import { DEBOUNCE_DELAY_MS } from '@/libs/hooks/utils/constants';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import { rulesetReducer } from '@/libs/stores/ruleset/reducer';
+import {
+  getDefaultPreviewCategoryId,
+  isDeprioritisedCategory,
+} from '@/libs/utils/is-deprioritised-category';
 
 import {
   DndContext,
@@ -85,6 +89,9 @@ type CategoryIds = { categoryIds: string[] };
 type SearchTerms = { searchTerms: string[] };
 
 type SaveType = MerchandisingRuleSet & (CategoryIds | SearchTerms);
+
+const getPreviewCountryCode = (categoryId: string | undefined): 'UK' | 'IE' =>
+  isDeprioritisedCategory(categoryId) ? 'IE' : 'UK';
 
 export type FacetsListProps = {
   facetType: FacetType;
@@ -161,6 +168,14 @@ export const FacetsList = ({
     []
   );
 
+  const defaultPreviewCategoryId = useMemo(
+    () =>
+      getDefaultPreviewCategoryId(
+        categoriesInfo?.map((category) => category.id)
+      ),
+    [categoriesInfo]
+  );
+
   const hasChanges = useMemo(() => {
     const initial = initialRuleset.current;
     const initialFacetIds = (initial.facets ?? []).map((f) => f.id).join(',');
@@ -181,8 +196,8 @@ export const FacetsList = ({
   const [facetListState, dispatchFacetList] = useReducer(FacetListReducer, {
     isDraftLoaded: false,
     shouldShowPreview: false,
-    previewValue: categoriesInfo?.[0].id || searchTerms?.[0],
-    selectedPreviewCountryCode: 'UK',
+    previewValue: defaultPreviewCategoryId || searchTerms?.[0],
+    selectedPreviewCountryCode: getPreviewCountryCode(defaultPreviewCategoryId),
     selectedCategoriesInfo: categoriesInfo || [],
     selectedSearchTerms: searchTerms || [],
     filter: '',
@@ -213,13 +228,20 @@ export const FacetsList = ({
     dispatch({ type: 'loadRuleset', payload: draft.ruleset });
 
     if (draft.type === 'category' && draft.ruleset.categoryIds?.length > 0) {
+      const draftPreviewCategoryId = getDefaultPreviewCategoryId(
+        draft.ruleset.categoryIds
+      );
       dispatchFacetList({
         type: 'setCategories',
         payload: draft.ruleset.categoryIds.map((id: string) => ({ id })),
       });
       dispatchFacetList({
         type: 'setPreviewValue',
-        payload: draft.ruleset.categoryIds[0],
+        payload: draftPreviewCategoryId,
+      });
+      dispatchFacetList({
+        type: 'setPreviewCountryCode',
+        payload: getPreviewCountryCode(draftPreviewCategoryId),
       });
     }
     if (draft.type === 'search' && draft.ruleset.searchTerms?.length > 0) {
@@ -255,7 +277,7 @@ export const FacetsList = ({
     });
     dispatchFacetList({
       type: 'setPreviewCountryCode',
-      payload: category.identifier.includes('IE_') ? 'IE' : 'UK',
+      payload: isDeprioritisedCategory(category.identifier) ? 'IE' : 'UK',
     });
   };
 
@@ -275,6 +297,10 @@ export const FacetsList = ({
 
   const handleSetPreviewValue = useCallback((value: string | undefined) => {
     dispatchFacetList({ type: 'setPreviewValue', payload: value });
+    dispatchFacetList({
+      type: 'setPreviewCountryCode',
+      payload: getPreviewCountryCode(value),
+    });
   }, []);
 
   const selectedCategories = selectedCategoriesInfo.map(

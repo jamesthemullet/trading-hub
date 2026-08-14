@@ -19,6 +19,7 @@ import { useGetCategories, useOnOutsideClick } from '@/libs/hooks';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import { checkForDuplicates } from '@/libs/utils/check-for-duplicates';
 import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
+import { isDeprioritisedCategory } from '@/libs/utils/is-deprioritised-category';
 
 import Image from 'next/image';
 
@@ -28,11 +29,6 @@ const SEARCH_DEBOUNCE_WAIT = 500;
 
 const DEFAULT_DROPDOWN_WIDTH = 250;
 const ACTIVE_DROPDOWN_WIDTH = 320;
-
-const DEPRIORITISED_CATEGORY_PREFIX = 'IE_';
-
-const isDeprioritisedCategory = (id?: string): boolean =>
-  Boolean(id?.startsWith(DEPRIORITISED_CATEGORY_PREFIX));
 
 const sortDeprioritisingIeCategories = <T extends { id?: string }>(
   categories: T[]

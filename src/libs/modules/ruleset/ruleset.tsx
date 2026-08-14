@@ -40,6 +40,10 @@ import { usePreview } from '@/libs/hooks';
 import { useRulesetDiff } from '@/libs/hooks/use-ruleset-diff';
 import { track } from '@/libs/hooks/utils/analytics';
 import { rulesetReducer } from '@/libs/stores/ruleset/reducer';
+import {
+  getDefaultPreviewCategoryId,
+  isDeprioritisedCategory,
+} from '@/libs/utils/is-deprioritised-category';
 
 import isEqual from 'lodash/isEqual';
 import Image from 'next/image';
@@ -109,13 +113,7 @@ export const Ruleset = ({
 }): ReactElement => {
   const categoryIds = categoriesInfo?.map((category) => category.id);
 
-  /**
-   * IE_ categories should be deprioritised as the default preview - prefer
-   * the first non-IE_ category if one exists, falling back to the first
-   * category otherwise (e.g. when every selected category is IE_).
-   */
-  const defaultPreviewCategoryId =
-    categoryIds?.find((id) => !id.includes('IE_')) ?? categoryIds?.[0];
+  const defaultPreviewCategoryId = getDefaultPreviewCategoryId(categoryIds);
 
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>(
     categoryIds ?? []
@@ -138,10 +136,11 @@ export const Ruleset = ({
   const [pendingSave, setPendingSave] = useState<(() => void) | null>(null);
 
   const defaultPreviewCountryCode =
-    defaultPreviewCategoryId?.includes('IE_') ||
+    isDeprioritisedCategory(defaultPreviewCategoryId) ||
     (rulesetType === 'search' && countryCode === 'IE')
       ? 'IE'
       : 'UK';
+
   const [selectedPreviewCountryCode, setSelectedPreviewCountryCode] = useState<
     'UK' | 'IE'
   >(defaultPreviewCountryCode);
@@ -167,7 +166,7 @@ export const Ruleset = ({
     if (!selectedCategories.length) {
       setPreviewValue(category.identifier);
       setSelectedPreviewCountryCode(
-        category.identifier.includes('IE_') ? 'IE' : 'UK'
+        isDeprioritisedCategory(category.identifier) ? 'IE' : 'UK'
       );
     }
     // istanbul ignore else
@@ -507,7 +506,7 @@ export const Ruleset = ({
                       selectPreviewCategory={(category: string | undefined) => {
                         setPreviewValue(category);
                         setSelectedPreviewCountryCode(
-                          category?.includes('IE_') ? 'IE' : 'UK'
+                          isDeprioritisedCategory(category) ? 'IE' : 'UK'
                         );
                       }}
                       isWriteEnabled={isWriteEnabled}
