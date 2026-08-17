@@ -69,6 +69,14 @@ test.describe('Category Ranking', () => {
 
     await page.locator('label[title="Toggle"]').first().click();
 
+    await expect(
+      page.getByRole('heading', { name: 'Review changes' })
+    ).toBeVisible();
+
+    await page
+      .getByRole('button', { name: 'Save changes', exact: true })
+      .click();
+
     await expect(checkbox).not.toBeChecked();
 
     await page.getByRole('button', { name: 'More options' }).first().click();

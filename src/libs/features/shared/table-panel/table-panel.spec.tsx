@@ -300,6 +300,7 @@ describe('TablePanel', () => {
     });
 
     it('should enable or disable a row', async () => {
+      const user = userEvent.setup();
       jest.mocked(mappingMock.queryRuleSetById).mockResolvedValue({
         data: mockRow1,
         status: 200,
@@ -322,11 +323,23 @@ describe('TablePanel', () => {
       );
 
       const rulesetToggle = await screen.findAllByTitle('Toggle');
-      await userEvent.click(rulesetToggle[0]);
+      await user.click(rulesetToggle[0]);
 
-      expect(mappingMock.updateRuleSetById).toHaveBeenCalledWith(mockId1, {
-        ...mockRow1,
-        isEnabled: !mockRow1.isEnabled,
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            name: 'Review changes',
+          })
+        ).toBeVisible();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Save changes' }));
+
+      await waitFor(() => {
+        expect(mappingMock.updateRuleSetById).toHaveBeenCalledWith(mockId1, {
+          ...mockRow1,
+          isEnabled: !mockRow1.isEnabled,
+        });
       });
     });
 
@@ -347,21 +360,23 @@ describe('TablePanel', () => {
       renderWithProviders(<TablePanel {...defaultProps} />);
 
       const rulesetToggle = await screen.findAllByTitle('Toggle');
-      await userEvent.click(rulesetToggle[0]);
+      await user.click(rulesetToggle[0]);
 
       await waitFor(() => {
         expect(
           screen.getByRole('heading', {
-            name: 'Apply global changes',
+            name: 'Review changes',
           })
         ).toBeVisible();
       });
 
-      await user.click(screen.getByRole('button', { name: 'Apply action' }));
+      await user.click(screen.getByRole('button', { name: 'Save changes' }));
 
-      expect(mappingMock.updateRuleSetById).toHaveBeenCalledWith(mockId1, {
-        ...mockRow1,
-        isEnabled: !mockRow1.isEnabled,
+      await waitFor(() => {
+        expect(mappingMock.updateRuleSetById).toHaveBeenCalledWith(mockId1, {
+          ...mockRow1,
+          isEnabled: !mockRow1.isEnabled,
+        });
       });
     });
 
@@ -371,19 +386,17 @@ describe('TablePanel', () => {
       renderWithProviders(<TablePanel {...defaultProps} />);
 
       const rulesetToggle = await screen.findAllByTitle('Toggle');
-      await userEvent.click(rulesetToggle[0]);
+      await user.click(rulesetToggle[0]);
 
       await waitFor(() => {
         expect(
           screen.getByRole('heading', {
-            name: 'Apply global changes',
+            name: 'Review changes',
           })
         ).toBeVisible();
       });
 
-      await user.click(
-        screen.getByRole('button', { name: 'Close confirmation modal' })
-      );
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
       expect(mappingMock.updateRuleSetById).not.toHaveBeenCalled();
     });
@@ -399,17 +412,17 @@ describe('TablePanel', () => {
 
       renderWithProviders(<TablePanel {...defaultProps} />);
       const rulesetToggle = await screen.findAllByTitle('Toggle');
-      await userEvent.click(rulesetToggle[0]);
+      await user.click(rulesetToggle[0]);
 
       await waitFor(() => {
         expect(
           screen.getByRole('heading', {
-            name: 'Apply global changes',
+            name: 'Review changes',
           })
         ).toBeVisible();
       });
 
-      await user.click(screen.getByRole('button', { name: 'Apply action' }));
+      await user.click(screen.getByRole('button', { name: 'Save changes' }));
 
       expect(
         await screen.findByText(

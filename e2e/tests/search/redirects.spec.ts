@@ -111,6 +111,12 @@ test.describe('Keyword Redirects', () => {
     await page.getByTitle('Toggle').first().locator('span').click();
 
     await expect(
+      page.getByRole('heading', { name: 'Review changes' })
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Save changes' }).click();
+
+    await expect(
       page.getByTitle('Toggle').first().locator('input')
     ).not.toBeChecked();
   });

@@ -1,6 +1,5 @@
 import type { ChangeEvent, ReactElement } from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { Modal } from '@mantine/core';
 import { useRouter } from 'next/router';
 
 import type { MerchandisingCountryCode } from '@/libs/api';
@@ -13,6 +12,7 @@ import {
   TablePagination,
 } from '@/libs/components';
 import { useFavouriteRulesetsFlag } from '@/libs/components/feature-flag/feature-flag';
+import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import type { RuleSetMapping, RuleTypeFilter } from '@/libs/components/types';
 import {
   getNewFacetRoute,
@@ -21,7 +21,6 @@ import {
 } from '@/libs/constants/routes';
 import type { FacetType } from '@/libs/constants/rule-types';
 import { RuleType } from '@/libs/constants/rule-types';
-import ConfirmationModal from '@/libs/containers/shared/modals/confirmation-modal/confirmation-modal';
 import { DataTable } from '@/libs/containers/shared/table/datatable';
 import { useDraftRuleset } from '@/libs/hooks';
 import {
@@ -36,8 +35,10 @@ import {
   PAGE_SIZES,
 } from '@/libs/hooks/use-rows-per-page-setting';
 import { useRuleSetRowsState } from '@/libs/hooks/use-rule-set-rows-state';
+import type { DiffItem } from '@/libs/hooks/use-ruleset-diff';
 import { track } from '@/libs/hooks/utils/analytics';
 import { DEBOUNCE_DELAY_MS } from '@/libs/hooks/utils/constants';
+import { createDiffItem } from '@/libs/hooks/utils/diff';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 import { getRulesetType } from '@/libs/utils/ruleset-type';
@@ -173,12 +174,8 @@ export const TablePanel = <
   };
 
   const onToggleRow = ({ id }: { id: string }) => {
-    if (ruleType === RuleType.Global) {
-      setIsModalOpen(true);
-      setIdToUpdate(id);
-    } else {
-      toggleRow({ id });
-    }
+    setIsModalOpen(true);
+    setIdToUpdate(id);
   };
 
   const onCloseModal = () => setIsModalOpen(false);
@@ -187,6 +184,19 @@ export const TablePanel = <
     setIsModalOpen(false);
     toggleRow({ id: idToUpdate });
   };
+
+  const rowToToggle = rowsState.rows.find((row) => row.id === idToUpdate);
+  const toggleDiffItems: DiffItem[] = rowToToggle
+    ? [
+        createDiffItem(
+          'changed',
+          'Status',
+          `${rowToToggle.identifier}: ${
+            rowToToggle.isEnabled ? 'Enabled' : 'Disabled'
+          } → ${rowToToggle.isEnabled ? 'Disabled' : 'Enabled'}`
+        ),
+      ]
+    : [];
 
   return (
     <div className={styles.wrapper}>
@@ -317,20 +327,15 @@ export const TablePanel = <
         currentPageSize={currentPageSize}
         isLoading={isLoading}
       />
-      <Modal.Root
-        centered
-        opened={isModalOpen}
-        onClose={onCloseModal}
-        padding={10}
-      >
-        <Modal.Overlay blur={3} />
-        <Modal.Content>
-          <ConfirmationModal
-            onCloseModal={onCloseModal}
-            handleModalConfirm={handleModalConfirm}
-          />
-        </Modal.Content>
-      </Modal.Root>
+      <RulesetDiffModal
+        isOpen={isModalOpen}
+        diffItems={toggleDiffItems}
+        onConfirm={() => {
+          void handleModalConfirm();
+        }}
+        onCancel={onCloseModal}
+        shouldShowGlobalWarning={ruleType === RuleType.Global}
+      />
     </div>
   );
 };

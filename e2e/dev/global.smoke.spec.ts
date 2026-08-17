@@ -83,12 +83,12 @@ test.describe('Global Ranking', () => {
 
     await expect(
       page.getByRole('heading', {
-        name: 'Apply global changes',
+        name: 'Review changes',
       })
     ).toBeVisible();
 
     await page
-      .getByRole('button', { name: 'Apply action', exact: true })
+      .getByRole('button', { name: 'Save changes', exact: true })
       .click();
 
     await expect(checkbox).toBeChecked();

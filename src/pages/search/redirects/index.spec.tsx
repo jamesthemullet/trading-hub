@@ -255,6 +255,14 @@ describe('Search Rulesets', () => {
 
     await userEvent.click(rulesetToggle[0]);
 
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Review changes' })
+      ).toBeVisible();
+    });
+
+    await userEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+
     expect(mockUpdateRedirect).toHaveBeenCalledWith({
       redirectId: mockId,
       redirect: {

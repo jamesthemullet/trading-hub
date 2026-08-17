@@ -160,7 +160,7 @@ describe('Index', () => {
 
     expect(
       screen.getByText(
-        /This action will apply live changes on the M&S website and app/
+        /This action will apply changes to all live pages on the M&S website and app/
       )
     ).toBeVisible();
 

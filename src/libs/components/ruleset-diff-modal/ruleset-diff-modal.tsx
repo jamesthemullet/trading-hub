@@ -105,8 +105,8 @@ export const RulesetDiffModal = ({
 
           {shouldShowGlobalWarning && (
             <Typography variant="bodySmall">
-              This action will apply live changes on the M&S website and app. Do
-              you want to proceed?
+              This action will apply changes to all live pages on the M&S
+              website and app. Do you want to proceed?
             </Typography>
           )}
 

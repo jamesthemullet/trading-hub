@@ -232,12 +232,12 @@ describe('Index', () => {
       await waitFor(() => {
         expect(
           screen.getByRole('heading', {
-            name: 'Apply global changes',
+            name: 'Review changes',
           })
         ).toBeVisible();
       });
 
-      await user.click(screen.getByRole('button', { name: 'Apply action' }));
+      await user.click(screen.getByRole('button', { name: 'Save changes' }));
 
       expect(mockUpdateRuleSet).toHaveBeenCalledWith({
         ruleSetId: mockId,
