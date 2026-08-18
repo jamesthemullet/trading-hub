@@ -22,8 +22,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Check composite parameter for the reusable pipeline
-        id : check-composite-vars
-        uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@feat/oidcn
+        id: check-composite-vars
+        uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@v1.6.3
     outputs:
       oidc: ${{ steps.check-composite-vars.outputs.oidc}}
 
@@ -31,28 +31,25 @@ jobs:
     needs:
       - check-vars
     if: ${{ needs.check-vars.outputs.oidc != 'true' }}
-    uses: DigitalInnovation/brightcloud/.github/workflows/tf-application-dns.yml@feat/oidcn
+    uses: DigitalInnovation/brightcloud/.github/workflows/tf-application-dns.yml@v1.6.3
     with:
-      TRIGGER_EVENT : ${{ github.event_name }}
-      BRIGHTCLOUD_REF: feat/oidcn
+      TRIGGER_EVENT: ${{ github.event_name }}
     secrets:
-      SUBSCRIPTION_ID : ${{ secrets.SUBSCRIPTION_ID }}
+      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
       SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
       SP_PASSWORD: ${{ secrets.SP_PASSWORD }}
       SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
-      BACKEND_CONFIG:  ${{ secrets.BACKEND_CONFIG }}
-
+      BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}
 
   call-tf-plan-dns-app-oidc:
     needs:
       - check-vars
     if: ${{ needs.check-vars.outputs.oidc == 'true' }}
-    uses: DigitalInnovation/brightcloud/.github/workflows/tf-application-dns-oidc.yml@feat/oidcn
+    uses: DigitalInnovation/brightcloud/.github/workflows/tf-application-dns-oidc.yml@v1.6.3
     with:
-      TRIGGER_EVENT : ${{ github.event_name }}
-      BRIGHTCLOUD_REF: feat/oidcn
+      TRIGGER_EVENT: ${{ github.event_name }}
     secrets:
-      SUBSCRIPTION_ID : ${{ secrets.SUBSCRIPTION_ID }}
+      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
       SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
       SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
-      BACKEND_CONFIG:  ${{ secrets.BACKEND_CONFIG }}
+      BACKEND_CONFIG: ${{ secrets.BACKEND_CONFIG }}

@@ -62,4 +62,15 @@ describe('useRuleSetDelete', () => {
       `Failed to delete ruleset {"data":null,"error":"not ok"}`
     );
   });
+
+  it('should return a string error when the thrown value is not a structured object', async () => {
+    server.use(http.delete(mockUrl, () => HttpResponse.error()));
+    const { result } = renderHook(() => useRuleSetDelete());
+
+    await act(async () => {
+      await result.current.handleDelete({ rulesetId: ruleSetId });
+    });
+
+    expect(result.current.error).toMatch(/^Failed to delete ruleset /);
+  });
 });

@@ -14,8 +14,15 @@ export const useRuleSetDelete = (): {
 
       try {
         await search().betaMerchandisingCategoryRulesetDelete(rulesetId);
-      } catch (error) {
-        setError(`Failed to delete ruleset ${JSON.stringify(error)}`);
+      } catch (err) {
+        const message =
+          err !== null &&
+          typeof err === 'object' &&
+          'data' in err &&
+          'error' in err
+            ? JSON.stringify({ data: err.data, error: err.error })
+            : String(err);
+        setError(`Failed to delete ruleset ${message}`);
       }
     },
     []
