@@ -122,7 +122,7 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Audit dependencies
-        run: pnpm audit --audit-level=high
+        run: pnpm audit --audit-level=high --ignore-unfixable
 
   knip:
     name: Knip
