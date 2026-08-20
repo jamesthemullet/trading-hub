@@ -25,13 +25,13 @@ jobs:
           repository: DigitalInnovation/search-service
           ref: develop
           token: ${{ secrets.SEARCH_SERVICE_PAT }}
-          sparse-checkout: search-service-app/src/main/resources/static/search-merchandising.yml
+          sparse-checkout: search-service-rest/search-service-rest-app/src/main/resources/static/search-merchandising.yml
           sparse-checkout-cone-mode: false
           path: search-service
 
       - name: Copy API schema
         run: |
-          cp search-service/search-service-app/src/main/resources/static/search-merchandising.yml src/libs/api/api.yml
+          cp search-service/search-service-rest/search-service-rest-app/src/main/resources/static/search-merchandising.yml src/libs/api/api.yml
           rm -rf search-service
 
       - name: Check for changes
@@ -66,7 +66,7 @@ jobs:
           commit-message: 'chore: sync API schema from search-service'
           title: 'chore: sync API schema from search-service'
           body: |
-            Automated sync of `src/libs/api/api.yml` from the [search-service](https://github.com/DigitalInnovation/search-service/blob/develop/search-service-app/src/main/resources/static/search-merchandising.yml).
+            Automated sync of `src/libs/api/api.yml` from the [search-service](https://github.com/DigitalInnovation/search-service/blob/develop/search-service-rest/search-service-rest-app/src/main/resources/static/search-merchandising.yml).
 
             TypeScript client has been regenerated via `pnpm run codegen`.
 

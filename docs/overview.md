@@ -6,7 +6,7 @@ Merch Hub is a UI for Merchandising team to manage merchandising rules, product 
 
 ## API contract
 
-Our agreed API contract with the backend team is stored in the [search-service](https://github.com/DigitalInnovation/search-service/blob/develop/search-service-app/src/main/resources/static/search-merchandising.yml) repo and duplicated in this repo as [src/libs/api/api.yml](src/libs/api/api.yml). It is used for all requests.
+Our agreed API contract with the backend team is stored in the [search-service](https://github.com/DigitalInnovation/search-service/blob/develop/search-service-rest/search-service-rest-app/src/main/resources/static/search-merchandising.yml) repo and duplicated in this repo as [src/libs/api/api.yml](src/libs/api/api.yml). It is used for all requests.
 
 ### Keeping the schema up to date
 
@@ -17,7 +17,7 @@ To sync manually at any time, trigger the workflow via **Actions → Sync API sc
 To update it locally, copy the latest schema from search-service and regenerate the client:
 
 ```bash
-cp /path/to/search-service/search-service-app/src/main/resources/static/search-merchandising.yml src/libs/api/api.yml
+cp /path/to/search-service/search-service-rest/search-service-rest-app/src/main/resources/static/search-merchandising.yml src/libs/api/api.yml
 pnpm run codegen
 ```
 
