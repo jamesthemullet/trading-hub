@@ -1,8 +1,12 @@
 /* istanbul ignore file */
+import { useState } from 'react';
+
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 
 import { ArrowButton } from '@/libs/components/arrow-button/arrow-button';
+import { Button } from '@/libs/components/button/button';
+import { Toast } from '@/libs/components/toast/toast';
 import { Typography } from '@/libs/components/typography/typography';
 
 import styles from './index.module.css';
@@ -257,11 +261,25 @@ const NON_STANDARD_BORDER_RADIUS = [
 ] as const;
 
 const Sandbox = ({ nodeVersion }: { nodeVersion: string }) => {
+  const [isToastVisible, setIsToastVisible] = useState(false);
+
   return (
     <>
       <h1>Sandbox examples</h1>
       <div className={styles.example}>
         <h2>Running on Node version {nodeVersion}</h2>
+      </div>
+      <div className={styles.example}>
+        <h2>Toast</h2>
+        <Button type="button" onClick={() => setIsToastVisible(true)}>
+          Show toast
+        </Button>
+        {isToastVisible && (
+          <Toast
+            message="Changes have been saved successfully"
+            onDismiss={() => setIsToastVisible(false)}
+          />
+        )}
       </div>
       <div className={styles.example}>
         <h2>Arrow Button</h2>

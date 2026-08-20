@@ -1,0 +1,33 @@
+.toast {
+  position: fixed;
+  bottom: var(--mns-spacing-2);
+  right: var(--mns-spacing-2);
+  display: flex;
+  align-items: center;
+  gap: var(--mns-spacing-2);
+  padding: var(--mns-spacing-1-5) var(--mns-spacing-2);
+  background-color: var(--color-surface-dark-surface-dark);
+  color: var(--color-surface-dark-on-surface-dark);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 24%);
+  z-index: 1000;
+}
+
+.toastMessage {
+  color: var(--color-surface-dark-on-surface-dark);
+  white-space: nowrap;
+}
+
+.dismissButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+
+  &:hover,
+  &:focus {
+    background-color: transparent;
+  }
+}
