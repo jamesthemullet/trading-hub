@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import { Button, Typography } from '@/libs/components';
 import { useProfilePageFlag } from '@/libs/components/feature-flag/feature-flag';
 
@@ -10,7 +12,7 @@ import type { MenuItem } from '../navigation-menu/navigation-menu';
 import { NavigationMenu } from '../navigation-menu/navigation-menu';
 import styles from './navigation.module.css';
 
-export const Navigation = () => {
+export const Navigation = (): ReactElement => {
   const session = useSession();
   const isLoggedIn = session?.status === 'authenticated';
   const isProfilePageEnabled = useProfilePageFlag();

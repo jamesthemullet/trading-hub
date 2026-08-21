@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { type ReactElement, useState } from 'react';
 
 import { Typography } from '@/libs/components';
 import { CopyMessageBox } from '@/libs/components/copy-message-box/copy-message-box';
@@ -61,7 +61,7 @@ type Props = {
   productDisplay: ProductDisplay;
 };
 
-export const ProductResult = ({ productDisplay }: Props) => {
+export const ProductResult = ({ productDisplay }: Props): ReactElement => {
   const {
     isIndexed,
     product,
@@ -71,7 +71,7 @@ export const ProductResult = ({ productDisplay }: Props) => {
     sections,
   } = productDisplay;
   const { productAssembly } = sections;
-  const [imageError, setImageError] = useState(false);
+  const [hasImageError, setHasImageError] = useState(false);
 
   return (
     <div className={styles.wrapper}>
@@ -102,14 +102,14 @@ export const ProductResult = ({ productDisplay }: Props) => {
           )}
         </div>
 
-        {isIndexed && product?.imageUrl?.[0] && !imageError ? (
+        {isIndexed && product?.imageUrl?.[0] && !hasImageError ? (
           <Image
             src={`${MNS_IMAGE_BASE}/${product.imageUrl?.[0]}`}
             alt={product.title ?? ''}
             width={213}
             height={277}
             className={styles.productImage}
-            onError={() => setImageError(true)}
+            onError={() => setHasImageError(true)}
           />
         ) : (
           <div className={styles.imagePlaceholder} />

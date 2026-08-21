@@ -13,6 +13,7 @@ import {
   computeHistoryDiff,
   type RulesetSnapshot,
 } from '@/libs/utils/compute-history-diff';
+import { getPaginationOffset } from '@/libs/utils/pagination';
 
 import Head from 'next/head';
 
@@ -68,7 +69,7 @@ export const HistoryPage = ({
   const currentPage = Number(router.query.currentPage) || 1;
   const currentPageSize = Number(router.query.currentPageSize) || 20;
   const currentTab = Number(router.query.tab) || 0;
-  const startIndex = (currentPage - 1) * currentPageSize;
+  const startIndex = getPaginationOffset(currentPage, currentPageSize);
 
   const handlePageChange = (page: number, pageSize: number) => {
     updateQueryParams(router, {

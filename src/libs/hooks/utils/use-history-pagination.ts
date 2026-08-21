@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import type { MerchandisingPagination } from '@/libs/api';
+import { getPaginationOffset } from '@/libs/utils/pagination';
 
 import { handleError } from './error';
 
@@ -52,7 +53,7 @@ export const useHistoryPagination = <TChange>(
 
       try {
         const result = await fetcherRef.current(id, {
-          start: (currentPage - 1) * currentPageSize,
+          start: getPaginationOffset(currentPage, currentPageSize),
           rows: currentPageSize,
         });
         setHistory(result.data);

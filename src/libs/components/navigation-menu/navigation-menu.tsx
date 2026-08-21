@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import { Typography } from '@/libs/components';
 
 import Image from 'next/image';
@@ -20,7 +22,7 @@ type MenuItems = {
   menuItems: MenuItem;
 };
 
-export const NavigationMenu = ({ menuItems }: MenuItems) => {
+export const NavigationMenu = ({ menuItems }: MenuItems): ReactElement => {
   const pathname = usePathname();
 
   return (

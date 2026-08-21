@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 
 import { Typography } from '@/libs/components';
@@ -20,8 +21,8 @@ export const OperationSelector = ({
   setSelectedOperation: (
     args: 'boost' | 'bury' | 'include' | 'exclude'
   ) => void;
-}) => {
-  const [closeDropdown, setCloseDropdown] = useState(false);
+}): ReactElement => {
+  const [shouldCloseDropdown, setShouldCloseDropdown] = useState(false);
 
   const label = labels[selectedOperation];
 
@@ -33,9 +34,9 @@ export const OperationSelector = ({
         icon={label.icon}
         width={150}
         ariaLabel={`Select to ${hasIncludeExclude ? 'include, exclude, ' : ''}boost or bury`}
-        closeFromChild={closeDropdown}
+        closeFromChild={shouldCloseDropdown}
         onOpen={() => {
-          setCloseDropdown(false);
+          setShouldCloseDropdown(false);
         }}
       >
         <Button
@@ -43,7 +44,7 @@ export const OperationSelector = ({
           data-hover-grey
           type="button"
           onClick={() => {
-            setCloseDropdown(true);
+            setShouldCloseDropdown(true);
             setSelectedOperation('boost');
           }}
           role="menuitemradio"
@@ -64,7 +65,7 @@ export const OperationSelector = ({
           data-hover-grey
           type="button"
           onClick={() => {
-            setCloseDropdown(true);
+            setShouldCloseDropdown(true);
             setSelectedOperation('bury');
           }}
           role="menuitemradio"
@@ -87,7 +88,7 @@ export const OperationSelector = ({
               data-hover-grey
               type="button"
               onClick={() => {
-                setCloseDropdown(true);
+                setShouldCloseDropdown(true);
                 setSelectedOperation('include');
               }}
               role="menuitemradio"
@@ -109,7 +110,7 @@ export const OperationSelector = ({
               data-hover-grey
               type="button"
               onClick={() => {
-                setCloseDropdown(true);
+                setShouldCloseDropdown(true);
                 setSelectedOperation('exclude');
               }}
               role="menuitemradio"

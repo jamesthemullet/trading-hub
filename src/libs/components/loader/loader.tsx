@@ -1,8 +1,14 @@
+import type { ReactElement } from 'react';
+
 import Image from 'next/image';
 
 import styles from './loader.module.css';
 
-export const Loader = ({ isInModal = false }: { isInModal?: boolean }) => (
+export const Loader = ({
+  isInModal = false,
+}: {
+  isInModal?: boolean;
+}): ReactElement => (
   <div
     className={`${styles.wrapper} ${isInModal ? styles.inModal : ''}`}
     role="status"

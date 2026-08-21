@@ -11,6 +11,7 @@ import type {
   ToggleRowFn,
 } from '@/libs/components/types';
 import { handlePromise } from '@/libs/utils/handle-promise';
+import { getPaginationOffset } from '@/libs/utils/pagination';
 
 import { handleError } from './utils/error';
 
@@ -55,7 +56,7 @@ export const useRuleSetRowsState = <
           const [error, data] = await handlePromise(
             mapping.queryAllRuleSets({
               q: query,
-              start: (currentPage - 1) * currentPageSize,
+              start: getPaginationOffset(currentPage, currentPageSize),
               rows: currentPageSize,
               countryCode,
               ...(havingRules !== undefined ? { havingRules } : {}),

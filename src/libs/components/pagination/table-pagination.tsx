@@ -1,6 +1,8 @@
+import type { ReactElement } from 'react';
 import { Skeleton } from '@mantine/core';
 
 import type { MerchandisingPagination as PaginationType } from '@/libs/api/generated/open-api';
+import { getPaginationOffset } from '@/libs/utils/pagination';
 
 import { CombinedDropdown, DropdownVariant } from '../dropdown/dropdown';
 import { Typography } from '../typography/typography';
@@ -21,7 +23,7 @@ export const TablePagination = ({
   currentPage: number;
   currentPageSize: number;
   isLoading: boolean;
-}) => {
+}): ReactElement => {
   return (
     <div className={styles.paginationRowContainer}>
       {isLoading ? (
@@ -43,7 +45,8 @@ export const TablePagination = ({
           <Typography variant="bodySmall" data-testid="results count">
             {(() => {
               const totalItems = pagination.totalItems ?? 0;
-              const firstItem = (currentPage - 1) * currentPageSize + 1;
+              const firstItem =
+                getPaginationOffset(currentPage, currentPageSize) + 1;
               const lastItem = Math.min(
                 currentPage * currentPageSize,
                 totalItems

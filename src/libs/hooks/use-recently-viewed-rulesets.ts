@@ -1,4 +1,7 @@
-import { isValidRulesetType } from '@/libs/utils/ruleset-type';
+import {
+  isValidRulesetType,
+  type RulesetTypeString,
+} from '@/libs/utils/ruleset-type';
 
 import {
   isRecord,
@@ -9,7 +12,7 @@ import {
 const STORAGE_KEY = 'recently-viewed-rulesets';
 export const MAX_RECENTLY_VIEWED = 10;
 
-export type RulesetType = 'category' | 'search' | 'global' | 'redirect';
+export type RulesetType = RulesetTypeString;
 
 export type RecentlyViewedRuleset = {
   id: string;

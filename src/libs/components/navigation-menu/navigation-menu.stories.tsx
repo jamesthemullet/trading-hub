@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { NavigationMenu } from './navigation-menu';
@@ -16,7 +18,7 @@ const meta: Meta<typeof NavigationMenu> = {
     },
   },
   decorators: [
-    (Story) => (
+    (Story): ReactElement => (
       <div style={{ width: '100px', backgroundColor: '#1D1D1B' }}>
         <Story />
       </div>

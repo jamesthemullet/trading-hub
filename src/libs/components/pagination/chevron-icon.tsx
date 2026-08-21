@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import styles from './pagination.module.css';
 
 type Props = React.DetailedHTMLProps<
@@ -7,7 +9,7 @@ type Props = React.DetailedHTMLProps<
   type: 'prev' | 'next';
 };
 
-export const ChevronIcon = ({ type, ...props }: Props) => {
+export const ChevronIcon = ({ type, ...props }: Props): ReactElement => {
   return (
     <svg
       className={styles.chevronIcon}

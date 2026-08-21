@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useCallback } from 'react';
 
 import { Button } from '@/libs/components/button/button';
@@ -12,7 +13,11 @@ type Props = {
   onClick: (pageNumber: number) => void;
 };
 
-export const Pagination = ({ current, total, onClick }: Props) => {
+export const Pagination = ({
+  current,
+  total,
+  onClick,
+}: Props): ReactElement => {
   const onNextPageActivated = useCallback(() => {
     const pageNumber = Math.min(current + 1, total);
     onClick(pageNumber);

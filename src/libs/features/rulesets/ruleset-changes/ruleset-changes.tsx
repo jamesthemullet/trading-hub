@@ -1,7 +1,11 @@
 import type { Dispatch, ReactElement } from 'react';
 import { Skeleton } from '@mantine/core';
 
-import type { MerchandisingCountryCode, MerchandisingRules } from '@/libs/api';
+import type {
+  MerchandisingCountryCode,
+  MerchandisingProduct,
+  MerchandisingRules,
+} from '@/libs/api';
 import { Button, Typography } from '@/libs/components';
 import { Checkbox } from '@/libs/components/checkboxes/checkbox';
 import { AlphanumericAttribute } from '@/libs/components/ruleset-attributes/alphanumeric-attribute';
@@ -67,6 +71,52 @@ const ProductsLoader = ({
       : onSelectAll(allProductIds);
   };
 
+  const renderProductOrPlaceholder = (
+    id: string,
+    index: number,
+    product: MerchandisingProduct | undefined
+  ): ReactElement => {
+    if (product) {
+      return (
+        <Product
+          {...product}
+          index={index}
+          isPinnable={isPinnable}
+          pinnedProductsCount={pinnedProductsCount}
+          dispatch={dispatch}
+          isSelected={selectedProducts.includes(product.id)}
+          isSelectionDisabled={isSelectionDisabled}
+          onSelectProduct={onSelectProduct}
+        />
+      );
+    }
+
+    if (isLoading && !missingProductDetails.includes(id)) {
+      return (
+        <Skeleton
+          key={id}
+          aria-busy="true"
+          data-testid="Product loader"
+          width={235}
+          height={320}
+        />
+      );
+    }
+
+    return (
+      <MissingProduct
+        index={index}
+        id={id}
+        dispatch={dispatch}
+        isProductNumberEnabled
+        changeType={changeType}
+        isSelected={selectedProducts.includes(id)}
+        isSelectionDisabled={isSelectionDisabled}
+        onSelectProduct={onSelectProduct}
+      />
+    );
+  };
+
   return (
     <section className={styles.changeSection}>
       <div className={styles.header}>
@@ -96,50 +146,12 @@ const ProductsLoader = ({
             ({ id: productId }) => id === productId
           );
 
-          const productContent = !product ? null : (
-            <Product
-              {...product}
-              index={index}
-              isPinnable={isPinnable}
-              pinnedProductsCount={pinnedProductsCount}
-              dispatch={dispatch}
-              isSelected={selectedProducts.includes(product.id)}
-              isSelectionDisabled={isSelectionDisabled}
-              onSelectProduct={onSelectProduct}
-            />
-          );
-
-          let missingProductContent = null;
-          if (!product) {
-            missingProductContent =
-              isLoading && !missingProductDetails.includes(id) ? (
-                <Skeleton
-                  key={id}
-                  aria-busy="true"
-                  data-testid="Product loader"
-                  width={235}
-                  height={320}
-                />
-              ) : (
-                <MissingProduct
-                  index={index}
-                  id={id}
-                  dispatch={dispatch}
-                  isProductNumberEnabled
-                  changeType={changeType}
-                  isSelected={selectedProducts.includes(id)}
-                  isSelectionDisabled={isSelectionDisabled}
-                  onSelectProduct={onSelectProduct}
-                />
-              );
-          }
-
           return (
             <div
               className={styles.productBox}
               key={`ruleset-changes-product-${id}`}
             >
-              {productContent ?? missingProductContent}
+              {renderProductOrPlaceholder(id, index, product)}
             </div>
           );
         })}

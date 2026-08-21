@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { Loader } from './loader';
@@ -35,7 +37,7 @@ export const InModal: Story = {
     layout: 'centered',
   },
   decorators: [
-    (Story) => (
+    (Story): ReactElement => (
       <div className={styles.modalContainer}>
         <Story />
       </div>
