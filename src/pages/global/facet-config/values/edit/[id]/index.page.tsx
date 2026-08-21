@@ -35,7 +35,7 @@ const Page = (): ReactElement => {
     attributeValues: searchedAttributeValues,
     error: searchedAttributeValuesError,
   } = useGetFacetAttributeValues({
-    facetId,
+    facetId: searchQuery.trim() ? facetId : '',
     query: searchQuery,
     countryCode: 'UK_IE',
   });

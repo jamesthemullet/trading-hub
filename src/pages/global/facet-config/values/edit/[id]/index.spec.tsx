@@ -22,10 +22,12 @@ jest.mock('@/libs/hooks/use-get-facet-attribute-values', () => ({
 }));
 
 describe('Index', () => {
+  const facetId = 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84';
+
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue({
       query: {
-        id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84',
+        id: facetId,
         displayName: 'Color',
       },
     });
@@ -99,6 +101,31 @@ describe('Index', () => {
   });
 
   describe('searching', () => {
+    it('should disable the searched values request when the query is empty', async () => {
+      jest
+        .mocked(useGetFacetAttributeValues)
+        .mockImplementation(({ facetId: requestedFacetId }) => ({
+          attributeValues:
+            requestedFacetId === facetId ? attributeValuesMock : [],
+          error: '',
+          isLoading: false,
+        }));
+
+      renderWithProviders(<Page />);
+
+      expect(useGetFacetAttributeValues).toHaveBeenCalledWith({
+        facetId,
+        query: '',
+        countryCode: 'UK_IE',
+      });
+      expect(useGetFacetAttributeValues).toHaveBeenCalledWith({
+        facetId: '',
+        query: '',
+        countryCode: 'UK_IE',
+      });
+      expect(await screen.findByText('12 results')).toBeVisible();
+    });
+
     it('should request facet attribute values with the debounced search query', async () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
@@ -115,9 +142,48 @@ describe('Index', () => {
       await waitFor(() => {
         expect(useGetFacetAttributeValues).toHaveBeenCalledWith(
           expect.objectContaining({
+            facetId,
             query: 'Duck',
           })
         );
+      });
+
+      jest.useRealTimers();
+    });
+
+    it('should disable the searched values request when a search is cleared', async () => {
+      jest.useFakeTimers();
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
+      renderWithProviders(<Page />);
+
+      const searchInput = screen.getByPlaceholderText('Search');
+      await user.type(searchInput, 'Duck');
+
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
+      await waitFor(() => {
+        expect(useGetFacetAttributeValues).toHaveBeenCalledWith({
+          facetId,
+          query: 'Duck',
+          countryCode: 'UK_IE',
+        });
+      });
+
+      await user.clear(searchInput);
+
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
+      await waitFor(() => {
+        expect(useGetFacetAttributeValues).toHaveBeenLastCalledWith({
+          facetId: '',
+          query: '',
+          countryCode: 'UK_IE',
+        });
       });
 
       jest.useRealTimers();
