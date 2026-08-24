@@ -5,7 +5,7 @@ import { getPaginationOffset } from '@/libs/utils/pagination';
 
 import { handleError } from './error';
 
-export type HistoryState<TChange> = {
+type HistoryState<TChange> = {
   changes: TChange[];
   pagination: MerchandisingPagination;
 };
@@ -16,14 +16,16 @@ export type HistoryResult<TChange> = {
   isLoading: boolean;
 };
 
-export const useHistoryPagination = <TChange>(
+type HistoryFetcher<TChange> = (
+  id: string,
+  params: { start: number; rows: number }
+) => Promise<{ data: HistoryState<TChange> }>;
+
+const useHistoryPagination = <TChange>(
   id: string,
   currentPage: number,
   currentPageSize: number,
-  fetcher: (
-    id: string,
-    params: { start: number; rows: number }
-  ) => Promise<{ data: HistoryState<TChange> }>
+  fetcher: HistoryFetcher<TChange>
 ): HistoryResult<TChange> => {
   const [history, setHistory] = useState<HistoryState<TChange>>({
     changes: [],
@@ -69,3 +71,18 @@ export const useHistoryPagination = <TChange>(
 
   return { history, error, isLoading };
 };
+
+export const createUseHistoryPagination =
+  <TChange>(
+    fetcher: HistoryFetcher<TChange>
+  ): ((
+    id: string,
+    currentPage: number,
+    currentPageSize: number
+  ) => HistoryResult<TChange>) =>
+  (
+    id: string,
+    currentPage: number,
+    currentPageSize: number
+  ): HistoryResult<TChange> =>
+    useHistoryPagination(id, currentPage, currentPageSize, fetcher);
