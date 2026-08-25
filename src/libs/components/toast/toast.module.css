@@ -1,7 +1,16 @@
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(var(--mns-spacing-1));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .toast {
-  position: fixed;
-  bottom: var(--mns-spacing-2);
-  right: var(--mns-spacing-2);
   display: flex;
   align-items: center;
   gap: var(--mns-spacing-2);
@@ -10,7 +19,13 @@
   color: var(--color-surface-dark-on-surface-dark);
   border-radius: 4px;
   box-shadow: 0 2px 8px rgb(0 0 0 / 24%);
-  z-index: 1000;
+  animation: fadeInUp 200ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
 }
 
 .toastMessage {

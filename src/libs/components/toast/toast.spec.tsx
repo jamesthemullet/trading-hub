@@ -74,4 +74,34 @@ describe('Toast', () => {
     expect(onDismiss).not.toHaveBeenCalled();
     jest.useRealTimers();
   });
+
+  it('does not reset its countdown when a new onDismiss callback is passed in', () => {
+    jest.useFakeTimers();
+    const onDismiss = jest.fn();
+    const { rerender } = renderWithProviders(
+      <Toast
+        message="Changes have been saved successfully"
+        onDismiss={onDismiss}
+        autoDismissMs={4000}
+      />
+    );
+
+    jest.advanceTimersByTime(3000);
+
+    // Simulate a parent re-render passing a brand-new onDismiss reference,
+    // e.g. because a sibling toast was added or removed.
+    const newOnDismiss = jest.fn();
+    rerender(
+      <Toast
+        message="Changes have been saved successfully"
+        onDismiss={newOnDismiss}
+        autoDismissMs={4000}
+      />
+    );
+
+    jest.advanceTimersByTime(1000);
+
+    expect(newOnDismiss).toHaveBeenCalledTimes(1);
+    jest.useRealTimers();
+  });
 });

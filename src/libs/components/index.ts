@@ -21,5 +21,6 @@ export * from './radio-buttons/radio-buttons';
 export { Search } from './search/search';
 export * from './tabs/tabs';
 export * from './toast/toast';
+export * from './toast/toast-provider';
 export * from './toggle/toggle';
 export * from './typography/typography';

@@ -1,0 +1,12 @@
+.stack {
+  position: fixed;
+  bottom: var(--mns-spacing-2);
+  right: var(--mns-spacing-2);
+  z-index: 1000;
+}
+
+.slot {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}

@@ -8,6 +8,7 @@ import {
   useFavouriteRulesetsFlag,
   useOptimisticLockingFlag,
   useProfilePageFlag,
+  useSaveToastFlag,
 } from './feature-flag';
 
 const createWrapper = (overrides: Partial<typeof defaultFeatureFlags> = {}) => {
@@ -74,6 +75,24 @@ describe('useFavouriteRulesetsFlag', () => {
         </FeatureFlagContext.Provider>
       ),
     });
+    expect(result.current).toBe(true);
+  });
+});
+
+describe('useSaveToastFlag', () => {
+  it('should return false by default', () => {
+    const { result } = renderHook(() => useSaveToastFlag(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(result.current).toBe(false);
+  });
+
+  it('should return true when flag is enabled', () => {
+    const { result } = renderHook(() => useSaveToastFlag(), {
+      wrapper: createWrapper({ hasSaveToast: true }),
+    });
+
     expect(result.current).toBe(true);
   });
 });

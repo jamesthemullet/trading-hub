@@ -11,6 +11,7 @@ import { createTheme, MantineProvider, Portal } from '@mantine/core';
 import { ErrorBoundary } from '@/libs/components/error-boundary/error-boundary';
 import { FeatureFlagContext } from '@/libs/components/feature-flag/feature-flag';
 import { SmokeTestTokenWarning } from '@/libs/components/smoke-test-token-warning/smoke-test-token-warning';
+import { ToastProvider } from '@/libs/components/toast/toast-provider';
 import { LoginCheck } from '@/libs/features/shared/login/login-check';
 import { setupGlobalErrorHandlers } from '@/libs/utils/dynatrace';
 
@@ -45,6 +46,7 @@ const FeatureFlagWrapper = ({
     'flagProfilePage',
     'flagFavouriteRulesets',
     'flagOptimisticLocking',
+    'flagSaveToast',
   ]);
 
   return (
@@ -59,6 +61,7 @@ const FeatureFlagWrapper = ({
         hasProfilePage: cookies.flagProfilePage === true,
         hasFavouriteRulesets: cookies.flagFavouriteRulesets === true,
         hasOptimisticLocking: cookies.flagOptimisticLocking === true,
+        hasSaveToast: cookies.flagSaveToast === true,
       }}
     >
       {children}
@@ -117,6 +120,7 @@ export default function App({
                   <Component {...pageProps} />
                 </main>
               </div>
+              <ToastProvider />
             </ErrorBoundary>
           </MantineProvider>
         </SessionProvider>
