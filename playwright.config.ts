@@ -62,7 +62,10 @@ export default defineConfig({
         viewport: { width: 1280, height: 1080 },
         userAgent: 'global-test-playwright',
       },
-      testMatch: /tests\/global\/.*\.spec\.ts/,
+      testMatch: [
+        /tests\/global\/.*\.spec\.ts/,
+        /tests\/product-status\/.*\.spec\.ts/,
+      ],
       testIgnore: /.*smoke.spec.ts/,
     },
     {
