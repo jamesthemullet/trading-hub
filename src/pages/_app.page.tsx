@@ -46,7 +46,6 @@ const FeatureFlagWrapper = ({
     'flagProfilePage',
     'flagFavouriteRulesets',
     'flagOptimisticLocking',
-    'flagSaveToast',
   ]);
 
   return (
@@ -61,7 +60,6 @@ const FeatureFlagWrapper = ({
         hasProfilePage: cookies.flagProfilePage === true,
         hasFavouriteRulesets: cookies.flagFavouriteRulesets === true,
         hasOptimisticLocking: cookies.flagOptimisticLocking === true,
-        hasSaveToast: cookies.flagSaveToast === true,
       }}
     >
       {children}

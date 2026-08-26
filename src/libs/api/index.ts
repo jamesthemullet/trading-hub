@@ -6,16 +6,42 @@ import { emitSaveSuccess } from '@/libs/utils/toast-events';
 
 import { Api } from './generated/open-api';
 
-// Endpoints known to represent a user-initiated save (create/update), rather
-// than a read-style POST/PUT (e.g. preview, product search). Extend this list
-// as more save flows are wired up to the toast.
-const SAVE_ENDPOINT_PATTERNS = [
+// Endpoints known to represent a user-initiated save (create/update) or
+// delete — rather than a read-style POST/PUT (e.g. preview, product search).
+// Extend these lists as more save/delete flows are wired up to the toast.
+const DELETE_ENABLED_ENDPOINT_PATTERNS = [
   /^\/api\/search\/beta\/merchandising\/category\/ruleset(\/|$)/,
+  /^\/api\/search\/beta\/merchandising\/keyword\/ruleset(\/|$)/,
+  /^\/api\/search\/beta\/merchandising\/global\/ruleset(\/|$)/,
+  /^\/api\/search\/merchandising\/v1\/[^/]+\/global\/ruleset(\/|$)/,
+  /^\/api\/search\/beta\/merchandising\/keyword\/redirect(\/|$)/,
 ];
 
-const isSaveRequest = (method: string, pathname: string): boolean =>
-  ['POST', 'PUT', 'PATCH'].includes(method) &&
-  SAVE_ENDPOINT_PATTERNS.some((pattern) => pattern.test(pathname));
+// Non-delete-enabled endpoints that only ever create/update (no delete flow
+// wired up to the toast yet).
+const SAVE_ONLY_ENDPOINT_PATTERNS = [
+  /^\/api\/search\/beta\/merchandising\/facet(\/|$)/,
+];
+
+const isSaveOrDeleteRequest = (method: string, pathname: string): boolean => {
+  const isDeleteEnabledEndpoint = DELETE_ENABLED_ENDPOINT_PATTERNS.some(
+    (pattern) => pattern.test(pathname)
+  );
+
+  if (isDeleteEnabledEndpoint) {
+    return ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);
+  }
+
+  return (
+    ['POST', 'PUT', 'PATCH'].includes(method) &&
+    SAVE_ONLY_ENDPOINT_PATTERNS.some((pattern) => pattern.test(pathname))
+  );
+};
+
+const getDeleteSuccessMessage = (pathname: string): string =>
+  pathname.includes('/redirect')
+    ? 'Redirect deleted successfully'
+    : 'Ruleset deleted successfully';
 
 const createTimingFetch = (): typeof fetch => async (input, init) => {
   const start = performance.now();
@@ -28,8 +54,12 @@ const createTimingFetch = (): typeof fetch => async (input, init) => {
   const { pathname } = new URL(rawUrl, window.location.origin);
   reportApiLatency(pathname, method, response.status, durationMs);
 
-  if (response.ok && isSaveRequest(method, pathname)) {
-    emitSaveSuccess();
+  if (response.ok && isSaveOrDeleteRequest(method, pathname)) {
+    if (method === 'DELETE') {
+      emitSaveSuccess(getDeleteSuccessMessage(pathname));
+    } else {
+      emitSaveSuccess();
+    }
   }
 
   return response;

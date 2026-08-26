@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { useSaveToastFlag } from '@/libs/components/feature-flag/feature-flag';
 import { onSaveSuccess } from '@/libs/utils/toast-events';
 
 import { Toast } from './toast';
@@ -12,7 +11,6 @@ const GAP_PX = 8;
 const FALLBACK_ROW_HEIGHT_PX = 48;
 
 export const ToastProvider = () => {
-  const isSaveToastEnabled = useSaveToastFlag();
   const [toasts, setToasts] = useState<ToastEntry[]>([]);
   const nextId = useRef(0);
   const nextBottomOffset = useRef(0);
@@ -20,10 +18,6 @@ export const ToastProvider = () => {
   const firstSlotRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!isSaveToastEnabled) {
-      return undefined;
-    }
-
     return onSaveSuccess((message) => {
       const id = nextId.current;
       // Only mutates the local ref; does not trigger a re-render.
@@ -38,7 +32,7 @@ export const ToastProvider = () => {
 
       setToasts((current) => [...current, { id, message, bottomOffset }]);
     });
-  }, [isSaveToastEnabled]);
+  }, []);
 
   useEffect(() => {
     if (rowHeight.current === null && firstSlotRef.current) {
@@ -60,7 +54,7 @@ export const ToastProvider = () => {
     });
   };
 
-  if (!isSaveToastEnabled || toasts.length === 0) {
+  if (toasts.length === 0) {
     return null;
   }
 

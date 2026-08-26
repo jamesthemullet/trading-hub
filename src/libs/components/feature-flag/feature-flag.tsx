@@ -16,7 +16,6 @@ export type FeatureFlags = {
   hasProfilePage: boolean;
   hasFavouriteRulesets: boolean;
   hasOptimisticLocking: boolean;
-  hasSaveToast: boolean;
 };
 
 export const defaultFeatureFlags: FeatureFlags = {
@@ -29,7 +28,6 @@ export const defaultFeatureFlags: FeatureFlags = {
   hasProfilePage: false,
   hasFavouriteRulesets: false,
   hasOptimisticLocking: false,
-  hasSaveToast: false,
 };
 
 export const FeatureFlagContext =
@@ -93,17 +91,4 @@ export const useOptimisticLockingFlag = () => {
   }, [featureFlags.hasOptimisticLocking]);
 
   return isOptimisticLockingEnabled;
-};
-
-export const useSaveToastFlag = () => {
-  const featureFlags = useContext(FeatureFlagContext);
-  const [isSaveToastEnabled, setIsSaveToastEnabled] = useState(
-    featureFlags.hasSaveToast
-  );
-
-  useEffect(() => {
-    setIsSaveToastEnabled(featureFlags.hasSaveToast);
-  }, [featureFlags.hasSaveToast]);
-
-  return isSaveToastEnabled;
 };

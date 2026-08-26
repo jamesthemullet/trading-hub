@@ -3,6 +3,7 @@ import { setupServer } from 'msw/node';
 
 import { reportApiLatency } from '@/libs/utils/dynatrace';
 import { emitSaveSuccess } from '@/libs/utils/toast-events';
+import { redirectMock } from '@/pages/api/search/mocks';
 import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 
 import { api, search } from './index';
@@ -112,6 +113,213 @@ describe('API', () => {
         start: 0,
         rows: 10,
       });
+
+      expect(emitSaveSuccess).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      {
+        name: 'keyword ruleset create',
+        setup: () =>
+          server.use(
+            http.post('/api/search/beta/merchandising/keyword/ruleset', () =>
+              HttpResponse.json({}, { status: 200 })
+            )
+          ),
+        call: () =>
+          search().betaMerchandisingKeywordRulesetCreate({
+            searchTerms: ['socks'],
+            rules: mockMerchandisingRules,
+            facets: [],
+            excludedFacets: { facets: [] },
+            countryCode: 'UK_IE',
+            isEnabled: true,
+          }),
+      },
+      {
+        name: 'keyword ruleset update',
+        setup: () =>
+          server.use(
+            http.put(
+              '/api/search/beta/merchandising/keyword/ruleset/rule-set-1',
+              () => HttpResponse.json({}, { status: 200 })
+            )
+          ),
+        call: () =>
+          search().betaMerchandisingKeywordRulesetUpdate('rule-set-1', {
+            searchTerms: ['socks'],
+            rules: mockMerchandisingRules,
+            facets: [],
+            excludedFacets: { facets: [] },
+            countryCode: 'UK_IE',
+            isEnabled: true,
+          }),
+      },
+      {
+        name: 'keyword redirect create',
+        setup: () =>
+          server.use(
+            http.post('/api/search/beta/merchandising/keyword/redirect', () =>
+              HttpResponse.json({}, { status: 200 })
+            )
+          ),
+        call: () =>
+          search().betaMerchandisingKeywordRedirectCreate(redirectMock),
+      },
+      {
+        name: 'keyword redirect update',
+        setup: () =>
+          server.use(
+            http.put(
+              '/api/search/beta/merchandising/keyword/redirect/redirect-1',
+              () => HttpResponse.json({}, { status: 200 })
+            )
+          ),
+        call: () =>
+          search().betaMerchandisingKeywordRedirectUpdate(
+            'redirect-1',
+            redirectMock
+          ),
+      },
+      {
+        name: 'global facet update',
+        setup: () =>
+          server.use(
+            http.put('/api/search/beta/merchandising/facet/facet-1', () =>
+              HttpResponse.json({}, { status: 200 })
+            )
+          ),
+        call: () =>
+          search().betaMerchandisingFacetUpdate('facet-1', {
+            displayValue: 'colour',
+            indexPropertyName: 'color',
+          }),
+      },
+      {
+        name: 'global ruleset create',
+        setup: () =>
+          server.use(
+            http.post('/api/search/beta/merchandising/global/ruleset', () =>
+              HttpResponse.json({}, { status: 200 })
+            )
+          ),
+        call: () =>
+          search().betaMerchandisingGlobalRulesetCreate2({
+            rules: mockMerchandisingRules,
+            isEnabled: true,
+            startDate: '',
+            endDate: '',
+            countryCode: 'UK_IE',
+          }),
+      },
+      {
+        name: 'global ruleset update (beta)',
+        setup: () =>
+          server.use(
+            http.put(
+              '/api/search/beta/merchandising/global/ruleset/rule-set-1',
+              () => HttpResponse.json({}, { status: 200 })
+            )
+          ),
+        call: () =>
+          search().betaMerchandisingGlobalRulesetUpdate('rule-set-1', {
+            rules: mockMerchandisingRules,
+            isEnabled: true,
+          }),
+      },
+      {
+        name: 'global ruleset update (v1)',
+        setup: () =>
+          server.use(
+            http.put(
+              '/api/search/merchandising/v1/CLOTHING_AND_HOME/global/ruleset/rule-set-1',
+              () => HttpResponse.json({}, { status: 200 })
+            )
+          ),
+        call: () =>
+          search().merchandisingV1GlobalRulesetUpdate(
+            'CLOTHING_AND_HOME',
+            'rule-set-1',
+            { rules: mockMerchandisingRules, isEnabled: true }
+          ),
+      },
+    ])('emits a save-success toast for $name', async ({ setup, call }) => {
+      setup();
+
+      await call();
+
+      expect(emitSaveSuccess).toHaveBeenCalled();
+    });
+
+    it.each([
+      {
+        name: 'category ruleset delete',
+        setup: () =>
+          server.use(
+            http.delete(
+              '/api/search/beta/merchandising/category/ruleset/rule-set-1',
+              () => HttpResponse.json({}, { status: 200 })
+            )
+          ),
+        call: () =>
+          search().betaMerchandisingCategoryRulesetDelete('rule-set-1'),
+      },
+      {
+        name: 'keyword ruleset delete',
+        setup: () =>
+          server.use(
+            http.delete(
+              '/api/search/beta/merchandising/keyword/ruleset/rule-set-1',
+              () => HttpResponse.json({}, { status: 200 })
+            )
+          ),
+        call: () =>
+          search().betaMerchandisingKeywordRulesetDelete('rule-set-1'),
+      },
+      {
+        name: 'global ruleset delete',
+        setup: () =>
+          server.use(
+            http.delete(
+              '/api/search/beta/merchandising/global/ruleset/rule-set-1',
+              () => HttpResponse.json({}, { status: 200 })
+            )
+          ),
+        call: () => search().betaMerchandisingGlobalRulesetDelete('rule-set-1'),
+      },
+    ])('emits a delete-success toast for $name', async ({ setup, call }) => {
+      setup();
+
+      await call();
+
+      expect(emitSaveSuccess).toHaveBeenCalledWith(
+        'Ruleset deleted successfully'
+      );
+    });
+
+    it('emits a delete-success toast for redirect delete', async () => {
+      server.use(
+        http.delete(
+          '/api/search/beta/merchandising/keyword/redirect/redirect-1',
+          () => HttpResponse.json({}, { status: 200 })
+        )
+      );
+
+      await search().betaMerchandisingKeywordRedirectDelete('redirect-1');
+
+      expect(emitSaveSuccess).toHaveBeenCalledWith(
+        'Redirect deleted successfully'
+      );
+    });
+
+    it('does not emit a toast for a deleted facet, since deletes are not wired up for facets', async () => {
+      server.use(
+        http.delete('/api/search/beta/merchandising/facet/facet-1', () =>
+          HttpResponse.json({}, { status: 200 })
+        )
+      );
+
+      await search().betaMerchandisingFacetDelete('facet-1');
 
       expect(emitSaveSuccess).not.toHaveBeenCalled();
     });

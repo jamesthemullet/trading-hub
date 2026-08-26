@@ -17,7 +17,6 @@ const FeatureFlags = () => {
       'flagProfilePage',
       'flagFavouriteRulesets',
       'flagOptimisticLocking',
-      'flagSaveToast',
     ],
     {
       doNotUpdate: true,
@@ -29,7 +28,6 @@ const FeatureFlags = () => {
     flagProfilePage,
     flagFavouriteRulesets,
     flagOptimisticLocking,
-    flagSaveToast,
   } = cookies;
 
   return (
@@ -141,16 +139,6 @@ const FeatureFlags = () => {
               'flagOptimisticLocking',
               JSON.stringify(!flagOptimisticLocking)
             );
-          }}
-        />
-      </div>
-      <div className={styles.flag}>
-        <Typography>Save Toast:&nbsp;</Typography>
-        <Toggle
-          aria-label="Toggle save toast feature flag"
-          checked={flagSaveToast}
-          onChange={() => {
-            setCookie('flagSaveToast', JSON.stringify(!flagSaveToast));
           }}
         />
       </div>

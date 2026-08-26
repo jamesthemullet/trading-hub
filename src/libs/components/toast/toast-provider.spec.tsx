@@ -5,10 +5,7 @@ import { renderWithProviders } from '@/test/render-with-providers';
 
 import { ToastProvider } from './toast-provider';
 
-const renderEnabled = () =>
-  renderWithProviders(<ToastProvider />, undefined, {
-    featureFlags: { hasSaveToast: true },
-  });
+const renderToastProvider = () => renderWithProviders(<ToastProvider />);
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -16,13 +13,13 @@ afterEach(() => {
 
 describe('ToastProvider', () => {
   it('renders nothing until a save succeeds', () => {
-    renderEnabled();
+    renderToastProvider();
 
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
   it('shows a toast when a save succeeds', () => {
-    renderEnabled();
+    renderToastProvider();
 
     act(() => emitSaveSuccess('Changes have been saved successfully'));
 
@@ -32,7 +29,7 @@ describe('ToastProvider', () => {
   });
 
   it('stacks multiple toasts when several saves succeed in quick succession', () => {
-    renderEnabled();
+    renderToastProvider();
 
     act(() => emitSaveSuccess('First message'));
     act(() => emitSaveSuccess('Second message'));
@@ -42,7 +39,7 @@ describe('ToastProvider', () => {
   });
 
   it('dismisses only the toast that was closed, leaving others visible', () => {
-    renderEnabled();
+    renderToastProvider();
 
     act(() => emitSaveSuccess('First message'));
     act(() => emitSaveSuccess('Second message'));
@@ -58,7 +55,7 @@ describe('ToastProvider', () => {
   });
 
   it('dismisses the toast when the close button is clicked', () => {
-    renderEnabled();
+    renderToastProvider();
 
     act(() => emitSaveSuccess('Changes have been saved successfully'));
 
@@ -72,7 +69,7 @@ describe('ToastProvider', () => {
   });
 
   it('stops listening for save events after unmounting', () => {
-    const { unmount } = renderEnabled();
+    const { unmount } = renderToastProvider();
     unmount();
 
     act(() => emitSaveSuccess('Changes have been saved successfully'));
@@ -83,7 +80,7 @@ describe('ToastProvider', () => {
   });
 
   it('positions the first toast at the bottom, and stacks subsequent ones above it', () => {
-    renderEnabled();
+    renderToastProvider();
 
     act(() => emitSaveSuccess('First message'));
     const firstSlot = screen.getByText('First message').closest('[role]')
@@ -97,7 +94,7 @@ describe('ToastProvider', () => {
   });
 
   it('restarts stacking from the bottom once all toasts have cleared', () => {
-    renderEnabled();
+    renderToastProvider();
 
     act(() => emitSaveSuccess('First message'));
     act(() => emitSaveSuccess('Second message'));
@@ -112,17 +109,5 @@ describe('ToastProvider', () => {
     const thirdSlot = screen.getByText('Third message').closest('[role]')
       ?.parentElement as HTMLElement;
     expect(thirdSlot).toHaveStyle({ bottom: '0px' });
-  });
-
-  it('does not show a toast when the feature flag is disabled', () => {
-    renderWithProviders(<ToastProvider />, undefined, {
-      featureFlags: { hasSaveToast: false },
-    });
-
-    act(() => emitSaveSuccess('Changes have been saved successfully'));
-
-    expect(
-      screen.queryByText('Changes have been saved successfully')
-    ).not.toBeInTheDocument();
   });
 });
