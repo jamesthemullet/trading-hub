@@ -2,9 +2,11 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
+import type { MerchandisingReturnedGlobalFacet } from '@/libs/api';
 import { FacetType } from '@/libs/constants/rule-types';
 import { useCheckMergeNameUnique, useGlobalFacetUpdate } from '@/libs/hooks';
 import type { UseGlobalFacetUpdate } from '@/libs/hooks/global/facets/use-global-facet-update';
+import type { SaveResult } from '@/libs/hooks/use-optimistic-update';
 import { facetsListMock } from '@/pages/api/search/mocks';
 import { mockGlobalRuleData } from '@/test/data/mock-use-rule-set-preview.data';
 import { renderWithProviders } from '@/test/render-with-providers';
@@ -24,11 +26,13 @@ jest.mock('@/libs/hooks', () => ({
 
 const mockRouter = {
   push: jest.fn(),
+  reload: jest.fn(),
 };
 
-const mockUpdateGlobalFacet = jest
-  .fn()
-  .mockResolvedValue({ status: 'success' });
+const successResult: SaveResult<MerchandisingReturnedGlobalFacet> = {
+  status: 'success',
+};
+const mockUpdateGlobalFacet = jest.fn().mockResolvedValue(successResult);
 const updateGlobalFacet: UseGlobalFacetUpdate = {
   handleGlobalFacetUpdate: mockUpdateGlobalFacet,
   error: '',
@@ -207,6 +211,7 @@ describe('GlobalFacetAttributesPageLayout', () => {
         excludedValues: ['Ducky Downy'],
         boosted: ['Cotton', 'Duck Down'],
       },
+      shouldUseV1: false,
     });
 
     await waitFor(
@@ -417,11 +422,57 @@ describe('GlobalFacetAttributesPageLayout', () => {
         excludedValues: ['Ducky Downy'],
         boosted: ['Cotton', 'Duck Down'],
       },
+      shouldUseV1: false,
     });
 
     await waitFor(() => {
       expect(mockRouter.push).toHaveBeenCalledWith(`/global/facet-config`);
     });
+  });
+
+  it('sends the v1 flag + version and shows the conflict modal on a 409', async () => {
+    const user = userEvent.setup();
+    mockUpdateGlobalFacet.mockResolvedValueOnce({
+      status: 'conflict',
+      currentEntity: {
+        ...defaultProps.facet,
+        excludedValues: [
+          ...(defaultProps.facet.excludedValues ?? []),
+          '13 - 14.4',
+        ],
+        version: 4,
+        lastChanged: { date: '2024-02-02T00:00:00Z', user: 'Other User' },
+      },
+    });
+
+    renderWithProviders(
+      <GlobalFacetAttributesPageLayout
+        {...defaultProps}
+        facet={{ ...defaultProps.facet, version: 2 }}
+      />,
+      undefined,
+      { featureFlags: { hasOptimisticLocking: true } }
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    const reviewDialog = await screen.findByRole('dialog');
+    await user.click(
+      within(reviewDialog).getByRole('button', { name: 'Save changes' })
+    );
+
+    expect(mockUpdateGlobalFacet).toHaveBeenCalledWith(
+      expect.objectContaining({ shouldUseV1: true, version: 2 })
+    );
+    const conflictDialog = await screen.findByRole('dialog', {
+      name: 'This facet was changed by someone else',
+    });
+    expect(conflictDialog).toBeInTheDocument();
+    expect(
+      within(conflictDialog).getByText(
+        '13 - 14.4 (Algo control → Exclude only)'
+      )
+    ).toBeInTheDocument();
+    expect(mockRouter.push).not.toHaveBeenCalled();
   });
 
   describe('sticky bar pin button', () => {

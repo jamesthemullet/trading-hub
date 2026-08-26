@@ -1,14 +1,21 @@
 import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
-import type { MerchandisingKeywordRedirect } from '@/libs/api';
+import type {
+  MerchandisingKeywordRedirect,
+  MerchandisingReturnedKeywordRedirect,
+} from '@/libs/api';
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { ROUTES } from '@/libs/constants/routes';
 import { useRedirectDetail, useRedirectUpdate } from '@/libs/hooks';
 import { useRedirectHistory } from '@/libs/hooks/search/redirect/history/use-redirect-history';
 import { useAccess } from '@/libs/hooks/use-access';
 import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
+import { useRedirectDiff } from '@/libs/hooks/use-redirect-diff';
+import { useSaveConflict } from '@/libs/hooks/use-save-conflict';
 import { useTrackRecentlyViewed } from '@/libs/hooks/use-track-recently-viewed';
 import { Redirect } from '@/libs/modules/redirect/redirect';
 
@@ -50,7 +57,34 @@ const EditRedirect = ({ id }: Props): ReactElement => {
     currentData: { data: redirect, isLoading: isRedirectLoading },
   });
 
-  const { updateRedirect } = useRedirectUpdate();
+  const { updateRedirect, error: updateError } = useRedirectUpdate();
+  const shouldUseV1 = useOptimisticLockingFlag();
+
+  const {
+    conflict,
+    isOverwriting,
+    runSave,
+    handleOverwrite,
+    handleDiscard,
+    closeConflict,
+  } = useSaveConflict<
+    MerchandisingReturnedKeywordRedirect,
+    MerchandisingKeywordRedirect
+  >({
+    save: (redirectBody, versionOverride) =>
+      updateRedirect({
+        redirect: redirectBody,
+        redirectId: id,
+        version: versionOverride ?? redirect.version,
+        shouldUseV1,
+      }),
+    onSuccess: () => router.push('/search/redirects'),
+  });
+
+  const conflictDiffItems = useRedirectDiff(
+    redirect,
+    conflict?.currentEntity ?? redirect
+  );
 
   useTrackRecentlyViewed({
     id: redirectData?.id,
@@ -58,15 +92,6 @@ const EditRedirect = ({ id }: Props): ReactElement => {
     url: ROUTES.SEARCH.REDIRECTS.EDIT(id),
     type: 'redirect',
   });
-
-  const onSaveRedirect = async (redirect: MerchandisingKeywordRedirect) => {
-    const response = await updateRedirect({ redirect, redirectId: id });
-
-    // istanbul ignore else
-    if (response) {
-      router.push('/search/redirects');
-    }
-  };
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } =
     useAccess('Search');
@@ -88,18 +113,32 @@ const EditRedirect = ({ id }: Props): ReactElement => {
         ]}
       />
 
-      {(error || historyError) && (
-        <ErrorMessage centred>{error || historyError}</ErrorMessage>
+      {(error || updateError || historyError) && (
+        <ErrorMessage centred>
+          {error || updateError || historyError}
+        </ErrorMessage>
       )}
 
       {!isLoading && redirectData && (
-        <Redirect
-          onCancel={() => router.push('/search/redirects')}
-          onSave={onSaveRedirect}
-          redirect={redirectData}
-          title="Edit Keyword Redirect"
-          isWriteEnabled={hasWriteAccess && !isHistoryView}
-        />
+        <>
+          <Redirect
+            onCancel={() => router.push('/search/redirects')}
+            onSave={runSave}
+            redirect={redirectData}
+            title="Edit Keyword Redirect"
+            isWriteEnabled={hasWriteAccess && !isHistoryView}
+          />
+          <ConflictModal
+            opened={conflict !== null}
+            entityLabel="redirect"
+            diffItems={conflictDiffItems}
+            changedBy={conflict?.currentEntity.lastChanged.user}
+            isSaving={isOverwriting}
+            onOverwrite={handleOverwrite}
+            onDiscard={handleDiscard}
+            onClose={closeConflict}
+          />
+        </>
       )}
 
       {isLoading && <Loader />}

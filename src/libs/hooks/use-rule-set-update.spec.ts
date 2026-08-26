@@ -4,45 +4,42 @@ import { setupServer } from 'msw/node';
 
 import { useUpdateRuleSet } from './use-rule-set-update';
 
+const baseUrl = 'http://localhost';
 const ruleSetId = '38760268-4e84-4bf8-a12e-e151bc18c44e';
 const categoryId = 'cat_123';
 
-const mockMerchandisingRules = {
+const rules = {
   pinnedProducts: [{ id: 'xyz0' }],
   blockedProducts: [],
   boosts: { numeric: [], alphanumeric: [], product: [] },
   buries: { numeric: [], alphanumeric: [], product: [] },
-  includes: {
-    alphanumeric: [],
-  },
-  excludes: {
-    alphanumeric: [],
-  },
+  includes: { alphanumeric: [] },
+  excludes: { alphanumeric: [] },
 };
 
-const baseUrl = 'http://localhost';
-const ruleSet = {
-  rules: mockMerchandisingRules,
-  categoryIds: [categoryId],
-  isEnabled: true,
-  categoryName: 'Jeans',
-  id: ruleSetId,
-  lastChanged: { date: '2023-12-28T14:24:17Z', user: 'M&S' },
-};
-
-const updateRuleSetMock = jest.fn();
+const betaHandler = jest.fn();
+const v1Handler = jest.fn();
 
 const handlers = [
   http.put(
     `${baseUrl}/search/beta/merchandising/category/ruleset/${ruleSetId}`,
-    () => {
-      const { data, status } = updateRuleSetMock();
-      return HttpResponse.json(data, status);
+    async ({ request }) => {
+      betaHandler(await request.json());
+      return HttpResponse.json({}, { status: 200 });
+    }
+  ),
+  http.put(
+    `${baseUrl}/search/merchandising/v1/CLOTHING_AND_HOME/category/ruleset/${ruleSetId}`,
+    async ({ request }) => {
+      v1Handler(await request.json());
+      return HttpResponse.json({}, { status: 200 });
     }
   ),
 ];
 
 const server = setupServer(...handlers);
+
+const args = { ruleSetId, isEnabled: true, rules, categoryIds: [categoryId] };
 
 describe('useUpdateRuleSet', () => {
   beforeAll(() => {
@@ -52,6 +49,7 @@ describe('useUpdateRuleSet', () => {
 
   afterEach(() => {
     server.resetHandlers();
+    jest.clearAllMocks();
   });
 
   afterAll(() => {
@@ -59,69 +57,43 @@ describe('useUpdateRuleSet', () => {
     delete process.env.MERCHANDISING_PROXY_BASE_URL;
   });
 
-  it('should update rule set', async () => {
-    updateRuleSetMock.mockReturnValueOnce({
-      data: ruleSet,
-      status: { status: 200 },
-    });
-    const {
-      result: { current },
-    } = renderHook(() => useUpdateRuleSet());
-    await act(async () => {
-      const resp = await current.updateCategoryRuleSet({
-        ruleSetId,
-        isEnabled: true,
-        rules: mockMerchandisingRules,
-        categoryIds: [categoryId],
-        startDate: '2024-11-15T23:59:00.000Z',
-        endDate: '2024-11-15T23:59:00.000Z',
-      });
-
-      expect(resp).toEqual({ status: 'success' });
-    });
-  });
-
-  it('should return error if API returns non 200', async () => {
-    updateRuleSetMock.mockReturnValueOnce({
-      status: { status: 500 },
-      data: {
-        message: 'JSON parse error',
-        status: 'Bad Request',
-      },
-    });
+  it('updates via the beta endpoint by default', async () => {
     const { result } = renderHook(() => useUpdateRuleSet());
 
+    let res;
     await act(async () => {
-      await result.current.updateCategoryRuleSet({
-        ruleSetId,
-        isEnabled: true,
-        rules: mockMerchandisingRules,
-        categoryIds: [categoryId],
-      });
+      res = await result.current.updateCategoryRuleSet(args);
     });
 
-    expect(result.current.error).toBe('Error JSON parse error Bad Request');
-  });
-
-  it('should error if API fails to fetch', async () => {
-    jest.spyOn(console, 'error').mockImplementation(jest.fn());
-    server.use(
-      http.put(
-        `${baseUrl}/search/beta/merchandising/category/ruleset/${ruleSetId}`,
-        () => HttpResponse.error()
-      )
+    expect(res).toEqual({ status: 'success' });
+    expect(betaHandler).toHaveBeenCalledWith(
+      expect.objectContaining({ categoryIds: [categoryId] })
     );
+    expect(v1Handler).not.toHaveBeenCalled();
+  });
+
+  it('updates via the v1 endpoint with the version and dates when enabled', async () => {
     const { result } = renderHook(() => useUpdateRuleSet());
 
+    let res;
     await act(async () => {
-      await result.current.updateCategoryRuleSet({
-        ruleSetId,
-        isEnabled: true,
-        rules: mockMerchandisingRules,
-        categoryIds: [categoryId],
+      res = await result.current.updateCategoryRuleSet({
+        ...args,
+        startDate: '2024-11-15T23:59:00.000Z',
+        endDate: '2024-12-15T23:59:00.000Z',
+        version: 3,
+        shouldUseV1: true,
       });
     });
 
-    expect(result.current.error).toBe('Unknown error');
+    expect(res).toEqual({ status: 'success' });
+    expect(v1Handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        version: 3,
+        startDate: '2024-11-15T23:59:00.000Z',
+        endDate: '2024-12-15T23:59:00.000Z',
+      })
+    );
+    expect(betaHandler).not.toHaveBeenCalled();
   });
 });

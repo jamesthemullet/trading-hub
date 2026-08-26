@@ -1,48 +1,56 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import type {
   MerchandisingKeywordRedirect,
   MerchandisingReturnedKeywordRedirect,
 } from '@/libs/api';
 import { search } from '@/libs/api';
-import { handleError } from '@/libs/hooks/utils/error';
+import {
+  type SaveResult,
+  useOptimisticUpdate,
+} from '@/libs/hooks/use-optimistic-update';
+
+type UpdateRedirectArgs = {
+  redirectId: string;
+  redirect: MerchandisingKeywordRedirect;
+  version?: number;
+  shouldUseV1?: boolean;
+};
 
 export const useRedirectUpdate = (): {
   isSaving: boolean;
-  updateRedirect: (params: {
-    redirectId: string;
-    redirect: MerchandisingKeywordRedirect;
-  }) => Promise<MerchandisingReturnedKeywordRedirect | undefined>;
+  updateRedirect: (
+    params: UpdateRedirectArgs
+  ) => Promise<SaveResult<MerchandisingReturnedKeywordRedirect>>;
   error: string;
 } => {
-  const [error, setError] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
+  const { error, isSaving, runUpdate } =
+    useOptimisticUpdate<MerchandisingReturnedKeywordRedirect>();
 
   const updateRedirect = useCallback(
-    async ({
+    ({
       redirect,
       redirectId,
-    }: {
-      redirectId: string;
-      redirect: MerchandisingKeywordRedirect;
-    }) => {
-      setError('');
-      setIsSaving(true);
-
-      try {
-        const response = await search().betaMerchandisingKeywordRedirectUpdate(
-          redirectId,
-          redirect
-        );
-
-        setIsSaving(false);
-        return response.data;
-      } catch (error) {
-        setError(handleError(error));
-        setIsSaving(false);
-      }
-    },
-    [setIsSaving]
+      version,
+      shouldUseV1 = false,
+    }: UpdateRedirectArgs) =>
+      runUpdate({
+        shouldUseV1,
+        version,
+        entity: 'redirect',
+        betaUpdate: () =>
+          search().betaMerchandisingKeywordRedirectUpdate(redirectId, redirect),
+        v1Update: (lockVersion) =>
+          search().merchandisingV1KeywordRedirectUpdate(
+            'CLOTHING_AND_HOME',
+            redirectId,
+            {
+              ...redirect,
+              version: lockVersion,
+            }
+          ),
+      }),
+    [runUpdate]
   );
 
   return { isSaving, updateRedirect, error };

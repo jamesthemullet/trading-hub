@@ -1,14 +1,21 @@
 import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
-import type { MerchandisingRuleSet } from '@/libs/api';
+import type {
+  MerchandisingReturnedKeywordRuleSet,
+  MerchandisingRuleSet,
+} from '@/libs/api';
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { ROUTES } from '@/libs/constants/routes';
 import { useSearchRuleSetPreview, useSearchRuleSetUpdate } from '@/libs/hooks';
 import { useSearchHistory } from '@/libs/hooks/search/history/use-search-history';
 import { useAccess } from '@/libs/hooks/use-access';
 import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
+import { useRulesetDiff } from '@/libs/hooks/use-ruleset-diff';
+import { useSaveConflict } from '@/libs/hooks/use-save-conflict';
 import { useTrackRecentlyViewed } from '@/libs/hooks/use-track-recently-viewed';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
@@ -50,7 +57,64 @@ const Page = ({ id }: PageProps): ReactElement => {
     currentData: { data: ruleSet, isLoading: isRuleSetLoading },
   });
 
-  const { updateRuleSet, isSaving } = useSearchRuleSetUpdate();
+  const {
+    updateRuleSet,
+    isSaving,
+    error: updateError,
+  } = useSearchRuleSetUpdate();
+  const shouldUseV1 = useOptimisticLockingFlag();
+
+  const {
+    conflict,
+    isOverwriting,
+    runSave,
+    handleOverwrite,
+    handleDiscard,
+    closeConflict,
+  } = useSaveConflict<
+    MerchandisingReturnedKeywordRuleSet,
+    {
+      searchTerms?: Array<string>;
+      ruleSetId: string;
+      ruleSet: MerchandisingRuleSet;
+    }
+  >({
+    save: (
+      { searchTerms, ruleSetId, ruleSet: ruleSetBody },
+      versionOverride
+    ) => {
+      // istanbul ignore next
+      if (!searchTerms?.[0]) return Promise.resolve({ status: 'error' });
+
+      return updateRuleSet({
+        searchTerms,
+        isEnabled: ruleSetBody.isEnabled,
+        ruleSetId,
+        rules: ruleSetBody.rules,
+        ...(ruleSetBody.excludedFacets && {
+          excludedFacets: ruleSetBody.excludedFacets,
+        }),
+        ...(ruleSetBody.facets && { facets: ruleSetBody.facets }),
+        ...(ruleSetBody.endDate && { endDate: ruleSetBody.endDate }),
+        ...(ruleSetBody.startDate && { startDate: ruleSetBody.startDate }),
+        ...(ruleSetBody.countryCode && {
+          countryCode: ruleSetBody.countryCode,
+        }),
+        version: versionOverride ?? ruleSet.version,
+        shouldUseV1,
+      });
+    },
+    onSuccess: () => router.push('/search'),
+  });
+
+  const conflictDiffItems = useRulesetDiff(
+    ruleSet,
+    conflict?.currentEntity ?? ruleSet,
+    {
+      originalSearchTerms: ruleSet.searchTerms,
+      currentSearchTerms: (conflict?.currentEntity ?? ruleSet).searchTerms,
+    }
+  );
 
   useTrackRecentlyViewed({
     id: rulesetData?.id,
@@ -58,32 +122,6 @@ const Page = ({ id }: PageProps): ReactElement => {
     url: ROUTES.SEARCH.RULESETS.EDIT(id),
     type: 'search',
   });
-
-  const saveRuleSet = async ({
-    searchTerms,
-    ruleSetId,
-    ruleSet,
-  }: {
-    searchTerms?: Array<string>;
-    ruleSetId: string;
-    ruleSet: MerchandisingRuleSet;
-  }) => {
-    // istanbul ignore next
-    if (!searchTerms?.[0]) return;
-    await updateRuleSet({
-      searchTerms,
-      isEnabled: ruleSet.isEnabled,
-      ruleSetId,
-      rules: ruleSet.rules,
-      ...(ruleSet.excludedFacets && { excludedFacets: ruleSet.excludedFacets }),
-      ...(ruleSet.facets && { facets: ruleSet.facets }),
-      ...(ruleSet.endDate && { endDate: ruleSet.endDate }),
-      ...(ruleSet.startDate && { startDate: ruleSet.startDate }),
-      ...(ruleSet.countryCode && { countryCode: ruleSet.countryCode }),
-    }).then(() => {
-      router.push('/search');
-    });
-  };
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } =
     useAccess('Search');
@@ -101,28 +139,42 @@ const Page = ({ id }: PageProps): ReactElement => {
         breadcrumbs={['Search & Merchandising', 'Site search', 'Ranking rules']}
       />
 
-      {(error || historyError) && (
-        <ErrorMessage centred>{error || historyError}</ErrorMessage>
+      {(error || updateError || historyError) && (
+        <ErrorMessage centred>
+          {error || updateError || historyError}
+        </ErrorMessage>
       )}
 
       {!isLoading && rulesetData && (
-        <Ruleset
-          isEnabled={rulesetData.isEnabled}
-          lastChanged={rulesetData.lastChanged}
-          onCancel={() => router.push('/search')}
-          onSave={saveRuleSet}
-          originalRuleset={isHistoryView ? undefined : ruleSet}
-          rulesetId={rulesetData.id}
-          rulesetMerchandisingRules={rulesetData.rules}
-          rulesetType="search"
-          searchTerms={rulesetData.searchTerms}
-          rulesetFacets={rulesetData.facets}
-          rulesetExcludedFacets={rulesetData.excludedFacets}
-          startDate={rulesetData.startDate}
-          endDate={rulesetData.endDate}
-          countryCode={rulesetData.countryCode}
-          isWriteEnabled={hasWriteAccess && !isHistoryView}
-        />
+        <>
+          <Ruleset
+            isEnabled={rulesetData.isEnabled}
+            lastChanged={rulesetData.lastChanged}
+            onCancel={() => router.push('/search')}
+            onSave={runSave}
+            originalRuleset={isHistoryView ? undefined : ruleSet}
+            rulesetId={rulesetData.id}
+            rulesetMerchandisingRules={rulesetData.rules}
+            rulesetType="search"
+            searchTerms={rulesetData.searchTerms}
+            rulesetFacets={rulesetData.facets}
+            rulesetExcludedFacets={rulesetData.excludedFacets}
+            startDate={rulesetData.startDate}
+            endDate={rulesetData.endDate}
+            countryCode={rulesetData.countryCode}
+            isWriteEnabled={hasWriteAccess && !isHistoryView}
+          />
+          <ConflictModal
+            opened={conflict !== null}
+            entityLabel="keyword ruleset"
+            diffItems={conflictDiffItems}
+            changedBy={conflict?.currentEntity.lastChanged.user}
+            isSaving={isOverwriting}
+            onOverwrite={handleOverwrite}
+            onDiscard={handleDiscard}
+            onClose={closeConflict}
+          />
+        </>
       )}
 
       {isSaving && <Loader />}

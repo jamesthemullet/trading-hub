@@ -32,7 +32,9 @@ jest.mock('@/libs/hooks/search/redirect/history/use-redirect-history', () => ({
 
 describe('Edit keyword redirect', () => {
   const mockUpdateRedirect = {
-    updateRedirect: jest.fn(() => Promise.resolve(returnedRedirectMock)),
+    updateRedirect: jest.fn(() =>
+      Promise.resolve({ status: 'success' as const })
+    ),
     isSaving: true,
     error: '',
   };
@@ -45,6 +47,7 @@ describe('Edit keyword redirect', () => {
 
   const mockRouter = {
     push: jest.fn(),
+    reload: jest.fn(),
     query: {},
     events: {
       on: jest.fn(),
@@ -66,6 +69,68 @@ describe('Edit keyword redirect', () => {
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(mockUpdateRedirect.updateRedirect).toHaveBeenCalled();
+  });
+
+  it('sends the v1 flag + version and shows the conflict modal on a 409', async () => {
+    const updateRedirect = jest.fn(() =>
+      Promise.resolve({
+        status: 'conflict' as const,
+        currentEntity: {
+          ...returnedRedirectMock,
+          ruleTitle: 'Updated by someone else',
+          version: 4,
+          lastChanged: { date: '2024-02-02T00:00:00Z', user: 'Other User' },
+        },
+      })
+    );
+    jest.mocked(useRedirectUpdate).mockImplementation(() => ({
+      updateRedirect,
+      isSaving: false,
+      error: '',
+    }));
+    jest.mocked(useRedirectDetail).mockImplementation(() => ({
+      redirect: { ...returnedRedirectMock, version: 2 },
+      isLoading: false,
+      error: '',
+    }));
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<Page id={ruleSetId} />, undefined, {
+      featureFlags: { hasOptimisticLocking: true },
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(updateRedirect).toHaveBeenCalledWith(
+      expect.objectContaining({ shouldUseV1: true, version: 2 })
+    );
+    const dialog = await screen.findByRole('dialog', {
+      name: 'This redirect was changed by someone else',
+    });
+    expect(dialog).toHaveTextContent(
+      'title of redirect → Updated by someone else'
+    );
+    expect(mockRouter.push).not.toHaveBeenCalled();
+  });
+
+  it('surfaces an update error and does not navigate when the save fails', async () => {
+    jest.mocked(useRedirectUpdate).mockImplementation(() => ({
+      updateRedirect: jest.fn(() =>
+        Promise.resolve({ status: 'error' as const })
+      ),
+      isSaving: false,
+      error: 'Failed to update redirect',
+    }));
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Failed to update redirect'
+    );
+    expect(mockRouter.push).not.toHaveBeenCalled();
   });
 
   it('should render the access denied page', async () => {

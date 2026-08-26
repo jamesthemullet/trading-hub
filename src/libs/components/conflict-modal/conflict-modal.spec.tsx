@@ -44,11 +44,6 @@ describe('ConflictModal', () => {
 
     // Icons render for known labels only (Category + Pinned product, not Unknown)
     expect(within(dialog).getAllByTestId('change-type-icon')).toHaveLength(2);
-
-    const summaryText = within(dialog).getByText(/Added Pinned product: xyz0/, {
-      selector: 'pre',
-    });
-    expect(summaryText).toHaveTextContent(/Changed Unknown: no icon/);
   });
 
   it('shows a generic message and empty state when there are no diffs', () => {
@@ -61,9 +56,6 @@ describe('ConflictModal', () => {
     expect(dialog).toHaveTextContent(
       'The specific changes could not be determined.'
     );
-    expect(
-      within(dialog).queryByText('Copy this message below:')
-    ).not.toBeInTheDocument();
   });
 
   it('calls onOverwrite and onDiscard when the buttons are clicked', async () => {
@@ -118,5 +110,37 @@ describe('ConflictModal', () => {
     expect(
       screen.queryByRole('dialog', { name: MODAL_NAME })
     ).not.toBeInTheDocument();
+  });
+
+  it('renders a message-only modal with a custom entity label when diffItems is omitted', () => {
+    renderWithProviders(
+      <ConflictModal
+        opened
+        entityLabel="redirect"
+        changedBy="Jane"
+        onDiscard={jest.fn()}
+        onOverwrite={jest.fn()}
+        onClose={jest.fn()}
+      />
+    );
+
+    const dialog = screen.getByRole('dialog', {
+      name: 'This redirect was changed by someone else',
+    });
+    expect(dialog).toHaveTextContent(
+      'Someone else (Jane) saved changes to this redirect since you opened it.'
+    );
+    // No diff list or empty-state in message-only mode
+    expect(within(dialog).queryByRole('list')).not.toBeInTheDocument();
+    expect(dialog).not.toHaveTextContent(
+      'The specific changes could not be determined.'
+    );
+    // Actions remain available
+    expect(
+      within(dialog).getByRole('button', { name: 'Overwrite with my changes' })
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).getByRole('button', { name: 'Discard my changes' })
+    ).toBeInTheDocument();
   });
 });

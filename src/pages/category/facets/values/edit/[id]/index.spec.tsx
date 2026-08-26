@@ -41,7 +41,9 @@ const mockUseFacetsList = {
   error: '',
 };
 
-const mockUpdateRuleSet = jest.fn().mockReturnValue(true);
+const mockUpdateRuleSet = jest
+  .fn()
+  .mockResolvedValue({ status: 'success' as const });
 const updateRuleSet = {
   updateCategoryRuleSet: mockUpdateRuleSet,
   error: '',
@@ -223,6 +225,7 @@ describe('Index', () => {
     );
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      shouldUseV1: false,
       categoryIds: ['SubCategory_428'],
       countryCode: 'UK_IE',
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
@@ -286,6 +289,50 @@ describe('Index', () => {
     });
 
     expect(defaultMockRouter.push).toHaveBeenCalledWith('/category');
+  });
+
+  it('sends the v1 flag + version and shows the conflict modal on a 409', async () => {
+    mockUpdateRuleSet.mockResolvedValueOnce({
+      status: 'conflict' as const,
+      currentEntity: {
+        ...mockRulesetDetailResponse.ruleSetDetail,
+        version: 7,
+        lastChanged: { date: '2024-02-02T00:00:00Z', user: 'Other User' },
+      },
+    });
+    const versionedDetail = {
+      ...mockRulesetDetailResponse,
+      ruleSetDetail: {
+        ...mockRulesetDetailResponse.ruleSetDetail,
+        version: 3,
+      },
+    };
+    jest.mocked(useRuleSetDetail).mockImplementation(() => versionedDetail);
+
+    const user = userEvent.setup();
+    renderWithProviders(<Page />, undefined, {
+      featureFlags: { hasOptimisticLocking: true },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Facet values settings: Color')).toBeVisible();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    const dialog = await screen.findByRole('dialog');
+    await user.click(
+      within(dialog).getByRole('button', { name: 'Save changes' })
+    );
+
+    expect(mockUpdateRuleSet).toHaveBeenCalledWith(
+      expect.objectContaining({ shouldUseV1: true, version: 3 })
+    );
+    expect(
+      await screen.findByRole('dialog', {
+        name: 'This category ruleset was changed by someone else',
+      })
+    ).toBeInTheDocument();
+    expect(defaultMockRouter.push).not.toHaveBeenCalled();
   });
 
   it('should display error message when updating ruleset fails', async () => {

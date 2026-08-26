@@ -1,15 +1,22 @@
 import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
-import type { MerchandisingRuleSet } from '@/libs/api';
+import type {
+  MerchandisingReturnedCategoryRuleSet,
+  MerchandisingRuleSet,
+} from '@/libs/api';
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { ROUTES } from '@/libs/constants/routes';
 import { useCategoryHistory } from '@/libs/hooks/category/history/use-category-history';
 import { useRuleSetDetail } from '@/libs/hooks/category/rulesets/use-rule-set-detail';
 import { useAccess } from '@/libs/hooks/use-access';
 import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
 import { useUpdateRuleSet } from '@/libs/hooks/use-rule-set-update';
+import { useRulesetDiff } from '@/libs/hooks/use-ruleset-diff';
+import { useSaveConflict } from '@/libs/hooks/use-save-conflict';
 import { useTrackRecentlyViewed } from '@/libs/hooks/use-track-recently-viewed';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 import { formatCategoriesInfo } from '@/libs/utils/format-categories-info';
@@ -47,6 +54,56 @@ const Page = ({ id }: PageProps): ReactElement => {
   });
 
   const { updateCategoryRuleSet, isSaving, error } = useUpdateRuleSet();
+  const shouldUseV1 = useOptimisticLockingFlag();
+
+  const {
+    conflict,
+    isOverwriting,
+    runSave,
+    handleOverwrite,
+    handleDiscard,
+    closeConflict,
+  } = useSaveConflict<
+    MerchandisingReturnedCategoryRuleSet,
+    {
+      categoryIds?: Array<string>;
+      ruleSetId: string;
+      ruleSet: MerchandisingRuleSet;
+    }
+  >({
+    save: ({ categoryIds, ruleSetId, ruleSet }, versionOverride) => {
+      // istanbul ignore next
+      if (!categoryIds?.[0]) return Promise.resolve({ status: 'error' });
+
+      return updateCategoryRuleSet({
+        categoryIds,
+        isEnabled: ruleSet.isEnabled,
+        ruleSetId,
+        rules: ruleSet.rules,
+        ...(ruleSet.excludedFacets && {
+          excludedFacets: ruleSet.excludedFacets,
+        }),
+        ...(ruleSet.facets && { facets: ruleSet.facets }),
+        ...(ruleSet.endDate && { endDate: ruleSet.endDate }),
+        ...(ruleSet.startDate && { startDate: ruleSet.startDate }),
+        ...(ruleSet.countryCode && { countryCode: ruleSet.countryCode }),
+        version: versionOverride ?? ruleSetDetail.version,
+        shouldUseV1,
+      });
+    },
+    onSuccess: () => router.push('/category'),
+  });
+
+  const conflictDiffItems = useRulesetDiff(
+    ruleSetDetail,
+    conflict?.currentEntity ?? ruleSetDetail,
+    {
+      originalCategoryIds: ruleSetDetail.categoriesInfo?.map(({ id }) => id),
+      currentCategoryIds: (
+        conflict?.currentEntity ?? ruleSetDetail
+      ).categoriesInfo?.map(({ id }) => id),
+    }
+  );
 
   useTrackRecentlyViewed({
     id: rulesetData?.id,
@@ -56,36 +113,6 @@ const Page = ({ id }: PageProps): ReactElement => {
     url: ROUTES.CATEGORY.RULESETS.EDIT(id),
     type: 'category',
   });
-
-  const saveRuleSet = async ({
-    categoryIds,
-    ruleSetId,
-    ruleSet,
-  }: {
-    categoryIds?: Array<string>;
-    ruleSetId: string;
-    ruleSet: MerchandisingRuleSet;
-  }) => {
-    // istanbul ignore next
-    if (!categoryIds?.[0]) return;
-
-    const response = await updateCategoryRuleSet({
-      categoryIds,
-      isEnabled: ruleSet.isEnabled,
-      ruleSetId,
-      rules: ruleSet.rules,
-      ...(ruleSet.excludedFacets && { excludedFacets: ruleSet.excludedFacets }),
-      ...(ruleSet.facets && { facets: ruleSet.facets }),
-      ...(ruleSet.endDate && { endDate: ruleSet.endDate }),
-      ...(ruleSet.startDate && { startDate: ruleSet.startDate }),
-      ...(ruleSet.countryCode && { countryCode: ruleSet.countryCode }),
-    });
-
-    // istanbul ignore else
-    if (response.status === 'success') {
-      router.push('/category');
-    }
-  };
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
 
@@ -109,23 +136,35 @@ const Page = ({ id }: PageProps): ReactElement => {
         <Loader />
       ) : (
         rulesetData && (
-          <Ruleset
-            isEnabled={rulesetData.isEnabled}
-            lastChanged={rulesetData.lastChanged}
-            onSave={saveRuleSet}
-            onCancel={() => router.push('/category')}
-            originalRuleset={isHistoryView ? undefined : ruleSetDetail}
-            categoriesInfo={rulesetData.categoriesInfo}
-            rulesetFacets={rulesetData.facets}
-            rulesetExcludedFacets={rulesetData.excludedFacets}
-            rulesetId={rulesetData.id}
-            rulesetMerchandisingRules={rulesetData.rules}
-            rulesetType="category"
-            startDate={rulesetData.startDate}
-            endDate={rulesetData.endDate}
-            countryCode={rulesetData.countryCode}
-            isWriteEnabled={hasWriteAccess && !isHistoryView}
-          />
+          <>
+            <Ruleset
+              isEnabled={rulesetData.isEnabled}
+              lastChanged={rulesetData.lastChanged}
+              onSave={runSave}
+              onCancel={() => router.push('/category')}
+              originalRuleset={isHistoryView ? undefined : ruleSetDetail}
+              categoriesInfo={rulesetData.categoriesInfo}
+              rulesetFacets={rulesetData.facets}
+              rulesetExcludedFacets={rulesetData.excludedFacets}
+              rulesetId={rulesetData.id}
+              rulesetMerchandisingRules={rulesetData.rules}
+              rulesetType="category"
+              startDate={rulesetData.startDate}
+              endDate={rulesetData.endDate}
+              countryCode={rulesetData.countryCode}
+              isWriteEnabled={hasWriteAccess && !isHistoryView}
+            />
+            <ConflictModal
+              opened={conflict !== null}
+              entityLabel="category ruleset"
+              diffItems={conflictDiffItems}
+              changedBy={conflict?.currentEntity.lastChanged.user}
+              isSaving={isOverwriting}
+              onOverwrite={handleOverwrite}
+              onDiscard={handleDiscard}
+              onClose={closeConflict}
+            />
+          </>
         )
       )}
 

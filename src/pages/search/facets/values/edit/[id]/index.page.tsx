@@ -3,10 +3,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
+  MerchandisingReturnedKeywordRuleSet,
   MerchandisingRuleSet,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
+import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { FacetType } from '@/libs/constants/rule-types';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
@@ -19,6 +22,8 @@ import {
   useSearchRuleSetUpdate,
 } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
+import { useRulesetDiff } from '@/libs/hooks/use-ruleset-diff';
+import { useSaveConflict } from '@/libs/hooks/use-save-conflict';
 import { useTypeSafeQuery } from '@/libs/hooks/use-type-safe-query';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
@@ -35,6 +40,7 @@ const Page = (): ReactElement => {
     useTypeSafeQuery();
 
   const { updateRuleSet, error: updateRuleSetError } = useSearchRuleSetUpdate();
+  const shouldUseV1 = useOptimisticLockingFlag();
   const { getDraft, saveDraft } = useDraftRuleset();
 
   const facetId = getStringParam('id');
@@ -122,6 +128,50 @@ const Page = (): ReactElement => {
     }
   }, [facets, facet, effectiveRuleSet.facets]);
 
+  const {
+    conflict,
+    isOverwriting,
+    runSave,
+    handleOverwrite,
+    handleDiscard,
+    closeConflict,
+  } = useSaveConflict<
+    MerchandisingReturnedKeywordRuleSet,
+    MerchandisingRuleSetFacetConfigWithId
+  >({
+    save: (newFacet, versionOverride) => {
+      const newFacets = effectiveRuleSet.facets?.map(
+        (facet: MerchandisingRuleSetFacetConfigWithId) => {
+          if (facet.id === newFacet.id) {
+            return newFacet;
+          }
+
+          return facet;
+        }
+      );
+
+      return updateRuleSet({
+        ...effectiveRuleSet,
+        searchTerms: effectiveRuleSet.searchTerms || [],
+        ruleSetId,
+        facets: newFacets,
+        version: versionOverride ?? ruleSet.version,
+        shouldUseV1,
+      });
+    },
+    onSuccess: () => router.push('/search'),
+  });
+
+  const conflictDiffItems = useRulesetDiff(
+    ruleSet,
+    conflict?.currentEntity ?? ruleSet,
+    {
+      originalSearchTerms: ruleSet.searchTerms,
+      currentSearchTerms: (conflict?.currentEntity ?? ruleSet).searchTerms,
+      facetNames: Object.fromEntries(facets.map((f) => [f.id, f.displayValue])),
+    }
+  );
+
   const handleSave = async (
     newFacet: MerchandisingRuleSetFacetConfigWithId
   ) => {
@@ -147,27 +197,7 @@ const Page = (): ReactElement => {
       return;
     }
 
-    const newFacets = effectiveRuleSet.facets?.map(
-      (facet: MerchandisingRuleSetFacetConfigWithId) => {
-        if (facet.id === newFacet.id) {
-          return newFacet;
-        }
-
-        return facet;
-      }
-    );
-
-    const response = await updateRuleSet({
-      ...effectiveRuleSet,
-      searchTerms: effectiveRuleSet.searchTerms || [],
-      ruleSetId,
-      facets: newFacets,
-    });
-
-    // istanbul ignore else
-    if (response) {
-      return router.push('/search');
-    }
+    return runSave(newFacet);
   };
 
   const { hasReadAccess, requiredReadRole, hasWriteAccess } =
@@ -200,21 +230,33 @@ const Page = (): ReactElement => {
       )}
 
       {(!isLoading || isDraft) && selectedFacet && (
-        <CategoryAndSearchFacetsPanelPageLayout
-          attributeValues={attributeValues}
-          facet={selectedFacet}
-          displayName={displayName}
-          facetType={FacetType.Search}
-          ruleSetId={ruleSetId}
-          searchQuery={searchQuery}
-          onSearchChange={handleSearch}
-          onSave={handleSave}
-          isWriteEnabled={hasWriteAccess && !isReadOnly}
-          headerText={searchTermsArray?.join(', ')}
-          countryCode={countryCode}
-          isDraftRuleset={isDraft}
-          lastChanged={ruleSet.lastChanged}
-        />
+        <>
+          <CategoryAndSearchFacetsPanelPageLayout
+            attributeValues={attributeValues}
+            facet={selectedFacet}
+            displayName={displayName}
+            facetType={FacetType.Search}
+            ruleSetId={ruleSetId}
+            searchQuery={searchQuery}
+            onSearchChange={handleSearch}
+            onSave={handleSave}
+            isWriteEnabled={hasWriteAccess && !isReadOnly}
+            headerText={searchTermsArray?.join(', ')}
+            countryCode={countryCode}
+            isDraftRuleset={isDraft}
+            lastChanged={ruleSet.lastChanged}
+          />
+          <ConflictModal
+            opened={conflict !== null}
+            entityLabel="keyword ruleset"
+            diffItems={conflictDiffItems}
+            changedBy={conflict?.currentEntity.lastChanged.user}
+            isSaving={isOverwriting}
+            onOverwrite={handleOverwrite}
+            onDiscard={handleDiscard}
+            onClose={closeConflict}
+          />
+        </>
       )}
     </>
   );

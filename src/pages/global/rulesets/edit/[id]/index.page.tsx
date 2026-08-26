@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react';
-import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
@@ -16,6 +15,7 @@ import { useGlobalHistory } from '@/libs/hooks/global/history/use-global-history
 import { useAccess } from '@/libs/hooks/use-access';
 import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
 import { useRulesetDiff } from '@/libs/hooks/use-ruleset-diff';
+import { useSaveConflict } from '@/libs/hooks/use-save-conflict';
 import { useTrackRecentlyViewed } from '@/libs/hooks/use-track-recently-viewed';
 import { Ruleset } from '@/libs/modules/ruleset/ruleset';
 
@@ -58,60 +58,31 @@ const Page = ({ id }: PageProps): ReactElement => {
   const { saveGlobalRuleset, error } = useGlobalRuleSetUpdate();
   const shouldUseV1 = useOptimisticLockingFlag();
 
-  const [conflict, setConflict] = useState<{
-    currentEntity: MerchandisingReturnedGlobalRuleSet;
-    attemptedRuleSet: MerchandisingRuleSet;
-  } | null>(null);
-  const [isOverwriting, setIsOverwriting] = useState(false);
+  const {
+    conflict,
+    isOverwriting,
+    runSave,
+    handleOverwrite,
+    handleDiscard,
+    closeConflict,
+  } = useSaveConflict<
+    MerchandisingReturnedGlobalRuleSet,
+    { ruleSetId: string; ruleSet: MerchandisingRuleSet }
+  >({
+    save: ({ ruleSetId, ruleSet }, versionOverride) =>
+      saveGlobalRuleset({
+        ruleSetId,
+        ruleSet,
+        version: versionOverride ?? globalRuleSet.version,
+        shouldUseV1,
+      }),
+    onSuccess: () => router.push('/global'),
+  });
 
   const conflictDiffItems = useRulesetDiff(
     globalRuleSet,
     conflict?.currentEntity ?? globalRuleSet
   );
-
-  const persistRuleSet = async ({
-    ruleSetId,
-    ruleSet,
-    version,
-  }: {
-    ruleSetId: string;
-    ruleSet: MerchandisingRuleSet;
-    version?: number;
-  }) => {
-    const response = await saveGlobalRuleset({
-      ruleSetId,
-      ruleSet,
-      version,
-      shouldUseV1,
-    });
-
-    if (response.status === 'success') {
-      router.push('/global');
-    } else if (response.status === 'conflict') {
-      setConflict({
-        currentEntity: response.currentEntity,
-        attemptedRuleSet: ruleSet,
-      });
-    }
-  };
-
-  const handleOverwrite = async () => {
-    // istanbul ignore if
-    if (!conflict) return;
-
-    setIsOverwriting(true);
-    await persistRuleSet({
-      ruleSetId: id,
-      ruleSet: conflict.attemptedRuleSet,
-      version: conflict.currentEntity.version,
-    });
-    setIsOverwriting(false);
-  };
-
-  const handleDiscard = () => {
-    setConflict(null);
-    router.reload();
-  };
 
   useTrackRecentlyViewed({
     id: rulesetData?.id,
@@ -155,13 +126,7 @@ const Page = ({ id }: PageProps): ReactElement => {
               }: {
                 ruleSetId: string;
                 ruleSet: MerchandisingRuleSet;
-              }) =>
-                persistRuleSet({
-                  ruleSetId,
-                  ruleSet,
-                  version: globalRuleSet.version,
-                })
-              }
+              }) => runSave({ ruleSetId, ruleSet })}
               onCancel={() => router.push('/global')}
               rulesetMerchandisingRules={rulesetData.rules}
               rulesetFacets={rulesetData.facets}
@@ -178,7 +143,7 @@ const Page = ({ id }: PageProps): ReactElement => {
               isSaving={isOverwriting}
               onOverwrite={handleOverwrite}
               onDiscard={handleDiscard}
-              onClose={() => setConflict(null)}
+              onClose={closeConflict}
             />
           </>
         )

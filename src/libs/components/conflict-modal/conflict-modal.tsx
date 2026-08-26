@@ -1,7 +1,6 @@
 import { Divider, Modal } from '@mantine/core';
 
 import { Button, Typography } from '@/libs/components';
-import { CopyMessageBox } from '@/libs/components/copy-message-box/copy-message-box';
 import {
   DIFF_TYPE_LABEL,
   LABEL_ICON,
@@ -14,21 +13,14 @@ import styles from './conflict-modal.module.css';
 
 type ConflictModalProps = {
   opened: boolean;
-  diffItems: DiffItem[];
   onDiscard: () => void;
   onOverwrite: () => void;
   onClose: () => void;
+  diffItems?: DiffItem[];
   changedBy?: string;
   isSaving?: boolean;
+  entityLabel?: string;
 };
-
-const buildChangesSummary = (diffItems: DiffItem[]): string =>
-  diffItems
-    .map(
-      (item) =>
-        `${DIFF_TYPE_LABEL[item.type]} ${item.label}: ${item.description}`
-    )
-    .join('\n');
 
 export const ConflictModal = ({
   opened,
@@ -38,6 +30,7 @@ export const ConflictModal = ({
   onClose,
   changedBy,
   isSaving = false,
+  entityLabel = 'ruleset',
 }: ConflictModalProps) => {
   return (
     <Modal.Root
@@ -54,16 +47,15 @@ export const ConflictModal = ({
         <Modal.Body>
           <Modal.Title component="div">
             <Typography as="h2" variant="titleMedium" isStrong hasMargin>
-              This ruleset was changed by someone else
+              This {entityLabel} was changed by someone else
             </Typography>
           </Modal.Title>
 
           <Typography variant="bodySmall" hasMargin>
-            {changedBy
-              ? `Someone else (${changedBy}) saved changes to this ruleset since you opened it.`
-              : 'Someone else saved changes to this ruleset since you opened it.'}{' '}
-            Overwriting will replace their changes with yours. Discarding will
-            keep their changes and lose yours.
+            Someone else{changedBy ? ` (${changedBy})` : ''} saved changes to
+            this {entityLabel} since you opened it. Overwriting will replace
+            their changes with yours. Discarding will keep their changes and
+            lose yours.
           </Typography>
 
           <Divider
@@ -72,62 +64,61 @@ export const ConflictModal = ({
             my="sm"
           />
 
-          {diffItems.length === 0 ? (
-            <Typography variant="bodySmall" hasMargin>
-              The specific changes could not be determined.
-            </Typography>
-          ) : (
+          {diffItems !== undefined && (
             <>
-              <Typography variant="bodySmall" isStrong hasMargin>
-                Changes made since you opened this ruleset
-              </Typography>
-              <ul className={styles.diffList}>
-                {diffItems.map((item) => {
-                  const iconSrc =
-                    LABEL_ICON[`${item.type}-${item.label}`] ??
-                    LABEL_ICON[item.label];
+              {diffItems.length === 0 ? (
+                <Typography variant="bodySmall" hasMargin>
+                  The specific changes could not be determined.
+                </Typography>
+              ) : (
+                <>
+                  <Typography variant="bodySmall" isStrong hasMargin>
+                    Changes made since you opened this {entityLabel}
+                  </Typography>
+                  <ul className={styles.diffList}>
+                    {diffItems.map((item) => {
+                      const iconSrc =
+                        LABEL_ICON[`${item.type}-${item.label}`] ??
+                        LABEL_ICON[item.label];
 
-                  return (
-                    <li
-                      key={`${item.type}-${item.label}-${item.description}`}
-                      className={styles.diffItem}
-                      data-type={item.type}
-                    >
-                      {iconSrc && (
-                        <Image
-                          src={iconSrc}
-                          width={16}
-                          height={16}
-                          alt=""
-                          data-testid="change-type-icon"
-                          className={styles.diffItemIcon}
-                        />
-                      )}
-                      <div>
-                        <Typography variant="bodySmall" isStrong>
-                          {DIFF_TYPE_LABEL[item.type]} {item.label}
-                        </Typography>
-                        <Typography variant="bodySmall">
-                          {item.description}
-                        </Typography>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
+                      return (
+                        <li
+                          key={`${item.type}-${item.label}-${item.description}`}
+                          className={styles.diffItem}
+                          data-type={item.type}
+                        >
+                          {iconSrc && (
+                            <Image
+                              src={iconSrc}
+                              width={16}
+                              height={16}
+                              alt=""
+                              data-testid="change-type-icon"
+                              className={styles.diffItemIcon}
+                            />
+                          )}
+                          <div>
+                            <Typography variant="bodySmall" isStrong>
+                              {DIFF_TYPE_LABEL[item.type]} {item.label}
+                            </Typography>
+                            <Typography variant="bodySmall">
+                              {item.description}
+                            </Typography>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </>
+              )}
 
-              <CopyMessageBox
-                message={buildChangesSummary(diffItems)}
-                isMultiline
+              <Divider
+                color="var(--color-surface-dark-on-surface-dark-container)"
+                mx={-20}
+                my="sm"
               />
             </>
           )}
-
-          <Divider
-            color="var(--color-surface-dark-on-surface-dark-container)"
-            mx={-20}
-            my="sm"
-          />
 
           <div className={styles.buttons}>
             <Button

@@ -1,4 +1,4 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
@@ -7,12 +7,23 @@ import { redirectMock } from '@/pages/api/search/mocks';
 import { useRedirectUpdate } from './use-redirect-update';
 
 const baseUrl = 'http://localhost';
+const redirectId = 'qfwq2r-32f23-23ewfw-233r3';
 
-const mockRedirectId = 'qfwq2r-32f23-23ewfw-233r3';
+const betaHandler = jest.fn();
+const v1Handler = jest.fn();
+
 const handlers = [
   http.put(
-    `${baseUrl}/search/beta/merchandising/keyword/redirect/${mockRedirectId}`,
-    () => {
+    `${baseUrl}/search/beta/merchandising/keyword/redirect/${redirectId}`,
+    async ({ request }) => {
+      betaHandler(await request.json());
+      return HttpResponse.json({}, { status: 200 });
+    }
+  ),
+  http.put(
+    `${baseUrl}/search/merchandising/v1/CLOTHING_AND_HOME/keyword/redirect/${redirectId}`,
+    async ({ request }) => {
+      v1Handler(await request.json());
       return HttpResponse.json({}, { status: 200 });
     }
   ),
@@ -28,6 +39,7 @@ describe('useRedirectUpdate', () => {
 
   afterEach(() => {
     server.resetHandlers();
+    jest.clearAllMocks();
   });
 
   afterAll(() => {
@@ -35,47 +47,39 @@ describe('useRedirectUpdate', () => {
     delete process.env.MERCHANDISING_PROXY_BASE_URL;
   });
 
-  it('should render the hook', async () => {
+  it('updates via the beta endpoint by default', async () => {
     const { result } = renderHook(() => useRedirectUpdate());
 
-    act(() => {
-      result.current.updateRedirect({
-        redirectId: mockRedirectId,
+    let res;
+    await act(async () => {
+      res = await result.current.updateRedirect({
+        redirectId,
         redirect: redirectMock,
       });
     });
 
-    await waitFor(() => {
-      expect(result.current.isSaving).toBe(true);
-    });
+    expect(res).toEqual({ status: 'success' });
+    expect(betaHandler).toHaveBeenCalled();
+    expect(v1Handler).not.toHaveBeenCalled();
   });
 
-  it('should render the hook with error', async () => {
-    server.use(
-      http.put(
-        `${baseUrl}/search/beta/merchandising/keyword/redirect/${mockRedirectId}`,
-        () => {
-          return HttpResponse.json(
-            { message: 'Internal Server Error', status: 'Bad Request' },
-            { status: 500 }
-          );
-        }
-      )
-    );
-
+  it('updates via the v1 endpoint with the version when enabled', async () => {
     const { result } = renderHook(() => useRedirectUpdate());
 
-    act(() => {
-      result.current.updateRedirect({
-        redirectId: mockRedirectId,
+    let res;
+    await act(async () => {
+      res = await result.current.updateRedirect({
+        redirectId,
         redirect: redirectMock,
+        version: 2,
+        shouldUseV1: true,
       });
     });
 
-    await waitFor(() => {
-      expect(result.current.error).toEqual(
-        'Error Internal Server Error Bad Request'
-      );
-    });
+    expect(res).toEqual({ status: 'success' });
+    expect(v1Handler).toHaveBeenCalledWith(
+      expect.objectContaining({ version: 2 })
+    );
+    expect(betaHandler).not.toHaveBeenCalled();
   });
 });

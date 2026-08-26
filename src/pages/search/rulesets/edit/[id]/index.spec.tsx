@@ -45,30 +45,7 @@ jest.mock('@/libs/hooks/search/history/use-search-history', () => ({
 describe('Search ranking rules', () => {
   const mockUpdateRuleSet = {
     updateRuleSet: jest.fn(() =>
-      Promise.resolve({
-        rules: {
-          pinnedProducts: [],
-          blockedProducts: [],
-          boosts: { numeric: [], alphanumeric: [], product: [] },
-          buries: { numeric: [], alphanumeric: [], product: [] },
-          includes: {
-            alphanumeric: [],
-          },
-          excludes: {
-            alphanumeric: [],
-          },
-        },
-        searchTerms: ['foo', 'bar'],
-        isEnabled: true,
-        categoryName: 'Jeans',
-        id: ruleSetId,
-        categoriesInfo: [
-          {
-            id: ruleSetId,
-          },
-        ],
-        lastChanged: { date: '2024-01-02T22:10:17Z', user: 'M&S' },
-      })
+      Promise.resolve({ status: 'success' as const })
     ),
     isSaving: true,
     error: '',
@@ -76,6 +53,7 @@ describe('Search ranking rules', () => {
 
   const mockRouter = {
     push: jest.fn(),
+    reload: jest.fn(),
     query: {},
     events: {
       on: jest.fn(),
@@ -245,6 +223,7 @@ describe('Search ranking rules', () => {
       searchTerms: ['foo', 'bar'],
       startDate: mockStartDate,
       endDate: mockEndDate,
+      shouldUseV1: false,
     };
 
     renderWithProviders(<Page id={ruleSetId} />);
@@ -257,6 +236,72 @@ describe('Search ranking rules', () => {
     expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenLastCalledWith(
       expectedData
     );
+  });
+
+  it('sends the v1 flag + version and shows the conflict modal on a 409', async () => {
+    const currentEntity = {
+      ...mockUseSearchRuleSetPreviewData.ruleSet,
+      version: 7,
+      searchTerms: ['foo', 'bar'],
+      lastChanged: { date: '2024-02-02T00:00:00Z', user: 'Other User' },
+    };
+    const updateRuleSet = jest.fn(() =>
+      Promise.resolve({ status: 'conflict' as const, currentEntity })
+    );
+    jest.mocked(useSearchRuleSetUpdate).mockImplementation(() => ({
+      updateRuleSet,
+      isSaving: false,
+      error: '',
+    }));
+    jest.mocked(useSearchRuleSetPreview).mockImplementation(() => ({
+      ...mockUseSearchRuleSetPreviewData,
+      ruleSet: { ...mockUseSearchRuleSetPreviewData.ruleSet, version: 3 },
+    }));
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<Page id={ruleSetId} />, undefined, {
+      featureFlags: { hasOptimisticLocking: true },
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
+
+    expect(updateRuleSet).toHaveBeenCalledWith(
+      expect.objectContaining({ shouldUseV1: true, version: 3 })
+    );
+    expect(
+      await screen.findByRole('dialog', {
+        name: 'This keyword ruleset was changed by someone else',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('surfaces an update error and does not navigate when the save fails', async () => {
+    jest.mocked(useSearchRuleSetUpdate).mockImplementation(() => ({
+      updateRuleSet: jest.fn(() =>
+        Promise.resolve({ status: 'error' as const })
+      ),
+      isSaving: false,
+      error: 'Failed to update ruleset',
+    }));
+    jest
+      .mocked(useSearchRuleSetPreview)
+      .mockImplementation(() => mockUseSearchRuleSetPreviewData);
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Failed to update ruleset'
+    );
+    expect(mockRouter.push).not.toHaveBeenCalled();
   });
 
   describe('History view', () => {
@@ -273,6 +318,9 @@ describe('Search ranking rules', () => {
     };
 
     beforeEach(() => {
+      jest
+        .mocked(useSearchRuleSetUpdate)
+        .mockImplementation(() => mockUpdateRuleSet);
       jest.mocked(useSearchHistory).mockReturnValue({
         history: { changes: [], pagination: { totalItems: 0 } },
         isLoading: false,

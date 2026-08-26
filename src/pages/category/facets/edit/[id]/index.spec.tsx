@@ -23,7 +23,9 @@ import type { ParsedUrlQuery } from 'querystring';
 import Page, { getServerSideProps } from './index.page';
 
 const mockUpdateGlobalFacet = jest.fn();
-const mockUpdateRuleSet = jest.fn().mockReturnValue(true);
+const mockUpdateRuleSet = jest
+  .fn()
+  .mockResolvedValue({ status: 'success' as const });
 const updateRuleSet = {
   updateCategoryRuleSet: mockUpdateRuleSet,
   error: '',
@@ -213,6 +215,7 @@ describe('Category Facet Management Editing', () => {
     );
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      shouldUseV1: false,
       categoryIds: ['SubCategory_428'],
       countryCode: 'UK_IE',
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
@@ -289,6 +292,7 @@ describe('Category Facet Management Editing', () => {
     );
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      shouldUseV1: false,
       categoryIds: ['SubCategory_428'],
       countryCode: 'IE',
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
@@ -336,6 +340,59 @@ describe('Category Facet Management Editing', () => {
         },
       ],
     });
+  });
+
+  it('sends the v1 flag + version and shows the conflict modal on a 409', async () => {
+    mockUpdateRuleSet.mockResolvedValueOnce({
+      status: 'conflict' as const,
+      currentEntity: {
+        ...mockUseRuleSetPreviewData.ruleSetDetail,
+        version: 7,
+        lastChanged: { date: '2024-02-02T00:00:00Z', user: 'Other User' },
+      },
+    });
+    jest.mocked(useRuleSetDetail).mockImplementation(() => ({
+      ...mockUseRuleSetPreviewData,
+      ruleSetDetail: {
+        ...mockUseRuleSetPreviewData.ruleSetDetail,
+        version: 3,
+      },
+    }));
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<Page id={ruleSetId} />, undefined, {
+      featureFlags: { hasOptimisticLocking: true },
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
+
+    expect(mockUpdateRuleSet).toHaveBeenCalledWith(
+      expect.objectContaining({ shouldUseV1: true, version: 3 })
+    );
+    expect(
+      await screen.findByRole('dialog', {
+        name: 'This category ruleset was changed by someone else',
+      })
+    ).toBeInTheDocument();
+    expect(mockRouter.push).not.toHaveBeenCalled();
+  });
+
+  it('defaults the catalogue when the ruleset has no country code', () => {
+    const noCountryDetail = {
+      ...mockUseRuleSetPreviewData,
+      ruleSetDetail: {
+        ...mockUseRuleSetPreviewData.ruleSetDetail,
+        countryCode: undefined,
+      },
+    };
+    jest.mocked(useRuleSetDetail).mockImplementation(() => noCountryDetail);
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
   });
 
   it('should render the skeleton loader', () => {
@@ -509,6 +566,7 @@ describe('Category Facet Management Editing', () => {
     );
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+      shouldUseV1: false,
       categoryIds: ['SubCategory_428'],
       countryCode: 'UK_IE',
       excludedFacets: {
@@ -641,6 +699,7 @@ describe('Category Facet Management Editing', () => {
       });
 
       expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+        shouldUseV1: false,
         categoryIds: ['SubCategory_428'],
         countryCode: 'UK_IE',
         excludedFacets: {

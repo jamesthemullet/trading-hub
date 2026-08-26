@@ -1,7 +1,10 @@
 import type { ReactElement } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 
-import type { MerchandisingReturnedFacet } from '@/libs/api';
+import type {
+  MerchandisingReturnedFacet,
+  MerchandisingReturnedGlobalFacet,
+} from '@/libs/api';
 import {
   Button,
   ErrorMessage,
@@ -11,6 +14,8 @@ import {
   Typography,
 } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import { ROUTES } from '@/libs/constants/routes';
@@ -18,6 +23,7 @@ import { EditableLabel } from '@/libs/containers/shared/editable-label/editable-
 import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { useGlobalFacetsList, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
+import { useSaveConflict } from '@/libs/hooks/use-save-conflict';
 import { createDiffItem } from '@/libs/hooks/utils/diff';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
@@ -28,10 +34,17 @@ const COLUMNS = ['Facet', 'Display Name', 'Merge Groups', ''];
 const FacetConfig = (): ReactElement => {
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
 
-  const { facets, isLoading, error: facetsListError } = useGlobalFacetsList();
+  const {
+    facets,
+    isLoading,
+    error: facetsListError,
+    onRefreshFacetList,
+  } = useGlobalFacetsList();
 
   const { handleGlobalFacetUpdate, error: updateError } =
     useGlobalFacetUpdate();
+
+  const shouldUseV1 = useOptimisticLockingFlag();
 
   const [displayValueOverrides, setDisplayValueOverrides] = useState<
     Record<string, string>
@@ -98,35 +111,47 @@ const FacetConfig = (): ReactElement => {
     [facetsData, displayValueCountMap]
   );
 
-  const onFacetDataChange = async ({
-    value,
-    facet,
-  }: {
-    value: string;
-    facet: MerchandisingReturnedFacet;
-  }) => {
-    setDisplayValueOverrides((prev) => ({ ...prev, [facet.id]: value }));
+  const {
+    conflict,
+    isOverwriting,
+    runSave,
+    handleOverwrite,
+    handleDiscard,
+    closeConflict,
+  } = useSaveConflict<
+    MerchandisingReturnedGlobalFacet,
+    { value: string; facet: MerchandisingReturnedFacet }
+  >({
+    save: async ({ value, facet }, versionOverride) => {
+      setDisplayValueOverrides((prev) => ({ ...prev, [facet.id]: value }));
 
-    const merged = 'merged' in facet ? facet.merged : undefined;
+      const merged = 'merged' in facet ? facet.merged : undefined;
+      const version = 'version' in facet ? facet.version : undefined;
 
-    const response = await handleGlobalFacetUpdate({
-      facetId: facet.id,
-      data: {
-        displayValue: value,
-        indexPropertyName: facet.indexPropertyName,
-        excludedValues: facet.excludedValues,
-        boosted: facet.boosted,
-        merged,
-      },
-    });
+      const result = await handleGlobalFacetUpdate({
+        facetId: facet.id,
+        data: {
+          displayValue: value,
+          indexPropertyName: facet.indexPropertyName,
+          excludedValues: facet.excludedValues,
+          boosted: facet.boosted,
+          merged,
+        },
+        version: versionOverride ?? version,
+        shouldUseV1,
+      });
 
-    if (response && 'status' in response && response.status === 'error') {
-      setDisplayValueOverrides((prev) => ({
-        ...prev,
-        [facet.id]: facet.displayValue,
-      }));
-    }
-  };
+      if (result.status === 'error') {
+        setDisplayValueOverrides((prev) => ({
+          ...prev,
+          [facet.id]: facet.displayValue,
+        }));
+      }
+
+      return result;
+    },
+    onSuccess: onRefreshFacetList,
+  });
 
   const handleReviewModalClose = useCallback(() => {
     setPendingDisplayNameChange(null);
@@ -141,7 +166,7 @@ const FacetConfig = (): ReactElement => {
 
     const change = pendingDisplayNameChange;
     setPendingDisplayNameChange(null);
-    await onFacetDataChange(change);
+    await runSave(change);
   };
 
   const displayNameDiffItems = useMemo(
@@ -157,6 +182,42 @@ const FacetConfig = (): ReactElement => {
         : [],
     [pendingDisplayNameChange]
   );
+
+  const conflictDiffItems = useMemo(() => {
+    if (!conflict) return [];
+
+    const original = conflict.payload.facet;
+    const current = conflict.currentEntity;
+    // `merged` is always an array when the key is present; the `?? 0`
+    // fallback only exists to satisfy the optional field's type.
+    /* istanbul ignore next */
+    const getMergeCount = (facet: { merged?: unknown[] }): number =>
+      facet.merged?.length ?? 0;
+    const originalMergeCount =
+      'merged' in original ? getMergeCount(original) : 0;
+    const currentMergeCount = getMergeCount(current);
+
+    return [
+      ...(original.displayValue !== current.displayValue
+        ? [
+            createDiffItem(
+              'changed',
+              'Display name',
+              `${original.displayValue} → ${current.displayValue}`
+            ),
+          ]
+        : []),
+      ...(originalMergeCount !== currentMergeCount
+        ? [
+            createDiffItem(
+              'changed',
+              'Merge groups',
+              `${originalMergeCount} → ${currentMergeCount}`
+            ),
+          ]
+        : []),
+    ];
+  }, [conflict]);
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -312,6 +373,17 @@ const FacetConfig = (): ReactElement => {
         onConfirm={handleReviewModalConfirm}
         onCancel={handleReviewModalClose}
         shouldShowGlobalWarning
+      />
+
+      <ConflictModal
+        opened={conflict !== null}
+        entityLabel="facet"
+        diffItems={conflictDiffItems}
+        changedBy={conflict?.currentEntity.lastChanged.user}
+        isSaving={isOverwriting}
+        onOverwrite={handleOverwrite}
+        onDiscard={handleDiscard}
+        onClose={closeConflict}
       />
     </>
   );

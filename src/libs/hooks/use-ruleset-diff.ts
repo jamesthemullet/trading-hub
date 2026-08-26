@@ -8,6 +8,7 @@ import type {
 import {
   createDiffItem,
   diffDate,
+  diffFacetValues,
   type DiffItem,
   diffStringList,
 } from '@/libs/hooks/utils/diff';
@@ -213,6 +214,88 @@ const diffDates = (
   ...diffDate(original.endDate, current.endDate, 'End date'),
 ];
 
+const diffCountryCode = (
+  original: MerchandisingRuleSet,
+  current: MerchandisingRuleSet
+): DiffItem[] =>
+  original.countryCode === current.countryCode
+    ? []
+    : [
+        createDiffItem(
+          'changed',
+          'Country',
+          `${original.countryCode ?? 'none'} → ${current.countryCode ?? 'none'}`
+        ),
+      ];
+
+const facetLabel = (id: string, facetNames: Record<string, string>): string =>
+  facetNames[id] ?? id;
+
+const diffFacetOrder = (
+  originalIds: string[],
+  currentIds: string[],
+  facetNames: Record<string, string>
+): DiffItem[] => {
+  const originalOrder = originalIds.filter((id) => currentIds.includes(id));
+  const currentOrder = currentIds.filter((id) => originalIds.includes(id));
+
+  return currentOrder.flatMap<DiffItem>((id) => {
+    const origIndex = originalOrder.indexOf(id);
+    const currIndex = currentOrder.indexOf(id);
+    if (origIndex === currIndex) return [];
+
+    const direction = currIndex < origIndex ? 'up' : 'down';
+    return [
+      createDiffItem(
+        'changed',
+        `Facet order ${direction}`,
+        `${facetLabel(id, facetNames)}: position ${origIndex + 1} → ${
+          currIndex + 1
+        }`
+      ),
+    ];
+  });
+};
+
+const diffFacets = (
+  original: MerchandisingRuleSet['facets'] = [],
+  current: MerchandisingRuleSet['facets'] = [],
+  facetNames: Record<string, string> = {}
+): DiffItem[] => {
+  const originalById = new Map(original.map((facet) => [facet.id, facet]));
+  const currentById = new Map(current.map((facet) => [facet.id, facet]));
+
+  const valueChanges = current.flatMap<DiffItem>((facet) => {
+    const originalFacet = originalById.get(facet.id);
+    if (!originalFacet) return [];
+    return diffFacetValues(
+      originalFacet.boosted ?? [],
+      facet.boosted ?? [],
+      originalFacet.excludedValues ?? [],
+      facet.excludedValues ?? []
+    );
+  });
+
+  return [
+    ...current
+      .filter((facet) => !originalById.has(facet.id))
+      .map((facet) =>
+        createDiffItem('added', 'Facet', facetLabel(facet.id, facetNames))
+      ),
+    ...original
+      .filter((facet) => !currentById.has(facet.id))
+      .map((facet) =>
+        createDiffItem('removed', 'Facet', facetLabel(facet.id, facetNames))
+      ),
+    ...valueChanges,
+    ...diffFacetOrder(
+      original.map((facet) => facet.id),
+      current.map((facet) => facet.id),
+      facetNames
+    ),
+  ];
+};
+
 export const useRulesetDiff = (
   original: MerchandisingRuleSet | undefined,
   current: MerchandisingRuleSet,
@@ -222,6 +305,7 @@ export const useRulesetDiff = (
     currentCategoryIds?: string[];
     originalSearchTerms?: string[];
     currentSearchTerms?: string[];
+    facetNames?: Record<string, string>;
   }
 ): DiffItem[] => {
   if (!original || options?.isEnabled === false) return [];
@@ -283,6 +367,8 @@ export const useRulesetDiff = (
       'Exclude attribute'
     ),
     ...diffDates(original, current),
+    ...diffCountryCode(original, current),
+    ...diffFacets(original.facets, current.facets, options?.facetNames),
     ...diffStringList(originalSearchTerms, currentSearchTerms, 'Keyword'),
   ];
 };

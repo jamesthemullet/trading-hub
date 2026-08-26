@@ -5,8 +5,11 @@ import { useRouter } from 'next/router';
 import type {
   MerchandisingAttributeValuesResponse,
   MerchandisingCountryCode,
+  MerchandisingFacetConfig,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
+import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import { ROUTES } from '@/libs/constants';
 import { FacetType } from '@/libs/constants/rule-types';
@@ -16,6 +19,7 @@ import { ModalUnsavedChanges } from '@/libs/containers/shared/modals';
 import { useGlobalFacetUpdate } from '@/libs/hooks';
 import { useGlobalFacetAttributesDiff } from '@/libs/hooks/use-global-facet-attributes-diff';
 import { useGlobalFacetAttributesEditModal } from '@/libs/hooks/use-global-facet-attributes-edit-modal';
+import { useSaveConflict } from '@/libs/hooks/use-save-conflict';
 import {
   globalAttributesPageReducer,
   INITIAL_STATE,
@@ -162,35 +166,61 @@ export const GlobalFacetAttributesPageLayout = ({
     setIsReviewModalOpen(true);
   };
 
-  const handleConfirmSave = async () => {
-    setIsReviewModalOpen(false);
-    await onSave();
-  };
-
   const { handleGlobalFacetUpdate, error: updateGlobalFacetError } =
     useGlobalFacetUpdate();
+  const shouldUseV1 = useOptimisticLockingFlag();
 
-  const onSave = async () => {
-    const response = await handleGlobalFacetUpdate({
-      facetId,
-      data: {
-        ...facet,
-        merged: globalAttributesLocalState.merged,
-        // TODO update logic for included and excluded values
-        excludedValues: globalAttributesLocalState.excludedRows.flatMap(
-          (val) => val.displayName
-        ),
-        boosted: globalAttributesLocalState.boostedRows.flatMap(
-          (val) => val.displayName
-        ),
-      },
+  const {
+    conflict,
+    isOverwriting,
+    runSave,
+    handleOverwrite,
+    handleDiscard,
+    closeConflict,
+  } = useSaveConflict<
+    MerchandisingReturnedGlobalFacet,
+    MerchandisingFacetConfig
+  >({
+    save: (data, versionOverride) =>
+      handleGlobalFacetUpdate({
+        facetId,
+        data,
+        version: versionOverride ?? facet.version,
+        shouldUseV1,
+      }),
+    onSuccess: () => router.push(ROUTES.GLOBAL.FACET_CONFIG),
+  });
+
+  // Diff between the facet as it was when this page loaded and the latest
+  // server version returned in the 409 conflict, so the modal can show what
+  // someone else changed.
+  const conflictServerState = useMemo(
+    () =>
+      conflict &&
+      globalAttributesPageReducer(INITIAL_STATE, {
+        type: 'INITIALISE_STATE',
+        payload: buildInitialPayload(conflict.currentEntity, attributeValues),
+      }),
+    [conflict, attributeValues]
+  );
+
+  const conflictDiffItems = useGlobalFacetAttributesDiff(
+    originalState,
+    conflictServerState ?? originalState
+  );
+
+  const handleConfirmSave = async () => {
+    setIsReviewModalOpen(false);
+    await runSave({
+      ...facet,
+      merged: globalAttributesLocalState.merged,
+      excludedValues: globalAttributesLocalState.excludedRows.flatMap(
+        (val) => val.displayName
+      ),
+      boosted: globalAttributesLocalState.boostedRows.flatMap(
+        (val) => val.displayName
+      ),
     });
-
-    if ('status' in response && response.status === 'error') {
-      return;
-    }
-
-    router.push(ROUTES.GLOBAL.FACET_CONFIG);
   };
 
   // edit modal logic
@@ -300,6 +330,17 @@ export const GlobalFacetAttributesPageLayout = ({
         isOpen={isUnsavedChangesModalOpen}
         onClose={navigateBack}
         onContinue={() => setIsUnsavedChangesModalOpen(false)}
+      />
+
+      <ConflictModal
+        opened={conflict !== null}
+        entityLabel="facet"
+        diffItems={conflictDiffItems}
+        changedBy={conflict?.currentEntity.lastChanged.user}
+        isSaving={isOverwriting}
+        onOverwrite={handleOverwrite}
+        onDiscard={handleDiscard}
+        onClose={closeConflict}
       />
     </>
   );

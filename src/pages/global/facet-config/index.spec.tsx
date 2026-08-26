@@ -7,6 +7,15 @@ import { renderWithProviders } from '@/test/render-with-providers';
 
 import FacetConfig from './index.page';
 
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(() => ({
+    reload: jest.fn(),
+    push: jest.fn(),
+    query: {},
+    events: { on: jest.fn(), off: jest.fn() },
+  })),
+}));
+
 const baseUrl = '';
 
 const mockFacets = {
@@ -18,6 +27,7 @@ const mockFacets = {
       boosted: [],
       excludedValues: [],
       merged: [{ displayValue: 'Blue', mergedValues: ['Navy', 'Royal Blue'] }],
+      version: 3,
       lastChanged: { date: '2024-01-01T00:00:00Z', user: 'test' },
     },
     {
@@ -27,6 +37,7 @@ const mockFacets = {
       boosted: [],
       excludedValues: [],
       merged: [],
+      version: 3,
       lastChanged: { date: '2024-01-01T00:00:00Z', user: 'test' },
     },
   ],
@@ -512,6 +523,240 @@ describe('Global Facet Config', () => {
       expect(
         screen.queryByRole('button', { name: 'Save changes' })
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('optimistic locking (save conflict)', () => {
+    const v1FacetUrl = `${baseUrl}/api/search/merchandising/v1/CLOTHING_AND_HOME/facet/:facetId`;
+
+    const editColourTo = async (newValue: string) => {
+      await userEvent.click(
+        await screen.findByRole('button', {
+          name: 'Edit display name for Colour',
+        })
+      );
+      const input = screen.getByRole('textbox', {
+        name: 'Edit Colour input field',
+      });
+      await userEvent.clear(input);
+      await userEvent.type(input, newValue);
+      await userEvent.keyboard('{Enter}');
+      await userEvent.click(
+        await screen.findByRole('button', { name: 'Save changes' })
+      );
+    };
+
+    it('saves via the v1 endpoint with the loaded version when the flag is on', async () => {
+      let requestBody: unknown;
+      server.use(
+        http.put(v1FacetUrl, async ({ request }) => {
+          requestBody = await request.json();
+          return HttpResponse.json({
+            ...mockFacets.facets[0],
+            displayValue: 'Colour Updated',
+            version: 4,
+          });
+        })
+      );
+
+      renderWithProviders(<FacetConfig />, undefined, {
+        featureFlags: { hasOptimisticLocking: true },
+      });
+
+      await editColourTo('Colour Updated');
+
+      await waitFor(() =>
+        expect(requestBody).toMatchObject({
+          displayValue: 'Colour Updated',
+          version: 3,
+        })
+      );
+    });
+
+    it('shows the conflict modal when the facet was changed by someone else', async () => {
+      server.use(
+        http.put(v1FacetUrl, () =>
+          HttpResponse.json(
+            {
+              message: 'Conflict',
+              currentEntity: {
+                ...mockFacets.facets[0],
+                displayValue: 'Colour From Someone Else',
+                version: 9,
+                lastChanged: {
+                  date: '2024-02-02T00:00:00Z',
+                  user: 'Other User',
+                },
+              },
+            },
+            { status: 409 }
+          )
+        )
+      );
+
+      renderWithProviders(<FacetConfig />, undefined, {
+        featureFlags: { hasOptimisticLocking: true },
+      });
+
+      await editColourTo('Colour Updated');
+
+      const dialog = await screen.findByRole('dialog', {
+        name: 'This facet was changed by someone else',
+      });
+      const matched = within(dialog).getByText(
+        'Colour → Colour From Someone Else'
+      );
+
+      expect(matched).toBeInTheDocument();
+    });
+
+    it('shows a merge groups diff item when the merge groups changed', async () => {
+      server.use(
+        http.put(v1FacetUrl, () =>
+          HttpResponse.json(
+            {
+              message: 'Conflict',
+              currentEntity: {
+                ...mockFacets.facets[0],
+                merged: [],
+                version: 9,
+                lastChanged: {
+                  date: '2024-02-02T00:00:00Z',
+                  user: 'Other User',
+                },
+              },
+            },
+            { status: 409 }
+          )
+        )
+      );
+
+      renderWithProviders(<FacetConfig />, undefined, {
+        featureFlags: { hasOptimisticLocking: true },
+      });
+
+      await editColourTo('Colour Updated');
+
+      const dialog = await screen.findByRole('dialog', {
+        name: 'This facet was changed by someone else',
+      });
+
+      expect(within(dialog).getByText('1 → 0')).toBeInTheDocument();
+    });
+
+    it('shows a merge groups diff item when the original facet has no merged property', async () => {
+      server.use(
+        http.get(`${baseUrl}/api/search/beta/merchandising/facet`, () =>
+          HttpResponse.json({
+            facets: [
+              {
+                id: 'facet-3',
+                indexPropertyName: 'brand',
+                displayValue: 'Brand',
+                boosted: [],
+                excludedValues: [],
+                version: 3,
+                lastChanged: { date: '2024-01-01T00:00:00Z', user: 'test' },
+              },
+            ],
+          })
+        ),
+        http.put(v1FacetUrl, () =>
+          HttpResponse.json(
+            {
+              message: 'Conflict',
+              currentEntity: {
+                id: 'facet-3',
+                indexPropertyName: 'brand',
+                displayValue: 'Brand',
+                boosted: [],
+                excludedValues: [],
+                merged: [{ displayValue: 'x', mergedValues: ['y'] }],
+                version: 9,
+                lastChanged: {
+                  date: '2024-02-02T00:00:00Z',
+                  user: 'Other User',
+                },
+              },
+            },
+            { status: 409 }
+          )
+        )
+      );
+
+      renderWithProviders(<FacetConfig />, undefined, {
+        featureFlags: { hasOptimisticLocking: true },
+      });
+
+      await userEvent.click(
+        await screen.findByRole('button', {
+          name: 'Edit display name for Brand',
+        })
+      );
+      const input = screen.getByRole('textbox', {
+        name: 'Edit Brand input field',
+      });
+      await userEvent.clear(input);
+      await userEvent.type(input, 'Brand Updated');
+      await userEvent.keyboard('{Enter}');
+      await userEvent.click(
+        await screen.findByRole('button', { name: 'Save changes' })
+      );
+
+      const dialog = await screen.findByRole('dialog', {
+        name: 'This facet was changed by someone else',
+      });
+
+      expect(within(dialog).getByText('0 → 1')).toBeInTheDocument();
+    });
+
+    it('overwrites with the server version when the user chooses overwrite', async () => {
+      let overwriteBody: unknown;
+      let callCount = 0;
+      server.use(
+        http.put(v1FacetUrl, async ({ request }) => {
+          callCount += 1;
+          if (callCount === 1) {
+            return HttpResponse.json(
+              {
+                message: 'Conflict',
+                currentEntity: {
+                  ...mockFacets.facets[0],
+                  version: 9,
+                  lastChanged: {
+                    date: '2024-02-02T00:00:00Z',
+                    user: 'Other User',
+                  },
+                },
+              },
+              { status: 409 }
+            );
+          }
+          overwriteBody = await request.json();
+          return HttpResponse.json({
+            ...mockFacets.facets[0],
+            displayValue: 'Colour Updated',
+            version: 10,
+          });
+        })
+      );
+
+      renderWithProviders(<FacetConfig />, undefined, {
+        featureFlags: { hasOptimisticLocking: true },
+      });
+
+      await editColourTo('Colour Updated');
+
+      const dialog = await screen.findByRole('dialog', {
+        name: 'This facet was changed by someone else',
+      });
+      await userEvent.click(
+        within(dialog).getByRole('button', {
+          name: 'Overwrite with my changes',
+        })
+      );
+
+      await waitFor(() => expect(overwriteBody).toMatchObject({ version: 9 }));
     });
   });
 });

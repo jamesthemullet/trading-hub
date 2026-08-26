@@ -683,4 +683,167 @@ describe('useRulesetDiff', () => {
       expect(result).toEqual([]);
     });
   });
+
+  describe('country code', () => {
+    it('should detect a country code change', () => {
+      const result = useRulesetDiff(
+        { ...emptyRules, countryCode: 'UK' },
+        { ...emptyRules, countryCode: 'UK_IE' }
+      );
+      expect(result).toContainEqual({
+        type: 'changed',
+        label: 'Country',
+        description: 'UK → UK_IE',
+      });
+    });
+
+    it('should label a missing original country as none', () => {
+      const result = useRulesetDiff(emptyRules, {
+        ...emptyRules,
+        countryCode: 'UK_IE',
+      });
+      expect(result).toContainEqual({
+        type: 'changed',
+        label: 'Country',
+        description: 'none → UK_IE',
+      });
+    });
+
+    it('should label a removed country as none', () => {
+      const result = useRulesetDiff(
+        { ...emptyRules, countryCode: 'UK' },
+        emptyRules
+      );
+      expect(result).toContainEqual({
+        type: 'changed',
+        label: 'Country',
+        description: 'UK → none',
+      });
+    });
+  });
+
+  describe('facets', () => {
+    it('should detect an added facet', () => {
+      const result = useRulesetDiff(emptyRules, {
+        ...emptyRules,
+        facets: [{ id: 'facet1' }],
+      });
+      expect(result).toContainEqual({
+        type: 'added',
+        label: 'Facet',
+        description: 'facet1',
+      });
+    });
+
+    it('should detect a removed facet', () => {
+      const result = useRulesetDiff(
+        { ...emptyRules, facets: [{ id: 'facet1' }] },
+        emptyRules
+      );
+      expect(result).toContainEqual({
+        type: 'removed',
+        label: 'Facet',
+        description: 'facet1',
+      });
+    });
+
+    it('should describe a facet value set to excluded as a status change', () => {
+      const result = useRulesetDiff(
+        {
+          ...emptyRules,
+          facets: [{ id: 'facet1', boosted: [], excludedValues: [] }],
+        },
+        {
+          ...emptyRules,
+          facets: [{ id: 'facet1', boosted: [], excludedValues: ['Red'] }],
+        }
+      );
+      expect(result).toContainEqual({
+        type: 'changed',
+        label: 'Exclude only',
+        description: 'Red (Algo control → Exclude only)',
+      });
+    });
+
+    it('should describe a facet value set to included as a status change', () => {
+      const result = useRulesetDiff(
+        {
+          ...emptyRules,
+          facets: [{ id: 'facet1', boosted: [], excludedValues: [] }],
+        },
+        {
+          ...emptyRules,
+          facets: [{ id: 'facet1', boosted: ['Red'], excludedValues: [] }],
+        }
+      );
+      expect(result).toContainEqual({
+        type: 'changed',
+        label: 'Include only',
+        description: 'Red (Algo control → Include only)',
+      });
+    });
+
+    it('should detect a facet value order change', () => {
+      const result = useRulesetDiff(
+        { ...emptyRules, facets: [{ id: 'facet1', boosted: ['Red', 'Blue'] }] },
+        { ...emptyRules, facets: [{ id: 'facet1', boosted: ['Blue', 'Red'] }] }
+      );
+      expect(result).toContainEqual({
+        type: 'changed',
+        label: 'Value order up',
+        description: 'Blue: position 2 → 1',
+      });
+    });
+
+    it('should not report facet value changes when a shared facet is unchanged', () => {
+      const result = useRulesetDiff(
+        { ...emptyRules, facets: [{ id: 'facet1' }] },
+        { ...emptyRules, facets: [{ id: 'facet1' }] }
+      );
+      expect(result).toEqual([]);
+    });
+
+    it('should describe a facet reorder as per-facet position changes', () => {
+      const result = useRulesetDiff(
+        { ...emptyRules, facets: [{ id: 'facet1' }, { id: 'facet2' }] },
+        { ...emptyRules, facets: [{ id: 'facet2' }, { id: 'facet1' }] }
+      );
+      expect(result).toContainEqual({
+        type: 'changed',
+        label: 'Facet order up',
+        description: 'facet2: position 2 → 1',
+      });
+      expect(result).toContainEqual({
+        type: 'changed',
+        label: 'Facet order down',
+        description: 'facet1: position 1 → 2',
+      });
+    });
+
+    it('should use facet display names instead of ids when provided', () => {
+      const result = useRulesetDiff(
+        { ...emptyRules, facets: [{ id: 'facet1' }, { id: 'facet2' }] },
+        { ...emptyRules, facets: [{ id: 'facet2' }] },
+        { facetNames: { facet1: 'Colour', facet2: 'Size' } }
+      );
+      expect(result).toContainEqual({
+        type: 'removed',
+        label: 'Facet',
+        description: 'Colour',
+      });
+    });
+
+    it('should fall back to the facet id when no display name is mapped', () => {
+      const result = useRulesetDiff(
+        emptyRules,
+        { ...emptyRules, facets: [{ id: 'facet1' }] },
+        { facetNames: { facet2: 'Size' } }
+      );
+      expect(result).toContainEqual({
+        type: 'added',
+        label: 'Facet',
+        description: 'facet1',
+      });
+    });
+  });
 });

@@ -2,11 +2,13 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
+import type { MerchandisingReturnedKeywordRuleSet } from '@/libs/api';
 import {
   useGetFacetAttributeValues,
   useSearchRuleSetPreview,
   useSearchRuleSetUpdate,
 } from '@/libs/hooks';
+import type { SaveResult } from '@/libs/hooks/use-optimistic-update';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { ruleSetId } from '@/test/data/mock-use-rule-set-preview.data';
 import { mockUseSearchRuleSetPreviewData } from '@/test/data/mock-use-search-ruleset-preview';
@@ -31,6 +33,7 @@ jest.mock('lodash/intersection', () => jest.fn());
 jest.mock('lodash/without', () => jest.fn());
 
 const updateMock = {
+  shouldUseV1: false,
   searchTerms: ['foo', 'bar'],
   countryCode: 'UK_IE',
   ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
@@ -98,31 +101,9 @@ const updateMock = {
 };
 
 const mockUpdateRuleSet = {
-  updateRuleSet: jest.fn(() =>
-    Promise.resolve({
-      rules: {
-        pinnedProducts: [],
-        blockedProducts: [],
-        boosts: { numeric: [], alphanumeric: [], product: [] },
-        buries: { numeric: [], alphanumeric: [], product: [] },
-        includes: {
-          alphanumeric: [],
-        },
-        excludes: {
-          alphanumeric: [],
-        },
-      },
-      searchTerms: ['foo', 'bar'],
-      isEnabled: true,
-      categoryName: 'Jeans',
-      id: ruleSetId,
-      categoriesInfo: [
-        {
-          id: ruleSetId,
-        },
-      ],
-      lastChanged: { date: '2024-01-02T22:10:17Z', user: 'M&S' },
-    })
+  updateRuleSet: jest.fn(
+    (): Promise<SaveResult<MerchandisingReturnedKeywordRuleSet>> =>
+      Promise.resolve({ status: 'success' })
   ),
   isSaving: true,
   error: '',
@@ -298,6 +279,42 @@ describe('Index', () => {
     expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith(updateMock);
 
     expect(defaultMockRouter.push).toHaveBeenCalledWith('/search');
+  });
+
+  it('sends the v1 flag + version and shows the conflict modal on a 409', async () => {
+    mockUpdateRuleSet.updateRuleSet.mockResolvedValueOnce({
+      status: 'conflict' as const,
+      currentEntity: {
+        ...mockUseSearchRuleSetPreviewData.ruleSet,
+        version: 7,
+        lastChanged: { date: '2024-02-02T00:00:00Z', user: 'Other User' },
+      },
+    });
+    jest.mocked(useSearchRuleSetPreview).mockImplementation(() => ({
+      ...mockUseSearchRuleSetPreviewData,
+      ruleSet: { ...mockUseSearchRuleSetPreviewData.ruleSet, version: 3 },
+    }));
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<Page />, undefined, {
+      featureFlags: { hasOptimisticLocking: true },
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    const dialog = await screen.findByRole('dialog');
+    await user.click(
+      within(dialog).getByRole('button', { name: 'Save changes' })
+    );
+
+    expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith(
+      expect.objectContaining({ shouldUseV1: true, version: 3 })
+    );
+    expect(
+      await screen.findByRole('dialog', {
+        name: 'This keyword ruleset was changed by someone else',
+      })
+    ).toBeInTheDocument();
+    expect(defaultMockRouter.push).not.toHaveBeenCalled();
   });
 
   it('should display error message when updating ruleset fails', async () => {

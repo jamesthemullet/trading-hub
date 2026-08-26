@@ -1,21 +1,33 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
-import type { MerchandisingKeywordRuleSet } from '@/libs/api';
+import type {
+  MerchandisingKeywordRuleSet,
+  MerchandisingReturnedKeywordRuleSet,
+} from '@/libs/api';
 import { search } from '@/libs/api';
-import { handleError } from '@/libs/hooks/utils/error';
+import {
+  type SaveResult,
+  useOptimisticUpdate,
+} from '@/libs/hooks/use-optimistic-update';
+
+type UpdateRuleSetArgs = MerchandisingKeywordRuleSet & {
+  ruleSetId: string;
+  version?: number;
+  shouldUseV1?: boolean;
+};
 
 export const useSearchRuleSetUpdate = (): {
   isSaving: boolean;
   updateRuleSet: (
-    args: MerchandisingKeywordRuleSet & { ruleSetId: string }
-  ) => Promise<MerchandisingKeywordRuleSet | undefined>;
+    args: UpdateRuleSetArgs
+  ) => Promise<SaveResult<MerchandisingReturnedKeywordRuleSet>>;
   error: string;
 } => {
-  const [error, setError] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
+  const { error, isSaving, runUpdate } =
+    useOptimisticUpdate<MerchandisingReturnedKeywordRuleSet>();
 
   const updateRuleSet = useCallback(
-    async ({
+    ({
       searchTerms,
       ruleSetId,
       rules,
@@ -25,33 +37,35 @@ export const useSearchRuleSetUpdate = (): {
       countryCode,
       excludedFacets,
       isEnabled,
-    }: MerchandisingKeywordRuleSet & { ruleSetId: string }) => {
-      setError('');
-      setIsSaving(true);
+      version,
+      shouldUseV1 = false,
+    }: UpdateRuleSetArgs) => {
+      const body: MerchandisingKeywordRuleSet = {
+        searchTerms,
+        facets,
+        isEnabled,
+        rules,
+        startDate,
+        endDate,
+        excludedFacets,
+        countryCode,
+      };
 
-      try {
-        const body: MerchandisingKeywordRuleSet = {
-          searchTerms,
-          facets,
-          isEnabled,
-          rules,
-          startDate,
-          endDate,
-          excludedFacets,
-          countryCode,
-        };
-        const response = await search().betaMerchandisingKeywordRulesetUpdate(
-          ruleSetId,
-          body
-        );
-
-        setIsSaving(false);
-        return response.data;
-      } catch (error) {
-        setError(handleError(error));
-      }
+      return runUpdate({
+        shouldUseV1,
+        version,
+        entity: 'ruleset',
+        betaUpdate: () =>
+          search().betaMerchandisingKeywordRulesetUpdate(ruleSetId, body),
+        v1Update: (lockVersion) =>
+          search().merchandisingV1KeywordRulesetUpdate(
+            'CLOTHING_AND_HOME',
+            ruleSetId,
+            { ...body, version: lockVersion }
+          ),
+      });
     },
-    [setIsSaving]
+    [runUpdate]
   );
 
   return { isSaving, updateRuleSet, error };

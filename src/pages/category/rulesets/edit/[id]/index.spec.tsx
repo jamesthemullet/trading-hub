@@ -71,6 +71,7 @@ describe('Index', () => {
 
   const mockRouter = {
     push: jest.fn(),
+    reload: jest.fn(),
     query: {},
     events: {
       on: jest.fn(),
@@ -249,6 +250,7 @@ describe('Index', () => {
           alphanumeric: [],
         },
       },
+      shouldUseV1: false,
     });
   });
 
@@ -278,6 +280,46 @@ describe('Index', () => {
     }
 
     expect((await result.props).id).toBe(mockPageId);
+  });
+
+  it('sends the v1 flag + version and shows the conflict modal on a 409', async () => {
+    const currentEntity = {
+      ...mockUseRuleSetPreviewData.ruleSetDetail,
+      version: 7,
+      lastChanged: { date: '2024-02-02T00:00:00Z', user: 'Other User' },
+    };
+    const updateCategoryRuleSet = jest.fn(() =>
+      Promise.resolve({ status: 'conflict' as const, currentEntity })
+    );
+    jest.mocked(useUpdateRuleSet).mockImplementation(() => ({
+      updateCategoryRuleSet,
+      isSaving: false,
+      error: '',
+    }));
+    jest.mocked(useRuleSetDetail).mockImplementation(() => ({
+      ...mockUseRuleSetPreviewData,
+      ruleSetDetail: { ...mockUseRuleSetPreviewData.ruleSetDetail, version: 3 },
+    }));
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<Page id={ruleSetId} />, undefined, {
+      featureFlags: { hasOptimisticLocking: true },
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
+
+    expect(updateCategoryRuleSet).toHaveBeenCalledWith(
+      expect.objectContaining({ shouldUseV1: true, version: 3 })
+    );
+    expect(
+      await screen.findByRole('dialog', {
+        name: 'This category ruleset was changed by someone else',
+      })
+    ).toBeInTheDocument();
+    expect(mockRouter.push).not.toHaveBeenCalled();
   });
 
   it('should show errors', async () => {

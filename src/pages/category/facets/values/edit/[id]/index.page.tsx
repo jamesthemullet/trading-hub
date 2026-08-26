@@ -3,11 +3,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type {
+  MerchandisingReturnedCategoryRuleSet,
   MerchandisingReturnedFacet,
   MerchandisingRuleSet,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
+import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { FacetType } from '@/libs/constants/rule-types';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
@@ -20,6 +23,8 @@ import {
   useUpdateRuleSet,
 } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
+import { useRulesetDiff } from '@/libs/hooks/use-ruleset-diff';
+import { useSaveConflict } from '@/libs/hooks/use-save-conflict';
 import { useTypeSafeQuery } from '@/libs/hooks/use-type-safe-query';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
@@ -35,6 +40,7 @@ const Page = (): ReactElement => {
 
   const { updateCategoryRuleSet, error: updateRulesetError } =
     useUpdateRuleSet();
+  const shouldUseV1 = useOptimisticLockingFlag();
   const { getDraft, saveDraft } = useDraftRuleset();
 
   const { getStringParam, getCountryCodeParam, getBooleanParam } =
@@ -124,6 +130,61 @@ const Page = (): ReactElement => {
     }
   }, [facets, facet, effectiveRulesetDetail]);
 
+  const {
+    conflict,
+    isOverwriting,
+    runSave,
+    handleOverwrite,
+    handleDiscard,
+    closeConflict,
+  } = useSaveConflict<
+    MerchandisingReturnedCategoryRuleSet,
+    MerchandisingRuleSetFacetConfigWithId
+  >({
+    save: (newFacet, versionOverride) => {
+      const {
+        // no need for last changed
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        lastChanged: _,
+        facets,
+        id,
+        categoriesInfo,
+        ...rest
+      } = ruleSetDetail;
+      const newFacets = facets?.map((facet) => {
+        if (facet.id === newFacet.id) {
+          return newFacet;
+        }
+
+        return facet;
+      });
+      return updateCategoryRuleSet({
+        ...rest,
+        categoryIds:
+          categoriesInfo.map(({ id }) => id) ||
+          // istanbul ignore next
+          [],
+        facets: newFacets,
+        ruleSetId: id,
+        version: versionOverride ?? ruleSetDetail.version,
+        shouldUseV1,
+      });
+    },
+    onSuccess: () => router.push('/category'),
+  });
+
+  const conflictDiffItems = useRulesetDiff(
+    ruleSetDetail,
+    conflict?.currentEntity ?? ruleSetDetail,
+    {
+      originalCategoryIds: ruleSetDetail.categoriesInfo?.map(({ id }) => id),
+      currentCategoryIds: (
+        conflict?.currentEntity ?? ruleSetDetail
+      ).categoriesInfo?.map(({ id }) => id),
+      facetNames: Object.fromEntries(facets.map((f) => [f.id, f.displayValue])),
+    }
+  );
+
   const handleSave = async (
     newFacet: MerchandisingRuleSetFacetConfigWithId
   ) => {
@@ -146,37 +207,9 @@ const Page = (): ReactElement => {
       saveDraft({ ruleset: updatedDraft, type: 'category' });
 
       return router.push(`/category/facets/new?ruleSetId=draft`);
-    } else {
-      const {
-        // no need for last changed
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        lastChanged: _,
-        facets,
-        id,
-        categoriesInfo,
-        ...rest
-      } = ruleSetDetail;
-      const newFacets = facets?.map((facet) => {
-        if (facet.id === newFacet.id) {
-          return newFacet;
-        }
-
-        return facet;
-      });
-      const response = await updateCategoryRuleSet({
-        ...rest,
-        categoryIds:
-          categoriesInfo.map(({ id }) => id) ||
-          // istanbul ignore next
-          [],
-        facets: newFacets,
-        ruleSetId: id,
-      });
-      // istanbul ignore else
-      if (response && response.status !== 'error') {
-        return router.push('/category');
-      }
     }
+
+    return runSave(newFacet);
   };
 
   if (!hasReadAccess) {
@@ -213,21 +246,33 @@ const Page = (): ReactElement => {
         // istanbul ignore next
         isDraft) &&
         selectedFacet && (
-          <CategoryAndSearchFacetsPanelPageLayout
-            attributeValues={attributeValues}
-            facet={selectedFacet}
-            displayName={displayName}
-            facetType={FacetType.Category}
-            ruleSetId={ruleSetId}
-            searchQuery={searchQuery}
-            onSearchChange={handleSearch}
-            onSave={handleSave}
-            isWriteEnabled={hasWriteAccess && !isReadOnly}
-            headerText={categoriesArray?.join(', ')}
-            countryCode={countryCode}
-            isDraftRuleset={isDraft}
-            lastChanged={ruleSetDetail.lastChanged}
-          />
+          <>
+            <CategoryAndSearchFacetsPanelPageLayout
+              attributeValues={attributeValues}
+              facet={selectedFacet}
+              displayName={displayName}
+              facetType={FacetType.Category}
+              ruleSetId={ruleSetId}
+              searchQuery={searchQuery}
+              onSearchChange={handleSearch}
+              onSave={handleSave}
+              isWriteEnabled={hasWriteAccess && !isReadOnly}
+              headerText={categoriesArray?.join(', ')}
+              countryCode={countryCode}
+              isDraftRuleset={isDraft}
+              lastChanged={ruleSetDetail.lastChanged}
+            />
+            <ConflictModal
+              opened={conflict !== null}
+              entityLabel="category ruleset"
+              diffItems={conflictDiffItems}
+              changedBy={conflict?.currentEntity.lastChanged.user}
+              isSaving={isOverwriting}
+              onOverwrite={handleOverwrite}
+              onDiscard={handleDiscard}
+              onClose={closeConflict}
+            />
+          </>
         )}
     </>
   );

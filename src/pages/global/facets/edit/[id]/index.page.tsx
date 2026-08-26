@@ -1,9 +1,14 @@
 import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
-import type { MerchandisingRuleSet } from '@/libs/api';
+import type {
+  MerchandisingReturnedGlobalRuleSet,
+  MerchandisingRuleSet,
+} from '@/libs/api';
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { ROUTES } from '@/libs/constants/routes';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsPanelSkeleton } from '@/libs/containers';
@@ -12,6 +17,8 @@ import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { useGlobalHistory } from '@/libs/hooks/global/history/use-global-history';
 import { useAccess } from '@/libs/hooks/use-access';
 import { useHistoricalOrCurrentRuleset } from '@/libs/hooks/use-historical-or-current-ruleset';
+import { useRulesetDiff } from '@/libs/hooks/use-ruleset-diff';
+import { useSaveConflict } from '@/libs/hooks/use-save-conflict';
 import { useTrackRecentlyViewed } from '@/libs/hooks/use-track-recently-viewed';
 
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -55,30 +62,35 @@ const Page = ({ id }: PageProps): ReactElement => {
 
   const { saveGlobalRuleset, error: savingGlobalRulesetError } =
     useGlobalRuleSetUpdate();
+  const shouldUseV1 = useOptimisticLockingFlag();
 
-  const handleSave = async ({
-    facets,
-    rules,
-    isEnabled,
-    excludedFacets,
-    countryCode,
-  }: MerchandisingRuleSet) => {
-    const response = await saveGlobalRuleset({
-      ruleSetId: id,
-      ruleSet: {
-        facets,
-        rules,
-        isEnabled,
-        excludedFacets,
-        countryCode,
-      },
-    });
-
-    // istanbul ignore else
-    if (response) {
-      return router.push('/global');
+  const {
+    conflict,
+    isOverwriting,
+    runSave,
+    handleOverwrite,
+    handleDiscard,
+    closeConflict,
+  } = useSaveConflict<MerchandisingReturnedGlobalRuleSet, MerchandisingRuleSet>(
+    {
+      save: (
+        { facets, rules, isEnabled, excludedFacets, countryCode },
+        versionOverride
+      ) =>
+        saveGlobalRuleset({
+          ruleSetId: id,
+          ruleSet: { facets, rules, isEnabled, excludedFacets, countryCode },
+          version: versionOverride ?? globalRuleSet.version,
+          shouldUseV1,
+        }),
+      onSuccess: () => router.push('/global'),
     }
-  };
+  );
+
+  const conflictDiffItems = useRulesetDiff(
+    globalRuleSet,
+    conflict?.currentEntity ?? globalRuleSet
+  );
 
   const handleCancel = () => {
     router.push('/global');
@@ -146,11 +158,22 @@ const Page = ({ id }: PageProps): ReactElement => {
                 : rulesetData
             }
             onCancel={handleCancel}
-            onSave={handleSave}
+            onSave={runSave}
             isWriteEnabled={hasWriteAccess && !isHistoryView}
             lastChanged={rulesetData?.lastChanged}
           />
         ))}
+
+      <ConflictModal
+        opened={conflict !== null}
+        entityLabel="global ruleset"
+        diffItems={conflictDiffItems}
+        changedBy={conflict?.currentEntity.lastChanged.user}
+        isSaving={isOverwriting}
+        onOverwrite={handleOverwrite}
+        onDiscard={handleDiscard}
+        onClose={closeConflict}
+      />
     </>
   );
 };

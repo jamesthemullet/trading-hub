@@ -23,32 +23,7 @@ import Page, { getServerSideProps } from './index.page';
 const mockUpdateGlobalFacet = jest.fn();
 
 const mockUpdateRuleSet = {
-  updateRuleSet: jest.fn(() =>
-    Promise.resolve({
-      rules: {
-        pinnedProducts: [],
-        blockedProducts: [],
-        boosts: { numeric: [], alphanumeric: [], product: [] },
-        buries: { numeric: [], alphanumeric: [], product: [] },
-        includes: {
-          alphanumeric: [],
-        },
-        excludes: {
-          alphanumeric: [],
-        },
-      },
-      searchTerms: ['foo', 'bar'],
-      isEnabled: true,
-      categoryName: 'Jeans',
-      id: ruleSetId,
-      categoriesInfo: [
-        {
-          id: ruleSetId,
-        },
-      ],
-      lastChanged: { date: '2024-01-02T22:10:17Z', user: 'M&S' },
-    })
-  ),
+  updateRuleSet: jest.fn(() => Promise.resolve({ status: 'success' as const })),
   isSaving: true,
   error: '',
 };
@@ -111,6 +86,7 @@ jest.mock('@/libs/hooks/search/ruleset/use-search-ruleset-update', () => ({
 }));
 
 const updateMock = {
+  shouldUseV1: false,
   searchTerms: ['foo', 'bar'],
   countryCode: 'UK_IE',
   ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
@@ -306,6 +282,65 @@ describe('Search Facet Management Editing', () => {
       ...updateMock,
       countryCode: 'IE',
     });
+  });
+
+  it('sends the v1 flag + version and shows the conflict modal on a 409', async () => {
+    const updateRuleSet = jest.fn(() =>
+      Promise.resolve({
+        status: 'conflict' as const,
+        currentEntity: {
+          ...mockUseSearchRuleSetPreviewData.ruleSet,
+          version: 7,
+          lastChanged: { date: '2024-02-02T00:00:00Z', user: 'Other User' },
+        },
+      })
+    );
+    jest.mocked(useSearchRuleSetUpdate).mockImplementation(() => ({
+      updateRuleSet,
+      isSaving: false,
+      error: '',
+    }));
+    jest.mocked(useSearchRuleSetPreview).mockImplementation(() => ({
+      ...mockUseSearchRuleSetPreviewData,
+      ruleSet: { ...mockUseSearchRuleSetPreviewData.ruleSet, version: 3 },
+    }));
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<Page id={ruleSetId} />, undefined, {
+      featureFlags: { hasOptimisticLocking: true },
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
+
+    expect(updateRuleSet).toHaveBeenCalledWith(
+      expect.objectContaining({ shouldUseV1: true, version: 3 })
+    );
+    expect(
+      await screen.findByRole('dialog', {
+        name: 'This keyword ruleset was changed by someone else',
+      })
+    ).toBeInTheDocument();
+    expect(mockRouter.push).not.toHaveBeenCalled();
+  });
+
+  it('defaults the catalogue when the ruleset has no country code', () => {
+    const noCountryRuleSet = {
+      ...mockUseSearchRuleSetPreviewData,
+      ruleSet: {
+        ...mockUseSearchRuleSetPreviewData.ruleSet,
+        countryCode: undefined,
+      },
+    };
+    jest
+      .mocked(useSearchRuleSetPreview)
+      .mockImplementation(() => noCountryRuleSet);
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    expect(screen.getByRole('button', { name: 'Save' })).toBeVisible();
   });
 
   it('should render the skeleton loader', () => {

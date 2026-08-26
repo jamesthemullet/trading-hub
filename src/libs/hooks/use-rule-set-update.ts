@@ -1,22 +1,33 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
-import type { MerchandisingCategoryRuleSet } from '@/libs/api';
+import type {
+  MerchandisingCategoryRuleSet,
+  MerchandisingReturnedCategoryRuleSet,
+} from '@/libs/api';
 import { search } from '@/libs/api';
+import {
+  type SaveResult,
+  useOptimisticUpdate,
+} from '@/libs/hooks/use-optimistic-update';
 
-import { handleError } from './utils/error';
+type UpdateCategoryRuleSetArgs = MerchandisingCategoryRuleSet & {
+  ruleSetId: string;
+  version?: number;
+  shouldUseV1?: boolean;
+};
 
 export const useUpdateRuleSet = (): {
   isSaving: boolean;
   updateCategoryRuleSet: (
-    args: MerchandisingCategoryRuleSet & { ruleSetId: string }
-  ) => Promise<{ status: 'success' | 'error' }>;
+    args: UpdateCategoryRuleSetArgs
+  ) => Promise<SaveResult<MerchandisingReturnedCategoryRuleSet>>;
   error: string;
 } => {
-  const [error, setError] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
+  const { error, isSaving, runUpdate } =
+    useOptimisticUpdate<MerchandisingReturnedCategoryRuleSet>();
 
   const updateCategoryRuleSet = useCallback(
-    async ({
+    ({
       categoryIds,
       countryCode,
       endDate,
@@ -26,33 +37,35 @@ export const useUpdateRuleSet = (): {
       ruleSetId,
       rules,
       startDate,
-    }: MerchandisingCategoryRuleSet & { ruleSetId: string }) => {
-      setError('');
-      setIsSaving(true);
+      version,
+      shouldUseV1 = false,
+    }: UpdateCategoryRuleSetArgs) => {
+      const body: MerchandisingCategoryRuleSet = {
+        categoryIds,
+        countryCode,
+        facets,
+        isEnabled,
+        rules,
+        excludedFacets,
+        ...(startDate && { startDate }),
+        ...(endDate && { endDate }),
+      };
 
-      try {
-        const body: MerchandisingCategoryRuleSet = {
-          categoryIds,
-          countryCode,
-          facets,
-          isEnabled,
-          rules,
-          excludedFacets,
-          ...(startDate && { startDate }),
-          ...(endDate && { endDate }),
-        };
-
-        await search().betaMerchandisingCategoryRulesetUpdate(ruleSetId, body);
-
-        setIsSaving(false);
-        return { status: 'success' as const };
-      } catch (error) {
-        setIsSaving(false);
-        setError(handleError(error));
-        return { status: 'error' as const };
-      }
+      return runUpdate({
+        shouldUseV1,
+        version,
+        entity: 'ruleset',
+        betaUpdate: () =>
+          search().betaMerchandisingCategoryRulesetUpdate(ruleSetId, body),
+        v1Update: (lockVersion) =>
+          search().merchandisingV1CategoryRulesetUpdate(
+            'CLOTHING_AND_HOME',
+            ruleSetId,
+            { ...body, version: lockVersion }
+          ),
+      });
     },
-    []
+    [runUpdate]
   );
 
   return { isSaving, updateCategoryRuleSet, error };

@@ -37,7 +37,9 @@ const updateGlobalFacet = {
   error: '',
 };
 
-const mockUpdateGlobalRuleSet = jest.fn().mockReturnValue(true);
+const mockUpdateGlobalRuleSet = jest
+  .fn()
+  .mockResolvedValue({ status: 'success' });
 
 const saveGlobalRuleset = {
   saveGlobalRuleset: mockUpdateGlobalRuleSet,
@@ -84,6 +86,7 @@ const mockGetCategories = {
 describe('Global Facet Management Editing', () => {
   const mockRouter = {
     push: jest.fn(),
+    reload: jest.fn(),
     query: { id: '123' },
   };
 
@@ -275,9 +278,56 @@ describe('Global Facet Management Editing', () => {
         isEnabled: true,
         countryCode: 'UK',
       },
+      shouldUseV1: false,
     });
 
     expect(mockRouter.push).toHaveBeenCalledWith('/global');
+  });
+
+  it('sends the v1 flag + version and shows the conflict modal on a 409', async () => {
+    jest.mocked(useGlobalRuleSetDetail).mockReturnValue({
+      globalRuleSet: {
+        id: '123',
+        isEnabled: true,
+        version: 3,
+        lastChanged: { date: '2021-01-01', user: 'Test user' },
+        rules: mockMerchandisingRules,
+        facets: [{ id: 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84' }],
+        excludedFacets: { facets: [] },
+      },
+      error: '',
+      isLoading: false,
+    });
+    mockUpdateGlobalRuleSet.mockResolvedValueOnce({
+      status: 'conflict',
+      currentEntity: {
+        id: '123',
+        version: 7,
+        rules: mockMerchandisingRules,
+        facets: [],
+        lastChanged: { date: '2024-02-02T00:00:00Z', user: 'Other User' },
+      },
+    });
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<Page id={ruleSetId} />, undefined, {
+      featureFlags: { hasOptimisticLocking: true },
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Save changes' })
+    );
+
+    expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(
+      expect.objectContaining({ shouldUseV1: true, version: 3 })
+    );
+    expect(
+      await screen.findByRole('dialog', {
+        name: 'This global ruleset was changed by someone else',
+      })
+    ).toBeInTheDocument();
+    expect(mockRouter.push).not.toHaveBeenCalled();
   });
 
   it('should close the confirmation modal when cancel button on modal clicked', async () => {
