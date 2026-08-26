@@ -5,6 +5,7 @@ import { createMockNextApiRequest } from '@/test/create-mock-next-api-request';
 import { createMockNextApiResponse } from '@/test/create-mock-next-api-response';
 
 import { getToken } from 'next-auth/jwt';
+import { pipeline } from 'node:stream/promises';
 
 import type { MerchandisingEnvironment } from './[...search].page';
 import proxy from './[...search].page';
@@ -12,6 +13,10 @@ import proxy from './[...search].page';
 jest.mock('next-auth/jwt', () => ({
   getToken: jest.fn(),
   getServerSession: jest.fn(),
+}));
+
+jest.mock('node:stream/promises', () => ({
+  pipeline: jest.fn().mockResolvedValue(undefined),
 }));
 
 const httpGet = jest.fn();
@@ -46,6 +51,34 @@ type Response = {
   envSettings?: Partial<MerchandisingEnvironment>;
 };
 
+const expectForwardedResponse = (
+  res: ReturnType<typeof createMockNextApiResponse>,
+  response: Response
+): void => {
+  const isStreamed =
+    response.status >= 200 && response.status < 300 && response.status !== 204;
+  expect(jest.mocked(res.setHeader).mock.calls).toEqual(
+    isStreamed ? [['Content-Type', 'application/json']] : []
+  );
+  expect(jest.mocked(pipeline).mock.calls).toEqual(
+    isStreamed ? [[expect.anything(), res]] : []
+  );
+  expect(jest.mocked(res.json).mock.calls).toEqual(
+    isStreamed ? [] : [[response.body]]
+  );
+};
+
+const expectSuccessfulResponseStreamed = (
+  res: ReturnType<typeof createMockNextApiResponse>
+): void => {
+  expect(res.setHeader).toHaveBeenCalledWith(
+    'Content-Type',
+    'application/json'
+  );
+  expect(pipeline).toHaveBeenCalledWith(expect.anything(), res);
+  expect(res.json).not.toHaveBeenCalled();
+};
+
 const responses: Response[][] = [
   [{ status: 200, body: { hello: 'world', products: [] } }],
   [{ status: 500, body: { message: 'error', status: '500' }, envSettings: {} }],
@@ -53,16 +86,20 @@ const responses: Response[][] = [
   [{ status: 200, body: { rules: {} } }],
 ];
 
-const performGet = async (url: string | undefined, response: Response) => {
+const performGet = async (
+  url: string | undefined,
+  response: Response,
+  upstreamResponse = HttpResponse.json(response.body, {
+    status: response.status,
+  })
+) => {
   const req = createMockNextApiRequest({
     url,
     method: 'GET',
   });
 
   const res = createMockNextApiResponse(req);
-  httpGet.mockReturnValue(
-    HttpResponse.json(response.body, { status: response.status })
-  );
+  httpGet.mockReturnValue(upstreamResponse);
 
   await proxy(req, res);
   return res;
@@ -163,7 +200,7 @@ describe('Search api proxy', () => {
         ]);
 
         expect(res.status).toHaveBeenCalledWith(response.status);
-        expect(res.json).toHaveBeenCalledWith(response.body);
+        expectForwardedResponse(res, response);
       }
     );
 
@@ -188,7 +225,7 @@ describe('Search api proxy', () => {
         ]);
 
         expect(res.status).toHaveBeenCalledWith(response.status);
-        expect(res.json).toHaveBeenCalledWith(response.body);
+        expectForwardedResponse(res, response);
       }
     );
 
@@ -264,9 +301,105 @@ describe('Search api proxy', () => {
 
       expect(httpGet).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(200);
+      expectSuccessfulResponseStreamed(res);
+    });
+
+    it('uses a JSON content type when the upstream response omits one', async () => {
+      const response = responses[0][0];
+      const res = await performGet(
+        '/search/beta/merchandising/facet',
+        response,
+        new HttpResponse(JSON.stringify(response.body), {
+          status: response.status,
+          headers: { 'Content-Type': '' },
+        })
+      );
+
+      expect(res.setHeader).toHaveBeenCalledWith(
+        'Content-Type',
+        'application/json'
+      );
+      expect(pipeline).toHaveBeenCalledWith(expect.anything(), res);
+    });
+
+    it('preserves successful responses without a body', async () => {
+      const res = await performGet(
+        '/search/beta/merchandising/facet',
+        { status: 204, body: {} },
+        new HttpResponse(null, { status: 204 })
+      );
+
+      expect(pipeline).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(204);
+      expect(res.json).toHaveBeenCalledWith(null);
+    });
+
+    it('returns a 500 JSON error when streaming fails before headers are sent', async () => {
+      const response = responses[0][0];
+      const streamError = new Error('stream boom');
+      jest.mocked(pipeline).mockRejectedValueOnce(streamError);
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      const res = await performGet(
+        '/search/beta/merchandising/facet',
+        response
+      );
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error streaming response from merchandising API',
+        streamError
+      );
+      expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
-        products: [],
-        hello: 'world',
+        message: 'Failed to stream response from merchandising API',
+        status: '500',
+      });
+      expect(res.destroy).not.toHaveBeenCalled();
+    });
+
+    it('destroys the response when streaming fails after headers are sent', async () => {
+      const response = responses[0][0];
+      const streamError = new Error('stream boom');
+      jest.mocked(pipeline).mockImplementationOnce(async (_source, dest) => {
+        Object.defineProperty(dest, 'headersSent', {
+          value: true,
+          configurable: true,
+        });
+        throw streamError;
+      });
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      const res = await performGet(
+        '/search/beta/merchandising/facet',
+        response
+      );
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error streaming response from merchandising API',
+        streamError
+      );
+      expect(res.destroy).toHaveBeenCalledWith(streamError);
+      expect(res.json).not.toHaveBeenCalled();
+    });
+
+    it('wraps a non-Error value thrown while streaming in an Error', async () => {
+      const response = responses[0][0];
+      jest.mocked(pipeline).mockRejectedValueOnce('stream boom');
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      const res = await performGet(
+        '/search/beta/merchandising/facet',
+        response
+      );
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error streaming response from merchandising API',
+        new Error('stream boom')
+      );
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Failed to stream response from merchandising API',
+        status: '500',
       });
     });
 
@@ -325,7 +458,7 @@ describe('Search api proxy', () => {
       expect([...httpGet.mock.calls[0][0].headers]).toEqual([]);
 
       expect(res.status).toHaveBeenCalledWith(response.status);
-      expect(res.json).toHaveBeenCalledWith(response.body);
+      expectSuccessfulResponseStreamed(res);
     });
 
     it.each(responses)(
@@ -346,7 +479,7 @@ describe('Search api proxy', () => {
         expect([...httpGet.mock.calls[0][0].headers]).toEqual([]);
 
         expect(res.status).toHaveBeenCalledWith(response.status);
-        expect(res.json).toHaveBeenCalledWith(response.body);
+        expectForwardedResponse(res, response);
       }
     );
 
@@ -395,7 +528,7 @@ describe('Search api proxy', () => {
         ]);
 
         expect(res.status).toHaveBeenCalledWith(response.status);
-        expect(res.json).toHaveBeenCalledWith(response.body);
+        expectForwardedResponse(res, response);
       }
     );
 

@@ -2,6 +2,9 @@ import type { MerchandisingErrorResponse } from '@/libs/api';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import type { ReadableStream as NodeReadableStream } from 'node:stream/web';
 
 export type MerchandisingEnvironment = {
   merchandisingApiBaseUrl: string;
@@ -65,6 +68,32 @@ const proxy = async (
     body: requestBody,
     cache: 'no-store',
   });
+
+  if (response.ok && req.method !== 'DELETE' && response.body) {
+    res.setHeader(
+      'Content-Type',
+      response.headers.get('content-type') || 'application/json'
+    );
+    res.status(response.status);
+    try {
+      await pipeline(
+        Readable.fromWeb(response.body as unknown as NodeReadableStream),
+        res
+      );
+    } catch (err: unknown) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      console.error('Error streaming response from merchandising API', error);
+      if (!res.headersSent) {
+        res.status(500).json({
+          message: 'Failed to stream response from merchandising API',
+          status: '500',
+        });
+      } else {
+        res.destroy(error);
+      }
+    }
+    return;
+  }
 
   let jsonBody = {};
   let jsonText = '';
