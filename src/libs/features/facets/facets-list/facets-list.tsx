@@ -462,7 +462,7 @@ export const FacetsList = ({
   );
 
   const filteredIncludedFacetIds = useMemo(
-    () => boostedFacets.filter((facet) => facet).map((facet) => facet!.id),
+    () => boostedFacets.flatMap((facet) => (facet ? [facet.id] : [])),
     [boostedFacets]
   );
 
