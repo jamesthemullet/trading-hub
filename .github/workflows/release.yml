@@ -116,7 +116,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Login via Azure CLI
-        uses: azure/login@v3.0.1
+        uses: azure/login@v3.0.2
         with:
           client-id: ${{ secrets._AZURE_AD_CLIENT_ID }}
           tenant-id: ${{ secrets._AZURE_AD_TENANT_ID }}
@@ -279,7 +279,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Login via Azure CLI
-        uses: azure/login@v3.0.1
+        uses: azure/login@v3.0.2
         with:
           client-id: ${{ secrets._AZURE_AD_CLIENT_ID }}
           tenant-id: ${{ secrets._AZURE_AD_TENANT_ID }}

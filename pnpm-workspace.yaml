@@ -2,7 +2,7 @@ nodeLinker: hoisted
 saveExact: true
 
 catalog:
-  storybook: 10.5.9
+  storybook: 10.5.10
 
 overrides:
   storybook: 'catalog:'
