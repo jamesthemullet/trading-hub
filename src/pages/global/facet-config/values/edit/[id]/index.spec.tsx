@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { useGlobalFacetsList } from '@/libs/hooks';
 import { useGetFacetAttributeValues } from '@/libs/hooks/use-get-facet-attribute-values';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
+import { createMockNextRouter } from '@/test/create-mock-next-router';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import Page from './index.page';
@@ -25,12 +26,14 @@ describe('Index', () => {
   const facetId = 'b04eaac3-f4ea-4f21-9459-0b4302dc2a84';
 
   beforeEach(() => {
-    (useRouter as jest.Mock).mockReturnValue({
-      query: {
-        id: facetId,
-        displayName: 'Color',
-      },
-    });
+    jest.mocked(useRouter).mockReturnValue(
+      createMockNextRouter({
+        query: {
+          id: facetId,
+          displayName: 'Color',
+        },
+      })
+    );
     jest.mocked(useGlobalFacetsList).mockReturnValue({
       isLoading: false,
       facets: facetsListMock.facets,
