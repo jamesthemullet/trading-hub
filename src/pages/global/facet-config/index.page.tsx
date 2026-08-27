@@ -31,9 +31,13 @@ import Head from 'next/head';
 
 const COLUMNS = ['Facet', 'Display Name', 'Merge Groups', ''];
 
-const FacetConfig = (): ReactElement => {
-  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
+type FacetConfigContentProps = {
+  hasWriteAccess: boolean;
+};
 
+const FacetConfigContent = ({
+  hasWriteAccess,
+}: FacetConfigContentProps): ReactElement => {
   const {
     facets,
     isLoading,
@@ -219,10 +223,6 @@ const FacetConfig = (): ReactElement => {
     ];
   }, [conflict]);
 
-  if (!hasReadAccess) {
-    return <AccessDeny requiredRole={requiredReadRole} />;
-  }
-
   return (
     <>
       <Head>
@@ -387,6 +387,16 @@ const FacetConfig = (): ReactElement => {
       />
     </>
   );
+};
+
+const FacetConfig = (): ReactElement => {
+  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
+
+  if (!hasReadAccess) {
+    return <AccessDeny requiredRole={requiredReadRole} />;
+  }
+
+  return <FacetConfigContent hasWriteAccess={hasWriteAccess} />;
 };
 
 export default FacetConfig;

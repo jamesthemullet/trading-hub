@@ -27,7 +27,10 @@ describe('SmokeTestTokenWarning', () => {
 
   beforeAll(() => server.listen());
 
-  afterEach(() => server.resetHandlers());
+  afterEach(() => {
+    server.resetHandlers();
+    jest.restoreAllMocks();
+  });
 
   afterAll(() => server.close());
 
@@ -110,6 +113,9 @@ describe('SmokeTestTokenWarning', () => {
   });
 
   it('should handle healthcheck fetch errors gracefully', async () => {
+    const consoleWarnSpy = jest
+      .spyOn(console, 'warn')
+      .mockImplementation(() => undefined);
     server.use(
       http.get('/api/healthcheck', () => {
         return HttpResponse.error();
@@ -119,9 +125,14 @@ describe('SmokeTestTokenWarning', () => {
     renderWithProviders(<SmokeTestTokenWarning />);
 
     await waitFor(() => {
-      expect(
-        screen.queryByRole('heading', { name: /SMOKE_TEST_TOKEN DETECTED/ })
-      ).not.toBeInTheDocument();
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'Failed to fetch smoke test token healthcheck.',
+        expect.anything()
+      );
     });
+
+    expect(
+      screen.queryByRole('heading', { name: /SMOKE_TEST_TOKEN DETECTED/ })
+    ).not.toBeInTheDocument();
   });
 });
