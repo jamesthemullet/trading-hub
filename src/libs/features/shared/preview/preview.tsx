@@ -9,19 +9,14 @@ import type {
   MerchandisingRules,
   MerchandisingRuleSetFacetConfigWithId,
 } from '@/libs/api';
-import {
-  Button,
-  CombinedDropdown,
-  DropdownVariant,
-  Loader,
-  Search,
-  Typography,
-} from '@/libs/components';
+import { Button, Loader, Search, Typography } from '@/libs/components';
 import { usePreview } from '@/libs/hooks';
 
 import Image from 'next/image';
 
 import styles from './preview.module.css';
+import type { ViewMode } from './view-mode-selector';
+import { ViewModeSelector } from './view-mode-selector';
 
 const MISSING_IMAGE_SRC =
   'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22307%22 height=%22400%22%3E%3Crect width=%22307%22 height=%22400%22 fill=%22%23cccccc%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23ffffff%22 font-family=%22sans-serif%22 font-size=%2240%22%3Emissing%20image%3C/text%3E%3C/svg%3E';
@@ -132,14 +127,6 @@ const FacetInfo = ({
       )}
     </div>
   );
-};
-
-type ViewMode = 'newRuleChange' | 'currentState' | 'sideBySide';
-
-const VIEW_MODE_LABEL: Record<ViewMode, string> = {
-  newRuleChange: 'with new rule change',
-  currentState: 'current state',
-  sideBySide: 'side by side',
 };
 
 const ProductGrid = ({
@@ -260,55 +247,7 @@ export const Preview = ({
                   View rule changes made on the website below
                 </Typography>
 
-                <div className={styles.previewTypeSelector}>
-                  <Typography variant="bodySmall">Preview</Typography>
-                  <CombinedDropdown
-                    variant={DropdownVariant.Generic}
-                    width={220}
-                    label={VIEW_MODE_LABEL[viewMode]}
-                    ariaLabel="Preview type selector"
-                  >
-                    <Button
-                      className={styles.item}
-                      type="button"
-                      onClick={() => {
-                        setViewMode('newRuleChange');
-                      }}
-                      role="menuitemradio"
-                      aria-checked={viewMode === 'newRuleChange'}
-                    >
-                      <Typography variant="bodySmall" align="center">
-                        with new rule change
-                      </Typography>
-                    </Button>
-                    <Button
-                      className={styles.item}
-                      type="button"
-                      onClick={() => {
-                        setViewMode('currentState');
-                      }}
-                      role="menuitemradio"
-                      aria-checked={viewMode === 'currentState'}
-                    >
-                      <Typography variant="bodySmall" align="center">
-                        current state
-                      </Typography>
-                    </Button>
-                    <Button
-                      className={styles.item}
-                      type="button"
-                      onClick={() => {
-                        setViewMode('sideBySide');
-                      }}
-                      role="menuitemradio"
-                      aria-checked={viewMode === 'sideBySide'}
-                    >
-                      <Typography variant="bodySmall" align="center">
-                        side by side
-                      </Typography>
-                    </Button>
-                  </CombinedDropdown>
-                </div>
+                <ViewModeSelector viewMode={viewMode} onChange={setViewMode} />
               </div>
             </section>
             <div className={styles.content}>
