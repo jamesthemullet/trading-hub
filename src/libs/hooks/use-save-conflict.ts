@@ -8,7 +8,7 @@ export const useSaveConflict = <T extends { version?: number }, P>({
   onSuccess,
 }: {
   save: (payload: P, versionOverride?: number) => Promise<SaveResult<T>>;
-  onSuccess: () => void;
+  onSuccess: () => void | Promise<unknown>;
 }): {
   conflict: { currentEntity: T; payload: P } | null;
   isOverwriting: boolean;
@@ -29,7 +29,7 @@ export const useSaveConflict = <T extends { version?: number }, P>({
       const result = await save(payload);
 
       if (result.status === 'success') {
-        onSuccess();
+        await onSuccess();
       } else if (result.status === 'conflict') {
         setConflict({ currentEntity: result.currentEntity, payload });
       }
@@ -47,7 +47,7 @@ export const useSaveConflict = <T extends { version?: number }, P>({
 
     if (result.status === 'success') {
       setConflict(null);
-      onSuccess();
+      await onSuccess();
     } else if (result.status === 'conflict') {
       setConflict({
         currentEntity: result.currentEntity,

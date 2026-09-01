@@ -111,6 +111,11 @@ const product1Brand = 'Monsoon';
 const product2Brand = 'M&S';
 const product1Price = '£5';
 const product2Price = '£10';
+const mockRouterEvents = {
+  emit: jest.fn(),
+  off: jest.fn(),
+  on: jest.fn(),
+};
 const mockGetCategories = {
   categories: [
     {
@@ -237,6 +242,7 @@ const defaultProps = {
 
 describe('Ruleset', () => {
   beforeEach(() => {
+    jest.resetAllMocks();
     const mockCategoryProductSearch = {
       searchForProduct: jest.fn(() => {
         return Promise.resolve({
@@ -304,10 +310,7 @@ describe('Ruleset', () => {
 
     (useRouter as jest.Mock).mockImplementation(() => {
       return {
-        events: {
-          on: jest.fn(),
-          off: jest.fn(),
-        },
+        events: mockRouterEvents,
       };
     });
   });
@@ -416,6 +419,42 @@ describe('Ruleset', () => {
     expect(mockCreate).toHaveBeenCalledWith(
       expect.objectContaining({ categoryIds: [categoryId1] })
     );
+  });
+
+  it('should keep the unsaved changes guard active when creating a ruleset does not navigate', async () => {
+    const user = userEvent.setup();
+    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true);
+    const mockCreate = jest.fn(async () => undefined);
+
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
+
+    renderWithProviders(
+      <Ruleset
+        {...defaultProps}
+        onCreate={mockCreate}
+        onCancel={jest.fn()}
+        rulesetType="category"
+      />
+    );
+
+    await selectCategory(screen, user);
+    await user.click(
+      await screen.findByRole('button', { name: CREATE_BUTTON })
+    );
+
+    await waitFor(() => {
+      expect(mockCreate).toHaveBeenCalled();
+    });
+
+    const handleBrowseAway = mockRouterEvents.on.mock.calls.at(
+      -1
+    )?.[1] as () => void;
+
+    expect(() => handleBrowseAway()).not.toThrow();
+    expect(confirmSpy).toHaveBeenCalled();
   });
 
   it('should not treat an untouched new ruleset as having changes', async () => {

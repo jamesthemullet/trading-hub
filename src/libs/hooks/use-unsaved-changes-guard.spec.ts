@@ -103,4 +103,17 @@ describe('useUnsavedChangesGuard', () => {
     expect(confirmSpy).not.toHaveBeenCalled();
     expect(routerEvents.emit).not.toHaveBeenCalled();
   });
+
+  it('restores the native confirm after resetNavigationConfirmation is called', () => {
+    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true);
+    const { result } = renderHook(() => useUnsavedChangesGuard(true));
+
+    result.current.confirmNavigation();
+    result.current.resetNavigationConfirmation();
+
+    const handleBrowseAway = routerEvents.on.mock.calls[0][1];
+
+    expect(() => handleBrowseAway()).not.toThrow();
+    expect(confirmSpy).toHaveBeenCalled();
+  });
 });

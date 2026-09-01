@@ -151,7 +151,6 @@ export const Ruleset = ({
     searchTerms ?? []
   );
   const [currentEditorTab, setCurrentEditorTab] = useState(0);
-  const [hasChanges, setHasChanges] = useState(false);
   const [shouldShowPreview, setShouldShowPreview] = useState(false);
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
   const [pendingSave, setPendingSave] = useState<(() => void) | null>(null);
@@ -188,10 +187,6 @@ export const Ruleset = ({
         isDeprioritisedCategory(category.identifier) ? 'IE' : 'UK'
       );
     }
-    // istanbul ignore else
-    if (!hasChanges) {
-      setHasChanges(true);
-    }
   };
 
   const [previewValue, setPreviewValue] = useState(
@@ -213,14 +208,27 @@ export const Ruleset = ({
 
   const { rules: merchandisingRules } = ruleset;
 
+  const haveCategoriesChanged =
+    rulesetType === 'category' &&
+    !isEqual([...selectedCategories].sort(), [...(categoryIds ?? [])].sort());
+
+  const haveSearchTermsChanged =
+    rulesetType === 'search' &&
+    !isEqual([...rulesetSearchTerms].sort(), [...(searchTerms ?? [])].sort());
+
   const hasUnsavedChanges =
-    hasChanges ||
+    haveCategoriesChanged ||
+    haveSearchTermsChanged ||
     !isEqual(
       merchandisingRules,
       rulesetMerchandisingRules ?? DEFAULT_MERCHANDISING_RULES
-    );
+    ) ||
+    ruleset.startDate !== startDate ||
+    ruleset.endDate !== endDate ||
+    ruleset.countryCode !== (countryCode ?? 'UK_IE');
 
-  const { confirmNavigation } = useUnsavedChangesGuard(hasUnsavedChanges);
+  const { confirmNavigation, resetNavigationConfirmation } =
+    useUnsavedChangesGuard(hasUnsavedChanges);
 
   const currentRulesetForDiff: MerchandisingRuleSet = {
     isEnabled,
@@ -262,11 +270,6 @@ export const Ruleset = ({
     if (!rulesetSearchTerms.length) {
       setPreviewValue(keyword);
     }
-
-    // istanbul ignore else
-    if (!hasChanges) {
-      setHasChanges(true);
-    }
   };
 
   const onRemoveSearchTerm = (keyword: string) => {
@@ -304,7 +307,7 @@ export const Ruleset = ({
   const createKeywordSearchRuleset = () => {
     // istanbul ignore else
     if (onCreateKeywordSearchRuleset && rulesetSearchTerms.length) {
-      onCreateKeywordSearchRuleset({
+      return onCreateKeywordSearchRuleset({
         isEnabled,
         rules: merchandisingRules,
         searchTerms: rulesetSearchTerms,
@@ -313,9 +316,22 @@ export const Ruleset = ({
         countryCode: ruleset.countryCode,
       });
     }
+    /* istanbul ignore next -- unreachable: guarded by canSave, onCreateKeywordSearchRuleset is always defined with search terms here */
+    return undefined;
   };
 
-  const onSaveRuleset = () => {
+  const runActionWithConfirmedNavigation = async (
+    action: () => void | Promise<void>
+  ) => {
+    confirmNavigation();
+    try {
+      await action();
+    } finally {
+      resetNavigationConfirmation();
+    }
+  };
+
+  const onSaveRuleset = async () => {
     if (onSave && rulesetId) {
       const saveArgs = {
         ruleSetId: rulesetId,
@@ -340,34 +356,39 @@ export const Ruleset = ({
         return;
       }
 
-      onSave(saveArgs);
+      await runActionWithConfirmedNavigation(() => onSave(saveArgs));
     } else if (onCreate && selectedCategories.length) {
-      onCreate({
-        facets: [],
-        isEnabled,
-        rules: merchandisingRules,
-        categoryIds: selectedCategories,
-        startDate: ruleset.startDate,
-        endDate: ruleset.endDate,
-        countryCode: ruleset.countryCode,
-      });
+      await runActionWithConfirmedNavigation(() =>
+        onCreate({
+          facets: [],
+          isEnabled,
+          rules: merchandisingRules,
+          categoryIds: selectedCategories,
+          startDate: ruleset.startDate,
+          endDate: ruleset.endDate,
+          countryCode: ruleset.countryCode,
+        })
+      );
     } else if (onCreateGlobalRuleset && rulesetType === 'global') {
-      onCreateGlobalRuleset({
-        rules: merchandisingRules,
-        isEnabled: false,
-        startDate: ruleset.startDate,
-        endDate: ruleset.endDate,
-        countryCode: ruleset.countryCode,
-      });
+      await runActionWithConfirmedNavigation(() =>
+        onCreateGlobalRuleset({
+          rules: merchandisingRules,
+          isEnabled: false,
+          startDate: ruleset.startDate,
+          endDate: ruleset.endDate,
+          countryCode: ruleset.countryCode,
+        })
+      );
     } else {
-      createKeywordSearchRuleset();
+      await runActionWithConfirmedNavigation(createKeywordSearchRuleset);
     }
   };
 
   const onConfirmSave = () => {
-    pendingSave?.();
+    const currentPendingSave = pendingSave;
     setIsPendingConfirmation(false);
     setPendingSave(null);
+    return currentPendingSave?.();
   };
 
   const onCancelSave = () => {
@@ -392,9 +413,8 @@ export const Ruleset = ({
         isOpen={isPendingConfirmation}
         diffItems={diffItems}
         shouldShowGlobalWarning={rulesetType === 'global'}
-        onConfirm={() => {
-          onConfirmSave();
-          setHasChanges(false);
+        onConfirm={async () => {
+          await runActionWithConfirmedNavigation(onConfirmSave);
         }}
         onCancel={onCancelSave}
       />
@@ -412,9 +432,6 @@ export const Ruleset = ({
         }
         onSave={() => {
           onSaveRuleset();
-          if (!originalRuleset) {
-            setHasChanges(false);
-          }
         }}
         hasPreview={!!selectedCategories.length || !!rulesetSearchTerms.length}
         onPreview={() => {

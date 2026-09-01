@@ -6,7 +6,10 @@ const UNSAVED_CHANGES_WARNING =
 
 export const useUnsavedChangesGuard = (
   hasUnsavedChanges: boolean
-): { confirmNavigation: () => void } => {
+): {
+  confirmNavigation: () => void;
+  resetNavigationConfirmation: () => void;
+} => {
   const router = useRouter();
   const isNavigationConfirmedRef = useRef(false);
 
@@ -48,5 +51,10 @@ export const useUnsavedChangesGuard = (
     isNavigationConfirmedRef.current = true;
   }, []);
 
-  return { confirmNavigation };
+  const resetNavigationConfirmation = useCallback(() => {
+    // eslint-disable-next-line functional/immutable-data
+    isNavigationConfirmedRef.current = false;
+  }, []);
+
+  return { confirmNavigation, resetNavigationConfirmation };
 };
