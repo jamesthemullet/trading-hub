@@ -1,6 +1,5 @@
 import type { ReactElement } from 'react';
-import { useEffect, useReducer, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useReducer, useState } from 'react';
 
 import type {
   MerchandisingCategoryRuleSet,
@@ -38,6 +37,7 @@ import {
 import { SearchKeywords } from '@/libs/features/shared/search-keywords/search-keywords';
 import { usePreview } from '@/libs/hooks';
 import { useRulesetDiff } from '@/libs/hooks/use-ruleset-diff';
+import { useUnsavedChangesGuard } from '@/libs/hooks/use-unsaved-changes-guard';
 import { track } from '@/libs/hooks/utils/analytics';
 import { rulesetReducer } from '@/libs/stores/ruleset/reducer';
 import {
@@ -52,6 +52,27 @@ import pluralize from 'pluralize';
 import styles from './ruleset.module.css';
 
 const MAX_PINNED_PRODUCTS_ALLOWED = 100;
+
+const DEFAULT_MERCHANDISING_RULES: MerchandisingRules = {
+  pinnedProducts: [],
+  blockedProducts: [],
+  boosts: {
+    alphanumeric: [],
+    numeric: [],
+    product: [],
+  },
+  buries: {
+    alphanumeric: [],
+    numeric: [],
+    product: [],
+  },
+  includes: {
+    alphanumeric: [],
+  },
+  excludes: {
+    alphanumeric: [],
+  },
+};
 
 export const Ruleset = ({
   endDate,
@@ -145,8 +166,6 @@ export const Ruleset = ({
     'UK' | 'IE'
   >(defaultPreviewCountryCode);
 
-  const router = useRouter();
-
   const onSelectCategory = (category: {
     identifier: string;
     name: string;
@@ -188,30 +207,20 @@ export const Ruleset = ({
     isEnabled,
     startDate,
     endDate,
-    rules: rulesetMerchandisingRules ?? {
-      pinnedProducts: [],
-      blockedProducts: [],
-      boosts: {
-        alphanumeric: [],
-        numeric: [],
-        product: [],
-      },
-      buries: {
-        alphanumeric: [],
-        numeric: [],
-        product: [],
-      },
-      includes: {
-        alphanumeric: [],
-      },
-      excludes: {
-        alphanumeric: [],
-      },
-    },
+    rules: rulesetMerchandisingRules ?? DEFAULT_MERCHANDISING_RULES,
     countryCode: countryCode ?? 'UK_IE',
   });
 
   const { rules: merchandisingRules } = ruleset;
+
+  const hasUnsavedChanges =
+    hasChanges ||
+    !isEqual(
+      merchandisingRules,
+      rulesetMerchandisingRules ?? DEFAULT_MERCHANDISING_RULES
+    );
+
+  const { confirmNavigation } = useUnsavedChangesGuard(hasUnsavedChanges);
 
   const currentRulesetForDiff: MerchandisingRuleSet = {
     isEnabled,
@@ -235,31 +244,6 @@ export const Ruleset = ({
     }),
   });
 
-  useEffect(() => {
-    const warningText =
-      'You have unsaved changes - are you sure you wish to leave this page?';
-    const hasNoChanges = !hasChanges;
-    /* istanbul ignore next */
-    const handleWindowClose = (e: BeforeUnloadEvent) => {
-      if (hasNoChanges) return;
-      e.preventDefault();
-      return warningText;
-    };
-    /* istanbul ignore next */
-    const handleBrowseAway = () => {
-      if (hasNoChanges) return;
-      if (window.confirm(warningText)) return;
-      router.events.emit('routeChangeError');
-      throw 'routeChange aborted.';
-    };
-    window.addEventListener('beforeunload', handleWindowClose);
-    router.events.on('routeChangeStart', handleBrowseAway);
-    return () => {
-      window.removeEventListener('beforeunload', handleWindowClose);
-      router.events.off('routeChangeStart', handleBrowseAway);
-    };
-  }, [hasChanges, router]);
-
   const {
     data,
     error: previewError,
@@ -277,6 +261,11 @@ export const Ruleset = ({
 
     if (!rulesetSearchTerms.length) {
       setPreviewValue(keyword);
+    }
+
+    // istanbul ignore else
+    if (!hasChanges) {
+      setHasChanges(true);
     }
   };
 
@@ -434,15 +423,14 @@ export const Ruleset = ({
             event: `Preview ${rulesetType} rule - ${rulesetType === 'category' ? previewValue : rulesetSearchTerms[0]}`,
           });
         }}
-        hasChanges={
-          hasChanges || !isEqual(merchandisingRules, rulesetMerchandisingRules)
-        }
+        hasChanges={hasUnsavedChanges}
         isNewRuleSet={
           !!onCreate ||
           !!onCreateKeywordSearchRuleset ||
           !!onCreateGlobalRuleset
         }
         onCancel={() => {
+          confirmNavigation();
           onCancel();
         }}
         shouldHidePreview={rulesetType === 'global'}

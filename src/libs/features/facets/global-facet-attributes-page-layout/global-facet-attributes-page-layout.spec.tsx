@@ -27,6 +27,11 @@ jest.mock('@/libs/hooks', () => ({
 const mockRouter = {
   push: jest.fn(),
   reload: jest.fn(),
+  events: {
+    on: jest.fn(),
+    off: jest.fn(),
+    emit: jest.fn(),
+  },
 };
 
 const successResult: SaveResult<MerchandisingReturnedGlobalFacet> = {

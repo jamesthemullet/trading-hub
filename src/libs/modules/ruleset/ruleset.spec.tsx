@@ -418,6 +418,27 @@ describe('Ruleset', () => {
     );
   });
 
+  it('should not treat an untouched new ruleset as having changes', async () => {
+    const user = userEvent.setup();
+    const mockCancel = jest.fn();
+
+    renderWithProviders(
+      <Ruleset
+        {...defaultProps}
+        onCreate={jest.fn()}
+        onCancel={mockCancel}
+        rulesetType="category"
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: CANCEL_BUTTON }));
+
+    expect(mockCancel).toHaveBeenCalled();
+    expect(
+      screen.queryByRole('button', { name: CONFIRM_BUTTON })
+    ).not.toBeInTheDocument();
+  });
+
   it('should create a ruleset with the country code selected in the dropdown', async () => {
     const user = userEvent.setup();
     const mockCreate = jest.fn();

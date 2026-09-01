@@ -20,6 +20,7 @@ import { useGlobalFacetUpdate } from '@/libs/hooks';
 import { useGlobalFacetAttributesDiff } from '@/libs/hooks/use-global-facet-attributes-diff';
 import { useGlobalFacetAttributesEditModal } from '@/libs/hooks/use-global-facet-attributes-edit-modal';
 import { useSaveConflict } from '@/libs/hooks/use-save-conflict';
+import { useUnsavedChangesGuard } from '@/libs/hooks/use-unsaved-changes-guard';
 import {
   globalAttributesPageReducer,
   INITIAL_STATE,
@@ -140,9 +141,12 @@ export const GlobalFacetAttributesPageLayout = ({
     useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
+  const { confirmNavigation } = useUnsavedChangesGuard(hasChanges);
+
   const navigateBack = useCallback(() => {
+    confirmNavigation();
     router.push(ROUTES.GLOBAL.FACET_CONFIG);
-  }, [router]);
+  }, [router, confirmNavigation]);
 
   const handleClose = useCallback(() => {
     if (hasChanges) {
@@ -152,15 +156,18 @@ export const GlobalFacetAttributesPageLayout = ({
     navigateBack();
   }, [hasChanges, navigateBack]);
 
-  const trackingDispatch: typeof dispatch = useCallback((action) => {
-    if (
-      action.type !== 'TOGGLE_ALL_ATTRIBUTES' &&
-      action.type !== 'TOGGLE_SELECTED_ATTRIBUTE'
-    ) {
-      setHasChanges(true);
-    }
-    dispatch(action);
-  }, []);
+  const trackingDispatch: typeof dispatch = useCallback(
+    (action) => {
+      if (
+        action.type !== 'TOGGLE_ALL_ATTRIBUTES' &&
+        action.type !== 'TOGGLE_SELECTED_ATTRIBUTE'
+      ) {
+        setHasChanges(true);
+      }
+      dispatch(action);
+    },
+    [dispatch]
+  );
 
   const handleSave = () => {
     setIsReviewModalOpen(true);

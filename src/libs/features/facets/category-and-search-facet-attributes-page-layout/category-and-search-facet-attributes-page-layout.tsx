@@ -13,6 +13,7 @@ import { getFacetRoute, getNewFacetRoute } from '@/libs/constants';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetAttributesListActions } from '@/libs/containers';
 import { ModalUnsavedChanges } from '@/libs/containers/shared/modals';
+import { useUnsavedChangesGuard } from '@/libs/hooks/use-unsaved-changes-guard';
 import { diffFacetValues } from '@/libs/hooks/utils/diff';
 import type { Action } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
 import { facetAttributesPageReducer } from '@/libs/stores/search-and-category/facet-attributes-page-reducer';
@@ -146,13 +147,16 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
     [boostedValues, excludedFacetValues, processedFacet]
   );
 
+  const { confirmNavigation } = useUnsavedChangesGuard(hasChanges);
+
   const navigateBack = useCallback(() => {
+    confirmNavigation();
     if (isDraftRuleset) {
       router.push(getNewFacetRoute(facetType));
       return;
     }
     router.push(getFacetRoute(facetType, 'edit', ruleSetId));
-  }, [isDraftRuleset, router, facetType, ruleSetId]);
+  }, [isDraftRuleset, router, facetType, ruleSetId, confirmNavigation]);
 
   const handleClose = useCallback(() => {
     if (hasChanges) {

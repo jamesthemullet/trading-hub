@@ -145,6 +145,11 @@ describe('Index', () => {
       displayName: 'Color',
     },
     push: jest.fn(),
+    events: {
+      on: jest.fn(),
+      off: jest.fn(),
+      emit: jest.fn(),
+    },
   };
 
   beforeEach(() => {

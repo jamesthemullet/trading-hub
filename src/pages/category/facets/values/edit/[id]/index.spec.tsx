@@ -81,6 +81,11 @@ describe('Index', () => {
       countryCode: 'UK_IE',
     },
     push: jest.fn(),
+    events: {
+      on: jest.fn(),
+      off: jest.fn(),
+      emit: jest.fn(),
+    },
   };
 
   beforeEach(() => {

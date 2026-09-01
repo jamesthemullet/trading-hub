@@ -262,7 +262,39 @@ describe('Index', () => {
   });
 
   it('cancels new ruleset creation', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useGetCategories).mockReturnValue({
+      getCategories: jest.fn(() => Promise.resolve(mockGetCategories)),
+      getCategoriesError: '',
+    });
+
     renderWithProviders(<RuleSetCreate />);
+    const modalButton = await screen.findByRole('button', {
+      name: 'Edit',
+    });
+
+    await user.click(modalButton);
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+
+    await user.type(
+      screen.getByPlaceholderText(INPUT_PLACEHOLDER_TEXT),
+      'SubCategory_507'
+    );
+
+    const categoryToSelect = await screen.findByText(
+      `${categoryId1} | ${categoryName1} | ${categoryPath1}`
+    );
+    act(() => {
+      categoryToSelect.click();
+    });
+
+    const closeModal = await screen.findByRole('button', { name: 'Close' });
+    act(() => {
+      closeModal.click();
+    });
 
     const cancel = await screen.findByText('Cancel');
 

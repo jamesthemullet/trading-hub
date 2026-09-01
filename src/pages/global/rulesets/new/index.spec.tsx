@@ -67,11 +67,7 @@ describe('Global Rulesets New', () => {
       cancel.click();
     });
 
-    const confirmCancelButton = await screen.findByText('Close without saving');
-
-    act(() => {
-      confirmCancelButton.click();
-    });
+    expect(screen.queryByText('Close without saving')).not.toBeInTheDocument();
 
     expect(mockRouter.push).toHaveBeenCalledWith('/global');
   });

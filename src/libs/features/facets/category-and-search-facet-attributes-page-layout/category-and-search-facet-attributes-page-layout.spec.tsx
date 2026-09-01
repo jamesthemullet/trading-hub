@@ -36,6 +36,11 @@ const mockRouter: Partial<NextRouter> = {
   asPath: '',
   basePath: '',
   isLocaleDomain: false,
+  events: {
+    on: jest.fn(),
+    off: jest.fn(),
+    emit: jest.fn(),
+  },
 };
 
 const ruleSetId = '090152b8-2517-4e42-a5f3-48fcab8d9942';
@@ -291,10 +296,7 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
   });
 
   describe('unsaved changes modal', () => {
-    it('shows modal when closing with unsaved changes', async () => {
-      const user = userEvent.setup({ delay: null });
-      setup({ facetType: FacetType.Category });
-
+    const makeChange = async (user: ReturnType<typeof userEvent.setup>) => {
       const row = screen.getByTestId('included attribute 0 13 - 14.4');
       const dropdown = within(row).getByLabelText(
         /Select to set as included, excluded or algo control/i
@@ -304,6 +306,13 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
         name: 'Exclude only',
       });
       await user.click(excludeOption);
+    };
+
+    it('shows modal when closing with unsaved changes', async () => {
+      const user = userEvent.setup({ delay: null });
+      setup({ facetType: FacetType.Category });
+
+      await makeChange(user);
 
       await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
@@ -318,15 +327,7 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
       const user = userEvent.setup({ delay: null });
       const { mockRouter } = setup({ facetType: FacetType.Category });
 
-      const row = screen.getByTestId('included attribute 0 13 - 14.4');
-      const dropdown = within(row).getByLabelText(
-        /Select to set as included, excluded or algo control/i
-      );
-      await user.click(dropdown);
-      const excludeOption = within(row).getByRole('menuitemradio', {
-        name: 'Exclude only',
-      });
-      await user.click(excludeOption);
+      await makeChange(user);
 
       await user.click(screen.getByRole('button', { name: 'Cancel' }));
       await user.click(
@@ -342,15 +343,7 @@ describe('CategoryAndSearchFacetsPanelPageLayout', () => {
       const user = userEvent.setup({ delay: null });
       setup({ facetType: FacetType.Category });
 
-      const row = screen.getByTestId('included attribute 0 13 - 14.4');
-      const dropdown = within(row).getByLabelText(
-        /Select to set as included, excluded or algo control/i
-      );
-      await user.click(dropdown);
-      const excludeOption = within(row).getByRole('menuitemradio', {
-        name: 'Exclude only',
-      });
-      await user.click(excludeOption);
+      await makeChange(user);
 
       await user.click(screen.getByRole('button', { name: 'Cancel' }));
       await user.click(

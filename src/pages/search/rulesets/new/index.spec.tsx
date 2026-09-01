@@ -115,7 +115,24 @@ describe('Index', () => {
   });
 
   it('cancels new ruleset creation', async () => {
+    const user = userEvent.setup();
     renderWithProviders(<RuleSetCreate />);
+
+    await user.click(await screen.findByRole('button', { name: 'Edit' }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+
+    await user.type(
+      screen.getByLabelText('Add keyword to list'),
+      'new keyword{enter}'
+    );
+
+    const closeModal = screen.getByRole('button', { name: 'Close' });
+    act(() => {
+      closeModal.click();
+    });
 
     const cancel = await screen.findByText('Cancel');
 
