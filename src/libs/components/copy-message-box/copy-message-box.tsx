@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 
 import { Button, Typography } from '@/libs/components';
@@ -30,7 +31,7 @@ export const CopyMessageBox = ({
 }: {
   message: string;
   isMultiline?: boolean;
-}) => {
+}): ReactElement => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {

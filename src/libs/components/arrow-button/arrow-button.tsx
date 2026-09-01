@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes, ReactElement } from 'react';
 
 import { Button } from '../button/button';
 import styles from './arrow-button.module.css';
@@ -15,7 +15,7 @@ export const ArrowButton = ({
   onClick,
   direction,
   label,
-}: ArrowButtonProps) => {
+}: ArrowButtonProps): ReactElement => {
   return (
     <Button
       className={styles.arrowButton}

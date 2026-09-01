@@ -22,7 +22,11 @@ type RunUpdateArgs = {
  * endpoint and turns a 409 into a `conflict` result. Shared by every
  * merchandising update hook so the branching lives in one place.
  */
-export const useOptimisticUpdate = <T>() => {
+export const useOptimisticUpdate = <T>(): {
+  error: string;
+  isSaving: boolean;
+  runUpdate: (args: RunUpdateArgs) => Promise<SaveResult<T>>;
+} => {
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 

@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import pluralize from 'pluralize';
 
 import { Typography } from '../typography/typography';
@@ -7,7 +9,7 @@ export const FilteredResultsPanel = ({
   filteredFacets,
 }: {
   filteredFacets: number;
-}) => {
+}): ReactElement => {
   return (
     <div className={styles.filteredResults}>
       <Typography variant="bodySmall" as="output">

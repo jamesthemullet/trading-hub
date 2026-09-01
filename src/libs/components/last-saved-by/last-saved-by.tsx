@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import { Typography } from '@/libs/components/typography/typography';
 
 import styles from './last-saved-by.module.css';
@@ -25,7 +27,10 @@ type Props = {
   className?: string;
 };
 
-export const LastSavedBy = ({ lastChanged, className }: Props) => {
+export const LastSavedBy = ({
+  lastChanged,
+  className,
+}: Props): ReactElement | null => {
   const lastChangedDate = lastChanged?.date ? new Date(lastChanged.date) : null;
 
   const isLastChangedValid =

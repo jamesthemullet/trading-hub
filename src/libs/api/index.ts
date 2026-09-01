@@ -65,8 +65,8 @@ const createTimingFetch = (): typeof fetch => async (input, init) => {
   return response;
 };
 
-export const api = () => {
-  return new Api({
+export const api = (): Api<unknown> => {
+  return new Api<unknown>({
     baseUrl: process.env.MERCHANDISING_PROXY_BASE_URL ?? '/api',
     securityWorker: () => ({ format: 'json' }),
     ...(typeof window !== 'undefined'
@@ -75,7 +75,7 @@ export const api = () => {
   });
 };
 
-export const search = () => api().search;
+export const search = (): ReturnType<typeof api>['search'] => api().search;
 
 if (typeof window !== 'undefined') {
   // eslint-disable-next-line functional/immutable-data

@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useEffect, useRef } from 'react';
 
 import Image from 'next/image';
@@ -12,7 +13,11 @@ type Props = {
   autoDismissMs?: number;
 };
 
-export const Toast = ({ message, onDismiss, autoDismissMs }: Props) => {
+export const Toast = ({
+  message,
+  onDismiss,
+  autoDismissMs,
+}: Props): ReactElement => {
   // Keep the latest onDismiss without it being a timer dependency, so a new
   // callback identity from the parent (e.g. a re-render adding another toast)
   // doesn't reset this toast's countdown.

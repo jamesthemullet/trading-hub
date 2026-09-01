@@ -182,6 +182,9 @@ importers:
       all-contributors-cli:
         specifier: 6.26.1
         version: 6.26.1
+      axe-core:
+        specifier: 4.13.0
+        version: 4.13.0
       concurrently:
         specifier: 10.0.5
         version: 10.0.5

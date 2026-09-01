@@ -7,7 +7,7 @@ type BreadcrumbProps = {
   children: ReactNode;
 };
 
-export const Breadcrumb = ({ children }: BreadcrumbProps) => {
+export const Breadcrumb = ({ children }: BreadcrumbProps): ReactElement => {
   const props = { 'aria-current': 'page' };
   return (
     <nav aria-label="breadcrumb">

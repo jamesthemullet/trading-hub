@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import { Typography } from '@/libs/components';
 
 import {
@@ -18,7 +20,7 @@ export const InfoCard = ({
   statusVariant,
   statusLabel,
   children,
-}: InfoCardData) => (
+}: InfoCardData): ReactElement => (
   <div className={styles.infoCard}>
     <div className={styles.header}>
       <Typography variant="bodyLarge" isStrong>

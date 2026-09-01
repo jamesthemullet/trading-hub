@@ -1,4 +1,4 @@
-import type { ComponentProps } from 'react';
+import type { ComponentProps, ReactElement } from 'react';
 import { useId } from 'react';
 
 import { Typography } from '../typography/typography';
@@ -13,7 +13,11 @@ type InputProps = Omit<
   shouldShowLabel?: boolean;
 };
 
-export const Checkbox = ({ label, shouldShowLabel, ...rest }: InputProps) => {
+export const Checkbox = ({
+  label,
+  shouldShowLabel,
+  ...rest
+}: InputProps): ReactElement => {
   const id = useId();
 
   return shouldShowLabel ? (

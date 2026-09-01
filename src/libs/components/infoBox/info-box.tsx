@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 import Image from 'next/image';
 
@@ -23,7 +23,7 @@ export const InfoBox = ({
   width = '340px',
   height = '56px',
   children,
-}: Props) => {
+}: Props): ReactElement => {
   return (
     <div
       className={styles.infoBox}

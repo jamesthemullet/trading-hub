@@ -35,7 +35,7 @@ describe('CombinedDropdown', () => {
         },
       ]);
 
-      expect(option.label).toBe('Ranking rules');
+      expect(option?.label).toBe('Ranking rules');
     });
 
     it('should fall back to first option when none selected', () => {
@@ -56,7 +56,13 @@ describe('CombinedDropdown', () => {
         },
       ]);
 
-      expect(option.label).toBe('All rule types');
+      expect(option?.label).toBe('All rule types');
+    });
+
+    it('should return undefined when options array is empty', () => {
+      const option = getSelectedRuleTypeFilterOption([]);
+
+      expect(option).toBeUndefined();
     });
   });
 

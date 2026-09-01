@@ -9,7 +9,14 @@ export const useSaveConflict = <T extends { version?: number }, P>({
 }: {
   save: (payload: P, versionOverride?: number) => Promise<SaveResult<T>>;
   onSuccess: () => void;
-}) => {
+}): {
+  conflict: { currentEntity: T; payload: P } | null;
+  isOverwriting: boolean;
+  runSave: (payload: P) => Promise<void>;
+  handleOverwrite: () => Promise<void>;
+  handleDiscard: () => void;
+  closeConflict: () => void;
+} => {
   const router = useRouter();
   const [conflict, setConflict] = useState<{
     currentEntity: T;

@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import { Breadcrumb } from '../breadcrumb/breadcrumb';
 import { Typography } from '../typography/typography';
 import styles from './heading.module.css';
@@ -7,7 +9,7 @@ type Props = {
   title?: string;
 };
 
-export const Heading = ({ breadcrumbs, title }: Props) => {
+export const Heading = ({ breadcrumbs, title }: Props): ReactElement => {
   return (
     <div>
       <div className={styles.headingSpacer} />

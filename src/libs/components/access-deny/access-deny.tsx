@@ -1,6 +1,12 @@
+import type { ReactElement } from 'react';
+
 import styles from './access-deny.module.css';
 
-export const AccessDeny = ({ requiredRole }: { requiredRole?: string }) => {
+export const AccessDeny = ({
+  requiredRole,
+}: {
+  requiredRole?: string;
+}): ReactElement => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.content}>

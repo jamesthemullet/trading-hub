@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { Divider, Modal } from '@mantine/core';
 
 import { Button, Typography } from '@/libs/components';
@@ -31,7 +32,7 @@ export const ConflictModal = ({
   changedBy,
   isSaving = false,
   entityLabel = 'ruleset',
-}: ConflictModalProps) => {
+}: ConflictModalProps): ReactElement => {
   return (
     <Modal.Root
       opened={opened}

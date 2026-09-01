@@ -3,14 +3,17 @@ import { expect, type Page } from '@playwright/test';
 const getProductSearchResults = (page: Page) =>
   page.getByTestId('product-search-result');
 
-export const getProductSearchResultPosition = (page: Page, position: number) =>
+export const getProductSearchResultPosition = (
+  page: Page,
+  position: number
+): ReturnType<typeof getProductSearchResults> =>
   getProductSearchResults(page).getByTestId(`Position ${position}`);
 
 export const searchForProductAndWaitForResults = async (
   page: Page,
   searchTerm: string,
   highestExpectedPosition = 1
-) => {
+): Promise<void> => {
   await page.getByPlaceholder('Search for product').fill(searchTerm);
   await expect(
     getProductSearchResultPosition(page, highestExpectedPosition)
@@ -20,7 +23,7 @@ export const searchForProductAndWaitForResults = async (
 export const searchAndWaitForResults = async (
   page: Page,
   searchTerm: string
-) => {
+): Promise<void> => {
   const resultsCount = page.getByTestId('results count');
   const initialCount = await resultsCount.textContent();
 

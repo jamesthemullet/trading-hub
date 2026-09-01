@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useId } from 'react';
 
 import { formatHTMLStrings } from '@/libs/utils/format-html-strings';
@@ -16,7 +17,7 @@ type Props = {
   onSelect: (isChecked: boolean, name: string) => void;
 };
 
-export const Checkboxes = ({ values, onSelect }: Props) => {
+export const Checkboxes = ({ values, onSelect }: Props): ReactElement => {
   const id = useId();
 
   return (

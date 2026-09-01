@@ -1,5 +1,5 @@
 import { registerOTel } from '@vercel/otel';
 
-export function register() {
+export function register(): void {
   registerOTel({ serviceName: 'trading-hub' });
 }

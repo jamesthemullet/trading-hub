@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { MerchandisingCountryCode } from '@/libs/api';
@@ -128,7 +128,7 @@ export const CombinedDropdown = ({
   totalItems,
   onPageSizeChange,
   onRuleTypeChange,
-}: CombinedDropdownProps) => {
+}: CombinedDropdownProps): ReactElement => {
   const [isOpen, setIsOpen] = useState(false);
 
   const closeDropdown = useCallback(

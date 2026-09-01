@@ -104,4 +104,5 @@ export const VARIANT_TEST_IDS: Partial<Record<DropdownVariant, string>> = {
 
 export const getSelectedRuleTypeFilterOption = (
   options: RuleTypeFilterOption[]
-) => options.find((option) => option.selected) || options[0];
+): RuleTypeFilterOption | undefined =>
+  options.find((option) => option.selected) ?? options[0];

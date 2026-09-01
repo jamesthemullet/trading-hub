@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import type { Page } from '@playwright/test';
 import { expect } from '@playwright/test';
+import type { AxeResults } from 'axe-core';
 
 type AccessibilityCheckOptions = {
   exclude?: string[];
@@ -13,7 +14,7 @@ type AccessibilityCheckOptions = {
 export const checkAccessibility = async (
   page: Page,
   options: AccessibilityCheckOptions = {}
-) => {
+): Promise<AxeResults> => {
   const {
     exclude = [
       // These are mantine-related issues, so code we cannot improve

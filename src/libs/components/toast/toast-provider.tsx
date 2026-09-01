@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
 import { onSaveSuccess } from '@/libs/utils/toast-events';
@@ -10,7 +11,7 @@ type ToastEntry = { id: number; message: string; bottomOffset: number };
 const GAP_PX = 8;
 const FALLBACK_ROW_HEIGHT_PX = 48;
 
-export const ToastProvider = () => {
+export const ToastProvider = (): ReactElement | null => {
   const [toasts, setToasts] = useState<ToastEntry[]>([]);
   const nextId = useRef(0);
   const nextBottomOffset = useRef(0);

@@ -33,7 +33,7 @@ export const defaultFeatureFlags: FeatureFlags = {
 export const FeatureFlagContext =
   createContext<FeatureFlags>(defaultFeatureFlags);
 
-export const useAuthorizationFlag = () => {
+export const useAuthorizationFlag = (): boolean => {
   const featureFlags = useContext(FeatureFlagContext);
   const [authorizationEnabled, setAuthorizationEnabled] = useState(false);
 
@@ -44,7 +44,7 @@ export const useAuthorizationFlag = () => {
   return authorizationEnabled;
 };
 
-export const useAuthorizationRoleOverride = () => {
+export const useAuthorizationRoleOverride = (): AuthorizationRoleOverride => {
   const featureFlags = useContext(FeatureFlagContext);
   const [authorizationRoleOverride, setAuthorizationRoleOverride] = useState(
     featureFlags.authorizationRoleOverride
@@ -57,7 +57,7 @@ export const useAuthorizationRoleOverride = () => {
   return authorizationRoleOverride;
 };
 
-export const useProfilePageFlag = () => {
+export const useProfilePageFlag = (): boolean => {
   const featureFlags = useContext(FeatureFlagContext);
   const [profilePageEnabled, setProfilePageEnabled] = useState(false);
 
@@ -68,7 +68,7 @@ export const useProfilePageFlag = () => {
   return profilePageEnabled;
 };
 
-export const useFavouriteRulesetsFlag = () => {
+export const useFavouriteRulesetsFlag = (): boolean => {
   const featureFlags = useContext(FeatureFlagContext);
   const [favouriteRulesetsEnabled, setFavouriteRulesetsEnabled] =
     useState(false);
@@ -80,7 +80,7 @@ export const useFavouriteRulesetsFlag = () => {
   return favouriteRulesetsEnabled;
 };
 
-export const useOptimisticLockingFlag = () => {
+export const useOptimisticLockingFlag = (): boolean => {
   const featureFlags = useContext(FeatureFlagContext);
   const [isOptimisticLockingEnabled, setIsOptimisticLockingEnabled] = useState(
     featureFlags.hasOptimisticLocking
