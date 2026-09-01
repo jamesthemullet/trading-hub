@@ -1,0 +1,100 @@
+name: Istanbul Ignore Review
+
+# Runs every weekday morning and hands the next batch of files from
+# istanbul-ignore-files.md to GitHub Copilot coding agent for review.
+#
+# Requires a repository secret `COPILOT_ASSIGN_TOKEN`: a personal access
+# token (classic `repo` scope, or fine-grained with read access to metadata
+# and read/write access to actions, contents, issues and pull requests)
+# belonging to a user with a Copilot coding agent license. The default
+# `GITHUB_TOKEN` cannot be used because Copilot issue-assignment requires a
+# user token, not a server-to-server token.
+on:
+  schedule:
+    # 09:22 UTC, Monday-Friday
+    - cron: '22 9 * * 1-5'
+  workflow_dispatch: {}
+
+env:
+  TRACKING_LABEL: istanbul-ignore-review
+  BATCH_SIZE: 5
+  TRACKING_FILE: istanbul-ignore-files.md
+
+jobs:
+  check-previous-run:
+    name: Check previous run has completed
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - name: Check for an open PR or issue from the previous run
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN }}
+        run: |
+          open_prs=$(gh pr list --repo "$GITHUB_REPOSITORY" --search "label:$TRACKING_LABEL is:open" --json number --jq 'length')
+          open_issues=$(gh issue list --repo "$GITHUB_REPOSITORY" --search "label:$TRACKING_LABEL is:open" --json number --jq 'length')
+
+          if [ "$open_prs" -gt 0 ] || [ "$open_issues" -gt 0 ]; then
+            echo "Previous istanbul ignore review is still open (PRs: $open_prs, issues: $open_issues). Skipping this run."
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  create-review-task:
+    name: Assign next batch to Copilot
+    needs: check-previous-run
+    if: needs.check-previous-run.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure tracking label exists
+        env:
+          GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN }}
+        run: |
+          gh label create "$TRACKING_LABEL" \
+            --repo "$GITHUB_REPOSITORY" \
+            --color BFD4F2 \
+            --description "Automated istanbul ignore review batches" \
+            || true
+
+      - name: Create review issue
+        id: create-issue
+        env:
+          GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN }}
+        run: |
+          body=$(cat <<EOF
+          This is an automated task. Work only from \`$TRACKING_FILE\`.
+
+          1. Find the first $BATCH_SIZE lines in \`$TRACKING_FILE\` that are **not** marked done (lines starting with \`- [ ]\`), reading top to bottom.
+          2. Do not process more than $BATCH_SIZE files in total, even if more are unmarked.
+          3. For each file in the batch, review every \`/* istanbul ignore ... */\` and \`// istanbul ignore ...\` comment:
+             - If the ignored branch/line can be tested, remove the ignore comment and add a test that exercises it. Run \`pnpm run test\` to confirm 100% coverage is maintained.
+             - If it genuinely cannot be tested, keep the ignore comment and add a short comment directly above it explaining why (only if one isn't already present).
+          4. Once a file has been fully reviewed, mark it done in \`$TRACKING_FILE\` by changing its \`- [ ]\` to \`- [x]\`.
+          5. Run \`pnpm run lint\`, \`pnpm run ts-check\`, and \`pnpm run test\` before finishing, and fix any failures caused by your changes.
+          6. Open a pull request with your changes.
+
+          Do not touch any files outside of the batch you selected.
+          EOF
+          )
+
+          issue_url=$(gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Istanbul ignore review batch - $(date -u +%Y-%m-%d)" \
+            --label "$TRACKING_LABEL" \
+            --body "$body")
+
+          issue_number=$(basename "$issue_url")
+          echo "issue_number=$issue_number" >> "$GITHUB_OUTPUT"
+
+      - name: Assign issue to Copilot
+        env:
+          GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/$GITHUB_REPOSITORY/issues/${{ steps.create-issue.outputs.issue_number }}/assignees" \
+            --input - <<< '{"assignees": ["copilot-swe-agent[bot]"]}'

@@ -124,6 +124,24 @@ jobs:
       - name: Audit dependencies
         run: pnpm audit --audit-level=high --ignore-unfixable
 
+  istanbul-ignore-check:
+    name: Istanbul Ignore Reasons
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Prepare node and install dependencies
+        uses: ./.github/actions/prepare
+
+      - name: Check new istanbul ignores have a reason
+        run: node scripts/check-new-istanbul-ignores.mjs "${{ github.event.pull_request.base.sha }}"
+
   knip:
     name: Knip
     runs-on: ubuntu-latest

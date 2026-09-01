@@ -342,6 +342,15 @@ const eslint = [
     },
   },
   {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        process: 'readonly',
+        console: 'readonly',
+      },
+    },
+  },
+  {
     files: ['e2e/**/*.spec.*', 'e2e/**/*.ts'],
     rules: {
       '@typescript-eslint/await-thenable': 'off',
