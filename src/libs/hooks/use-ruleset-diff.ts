@@ -36,23 +36,32 @@ const diffProductIds = (
   originalIds: string[],
   currentIds: string[],
   label: string
-): DiffItem[] => [
-  ...currentIds
-    .filter((id) => !originalIds.includes(id))
-    .map((id) => createDiffItem('added', label, id)),
-  ...originalIds
-    .filter((id) => !currentIds.includes(id))
-    .map((id) => createDiffItem('removed', label, id)),
-];
+): DiffItem[] => {
+  const originalIdSet = new Set(originalIds);
+  const currentIdSet = new Set(currentIds);
+
+  return [
+    ...currentIds
+      .filter((id) => !originalIdSet.has(id))
+      .map((id) => createDiffItem('added', label, id)),
+    ...originalIds
+      .filter((id) => !currentIdSet.has(id))
+      .map((id) => createDiffItem('removed', label, id)),
+  ];
+};
 
 const diffPinnedProducts = (
   originalIds: string[],
   currentIds: string[]
 ): DiffItem[] => {
   const label = 'Pinned product';
+  const originalIndexById = new Map(
+    originalIds.map((id, index) => [id, index])
+  );
+  const currentIdSet = new Set(currentIds);
   const additionsAndMoves = currentIds.flatMap<DiffItem>((id, index) => {
-    const origIndex = originalIds.indexOf(id);
-    if (origIndex === -1) {
+    const origIndex = originalIndexById.get(id);
+    if (origIndex === undefined) {
       return [createDiffItem('added', label, id)];
     }
     if (origIndex !== index) {
@@ -68,7 +77,7 @@ const diffPinnedProducts = (
   });
 
   const removals = originalIds
-    .filter((id) => !currentIds.includes(id))
+    .filter((id) => !currentIdSet.has(id))
     .map((id) => createDiffItem('removed', label, id));
 
   return [...additionsAndMoves, ...removals];
@@ -81,9 +90,13 @@ const diffProductBoosts = (
   const label = 'Boosted product';
   const formatWeight = (weight: number) =>
     weight !== 100 ? ` (${weight}%)` : '';
+  const originalById = new Map(
+    original.map((product) => [product.id, product])
+  );
+  const currentIdSet = new Set(current.map((product) => product.id));
 
   const additionsAndChanges = current.flatMap<DiffItem>((curr) => {
-    const orig = original.find((o) => o.id === curr.id);
+    const orig = originalById.get(curr.id);
     if (!orig) {
       return [
         createDiffItem(
@@ -106,7 +119,7 @@ const diffProductBoosts = (
   });
 
   const removals = original
-    .filter((orig) => !current.some((c) => c.id === orig.id))
+    .filter((orig) => !currentIdSet.has(orig.id))
     .map((orig) =>
       createDiffItem('removed', label, `${orig.id}${formatWeight(orig.weight)}`)
     );
@@ -180,8 +193,12 @@ const diffNumericAttributes = (
   current: MerchandisingNumericBoostBury[],
   label: string
 ): DiffItem[] => {
+  const originalByField = new Map(
+    [...original].reverse().map((rule) => [rule.field, rule])
+  );
+  const currentFieldSet = new Set(current.map((rule) => rule.field));
   const additionsAndChanges = current.flatMap<DiffItem>((curr) => {
-    const orig = original.find((o) => o.field === curr.field);
+    const orig = originalByField.get(curr.field);
     if (!orig) {
       return [createDiffItem('added', label, formatNumericAttribute(curr))];
     }
@@ -198,7 +215,7 @@ const diffNumericAttributes = (
   });
 
   const removals = original
-    .filter((orig) => !current.some((c) => c.field === orig.field))
+    .filter((orig) => !currentFieldSet.has(orig.field))
     .map((orig) =>
       createDiffItem('removed', label, formatNumericAttribute(orig))
     );
@@ -236,12 +253,18 @@ const diffFacetOrder = (
   currentIds: string[],
   facetNames: Record<string, string>
 ): DiffItem[] => {
-  const originalOrder = originalIds.filter((id) => currentIds.includes(id));
-  const currentOrder = currentIds.filter((id) => originalIds.includes(id));
+  const originalIdSet = new Set(originalIds);
+  const currentIdSet = new Set(currentIds);
+  const originalOrder = originalIds.filter((id) => currentIdSet.has(id));
+  const currentOrder = currentIds.filter((id) => originalIdSet.has(id));
+  const originalIndexById = new Map(
+    originalOrder.map((id, index) => [id, index])
+  );
 
-  return currentOrder.flatMap<DiffItem>((id) => {
-    const origIndex = originalOrder.indexOf(id);
-    const currIndex = currentOrder.indexOf(id);
+  return currentOrder.flatMap<DiffItem>((id, currIndex) => {
+    const origIndex = originalIndexById.get(id);
+    /* istanbul ignore next -- currentOrder is derived from originalOrder */
+    if (origIndex === undefined) return [];
     if (origIndex === currIndex) return [];
 
     const direction = currIndex < origIndex ? 'up' : 'down';
