@@ -20,7 +20,7 @@ type FacetListAction =
   | { type: 'addCategory'; payload: CategoryInfo }
   | { type: 'removeCategory'; payload: string }
   | { type: 'setCategories'; payload: CategoryInfo[] }
-  | { type: 'addSearchTerm'; payload: string }
+  | { type: 'addSearchTerms'; payload: string[] }
   | { type: 'removeSearchTerm'; payload: string }
   | { type: 'setSearchTerms'; payload: string[] }
   | { type: 'setFilter'; payload: string };
@@ -55,10 +55,10 @@ export const FacetListReducer = (
       };
     case 'setCategories':
       return { ...state, selectedCategoriesInfo: action.payload };
-    case 'addSearchTerm':
+    case 'addSearchTerms':
       return {
         ...state,
-        selectedSearchTerms: [...state.selectedSearchTerms, action.payload],
+        selectedSearchTerms: [...state.selectedSearchTerms, ...action.payload],
       };
     case 'removeSearchTerm':
       return {

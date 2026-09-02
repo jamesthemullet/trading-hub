@@ -21,7 +21,7 @@ const longerSearchTermsList = [
 const mockProps: Props = {
   title: 'Search Keywords',
   searchTerms: [],
-  addSearchTerm: jest.fn(),
+  addSearchTerms: jest.fn(),
   removeSearchTerm: jest.fn(),
   previewSearchTerm: undefined,
   selectPreviewSearchTerm: jest.fn(),
@@ -63,13 +63,13 @@ describe('Search Keywords', () => {
   });
 
   it('should add a new keyword to the list with the modal being open', async () => {
-    const addSearchTermStub = jest.fn();
+    const addSearchTermsStub = jest.fn();
     const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <SearchKeywords
         {...mockProps}
         searchTerms={longerSearchTermsList}
-        addSearchTerm={addSearchTermStub}
+        addSearchTerms={addSearchTermsStub}
       />
     );
 
@@ -85,18 +85,21 @@ describe('Search Keywords', () => {
     });
 
     await waitFor(() => {
-      expect(addSearchTermStub).toHaveBeenCalledWith('new keyword');
+      expect(addSearchTermsStub).toHaveBeenCalledWith(['new keyword']);
     });
   });
 
   it('should add a new keyword in lowercase to the list with the modal being open', async () => {
-    const addSearchTermStub = jest.fn();
+    const addSearchTermsStub = jest.fn();
+    const selectPreviewSearchTermStub = jest.fn();
     const user = userEvent.setup({ delay: null });
     renderWithProviders(
       <SearchKeywords
         {...mockProps}
         searchTerms={longerSearchTermsList}
-        addSearchTerm={addSearchTermStub}
+        previewSearchTerm={longerSearchTermsList[0]}
+        addSearchTerms={addSearchTermsStub}
+        selectPreviewSearchTerm={selectPreviewSearchTermStub}
       />
     );
 
@@ -112,8 +115,10 @@ describe('Search Keywords', () => {
     });
 
     await waitFor(() => {
-      expect(addSearchTermStub).toHaveBeenCalledWith('new keyword');
+      expect(addSearchTermsStub).toHaveBeenCalledWith(['new keyword']);
     });
+
+    expect(selectPreviewSearchTermStub).not.toHaveBeenCalled();
   });
 
   it('should remove a keyword from the list on the modal', async () => {
@@ -201,13 +206,13 @@ describe('Search Keywords', () => {
 
   it('should show error when adding a keyword and input element is missing', async () => {
     const user = userEvent.setup({ delay: null });
-    const addSearchTermStub = jest.fn();
+    const addSearchTermsStub = jest.fn();
 
     renderWithProviders(
       <SearchKeywords
         {...mockProps}
         searchTerms={longerSearchTermsList}
-        addSearchTerm={addSearchTermStub}
+        addSearchTerms={addSearchTermsStub}
       />
     );
 
@@ -222,36 +227,10 @@ describe('Search Keywords', () => {
 
     await user.type(screen.getByLabelText('Add keyword to list'), '{Enter}');
 
-    expect(addSearchTermStub).not.toHaveBeenCalled();
+    expect(addSearchTermsStub).not.toHaveBeenCalled();
     expect(screen.getByText('Keyword cannot be blank')).toBeVisible();
 
     getElementByIdSpy.mockRestore();
-  });
-
-  it('should show error and not add keyword when input is blank', async () => {
-    const addSearchTermStub = jest.fn();
-    const user = userEvent.setup({ delay: null });
-    renderWithProviders(
-      <SearchKeywords
-        {...mockProps}
-        searchTerms={longerSearchTermsList}
-        addSearchTerm={addSearchTermStub}
-      />
-    );
-
-    await waitFor(async () => {
-      await user.click(screen.getByRole('button', { name: 'Edit' }));
-    });
-
-    await waitFor(async () => {
-      await user.type(
-        screen.getByLabelText('Add keyword to list'),
-        '   {Enter}'
-      );
-    });
-
-    expect(addSearchTermStub).not.toHaveBeenCalled();
-    expect(screen.getByText('Keyword cannot be blank')).toBeVisible();
   });
 
   it('should filter attributes on user input', async () => {
@@ -439,36 +418,6 @@ describe('Search Keywords', () => {
     );
   });
 
-  it('should show error when adding a duplicate keyword', async () => {
-    const addSearchTermStub = jest.fn();
-    const user = userEvent.setup({ delay: null });
-    renderWithProviders(
-      <SearchKeywords
-        {...mockProps}
-        searchTerms={['new keyword']}
-        previewSearchTerm="new keyword"
-        addSearchTerm={addSearchTermStub}
-      />
-    );
-
-    await waitFor(async () => {
-      await user.click(screen.getByRole('button', { name: 'Edit' }));
-    });
-
-    await waitFor(async () => {
-      await user.type(
-        screen.getByLabelText('Add keyword to list'),
-        'new keyword{enter}'
-      );
-    });
-
-    await waitFor(() =>
-      expect(
-        screen.getByText('Keyword new keyword has already been added')
-      ).toBeVisible()
-    );
-  });
-
   it('open the modal when only one category is in the dropdown', async () => {
     const user = userEvent.setup();
     renderWithProviders(
@@ -540,6 +489,439 @@ describe('Search Keywords', () => {
 
     await waitFor(() => {
       expect(dropdownButton).toHaveAttribute('aria-expanded', 'false');
+    });
+  });
+
+  describe('bulk keyword paste', () => {
+    it('should add multiple comma-separated keywords in one operation', async () => {
+      const addSearchTermsStub = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <SearchKeywords
+          {...mockProps}
+          searchTerms={[]}
+          addSearchTerms={addSearchTermsStub}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(async () => {
+        await user.type(
+          screen.getByLabelText('Add keyword to list'),
+          'alpha, beta, gamma{enter}'
+        );
+      });
+
+      await waitFor(() => {
+        expect(addSearchTermsStub).toHaveBeenCalledWith([
+          'alpha',
+          'beta',
+          'gamma',
+        ]);
+      });
+
+      expect(screen.getByText('3 keywords added')).toBeVisible();
+    });
+
+    it('should show singular "keyword added" when only one term is added', async () => {
+      const addSearchTermsStub = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <SearchKeywords
+          {...mockProps}
+          searchTerms={[]}
+          addSearchTerms={addSearchTermsStub}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(async () => {
+        await user.type(
+          screen.getByLabelText('Add keyword to list'),
+          'alpha{enter}'
+        );
+      });
+
+      await waitFor(() => {
+        expect(addSearchTermsStub).toHaveBeenCalledWith(['alpha']);
+      });
+
+      expect(screen.getByText('1 keyword added')).toBeVisible();
+    });
+
+    it('should show a duplication error when adding a single keyword that already exists', async () => {
+      const addSearchTermsStub = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <SearchKeywords
+          {...mockProps}
+          searchTerms={['alpha']}
+          previewSearchTerm="alpha"
+          addSearchTerms={addSearchTermsStub}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(async () => {
+        await user.type(
+          screen.getByLabelText('Add keyword to list'),
+          'alpha{enter}'
+        );
+      });
+
+      expect(addSearchTermsStub).not.toHaveBeenCalled();
+      expect(
+        screen.getByText('Keyword alpha has already been added')
+      ).toBeVisible();
+    });
+
+    it('should skip duplicates and show summary with skipped count', async () => {
+      const addSearchTermsStub = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <SearchKeywords
+          {...mockProps}
+          searchTerms={['alpha']}
+          previewSearchTerm="alpha"
+          addSearchTerms={addSearchTermsStub}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(async () => {
+        await user.type(
+          screen.getByLabelText('Add keyword to list'),
+          'alpha, beta{enter}'
+        );
+      });
+
+      await waitFor(() => {
+        expect(addSearchTermsStub).toHaveBeenCalledWith(['beta']);
+      });
+
+      expect(
+        screen.getByText('1 keyword added, 1 duplicate skipped')
+      ).toBeVisible();
+    });
+
+    it('should show singular "duplicate skipped" when only one duplicate is skipped', async () => {
+      const addSearchTermsStub = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <SearchKeywords
+          {...mockProps}
+          searchTerms={['alpha']}
+          previewSearchTerm="alpha"
+          addSearchTerms={addSearchTermsStub}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(async () => {
+        await user.type(
+          screen.getByLabelText('Add keyword to list'),
+          'alpha, beta, gamma{enter}'
+        );
+      });
+
+      await waitFor(() => {
+        expect(addSearchTermsStub).toHaveBeenCalledWith(['beta', 'gamma']);
+      });
+
+      expect(
+        screen.getByText('2 keywords added, 1 duplicate skipped')
+      ).toBeVisible();
+    });
+
+    it('should show summary with pluralised skipped count when multiple duplicates skipped', async () => {
+      const addSearchTermsStub = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <SearchKeywords
+          {...mockProps}
+          searchTerms={['alpha', 'beta']}
+          previewSearchTerm="alpha"
+          addSearchTerms={addSearchTermsStub}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(async () => {
+        await user.type(
+          screen.getByLabelText('Add keyword to list'),
+          'alpha, beta, gamma{enter}'
+        );
+      });
+
+      await waitFor(() => {
+        expect(addSearchTermsStub).toHaveBeenCalledWith(['gamma']);
+      });
+
+      expect(
+        screen.getByText('1 keyword added, 2 duplicates skipped')
+      ).toBeVisible();
+    });
+
+    it('should show "0 keywords added" when all terms are duplicates', async () => {
+      const addSearchTermsStub = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <SearchKeywords
+          {...mockProps}
+          searchTerms={['alpha', 'beta']}
+          previewSearchTerm="alpha"
+          addSearchTerms={addSearchTermsStub}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(async () => {
+        await user.type(
+          screen.getByLabelText('Add keyword to list'),
+          'alpha, beta{enter}'
+        );
+      });
+
+      expect(addSearchTermsStub).not.toHaveBeenCalled();
+      expect(
+        screen.getByText('0 keywords added, 2 duplicates skipped')
+      ).toBeVisible();
+    });
+
+    it('should keep commas within a keyword when comma-splitting is switched off', async () => {
+      const addSearchTermsStub = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <SearchKeywords
+          {...mockProps}
+          searchTerms={[]}
+          addSearchTerms={addSearchTermsStub}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await user.click(
+        await screen.findByRole('checkbox', {
+          name: 'Separate keywords using commas',
+        })
+      );
+
+      await waitFor(async () => {
+        await user.type(
+          screen.getByLabelText('Add keyword to list'),
+          'jeans, skinny fit{enter}'
+        );
+      });
+
+      await waitFor(() => {
+        expect(addSearchTermsStub).toHaveBeenCalledWith(['jeans, skinny fit']);
+      });
+    });
+
+    it('should show error when input is blank in bulk mode', async () => {
+      const addSearchTermsStub = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <SearchKeywords
+          {...mockProps}
+          searchTerms={[]}
+          addSearchTerms={addSearchTermsStub}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(async () => {
+        await user.type(
+          screen.getByLabelText('Add keyword to list'),
+          '   {enter}'
+        );
+      });
+
+      expect(addSearchTermsStub).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(screen.getByText('Keyword cannot be blank')).toBeVisible();
+      });
+    });
+
+    it('should add newline-separated keywords', async () => {
+      const addSearchTermsStub = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <SearchKeywords
+          {...mockProps}
+          searchTerms={[]}
+          addSearchTerms={addSearchTermsStub}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
+
+      const mockInput = { value: 'alpha\nbeta\ngamma' };
+      const getElementByIdSpy = jest
+        .spyOn(document, 'getElementById')
+        .mockReturnValue(mockInput as unknown as HTMLElement);
+
+      await user.type(screen.getByLabelText('Add keyword to list'), '{Enter}');
+
+      getElementByIdSpy.mockRestore();
+
+      await waitFor(() => {
+        expect(addSearchTermsStub).toHaveBeenCalledWith([
+          'alpha',
+          'beta',
+          'gamma',
+        ]);
+      });
+    });
+
+    it('should deduplicate terms within the pasted input itself', async () => {
+      const addSearchTermsStub = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <SearchKeywords
+          {...mockProps}
+          searchTerms={[]}
+          addSearchTerms={addSearchTermsStub}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(async () => {
+        await user.type(
+          screen.getByLabelText('Add keyword to list'),
+          'alpha, alpha, beta{enter}'
+        );
+      });
+
+      await waitFor(() => {
+        expect(addSearchTermsStub).toHaveBeenCalledWith(['alpha', 'beta']);
+      });
+
+      expect(
+        screen.getByText('2 keywords added, 1 duplicate skipped')
+      ).toBeVisible();
+    });
+
+    it('should clear the bulk summary when the modal is closed', async () => {
+      const addSearchTermsStub = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <SearchKeywords
+          {...mockProps}
+          searchTerms={[]}
+          addSearchTerms={addSearchTermsStub}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(async () => {
+        await user.type(
+          screen.getByLabelText('Add keyword to list'),
+          'alpha{enter}'
+        );
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('1 keyword added')).toBeVisible();
+      });
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Close' }));
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.queryByRole('button', { name: 'Close' })
+        ).not.toBeInTheDocument();
+      });
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      expect(screen.queryByText('1 keyword added')).not.toBeInTheDocument();
+    });
+
+    it('should set preview keyword from first bulk-added term when no preview exists', async () => {
+      const addSearchTermsStub = jest.fn();
+      const selectPreviewStub = jest.fn();
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <SearchKeywords
+          {...mockProps}
+          searchTerms={[]}
+          addSearchTerms={addSearchTermsStub}
+          previewSearchTerm={undefined}
+          selectPreviewSearchTerm={selectPreviewStub}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(async () => {
+        await user.type(
+          screen.getByLabelText('Add keyword to list'),
+          'alpha, beta{enter}'
+        );
+      });
+
+      await waitFor(() => {
+        expect(selectPreviewStub).toHaveBeenCalledWith('alpha');
+      });
     });
   });
 });

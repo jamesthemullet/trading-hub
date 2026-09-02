@@ -220,10 +220,10 @@ describe('Search Facet Management New', () => {
         expect(screen.getByText('On all the time')).toBeVisible();
       });
 
-      const toggle = screen.getByTitle('Toggle');
-      act(() => {
-        toggle.click();
+      const toggle = screen.getByRole('checkbox', {
+        name: 'On all the time',
       });
+      await user.click(toggle);
 
       const startDate = screen.getAllByText('16')[1];
       const endDate = screen.getAllByText('17')[1];

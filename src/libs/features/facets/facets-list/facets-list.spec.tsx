@@ -1613,6 +1613,37 @@ describe('FacetsList', () => {
     });
   });
 
+  it('should bulk add comma separated search keywords', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        isNewRuleset={false}
+        facetType={FacetType.Search}
+        searchTerms={['socks']}
+      />
+    );
+
+    const modalButton = await screen.findByRole('button', { name: 'Edit' });
+
+    act(() => {
+      modalButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+
+    const keywordInput = screen.getByPlaceholderText('Add new keyword');
+    await user.type(keywordInput, 'shoes,boots{Enter}');
+
+    await waitFor(() => {
+      expect(screen.getByText('shoes')).toBeInTheDocument();
+    });
+    expect(screen.getByText('boots')).toBeInTheDocument();
+  });
+
   it('should render unavailable boosted facets with ghost styling and "currently not available" text', () => {
     const unavailableFacetId = facetsListMock.facets[0].id;
 

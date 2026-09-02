@@ -94,12 +94,11 @@ export const Redirect = ({
     });
   };
 
-  const onAddKeyword = (keyword: string) => {
-    const keywords = [...redirect.keywords, keyword];
-    setRedirect({
-      ...redirect,
-      keywords,
-    });
+  const onAddKeywords = (newKeywords: string[]) => {
+    setRedirect((prev) => ({
+      ...prev,
+      keywords: [...prev.keywords, ...newKeywords],
+    }));
   };
 
   // istanbul ignore next
@@ -188,7 +187,7 @@ export const Redirect = ({
             title={
               redirect.type === 'redirectTerm' ? 'Keyword*' : 'Keyword Phrase*'
             }
-            addSearchTerm={onAddKeyword}
+            addSearchTerms={onAddKeywords}
             removeSearchTerm={onRemoveKeyword}
             previewSearchTerm={defaultValue}
             selectPreviewSearchTerm={(term: string | undefined) => {

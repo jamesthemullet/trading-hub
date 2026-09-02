@@ -9,20 +9,23 @@ import { Modal } from '@mantine/core';
 import { Button, Count, ErrorMessage } from '@/libs/components';
 import dropdownStyles from '@/libs/components/dropdown/dropdown.module.css';
 import { SearchBox } from '@/libs/components/search/search';
+import { Toggle } from '@/libs/components/toggle/toggle';
 import { Typography } from '@/libs/components/typography/typography';
 import { Input } from '@/libs/containers/shared/input/input';
 import { useOnOutsideClick } from '@/libs/hooks';
-import { checkForDuplicates } from '@/libs/utils/check-for-duplicates';
 
 import Image from 'next/image';
+
+import styles from './search-keywords.module.css';
 
 const DEFAULT_DROPDOWN_WIDTH = 250;
 const ACTIVE_DROPDOWN_WIDTH = 320;
 
-import styles from './search-keywords.module.css';
+const pluralise = (count: number, singular: string, plural: string): string =>
+  count === 1 ? singular : plural;
 
 export type Props = {
-  addSearchTerm: (keyword: string) => void;
+  addSearchTerms: (keywords: string[]) => void;
   removeSearchTerm: (keyword: string) => void;
   searchTerms: string[];
   title: string;
@@ -32,7 +35,7 @@ export type Props = {
 };
 
 export const SearchKeywords = ({
-  addSearchTerm,
+  addSearchTerms,
   previewSearchTerm,
   removeSearchTerm,
   searchTerms,
@@ -44,6 +47,8 @@ export const SearchKeywords = ({
 
   const [keywordInputResetKey, setKeywordInputResetKey] = useState(0);
   const [duplicationError, setDuplicationError] = useState('');
+  const [bulkSummary, setBulkSummary] = useState('');
+  const [shouldSplitOnCommas, setShouldSplitOnCommas] = useState(true);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownWrapperRef = useOnOutsideClick<HTMLDivElement>({
@@ -59,6 +64,7 @@ export const SearchKeywords = ({
   const onClose = () => {
     setShouldShowModal(false);
     setDuplicationError('');
+    setBulkSummary('');
   };
 
   const handleOnKeyDown = (event: KeyboardEvent<HTMLElement>) => {
@@ -73,30 +79,50 @@ export const SearchKeywords = ({
     const inputElement = document.getElementById(
       'newKeywordInput'
     ) as HTMLInputElement | null;
-    const inputValue = inputElement?.value.trim().toLowerCase() ?? '';
+    const rawValue = inputElement?.value ?? '';
 
-    if (inputValue === '') {
+    const terms = rawValue
+      .split(shouldSplitOnCommas ? /[,\n]+/ : /\n+/)
+      .map((t) => t.trim().toLowerCase())
+      .filter((t) => t !== '');
+
+    if (terms.length === 0) {
       setDuplicationError('Keyword cannot be blank');
+      setBulkSummary('');
       return;
     }
 
-    const hasDuplicates = checkForDuplicates(
-      [...searchTerms],
-      inputValue,
-      'keyword'
+    const existingTerms = new Set(searchTerms);
+    const uniqueInputTerms = Array.from(new Set(terms));
+    const validTerms = uniqueInputTerms.filter(
+      (term) => !existingTerms.has(term)
     );
+    const skipped = terms.length - validTerms.length;
 
-    if (hasDuplicates) {
-      setDuplicationError(hasDuplicates);
-    } else {
-      addSearchTerm(inputValue);
+    if (terms.length === 1 && validTerms.length === 0 && skipped === 1) {
+      setBulkSummary('');
+      setDuplicationError(`Keyword ${terms[0]} has already been added`);
+      return;
+    }
+
+    if (validTerms.length > 0) {
+      addSearchTerms(validTerms);
       setKeywordInputResetKey((prev) => prev + 1);
-      setDuplicationError('');
 
       if (!previewSearchTerm) {
-        selectPreviewSearchTerm(inputValue);
+        selectPreviewSearchTerm(validTerms[0]);
       }
     }
+
+    const addedCount = validTerms.length;
+    const addedLabel = `${addedCount} ${pluralise(addedCount, 'keyword', 'keywords')} added`;
+    const skippedLabel =
+      skipped > 0
+        ? `, ${skipped} ${pluralise(skipped, 'duplicate', 'duplicates')} skipped`
+        : '';
+
+    setDuplicationError('');
+    setBulkSummary(`${addedLabel}${skippedLabel}`);
   };
 
   useEffect(() => {
@@ -283,69 +309,96 @@ export const SearchKeywords = ({
                     </div>
                   </div>
                 )}
-                <ul className={styles.keywordList}>
-                  {filteredKeywords.map((keyword) => (
-                    <li
-                      key={keyword}
-                      data-is-selected="false"
-                      className={styles.keywordPill}
-                    >
-                      <Button
-                        appearance="plain"
-                        type="button"
-                        onClick={() => selectPreviewSearchTerm(keyword)}
+                {isWriteEnabled && (
+                  <div className={styles.commaToggleContainer}>
+                    <Toggle
+                      aria-label="Separate keywords using commas"
+                      checked={shouldSplitOnCommas}
+                      onChange={(event) =>
+                        setShouldSplitOnCommas(event.target.checked)
+                      }
+                    />
+                    <Typography variant="bodySmall" as="span">
+                      Separate keywords using commas
+                    </Typography>
+                  </div>
+                )}
+                <div className={styles.keywordListContainer}>
+                  <ul className={styles.keywordList}>
+                    {filteredKeywords.map((keyword) => (
+                      <li
+                        key={keyword}
+                        data-is-selected="false"
+                        className={styles.keywordPill}
                       >
-                        <Typography variant="bodySmall" isStrong>
-                          {keyword}
-                        </Typography>
-                      </Button>
-                      {isWriteEnabled && (
                         <Button
-                          appearance="icon"
-                          className={styles.removeKeywordButton}
-                          type="submit"
-                          onClick={() => removeSearchTerm(keyword)}
-                          aria-label={`Remove keyword: ${keyword}`}
+                          appearance="plain"
+                          type="button"
+                          onClick={() => selectPreviewSearchTerm(keyword)}
                         >
-                          <Image
-                            alt=""
-                            src="/trading-hub/asset/icon-remove-chip.svg"
-                            width={16}
-                            height={16}
-                          />
+                          <Typography variant="bodySmall" isStrong>
+                            {keyword}
+                          </Typography>
                         </Button>
-                      )}
-                    </li>
-                  ))}
-                  {isWriteEnabled && (
-                    <li className={styles.keywordInputItem}>
-                      <Input
-                        id="newKeywordInput"
-                        key={keywordInputResetKey}
-                        label="Add keyword to list"
-                        isLabelHidden
-                        type="text"
-                        className={styles.keywordInput}
-                        size="small"
-                        placeholder="Add new keyword"
-                        onChange={() => {
-                          setIsUnfinishedKeyword(false);
-                        }}
-                        onKeyDown={(event) => {
-                          setIsUnfinishedKeyword(false);
-                          if (event.key === 'Enter') {
-                            onAddKeyword();
-                          }
-                        }}
-                      />
-                    </li>
+                        {isWriteEnabled && (
+                          <Button
+                            appearance="icon"
+                            className={styles.removeKeywordButton}
+                            type="submit"
+                            onClick={() => removeSearchTerm(keyword)}
+                            aria-label={`Remove keyword: ${keyword}`}
+                          >
+                            <Image
+                              alt=""
+                              src="/trading-hub/asset/icon-remove-chip.svg"
+                              width={16}
+                              height={16}
+                            />
+                          </Button>
+                        )}
+                      </li>
+                    ))}
+                    {isWriteEnabled && (
+                      <li className={styles.keywordInputItem}>
+                        <Input
+                          id="newKeywordInput"
+                          key={keywordInputResetKey}
+                          label="Add keyword to list"
+                          isLabelHidden
+                          type="text"
+                          className={styles.keywordInput}
+                          size="small"
+                          placeholder="Add new keyword"
+                          onChange={() => {
+                            setIsUnfinishedKeyword(false);
+                          }}
+                          onKeyDown={(event) => {
+                            setIsUnfinishedKeyword(false);
+                            if (event.key === 'Enter') {
+                              onAddKeyword();
+                            }
+                          }}
+                        />
+                      </li>
+                    )}
+                  </ul>
+                  {duplicationError && (
+                    <div className={styles.keywordListMessage}>
+                      <ErrorMessage>{duplicationError}</ErrorMessage>
+                    </div>
                   )}
-                </ul>
+                  {bulkSummary && (
+                    <div
+                      role="status"
+                      aria-live="polite"
+                      className={styles.keywordListMessage}
+                    >
+                      <Typography variant="bodySmall">{bulkSummary}</Typography>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-            {duplicationError && (
-              <ErrorMessage>{duplicationError}</ErrorMessage>
-            )}
           </Modal.Body>
           <div className={styles.modalFooter}>
             {isUnfinishedKeyword && (

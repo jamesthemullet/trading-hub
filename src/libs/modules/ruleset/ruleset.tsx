@@ -264,12 +264,12 @@ export const Ruleset = ({
     countryCode: selectedPreviewCountryCode,
   });
 
-  const onAddSearchTerm = (keyword: string) => {
-    setRulesetSearchTerms([...rulesetSearchTerms, keyword]);
-
-    if (!rulesetSearchTerms.length) {
-      setPreviewValue(keyword);
+  const onAddSearchTerms = (keywords: string[]) => {
+    if (rulesetSearchTerms.length === 0) {
+      setPreviewValue((current) => current ?? keywords[0]);
     }
+
+    setRulesetSearchTerms((prev) => [...prev, ...keywords]);
   };
 
   const onRemoveSearchTerm = (keyword: string) => {
@@ -523,7 +523,7 @@ export const Ruleset = ({
                   <SearchKeywords
                     title="Search Keywords"
                     searchTerms={rulesetSearchTerms}
-                    addSearchTerm={onAddSearchTerm}
+                    addSearchTerms={onAddSearchTerms}
                     removeSearchTerm={onRemoveSearchTerm}
                     previewSearchTerm={previewValue}
                     selectPreviewSearchTerm={setPreviewValue}

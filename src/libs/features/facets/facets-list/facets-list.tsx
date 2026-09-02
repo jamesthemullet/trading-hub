@@ -285,8 +285,8 @@ export const FacetsList = ({
     dispatchFacetList({ type: 'removeSearchTerm', payload: term });
   };
 
-  const onAddSearchTerm = (term: string) => {
-    dispatchFacetList({ type: 'addSearchTerm', payload: term });
+  const onAddSearchTerms = (terms: string[]) => {
+    dispatchFacetList({ type: 'addSearchTerms', payload: terms });
   };
 
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
@@ -624,7 +624,7 @@ export const FacetsList = ({
               <SearchKeywords
                 title="Search Keywords"
                 searchTerms={selectedSearchTerms}
-                addSearchTerm={onAddSearchTerm}
+                addSearchTerms={onAddSearchTerms}
                 removeSearchTerm={onRemoveSearchTerm}
                 previewSearchTerm={previewValue}
                 selectPreviewSearchTerm={handleSetPreviewValue}

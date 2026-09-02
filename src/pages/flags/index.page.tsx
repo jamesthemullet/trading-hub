@@ -45,6 +45,7 @@ const FeatureFlags = () => {
           }}
         />
       </div>
+
       {cookies.flagAuthorization && (
         <Stack w={400}>
           <Select

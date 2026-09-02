@@ -7,6 +7,36 @@ import { renderWithProviders } from '@/test/render-with-providers';
 import { Redirect } from './redirect';
 
 describe('Redirect', () => {
+  it('bulk adds comma separated keywords', async () => {
+    const user = userEvent.setup({ delay: null });
+    const mockCreate = jest.fn();
+
+    renderWithProviders(
+      <Redirect
+        isWriteEnabled
+        onCancel={jest.fn()}
+        onCreate={mockCreate}
+        title="Add Keyword Redirect rule"
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Edit' }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+    });
+
+    await waitFor(async () => {
+      await user.type(
+        screen.getByLabelText('Add keyword to list'),
+        'shoes,boots{enter}'
+      );
+    });
+
+    expect(screen.getAllByText('shoes').length).toBeGreaterThan(0);
+    expect(screen.getByText('boots')).toBeInTheDocument();
+  });
+
   it('creates a redirect', async () => {
     const user = userEvent.setup({ delay: null });
     const mockCreate = jest.fn();

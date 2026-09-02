@@ -131,24 +131,22 @@ describe('FacetList reducer', () => {
   });
 
   describe('search terms', () => {
-    it('should add a search term', () => {
+    it('should add a single search term to an empty list', () => {
       const result = FacetListReducer(defaultState, {
-        type: 'addSearchTerm',
-        payload: 'socks',
+        type: 'addSearchTerms',
+        payload: ['socks'],
       });
 
-      expect(result.selectedSearchTerms).toHaveLength(1);
-      expect(result.selectedSearchTerms[0]).toBe('socks');
+      expect(result.selectedSearchTerms).toEqual(['socks']);
     });
 
-    it('should append search term to existing list', () => {
+    it('should append multiple search terms to existing list', () => {
       const result = FacetListReducer(
         { ...defaultState, selectedSearchTerms: ['socks'] },
-        { type: 'addSearchTerm', payload: 'shoes' }
+        { type: 'addSearchTerms', payload: ['shoes', 'boots'] }
       );
 
-      expect(result.selectedSearchTerms).toHaveLength(2);
-      expect(result.selectedSearchTerms[1]).toBe('shoes');
+      expect(result.selectedSearchTerms).toEqual(['socks', 'shoes', 'boots']);
     });
 
     it('should remove a search term', () => {

@@ -521,6 +521,29 @@ describe('Ruleset', () => {
     );
   });
 
+  it('should create a global ruleset', async () => {
+    const mockCreate = jest.fn();
+
+    renderWithProviders(
+      <Ruleset
+        {...defaultProps}
+        onCreateGlobalRuleset={mockCreate}
+        onCancel={jest.fn()}
+        rulesetType="global"
+      />
+    );
+
+    const createButton = await screen.findByText(CREATE_BUTTON);
+
+    act(() => {
+      createButton.click();
+    });
+
+    expect(mockCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ isEnabled: false })
+    );
+  });
+
   it('should edit a ruleset', async () => {
     const user = userEvent.setup();
     const mockSave = jest.fn();
@@ -803,6 +826,92 @@ describe('Ruleset', () => {
       expect(await screen.findByLabelText('Remove keyword: bar')).toBeVisible();
     });
 
+    it('should add multiple search terms via bulk paste', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <Ruleset
+          {...defaultProps}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'abc123' }],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="search"
+          searchTerms={[]}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
+
+      const keywordInput = await screen.findByLabelText('Add keyword to list');
+
+      await user.type(keywordInput, 'bar, baz{Enter}');
+      const numberOfKeywords =
+        await screen.findByLabelText('number of keywords');
+
+      expect(numberOfKeywords).toHaveTextContent('2');
+      expect(await screen.findByLabelText('Remove keyword: bar')).toBeVisible();
+    });
+
+    it('should add bulk search terms to existing keywords without overwriting preview', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <Ruleset
+          {...defaultProps}
+          onCancel={jest.fn()}
+          rulesetMerchandisingRules={{
+            pinnedProducts: [{ id: 'abc123' }],
+            blockedProducts: [],
+            boosts: { numeric: [], alphanumeric: [], product: [] },
+            buries: { numeric: [], alphanumeric: [], product: [] },
+            includes: {
+              alphanumeric: [],
+            },
+            excludes: {
+              alphanumeric: [],
+            },
+          }}
+          rulesetId={ruleSetId}
+          rulesetType="search"
+          searchTerms={['foo']}
+        />,
+        ['Cat.W', 'Search.W', 'Glob.W']
+      );
+
+      await waitFor(async () => {
+        await user.click(screen.getByRole('button', { name: 'Edit' }));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Close' })).toBeVisible();
+      });
+
+      const keywordInput = await screen.findByLabelText('Add keyword to list');
+
+      await user.type(keywordInput, 'bar, baz{Enter}');
+      const numberOfKeywords =
+        await screen.findByLabelText('number of keywords');
+
+      expect(numberOfKeywords).toHaveTextContent('3');
+      expect(await screen.findByLabelText('Remove keyword: bar')).toBeVisible();
+    });
+
     it('should save a keyword ruleset', async () => {
       const mockSave = jest.fn();
       const mockSearchTerms = ['foo', 'bar'];
@@ -940,9 +1049,9 @@ describe('Ruleset', () => {
         'nEw kEyWOrd{enter}'
       );
 
-      expect(screen.getByRole('alert')).toHaveTextContent(
-        'Keyword new keyword has already been added'
-      );
+      expect(
+        screen.getByText('Keyword new keyword has already been added')
+      ).toBeVisible();
 
       expect(
         screen.queryAllByRole('button', { name: 'Remove keyword: new keyword' })
