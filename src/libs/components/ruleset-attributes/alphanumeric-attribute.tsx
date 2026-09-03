@@ -90,7 +90,6 @@ export const AlphanumericAttribute = ({
               size="medium"
               isInline
               onChange={(e) => {
-                // istanbul ignore next
                 setWeight?.(parseInt(e.target.value || '0'));
               }}
               type="number"

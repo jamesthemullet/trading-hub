@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * Fails if the current PR/branch introduces a new `istanbul ignore` comment
- * that doesn't include a reason (e.g. `// istanbul ignore next -- reason`).
+ * that doesn't include a reason (e.g. `// istanbul ignore next -- reason`, or
+ * a plain `// reason` comment on the line directly above the directive).
  *
  * Only lines *added* in the diff against the base ref are checked, so
  * existing ignores without a reason are left untouched.
@@ -31,15 +32,20 @@ const diff = execFileSync(
 const IGNORE_DIRECTIVE = /istanbul ignore (next|else|if|file)\b/;
 const HAS_REASON =
   /istanbul ignore (?:next|else|if|file)\b\s*(?:--?|—|–)\s*\S+/;
+const IS_REASON_COMMENT = /^\s*\/\/\s*\S+/;
 
 let currentFile = null;
 let newLineNumber = 0;
+let lastAddedLineNumber = -1;
+let lastAddedContent = '';
 const violations = [];
 
 for (const line of diff.split('\n')) {
   if (line.startsWith('+++ ')) {
     const path = line.slice(4).trim();
     currentFile = path === '/dev/null' ? null : path.replace(/^b\//, '');
+    lastAddedLineNumber = -1;
+    lastAddedContent = '';
     continue;
   }
 
@@ -56,7 +62,16 @@ for (const line of diff.split('\n')) {
 
   const content = line.slice(1);
 
-  if (IGNORE_DIRECTIVE.test(content) && !HAS_REASON.test(content)) {
+  const hasReasonAbove =
+    newLineNumber - 1 === lastAddedLineNumber &&
+    IS_REASON_COMMENT.test(lastAddedContent) &&
+    !IGNORE_DIRECTIVE.test(lastAddedContent);
+
+  if (
+    IGNORE_DIRECTIVE.test(content) &&
+    !HAS_REASON.test(content) &&
+    !hasReasonAbove
+  ) {
     violations.push({
       file: currentFile,
       line: newLineNumber,
@@ -64,12 +79,17 @@ for (const line of diff.split('\n')) {
     });
   }
 
+  lastAddedLineNumber = newLineNumber;
+  lastAddedContent = content;
   newLineNumber += 1;
 }
 
 if (violations.length > 0) {
   console.error('New istanbul ignore comments must include a reason, e.g.:');
-  console.error('  // istanbul ignore next -- reason this cannot be tested\n');
+  console.error('  // istanbul ignore next -- reason this cannot be tested');
+  console.error('or a plain reason comment on the line directly above:');
+  console.error('  // reason this cannot be tested');
+  console.error('  // istanbul ignore next\n');
   console.error('The following new ignores are missing a reason:\n');
   for (const { file, line, content } of violations) {
     console.error(`  ${file}:${line}: ${content}`);

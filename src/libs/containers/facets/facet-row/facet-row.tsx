@@ -97,32 +97,32 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
 
   const handleEditValuesForNewRuleset = useCallback(() => {
     if (isIncludedFacet && 'isNewRuleset' in props && props.isNewRuleset) {
-      // istanbul ignore else
-      if (props.currentRuleset) {
-        switch (props.facetType) {
-          case 'category':
-            saveDraft({
-              ruleset: {
-                ...props.currentRuleset,
-                categoryIds: props.selectedCategories,
-              },
-              type: 'category',
-            });
-            break;
-          case 'search':
-            saveDraft({
-              ruleset: {
-                ...props.currentRuleset,
-                searchTerms: props.selectedSearchTerms,
-              },
-              type: 'search',
-            });
-            break;
+      // currentRuleset is required by IncludedFacetRowProps; this runtime check is defensive for unexpected props.
+      switch (props.facetType) {
+        case 'category':
+          saveDraft({
+            ruleset: {
+              ...props.currentRuleset,
+              categoryIds: props.selectedCategories,
+            },
+            type: 'category',
+          });
+          break;
+        case 'search':
+          saveDraft({
+            ruleset: {
+              ...props.currentRuleset,
+              searchTerms: props.selectedSearchTerms,
+            },
+            type: 'search',
+          });
+          break;
+        // "Edit values" is only available for category/search facets; keep default as a defensive no-op.
+        // istanbul ignore next
+        default:
+          // Intentionally empty fallback for unexpected facetType values.
           // istanbul ignore next
-          default:
-            // istanbul ignore next
-            break;
-        }
+          break;
       }
     }
   }, [props, isIncludedFacet, saveDraft]);

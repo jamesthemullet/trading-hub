@@ -1,5 +1,3 @@
-/* istanbul ignore file */
-
 export * from './generated/open-api';
 import { reportApiLatency } from '@/libs/utils/dynatrace';
 import { emitSaveSuccess } from '@/libs/utils/toast-events';
@@ -45,7 +43,9 @@ const getDeleteSuccessMessage = (pathname: string): string =>
 
 const createTimingFetch = (): typeof fetch => async (input, init) => {
   const start = performance.now();
+  // istanbul ignore next -- generated API client always calls fetch with a string URL, never a Request instance
   const rawUrl = input instanceof Request ? input.url : String(input);
+  // istanbul ignore next -- generated API client always sets an explicit method
   const method = (init?.method ?? 'GET').toUpperCase();
 
   const response = await fetch(input, init);
