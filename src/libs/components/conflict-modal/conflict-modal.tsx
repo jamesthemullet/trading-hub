@@ -74,7 +74,8 @@ export const ConflictModal = ({
               ) : (
                 <>
                   <Typography variant="bodySmall" isStrong hasMargin>
-                    Changes made since you opened this {entityLabel}
+                    Changes made{changedBy ? ` by ${changedBy}` : ''} since you
+                    opened this {entityLabel}
                   </Typography>
                   <ul className={styles.diffList}>
                     {diffItems.map((item) => {

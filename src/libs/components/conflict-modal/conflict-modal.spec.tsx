@@ -34,7 +34,7 @@ describe('ConflictModal', () => {
     ).toBeInTheDocument();
     expect(dialog).toHaveTextContent('Someone else (Jane) saved changes');
     expect(dialog).toHaveTextContent(
-      'Changes made since you opened this ruleset'
+      'Changes made by Jane since you opened this ruleset'
     );
 
     const diffList = within(dialog).getByRole('list');
