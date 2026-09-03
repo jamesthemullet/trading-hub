@@ -127,7 +127,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Login via Azure CLI
-        uses: azure/login@v3.0.2
+        uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
         with:
           client-id: ${{ secrets._AZURE_AD_CLIENT_ID }}
           tenant-id: ${{ secrets._AZURE_AD_TENANT_ID }}
@@ -138,7 +138,7 @@ jobs:
           name: node-app
 
       - name: Set up environment variables
-        uses: azure/cli@v3
+        uses: azure/cli@9eb25b8360668fb0ecbafa808d40e2197b2f5f52 # v3
         with:
           azcliversion: 2.75.0
           inlineScript: |
@@ -159,7 +159,7 @@ jobs:
           AZURE_CORE_USE_MSAL_HTTP_CACHE: false
 
       - name: Deploy to Azure Web Apps
-        uses: azure/cli@v3
+        uses: azure/cli@9eb25b8360668fb0ecbafa808d40e2197b2f5f52 # v3.0.0
         with:
           azcliversion: 2.75.0
           inlineScript: |
@@ -171,7 +171,7 @@ jobs:
               --async true
 
       - name: Validate deployment
-        uses: nick-fields/retry@v4.0.0
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
           timeout_seconds: 20
           max_attempts: 15
@@ -227,7 +227,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Login via Azure CLI
-        uses: azure/login@v3.0.2
+        uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
         with:
           client-id: ${{ secrets._AZURE_AD_CLIENT_ID }}
           tenant-id: ${{ secrets._AZURE_AD_TENANT_ID }}
@@ -238,7 +238,7 @@ jobs:
           name: node-app
 
       - name: Set up environment variables
-        uses: azure/cli@v3
+        uses: azure/cli@9eb25b8360668fb0ecbafa808d40e2197b2f5f52 # v3.0.0
         with:
           azcliversion: 2.75.0
           inlineScript: |
@@ -260,7 +260,7 @@ jobs:
           AZURE_CORE_USE_MSAL_HTTP_CACHE: false
 
       - name: Deploy to Azure Web Apps slot
-        uses: azure/cli@v3
+        uses: azure/cli@9eb25b8360668fb0ecbafa808d40e2197b2f5f52 # v3.0.0
         with:
           azcliversion: 2.75.0
           inlineScript: |
@@ -275,7 +275,7 @@ jobs:
           AZURE_CORE_USE_MSAL_HTTP_CACHE: false
 
       - name: Validate version number
-        uses: nick-fields/retry@v4.0.0
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
           timeout_seconds: 20
           max_attempts: 10
@@ -289,7 +289,7 @@ jobs:
             echo ${VERSION} | grep ${APP_COMMIT_SHA}
 
       - name: Swap EUN from pre prod to prod
-        uses: azure/cli@v3.0.0
+        uses: azure/cli@9eb25b8360668fb0ecbafa808d40e2197b2f5f52 # v3.0.0
         with:
           azcliversion: 2.75.0
           inlineScript: |

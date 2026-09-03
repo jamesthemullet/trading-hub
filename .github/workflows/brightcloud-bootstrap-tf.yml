@@ -43,7 +43,7 @@ jobs:
           token: ${{ secrets.SAML_GITHUB_TOKEN }}
           ref: feat/oidcn
           path: brightcloud
-      - uses: de-vri-es/setup-git-credentials@v2.2.0
+      - uses: de-vri-es/setup-git-credentials@5dd446b3857806f44ea73acf83c193190a385d63  # v2.2.0
         with:
           credentials: https://foo:${{ secrets.SAML_GITHUB_TOKEN }}@github.com
       - name: non-production
@@ -81,7 +81,7 @@ jobs:
           token: ${{ secrets.SAML_GITHUB_TOKEN }}
           ref: feat/oidcn
           path: brightcloud
-      - uses: de-vri-es/setup-git-credentials@v2.2.0
+      - uses: de-vri-es/setup-git-credentials@5dd446b3857806f44ea73acf83c193190a385d63  # v2.2.0
         with:
           credentials: https://foo:${{ secrets.SAML_GITHUB_TOKEN }}@github.com
       - name: production
@@ -110,7 +110,7 @@ jobs:
           ${{ github.workspace }}/brightcloud/.github/scripts/repo-bootstrapper.sh -a brightcloud_init
           rm -rf ${{ github.workspace }}/brightcloud
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v8.1.1
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1
         with:
           token: ${{secrets.SAML_GITHUB_TOKEN }}
           branch: bootstrap
