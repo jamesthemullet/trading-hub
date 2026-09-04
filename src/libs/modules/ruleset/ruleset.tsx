@@ -94,6 +94,7 @@ export const Ruleset = ({
   startDate,
   countryCode,
   isWriteEnabled,
+  isResolvingConflict = false,
 }: {
   isEnabled: boolean;
   lastChanged?: LastChanged;
@@ -131,6 +132,9 @@ export const Ruleset = ({
   endDate?: string;
   countryCode?: MerchandisingCountryCode;
   isWriteEnabled: boolean;
+  // When a save-conflict is being resolved (overwrite/discard), the navigation
+  // it triggers is intentional, so the unsaved-changes guard is suppressed.
+  isResolvingConflict?: boolean;
 }): ReactElement => {
   const categoryIds = categoriesInfo?.map((category) => category.id);
 
@@ -227,8 +231,10 @@ export const Ruleset = ({
     ruleset.endDate !== endDate ||
     ruleset.countryCode !== (countryCode ?? 'UK_IE');
 
+  // Suppress the guard while a save-conflict is being resolved: the
+  // overwrite/discard navigation it triggers is intentional.
   const { confirmNavigation, resetNavigationConfirmation } =
-    useUnsavedChangesGuard(hasUnsavedChanges);
+    useUnsavedChangesGuard(hasUnsavedChanges && !isResolvingConflict);
 
   const currentRulesetForDiff: MerchandisingRuleSet = {
     isEnabled,

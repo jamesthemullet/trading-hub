@@ -5,6 +5,7 @@ import type {
   MerchandisingReturnedFacet,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
+import { search } from '@/libs/api';
 import {
   Button,
   ErrorMessage,
@@ -15,7 +16,6 @@ import {
 } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
-import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
 import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import { ROUTES } from '@/libs/constants/routes';
@@ -25,6 +25,7 @@ import { useGlobalFacetsList, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
 import { useSaveConflict } from '@/libs/hooks/use-save-conflict';
 import { createDiffItem } from '@/libs/hooks/utils/diff';
+import { handleError } from '@/libs/hooks/utils/error';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
 
 import Head from 'next/head';
@@ -47,8 +48,6 @@ const FacetConfigContent = ({
 
   const { handleGlobalFacetUpdate, error: updateError } =
     useGlobalFacetUpdate();
-
-  const shouldUseV1 = useOptimisticLockingFlag();
 
   const [displayValueOverrides, setDisplayValueOverrides] = useState<
     Record<string, string>
@@ -130,7 +129,25 @@ const FacetConfigContent = ({
       setDisplayValueOverrides((prev) => ({ ...prev, [facet.id]: value }));
 
       const merged = 'merged' in facet ? facet.merged : undefined;
-      const version = 'version' in facet ? facet.version : undefined;
+      let version =
+        versionOverride ?? ('version' in facet ? facet.version : undefined);
+
+      // The search-service contract marks `version` as required on every
+      // returned facet, but the list endpoint currently omits it (only the
+      // facet detail returns it), so recover it from the detail before the
+      // optimistic-locking update. Remove once the list honours the contract.
+      if (version == null) {
+        try {
+          const { data } = await search().betaMerchandisingFacetDetail(
+            facet.id
+          );
+          version = data.version;
+        } catch (err) {
+          // Report the fetch failure for telemetry; version stays undefined so
+          // the update below surfaces the "out of date" error to the user.
+          handleError(err);
+        }
+      }
 
       const result = await handleGlobalFacetUpdate({
         facetId: facet.id,
@@ -141,8 +158,7 @@ const FacetConfigContent = ({
           boosted: facet.boosted,
           merged,
         },
-        version: versionOverride ?? version,
-        shouldUseV1,
+        version,
       });
 
       if (result.status === 'error') {

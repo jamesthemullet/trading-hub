@@ -142,7 +142,6 @@ describe('Index', () => {
         countryCode: 'UK_IE',
       },
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
-      shouldUseV1: false,
     };
     const user = userEvent.setup({ delay: null });
 
@@ -202,7 +201,6 @@ describe('Index', () => {
         countryCode: 'UK_IE',
       },
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
-      shouldUseV1: false,
     };
     const user = userEvent.setup({ delay: null });
 
@@ -259,9 +257,7 @@ describe('Index', () => {
     const openConflictModal = async () => {
       const user = userEvent.setup({ delay: null });
 
-      renderWithProviders(<Page id={ruleSetId} />, undefined, {
-        featureFlags: { hasOptimisticLocking: true },
-      });
+      renderWithProviders(<Page id={ruleSetId} />);
 
       await user.click(screen.getByRole('button', { name: 'Save' }));
       await user.click(
@@ -277,16 +273,14 @@ describe('Index', () => {
       return user;
     };
 
-    it('uses the v1 endpoint and shows the conflict modal on a 409', async () => {
+    it('shows the conflict modal on a 409', async () => {
       mockUpdateGlobalRuleSet = jest
         .fn()
         .mockResolvedValue({ status: 'conflict', currentEntity });
 
       await openConflictModal();
 
-      expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(
-        expect.objectContaining({ shouldUseV1: true })
-      );
+      expect(mockUpdateGlobalRuleSet).toHaveBeenCalled();
       expect(
         screen.getByRole('dialog', {
           name: 'This ruleset was changed by someone else',
@@ -308,7 +302,7 @@ describe('Index', () => {
       );
 
       expect(mockUpdateGlobalRuleSet).toHaveBeenLastCalledWith(
-        expect.objectContaining({ version: 7, shouldUseV1: true })
+        expect.objectContaining({ version: 7 })
       );
       await waitFor(() =>
         expect(mockRouter.push).toHaveBeenCalledWith('/global')

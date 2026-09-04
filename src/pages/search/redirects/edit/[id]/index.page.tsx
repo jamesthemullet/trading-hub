@@ -8,7 +8,6 @@ import type {
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
-import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { ROUTES } from '@/libs/constants/routes';
 import { useRedirectDetail, useRedirectUpdate } from '@/libs/hooks';
 import { useRedirectHistory } from '@/libs/hooks/search/redirect/history/use-redirect-history';
@@ -58,7 +57,6 @@ const EditRedirect = ({ id }: Props): ReactElement => {
   });
 
   const { updateRedirect, error: updateError } = useRedirectUpdate();
-  const shouldUseV1 = useOptimisticLockingFlag();
 
   const {
     conflict,
@@ -76,7 +74,6 @@ const EditRedirect = ({ id }: Props): ReactElement => {
         redirect: redirectBody,
         redirectId: id,
         version: versionOverride ?? redirect.version,
-        shouldUseV1,
       }),
     onSuccess: () => router.push('/search/redirects'),
   });

@@ -250,7 +250,6 @@ describe('Index', () => {
           alphanumeric: [],
         },
       },
-      shouldUseV1: false,
     });
   });
 
@@ -302,9 +301,7 @@ describe('Index', () => {
     }));
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<Page id={ruleSetId} />, undefined, {
-      featureFlags: { hasOptimisticLocking: true },
-    });
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
     await user.click(
@@ -312,7 +309,7 @@ describe('Index', () => {
     );
 
     expect(updateCategoryRuleSet).toHaveBeenCalledWith(
-      expect.objectContaining({ shouldUseV1: true, version: 3 })
+      expect.objectContaining({ version: 3 })
     );
     expect(
       await screen.findByRole('dialog', {

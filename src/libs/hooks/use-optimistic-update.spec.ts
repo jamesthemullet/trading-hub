@@ -7,73 +7,46 @@ type Entity = { id: string; version: number };
 const setup = () => renderHook(() => useOptimisticUpdate<Entity>());
 
 describe('useOptimisticUpdate', () => {
-  it('calls the beta endpoint when the flag is off', async () => {
-    const betaUpdate = jest.fn().mockResolvedValue(undefined);
-    const v1Update = jest.fn().mockResolvedValue(undefined);
+  it('calls the update with the version and returns success', async () => {
+    const update = jest.fn().mockResolvedValue(undefined);
     const { result } = setup();
 
     let res;
     await act(async () => {
       res = await result.current.runUpdate({
-        shouldUseV1: false,
-        version: 3,
+        version: 7,
         entity: 'ruleset',
-        betaUpdate,
-        v1Update,
+        update,
       });
     });
 
-    expect(betaUpdate).toHaveBeenCalled();
-    expect(v1Update).not.toHaveBeenCalled();
+    expect(update).toHaveBeenCalledWith(7);
     expect(res).toEqual({ status: 'success' });
     expect(result.current.error).toBe('');
   });
 
-  it('calls the v1 endpoint with the version when the flag is on', async () => {
-    const betaUpdate = jest.fn();
-    const v1Update = jest.fn().mockResolvedValue(undefined);
+  it('returns an error and does not call the update when the version is missing', async () => {
+    const update = jest.fn();
     const { result } = setup();
 
     let res;
     await act(async () => {
       res = await result.current.runUpdate({
-        shouldUseV1: true,
-        version: 7,
-        entity: 'ruleset',
-        betaUpdate,
-        v1Update,
-      });
-    });
-
-    expect(v1Update).toHaveBeenCalledWith(7);
-    expect(betaUpdate).not.toHaveBeenCalled();
-    expect(res).toEqual({ status: 'success' });
-  });
-
-  it('returns an error and does not call the endpoint when the version is missing', async () => {
-    const v1Update = jest.fn();
-    const { result } = setup();
-
-    let res;
-    await act(async () => {
-      res = await result.current.runUpdate({
-        shouldUseV1: true,
         entity: 'redirect',
-        betaUpdate: jest.fn(),
-        v1Update,
+        update,
       });
     });
 
-    expect(v1Update).not.toHaveBeenCalled();
+    expect(update).not.toHaveBeenCalled();
     expect(res).toEqual({ status: 'error' });
     expect(result.current.error).toBe(
-      'Missing redirect version for optimistic-locking update'
+      'This redirect could not be saved because it may be out of date. Refresh the page and try again.'
     );
   });
 
   it('returns a conflict result on a 409', async () => {
     const currentEntity: Entity = { id: 'x', version: 5 };
-    const v1Update = jest
+    const update = jest
       .fn()
       .mockRejectedValue({ status: 409, error: { currentEntity } });
     const { result } = setup();
@@ -81,11 +54,9 @@ describe('useOptimisticUpdate', () => {
     let res;
     await act(async () => {
       res = await result.current.runUpdate({
-        shouldUseV1: true,
         version: 3,
         entity: 'ruleset',
-        betaUpdate: jest.fn(),
-        v1Update,
+        update,
       });
     });
 
@@ -94,7 +65,7 @@ describe('useOptimisticUpdate', () => {
   });
 
   it('sets a message and returns an error on a non-conflict failure', async () => {
-    const betaUpdate = jest
+    const update = jest
       .fn()
       .mockRejectedValue({ error: { message: 'boom', status: 'Bad Request' } });
     const { result } = setup();
@@ -102,10 +73,9 @@ describe('useOptimisticUpdate', () => {
     let res;
     await act(async () => {
       res = await result.current.runUpdate({
-        shouldUseV1: false,
+        version: 3,
         entity: 'ruleset',
-        betaUpdate,
-        v1Update: jest.fn(),
+        update,
       });
     });
 

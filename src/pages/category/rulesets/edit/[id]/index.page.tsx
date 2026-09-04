@@ -8,7 +8,6 @@ import type {
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
-import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { ROUTES } from '@/libs/constants/routes';
 import { useCategoryHistory } from '@/libs/hooks/category/history/use-category-history';
 import { useRuleSetDetail } from '@/libs/hooks/category/rulesets/use-rule-set-detail';
@@ -54,7 +53,6 @@ const Page = ({ id }: PageProps): ReactElement => {
   });
 
   const { updateCategoryRuleSet, isSaving, error } = useUpdateRuleSet();
-  const shouldUseV1 = useOptimisticLockingFlag();
 
   const {
     conflict,
@@ -88,7 +86,6 @@ const Page = ({ id }: PageProps): ReactElement => {
         ...(ruleSet.startDate && { startDate: ruleSet.startDate }),
         ...(ruleSet.countryCode && { countryCode: ruleSet.countryCode }),
         version: versionOverride ?? ruleSetDetail.version,
-        shouldUseV1,
       });
     },
     onSuccess: () => router.push('/category'),
@@ -153,6 +150,7 @@ const Page = ({ id }: PageProps): ReactElement => {
               endDate={rulesetData.endDate}
               countryCode={rulesetData.countryCode}
               isWriteEnabled={hasWriteAccess && !isHistoryView}
+              isResolvingConflict={conflict !== null || isOverwriting}
             />
             <ConflictModal
               opened={conflict !== null}

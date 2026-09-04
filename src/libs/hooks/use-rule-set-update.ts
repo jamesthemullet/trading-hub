@@ -13,7 +13,6 @@ import {
 type UpdateCategoryRuleSetArgs = MerchandisingCategoryRuleSet & {
   ruleSetId: string;
   version?: number;
-  shouldUseV1?: boolean;
 };
 
 export const useUpdateRuleSet = (): {
@@ -38,7 +37,6 @@ export const useUpdateRuleSet = (): {
       rules,
       startDate,
       version,
-      shouldUseV1 = false,
     }: UpdateCategoryRuleSetArgs) => {
       const body: MerchandisingCategoryRuleSet = {
         categoryIds,
@@ -52,12 +50,9 @@ export const useUpdateRuleSet = (): {
       };
 
       return runUpdate({
-        shouldUseV1,
         version,
         entity: 'ruleset',
-        betaUpdate: () =>
-          search().betaMerchandisingCategoryRulesetUpdate(ruleSetId, body),
-        v1Update: (lockVersion) =>
+        update: (lockVersion) =>
           search().merchandisingV1CategoryRulesetUpdate(
             'CLOTHING_AND_HOME',
             ruleSetId,

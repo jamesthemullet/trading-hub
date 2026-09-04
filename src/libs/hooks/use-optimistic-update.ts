@@ -9,17 +9,14 @@ export type SaveResult<T> =
   | { status: 'error' };
 
 type RunUpdateArgs = {
-  shouldUseV1: boolean;
   version?: number;
   entity: string;
-  betaUpdate: () => Promise<unknown>;
-  v1Update: (version: number) => Promise<unknown>;
+  update: (version: number) => Promise<unknown>;
 };
 
 /**
- * Runs an entity update with optional optimistic locking. When the flag is off
- * it calls the beta endpoint; when on it sends the loaded version to the v1
- * endpoint and turns a 409 into a `conflict` result. Shared by every
+ * Runs an entity update with optimistic locking: sends the loaded version to
+ * the v1 endpoint and turns a 409 into a `conflict` result. Shared by every
  * merchandising update hook so the branching lives in one place.
  */
 export const useOptimisticUpdate = <T>(): {
@@ -32,29 +29,26 @@ export const useOptimisticUpdate = <T>(): {
 
   const runUpdate = useCallback(
     async ({
-      shouldUseV1,
       version,
       entity,
-      betaUpdate,
-      v1Update,
+      update,
     }: RunUpdateArgs): Promise<SaveResult<T>> => {
       setError('');
       setIsSaving(true);
 
       try {
-        if (shouldUseV1) {
-          if (version == null) {
-            const missingVersionError = new Error(
-              `Missing ${entity} version for optimistic-locking update`
-            );
-            handleError(missingVersionError);
-            setError(missingVersionError.message);
-            return { status: 'error' };
-          }
-          await v1Update(version);
-        } else {
-          await betaUpdate();
+        if (version == null) {
+          // Keep the technical detail for telemetry, but surface an
+          // actionable message to the user.
+          handleError(
+            new Error(`Missing ${entity} version for optimistic-locking update`)
+          );
+          setError(
+            `This ${entity} could not be saved because it may be out of date. Refresh the page and try again.`
+          );
+          return { status: 'error' };
         }
+        await update(version);
         return { status: 'success' };
       } catch (err) {
         if (isConflictError<T>(err)) {

@@ -223,7 +223,6 @@ describe('Search ranking rules', () => {
       searchTerms: ['foo', 'bar'],
       startDate: mockStartDate,
       endDate: mockEndDate,
-      shouldUseV1: false,
     };
 
     renderWithProviders(<Page id={ruleSetId} />);
@@ -259,9 +258,7 @@ describe('Search ranking rules', () => {
     }));
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<Page id={ruleSetId} />, undefined, {
-      featureFlags: { hasOptimisticLocking: true },
-    });
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
     await user.click(
@@ -269,7 +266,7 @@ describe('Search ranking rules', () => {
     );
 
     expect(updateRuleSet).toHaveBeenCalledWith(
-      expect.objectContaining({ shouldUseV1: true, version: 3 })
+      expect.objectContaining({ version: 3 })
     );
     expect(
       await screen.findByRole('dialog', {

@@ -14,7 +14,6 @@ type UpdateRedirectArgs = {
   redirectId: string;
   redirect: MerchandisingKeywordRedirect;
   version?: number;
-  shouldUseV1?: boolean;
 };
 
 export const useRedirectUpdate = (): {
@@ -28,19 +27,11 @@ export const useRedirectUpdate = (): {
     useOptimisticUpdate<MerchandisingReturnedKeywordRedirect>();
 
   const updateRedirect = useCallback(
-    ({
-      redirect,
-      redirectId,
-      version,
-      shouldUseV1 = false,
-    }: UpdateRedirectArgs) =>
+    ({ redirect, redirectId, version }: UpdateRedirectArgs) =>
       runUpdate({
-        shouldUseV1,
         version,
         entity: 'redirect',
-        betaUpdate: () =>
-          search().betaMerchandisingKeywordRedirectUpdate(redirectId, redirect),
-        v1Update: (lockVersion) =>
+        update: (lockVersion) =>
           search().merchandisingV1KeywordRedirectUpdate(
             'CLOTHING_AND_HOME',
             redirectId,

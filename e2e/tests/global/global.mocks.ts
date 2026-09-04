@@ -352,6 +352,7 @@ export const mockEditedFacet: MerchandisingReturnedGlobalFacet = {
   excludedValues: ['2-5 years'],
   boosted: ['0-10 years', '3+ years', '6+ years', 'All ages'],
   merged: [],
+  version: 3,
 };
 
 export const mockProducts: MerchandisingProductSearchResponse = {

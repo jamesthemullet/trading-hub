@@ -10,7 +10,6 @@ import type {
 } from '@/libs/api';
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
-import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { FacetType } from '@/libs/constants/rule-types';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
@@ -40,7 +39,6 @@ const Page = (): ReactElement => {
 
   const { updateCategoryRuleSet, error: updateRulesetError } =
     useUpdateRuleSet();
-  const shouldUseV1 = useOptimisticLockingFlag();
   const { getDraft, saveDraft } = useDraftRuleset();
 
   const { getStringParam, getCountryCodeParam, getBooleanParam } =
@@ -167,7 +165,6 @@ const Page = (): ReactElement => {
         facets: newFacets,
         ruleSetId: id,
         version: versionOverride ?? ruleSetDetail.version,
-        shouldUseV1,
       });
     },
     onSuccess: () => router.push('/category'),

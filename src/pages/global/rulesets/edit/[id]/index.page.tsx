@@ -8,7 +8,6 @@ import type {
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
-import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { ROUTES } from '@/libs/constants/routes';
 import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { useGlobalHistory } from '@/libs/hooks/global/history/use-global-history';
@@ -56,7 +55,6 @@ const Page = ({ id }: PageProps): ReactElement => {
   });
 
   const { saveGlobalRuleset, error } = useGlobalRuleSetUpdate();
-  const shouldUseV1 = useOptimisticLockingFlag();
 
   const {
     conflict,
@@ -74,7 +72,6 @@ const Page = ({ id }: PageProps): ReactElement => {
         ruleSetId,
         ruleSet,
         version: versionOverride ?? globalRuleSet.version,
-        shouldUseV1,
       }),
     onSuccess: () => router.push('/global'),
   });
@@ -135,6 +132,7 @@ const Page = ({ id }: PageProps): ReactElement => {
               rulesetId={id}
               countryCode={rulesetData.countryCode}
               isWriteEnabled={hasWriteAccess && !isHistoryView}
+              isResolvingConflict={conflict !== null || isOverwriting}
             />
             <ConflictModal
               opened={conflict !== null}

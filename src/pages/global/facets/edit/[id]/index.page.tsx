@@ -8,7 +8,6 @@ import type {
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
-import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { ROUTES } from '@/libs/constants/routes';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsPanelSkeleton } from '@/libs/containers';
@@ -62,7 +61,6 @@ const Page = ({ id }: PageProps): ReactElement => {
 
   const { saveGlobalRuleset, error: savingGlobalRulesetError } =
     useGlobalRuleSetUpdate();
-  const shouldUseV1 = useOptimisticLockingFlag();
 
   const {
     conflict,
@@ -81,7 +79,6 @@ const Page = ({ id }: PageProps): ReactElement => {
           ruleSetId: id,
           ruleSet: { facets, rules, isEnabled, excludedFacets, countryCode },
           version: versionOverride ?? globalRuleSet.version,
-          shouldUseV1,
         }),
       onSuccess: () => router.push('/global'),
     }

@@ -8,7 +8,6 @@ import type {
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
-import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { ROUTES } from '@/libs/constants/routes';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsPanelSkeleton } from '@/libs/containers';
@@ -43,7 +42,6 @@ const Page = ({ id }: { id: string }): ReactElement => {
   const currentPageSize = Number(router.query.currentPageSize) || 20;
 
   const { updateRuleSet, error: updateRuleSetError } = useSearchRuleSetUpdate();
-  const shouldUseV1 = useOptimisticLockingFlag();
 
   const {
     ruleSet,
@@ -82,7 +80,6 @@ const Page = ({ id }: { id: string }): ReactElement => {
         excludedFacets,
         countryCode,
         version: versionOverride ?? ruleSet.version,
-        shouldUseV1,
       });
     },
     onSuccess: () => router.push('/search'),

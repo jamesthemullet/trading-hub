@@ -9,7 +9,6 @@ import type {
 } from '@/libs/api';
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
-import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { FacetType } from '@/libs/constants/rule-types';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
@@ -40,7 +39,6 @@ const Page = (): ReactElement => {
     useTypeSafeQuery();
 
   const { updateRuleSet, error: updateRuleSetError } = useSearchRuleSetUpdate();
-  const shouldUseV1 = useOptimisticLockingFlag();
   const { getDraft, saveDraft } = useDraftRuleset();
 
   const facetId = getStringParam('id');
@@ -156,7 +154,6 @@ const Page = (): ReactElement => {
         ruleSetId,
         facets: newFacets,
         version: versionOverride ?? ruleSet.version,
-        shouldUseV1,
       });
     },
     onSuccess: () => router.push('/search'),

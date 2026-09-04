@@ -64,6 +64,13 @@ test.describe('global facets', () => {
   });
 
   test('edits a facet name', async ({ page }) => {
+    await page.route(
+      '*/**/api/search/merchandising/v1/*/facet/*',
+      async (route) => {
+        await route.fulfill({ status: 200, json: mockEditedFacet });
+      }
+    );
+
     await page.goto('/global/facet-config');
     await expect(
       page.getByRole('heading', { name: 'Global Facet Configuration' })
@@ -108,18 +115,14 @@ test.describe('global facets', () => {
     );
 
     await page.route(
-      `*/**/api/search/beta/merchandising/facet/${facetId}`,
+      `*/**/api/search/merchandising/v1/*/facet/${facetId}`,
       async (route) => {
-        if (route.request().method() === 'PUT') {
-          lastPutBody = route.request().postDataJSON();
-          const updatedFacet = { ...ageFacet, ...lastPutBody };
-          facetListState = facetListState.map((facet) =>
-            facet.id === facetId ? updatedFacet : facet
-          );
-          await route.fulfill({ status: 200, json: updatedFacet });
-          return;
-        }
-        await route.fallback();
+        lastPutBody = route.request().postDataJSON();
+        const updatedFacet = { ...ageFacet, ...lastPutBody };
+        facetListState = facetListState.map((facet) =>
+          facet.id === facetId ? updatedFacet : facet
+        );
+        await route.fulfill({ status: 200, json: updatedFacet });
       }
     );
 

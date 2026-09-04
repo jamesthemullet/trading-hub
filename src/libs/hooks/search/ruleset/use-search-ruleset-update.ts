@@ -13,7 +13,6 @@ import {
 type UpdateRuleSetArgs = MerchandisingKeywordRuleSet & {
   ruleSetId: string;
   version?: number;
-  shouldUseV1?: boolean;
 };
 
 export const useSearchRuleSetUpdate = (): {
@@ -38,7 +37,6 @@ export const useSearchRuleSetUpdate = (): {
       excludedFacets,
       isEnabled,
       version,
-      shouldUseV1 = false,
     }: UpdateRuleSetArgs) => {
       const body: MerchandisingKeywordRuleSet = {
         searchTerms,
@@ -52,12 +50,9 @@ export const useSearchRuleSetUpdate = (): {
       };
 
       return runUpdate({
-        shouldUseV1,
         version,
         entity: 'ruleset',
-        betaUpdate: () =>
-          search().betaMerchandisingKeywordRulesetUpdate(ruleSetId, body),
-        v1Update: (lockVersion) =>
+        update: (lockVersion) =>
           search().merchandisingV1KeywordRulesetUpdate(
             'CLOTHING_AND_HOME',
             ruleSetId,

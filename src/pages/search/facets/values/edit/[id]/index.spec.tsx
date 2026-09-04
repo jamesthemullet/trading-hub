@@ -33,7 +33,6 @@ jest.mock('lodash/intersection', () => jest.fn());
 jest.mock('lodash/without', () => jest.fn());
 
 const updateMock = {
-  shouldUseV1: false,
   searchTerms: ['foo', 'bar'],
   countryCode: 'UK_IE',
   ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
@@ -301,9 +300,7 @@ describe('Index', () => {
     }));
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<Page />, undefined, {
-      featureFlags: { hasOptimisticLocking: true },
-    });
+    renderWithProviders(<Page />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
     const dialog = await screen.findByRole('dialog');
@@ -312,7 +309,7 @@ describe('Index', () => {
     );
 
     expect(mockUpdateRuleSet.updateRuleSet).toHaveBeenCalledWith(
-      expect.objectContaining({ shouldUseV1: true, version: 3 })
+      expect.objectContaining({ version: 3 })
     );
     expect(
       await screen.findByRole('dialog', {

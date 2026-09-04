@@ -13,8 +13,20 @@ test.describe('Keyword Redirects', () => {
       }
     );
     await page.route(
+      '*/**/api/search/merchandising/v1/*/keyword/redirect/2cf46391-1780-4016-9d20-5fd28b571579*',
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          json: { ...mockRedirect, isEnabled: false },
+        });
+      }
+    );
+    await page.route(
       '*/**/api/search/beta/merchandising/keyword/redirect/2cf46391-1780-4016-9d20-5fd28b571579*',
       async (route) => {
+        // The redirect list's enable/disable toggle still saves via the beta
+        // update endpoint, so keep handling its PUT here; the edit page uses
+        // the v1 endpoint mocked above.
         if (route.request().method() === 'PUT') {
           return route.fulfill({
             status: 200,

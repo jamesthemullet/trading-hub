@@ -95,14 +95,12 @@ describe('Edit keyword redirect', () => {
     }));
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<Page id={ruleSetId} />, undefined, {
-      featureFlags: { hasOptimisticLocking: true },
-    });
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(updateRedirect).toHaveBeenCalledWith(
-      expect.objectContaining({ shouldUseV1: true, version: 2 })
+      expect.objectContaining({ version: 2 })
     );
     const dialog = await screen.findByRole('dialog', {
       name: 'This redirect was changed by someone else',

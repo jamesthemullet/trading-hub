@@ -45,7 +45,6 @@ const FeatureFlagWrapper = ({
     'flagAuthorizationRoleOverride',
     'flagProfilePage',
     'flagFavouriteRulesets',
-    'flagOptimisticLocking',
   ]);
 
   return (
@@ -59,7 +58,6 @@ const FeatureFlagWrapper = ({
         },
         hasProfilePage: cookies.flagProfilePage === true,
         hasFavouriteRulesets: cookies.flagFavouriteRulesets === true,
-        hasOptimisticLocking: cookies.flagOptimisticLocking === true,
       }}
     >
       {children}

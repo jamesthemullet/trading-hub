@@ -14,7 +14,6 @@ type SaveGlobalRulesetParams = {
   ruleSetId: string;
   ruleSet: MerchandisingRuleSet;
   version?: number;
-  shouldUseV1?: boolean;
 };
 
 export const useGlobalRuleSetUpdate = (): {
@@ -27,19 +26,11 @@ export const useGlobalRuleSetUpdate = (): {
     useOptimisticUpdate<MerchandisingReturnedGlobalRuleSet>();
 
   const saveGlobalRuleset = useCallback(
-    ({
-      ruleSetId,
-      ruleSet,
-      version,
-      shouldUseV1 = false,
-    }: SaveGlobalRulesetParams) =>
+    ({ ruleSetId, ruleSet, version }: SaveGlobalRulesetParams) =>
       runUpdate({
-        shouldUseV1,
         version,
         entity: 'ruleset',
-        betaUpdate: () =>
-          search().betaMerchandisingGlobalRulesetUpdate(ruleSetId, ruleSet),
-        v1Update: (lockVersion) =>
+        update: (lockVersion) =>
           search().merchandisingV1GlobalRulesetUpdate(
             'CLOTHING_AND_HOME',
             ruleSetId,

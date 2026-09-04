@@ -15,7 +15,6 @@ export type FeatureFlags = {
   authorizationRoleOverride: AuthorizationRoleOverride;
   hasProfilePage: boolean;
   hasFavouriteRulesets: boolean;
-  hasOptimisticLocking: boolean;
 };
 
 export const defaultFeatureFlags: FeatureFlags = {
@@ -27,7 +26,6 @@ export const defaultFeatureFlags: FeatureFlags = {
   },
   hasProfilePage: false,
   hasFavouriteRulesets: false,
-  hasOptimisticLocking: false,
 };
 
 export const FeatureFlagContext =
@@ -78,17 +76,4 @@ export const useFavouriteRulesetsFlag = (): boolean => {
   }, [featureFlags.hasFavouriteRulesets]);
 
   return favouriteRulesetsEnabled;
-};
-
-export const useOptimisticLockingFlag = (): boolean => {
-  const featureFlags = useContext(FeatureFlagContext);
-  const [isOptimisticLockingEnabled, setIsOptimisticLockingEnabled] = useState(
-    featureFlags.hasOptimisticLocking
-  );
-
-  useEffect(() => {
-    setIsOptimisticLockingEnabled(featureFlags.hasOptimisticLocking);
-  }, [featureFlags.hasOptimisticLocking]);
-
-  return isOptimisticLockingEnabled;
 };

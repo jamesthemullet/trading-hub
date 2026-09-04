@@ -8,7 +8,6 @@ import type {
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
-import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { ROUTES } from '@/libs/constants/routes';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsPanelSkeleton } from '@/libs/containers';
@@ -45,7 +44,6 @@ const Page = ({ id }: { id: string }): ReactElement => {
 
   const { updateCategoryRuleSet, error: updateRulesetError } =
     useUpdateRuleSet();
-  const shouldUseV1 = useOptimisticLockingFlag();
 
   const {
     ruleSetDetail,
@@ -84,7 +82,6 @@ const Page = ({ id }: { id: string }): ReactElement => {
         excludedFacets,
         countryCode,
         version: versionOverride ?? ruleSetDetail.version,
-        shouldUseV1,
       });
     },
     onSuccess: () => router.push('/category'),

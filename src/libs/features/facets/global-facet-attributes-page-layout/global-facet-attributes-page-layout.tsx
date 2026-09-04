@@ -9,7 +9,6 @@ import type {
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
-import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import { ROUTES } from '@/libs/constants';
 import { FacetType } from '@/libs/constants/rule-types';
@@ -175,7 +174,6 @@ export const GlobalFacetAttributesPageLayout = ({
 
   const { handleGlobalFacetUpdate, error: updateGlobalFacetError } =
     useGlobalFacetUpdate();
-  const shouldUseV1 = useOptimisticLockingFlag();
 
   const {
     conflict,
@@ -193,7 +191,6 @@ export const GlobalFacetAttributesPageLayout = ({
         facetId,
         data,
         version: versionOverride ?? facet.version,
-        shouldUseV1,
       }),
     onSuccess: () => router.push(ROUTES.GLOBAL.FACET_CONFIG),
   });

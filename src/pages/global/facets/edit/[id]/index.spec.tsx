@@ -278,7 +278,6 @@ describe('Global Facet Management Editing', () => {
         isEnabled: true,
         countryCode: 'UK',
       },
-      shouldUseV1: false,
     });
 
     expect(mockRouter.push).toHaveBeenCalledWith('/global');
@@ -310,9 +309,7 @@ describe('Global Facet Management Editing', () => {
     });
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<Page id={ruleSetId} />, undefined, {
-      featureFlags: { hasOptimisticLocking: true },
-    });
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
     await user.click(
@@ -320,7 +317,7 @@ describe('Global Facet Management Editing', () => {
     );
 
     expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(
-      expect.objectContaining({ shouldUseV1: true, version: 3 })
+      expect.objectContaining({ version: 3 })
     );
     expect(
       await screen.findByRole('dialog', {

@@ -14,7 +14,6 @@ type HandleGlobalFacetUpdateArgs = {
   facetId: string;
   data: MerchandisingFacetConfig;
   version?: number;
-  shouldUseV1?: boolean;
 };
 
 export type UseGlobalFacetUpdate = {
@@ -29,18 +28,11 @@ export const useGlobalFacetUpdate = (): UseGlobalFacetUpdate => {
     useOptimisticUpdate<MerchandisingReturnedGlobalFacet>();
 
   const handleGlobalFacetUpdate = useCallback(
-    ({
-      facetId,
-      data,
-      version,
-      shouldUseV1 = false,
-    }: HandleGlobalFacetUpdateArgs) =>
+    ({ facetId, data, version }: HandleGlobalFacetUpdateArgs) =>
       runUpdate({
-        shouldUseV1,
         version,
         entity: 'facet',
-        betaUpdate: () => search().betaMerchandisingFacetUpdate(facetId, data),
-        v1Update: (lockVersion) =>
+        update: (lockVersion) =>
           search().merchandisingV1FacetUpdate('CLOTHING_AND_HOME', facetId, {
             ...data,
             version: lockVersion,

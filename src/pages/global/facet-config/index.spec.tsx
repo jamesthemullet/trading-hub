@@ -145,8 +145,9 @@ describe('Global Facet Config', () => {
 
   it('should show update error when facet update fails', async () => {
     server.use(
-      http.put(`${baseUrl}/api/search/beta/merchandising/facet/:facetId`, () =>
-        HttpResponse.json({ error: 'Update failed' }, { status: 500 })
+      http.put(
+        `${baseUrl}/api/search/merchandising/v1/CLOTHING_AND_HOME/facet/:facetId`,
+        () => HttpResponse.json({ error: 'Update failed' }, { status: 500 })
       )
     );
 
@@ -226,7 +227,7 @@ describe('Global Facet Config', () => {
     it('should save a new display name and update the override', async () => {
       server.use(
         http.put(
-          `${baseUrl}/api/search/beta/merchandising/facet/:facetId`,
+          `${baseUrl}/api/search/merchandising/v1/CLOTHING_AND_HOME/facet/:facetId`,
           () =>
             HttpResponse.json({
               ...mockFacets.facets[0],
@@ -299,7 +300,7 @@ describe('Global Facet Config', () => {
     it('should revert display name override when update fails', async () => {
       server.use(
         http.put(
-          `${baseUrl}/api/search/beta/merchandising/facet/:facetId`,
+          `${baseUrl}/api/search/merchandising/v1/CLOTHING_AND_HOME/facet/:facetId`,
           () => HttpResponse.json({ error: 'Failed' }, { status: 500 })
         )
       );
@@ -329,11 +330,127 @@ describe('Global Facet Config', () => {
       ).toBeVisible();
     });
 
+    it('fetches the version from the facet detail when the list omits it', async () => {
+      let putBody: unknown;
+      server.use(
+        http.get(`${baseUrl}/api/search/beta/merchandising/facet`, () =>
+          HttpResponse.json({
+            facets: [
+              {
+                id: 'facet-10',
+                indexPropertyName: 'material',
+                displayValue: 'Material',
+                boosted: [],
+                excludedValues: [],
+                lastChanged: { date: '2024-01-01T00:00:00Z', user: 'test' },
+              },
+            ],
+          })
+        ),
+        http.get(
+          `${baseUrl}/api/search/beta/merchandising/facet/:facetId`,
+          () =>
+            HttpResponse.json({
+              id: 'facet-10',
+              indexPropertyName: 'material',
+              displayValue: 'Material',
+              boosted: [],
+              excludedValues: [],
+              version: 6,
+              lastChanged: { date: '2024-01-01T00:00:00Z', user: 'test' },
+            })
+        ),
+        http.put(
+          `${baseUrl}/api/search/merchandising/v1/CLOTHING_AND_HOME/facet/:facetId`,
+          async ({ request }) => {
+            putBody = await request.json();
+            return HttpResponse.json({
+              id: 'facet-10',
+              indexPropertyName: 'material',
+              displayValue: 'Fabric',
+              boosted: [],
+              excludedValues: [],
+              version: 7,
+              lastChanged: { date: '2024-01-01T00:00:00Z', user: 'test' },
+            });
+          }
+        )
+      );
+
+      renderWithProviders(<FacetConfig />);
+
+      await userEvent.click(
+        await screen.findByRole('button', {
+          name: 'Edit display name for Material',
+        })
+      );
+      const input = screen.getByRole('textbox', {
+        name: 'Edit Material input field',
+      });
+      await userEvent.clear(input);
+      await userEvent.type(input, 'Fabric');
+      await userEvent.keyboard('{Enter}');
+
+      await userEvent.click(
+        await screen.findByRole('button', { name: 'Save changes' })
+      );
+
+      await waitFor(() => expect(putBody).toMatchObject({ version: 6 }));
+    });
+
+    it('shows an error when the facet version cannot be fetched', async () => {
+      server.use(
+        http.get(`${baseUrl}/api/search/beta/merchandising/facet`, () =>
+          HttpResponse.json({
+            facets: [
+              {
+                id: 'facet-9',
+                indexPropertyName: 'material',
+                displayValue: 'Material',
+                boosted: [],
+                excludedValues: [],
+                lastChanged: { date: '2024-01-01T00:00:00Z', user: 'test' },
+              },
+            ],
+          })
+        ),
+        http.get(
+          `${baseUrl}/api/search/beta/merchandising/facet/:facetId`,
+          () => HttpResponse.json({ error: 'Not found' }, { status: 500 })
+        )
+      );
+
+      renderWithProviders(<FacetConfig />);
+
+      await userEvent.click(
+        await screen.findByRole('button', {
+          name: 'Edit display name for Material',
+        })
+      );
+      const input = screen.getByRole('textbox', {
+        name: 'Edit Material input field',
+      });
+      await userEvent.clear(input);
+      await userEvent.type(input, 'Fabric');
+      await userEvent.keyboard('{Enter}');
+
+      await userEvent.click(
+        await screen.findByRole('button', { name: 'Save changes' })
+      );
+
+      expect(
+        await screen.findByText(
+          'This facet could not be saved because it may be out of date',
+          { exact: false }
+        )
+      ).toBeVisible();
+    });
+
     it('should preserve the merged group config when renaming a facet', async () => {
       let requestBody: unknown;
       server.use(
         http.put(
-          `${baseUrl}/api/search/beta/merchandising/facet/:facetId`,
+          `${baseUrl}/api/search/merchandising/v1/CLOTHING_AND_HOME/facet/:facetId`,
           async ({ request }) => {
             requestBody = await request.json();
             return HttpResponse.json({
@@ -382,6 +499,7 @@ describe('Global Facet Config', () => {
                 displayValue: 'Brand',
                 boosted: [],
                 excludedValues: [],
+                version: 3,
                 lastChanged: { date: '2024-01-01T00:00:00Z', user: 'test' },
               },
             ],
@@ -392,7 +510,7 @@ describe('Global Facet Config', () => {
       let requestBody: unknown;
       server.use(
         http.put(
-          `${baseUrl}/api/search/beta/merchandising/facet/:facetId`,
+          `${baseUrl}/api/search/merchandising/v1/CLOTHING_AND_HOME/facet/:facetId`,
           async ({ request }) => {
             requestBody = await request.json();
             return HttpResponse.json({
@@ -559,9 +677,7 @@ describe('Global Facet Config', () => {
         })
       );
 
-      renderWithProviders(<FacetConfig />, undefined, {
-        featureFlags: { hasOptimisticLocking: true },
-      });
+      renderWithProviders(<FacetConfig />);
 
       await editColourTo('Colour Updated');
 
@@ -594,9 +710,7 @@ describe('Global Facet Config', () => {
         )
       );
 
-      renderWithProviders(<FacetConfig />, undefined, {
-        featureFlags: { hasOptimisticLocking: true },
-      });
+      renderWithProviders(<FacetConfig />);
 
       await editColourTo('Colour Updated');
 
@@ -631,9 +745,7 @@ describe('Global Facet Config', () => {
         )
       );
 
-      renderWithProviders(<FacetConfig />, undefined, {
-        featureFlags: { hasOptimisticLocking: true },
-      });
+      renderWithProviders(<FacetConfig />);
 
       await editColourTo('Colour Updated');
 
@@ -684,9 +796,7 @@ describe('Global Facet Config', () => {
         )
       );
 
-      renderWithProviders(<FacetConfig />, undefined, {
-        featureFlags: { hasOptimisticLocking: true },
-      });
+      renderWithProviders(<FacetConfig />);
 
       await userEvent.click(
         await screen.findByRole('button', {
@@ -741,9 +851,7 @@ describe('Global Facet Config', () => {
         })
       );
 
-      renderWithProviders(<FacetConfig />, undefined, {
-        featureFlags: { hasOptimisticLocking: true },
-      });
+      renderWithProviders(<FacetConfig />);
 
       await editColourTo('Colour Updated');
 

@@ -216,7 +216,6 @@ describe('GlobalFacetAttributesPageLayout', () => {
         excludedValues: ['Ducky Downy'],
         boosted: ['Cotton', 'Duck Down'],
       },
-      shouldUseV1: false,
     });
 
     await waitFor(
@@ -427,7 +426,6 @@ describe('GlobalFacetAttributesPageLayout', () => {
         excludedValues: ['Ducky Downy'],
         boosted: ['Cotton', 'Duck Down'],
       },
-      shouldUseV1: false,
     });
 
     await waitFor(() => {
@@ -454,9 +452,7 @@ describe('GlobalFacetAttributesPageLayout', () => {
       <GlobalFacetAttributesPageLayout
         {...defaultProps}
         facet={{ ...defaultProps.facet, version: 2 }}
-      />,
-      undefined,
-      { featureFlags: { hasOptimisticLocking: true } }
+      />
     );
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
@@ -466,7 +462,7 @@ describe('GlobalFacetAttributesPageLayout', () => {
     );
 
     expect(mockUpdateGlobalFacet).toHaveBeenCalledWith(
-      expect.objectContaining({ shouldUseV1: true, version: 2 })
+      expect.objectContaining({ version: 2 })
     );
     const conflictDialog = await screen.findByRole('dialog', {
       name: 'This facet was changed by someone else',

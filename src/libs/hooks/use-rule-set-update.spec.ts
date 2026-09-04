@@ -17,17 +17,9 @@ const rules = {
   excludes: { alphanumeric: [] },
 };
 
-const betaHandler = jest.fn();
 const v1Handler = jest.fn();
 
 const handlers = [
-  http.put(
-    `${baseUrl}/search/beta/merchandising/category/ruleset/${ruleSetId}`,
-    async ({ request }) => {
-      betaHandler(await request.json());
-      return HttpResponse.json({}, { status: 200 });
-    }
-  ),
   http.put(
     `${baseUrl}/search/merchandising/v1/CLOTHING_AND_HOME/category/ruleset/${ruleSetId}`,
     async ({ request }) => {
@@ -57,22 +49,7 @@ describe('useUpdateRuleSet', () => {
     delete process.env.MERCHANDISING_PROXY_BASE_URL;
   });
 
-  it('updates via the beta endpoint by default', async () => {
-    const { result } = renderHook(() => useUpdateRuleSet());
-
-    let res;
-    await act(async () => {
-      res = await result.current.updateCategoryRuleSet(args);
-    });
-
-    expect(res).toEqual({ status: 'success' });
-    expect(betaHandler).toHaveBeenCalledWith(
-      expect.objectContaining({ categoryIds: [categoryId] })
-    );
-    expect(v1Handler).not.toHaveBeenCalled();
-  });
-
-  it('updates via the v1 endpoint with the version and dates when enabled', async () => {
+  it('updates via the v1 endpoint with the version and dates', async () => {
     const { result } = renderHook(() => useUpdateRuleSet());
 
     let res;
@@ -82,7 +59,6 @@ describe('useUpdateRuleSet', () => {
         startDate: '2024-11-15T23:59:00.000Z',
         endDate: '2024-12-15T23:59:00.000Z',
         version: 3,
-        shouldUseV1: true,
       });
     });
 
@@ -92,8 +68,8 @@ describe('useUpdateRuleSet', () => {
         version: 3,
         startDate: '2024-11-15T23:59:00.000Z',
         endDate: '2024-12-15T23:59:00.000Z',
+        categoryIds: [categoryId],
       })
     );
-    expect(betaHandler).not.toHaveBeenCalled();
   });
 });

@@ -9,17 +9,9 @@ import { useGlobalRuleSetUpdate } from './use-global-rule-set-update';
 const baseUrl = 'http://localhost';
 const ruleSetId = '38760268-4e84-4bf8-a12e-e151bc18c44e';
 
-const betaHandler = jest.fn();
 const v1Handler = jest.fn();
 
 const handlers = [
-  http.put(
-    `${baseUrl}/search/beta/merchandising/global/ruleset/${ruleSetId}`,
-    async ({ request }) => {
-      betaHandler(await request.json());
-      return HttpResponse.json({}, { status: 200 });
-    }
-  ),
   http.put(
     `${baseUrl}/search/merchandising/v1/CLOTHING_AND_HOME/global/ruleset/${ruleSetId}`,
     async ({ request }) => {
@@ -49,20 +41,7 @@ describe('useGlobalRuleSetUpdate', () => {
     delete process.env.MERCHANDISING_PROXY_BASE_URL;
   });
 
-  it('updates via the beta endpoint by default', async () => {
-    const { result } = renderHook(() => useGlobalRuleSetUpdate());
-
-    let res;
-    await act(async () => {
-      res = await result.current.saveGlobalRuleset({ ruleSetId, ruleSet });
-    });
-
-    expect(res).toEqual({ status: 'success' });
-    expect(betaHandler).toHaveBeenCalled();
-    expect(v1Handler).not.toHaveBeenCalled();
-  });
-
-  it('updates via the v1 endpoint with the version when enabled', async () => {
+  it('updates via the v1 endpoint with the version', async () => {
     const { result } = renderHook(() => useGlobalRuleSetUpdate());
 
     let res;
@@ -71,7 +50,6 @@ describe('useGlobalRuleSetUpdate', () => {
         ruleSetId,
         ruleSet,
         version: 5,
-        shouldUseV1: true,
       });
     });
 
@@ -79,6 +57,5 @@ describe('useGlobalRuleSetUpdate', () => {
     expect(v1Handler).toHaveBeenCalledWith(
       expect.objectContaining({ version: 5 })
     );
-    expect(betaHandler).not.toHaveBeenCalled();
   });
 });

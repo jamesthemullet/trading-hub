@@ -8,7 +8,6 @@ import type {
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
-import { useOptimisticLockingFlag } from '@/libs/components/feature-flag/feature-flag';
 import { ROUTES } from '@/libs/constants/routes';
 import { useSearchRuleSetPreview, useSearchRuleSetUpdate } from '@/libs/hooks';
 import { useSearchHistory } from '@/libs/hooks/search/history/use-search-history';
@@ -62,7 +61,6 @@ const Page = ({ id }: PageProps): ReactElement => {
     isSaving,
     error: updateError,
   } = useSearchRuleSetUpdate();
-  const shouldUseV1 = useOptimisticLockingFlag();
 
   const {
     conflict,
@@ -101,7 +99,6 @@ const Page = ({ id }: PageProps): ReactElement => {
           countryCode: ruleSetBody.countryCode,
         }),
         version: versionOverride ?? ruleSet.version,
-        shouldUseV1,
       });
     },
     onSuccess: () => router.push('/search'),
@@ -163,6 +160,7 @@ const Page = ({ id }: PageProps): ReactElement => {
             endDate={rulesetData.endDate}
             countryCode={rulesetData.countryCode}
             isWriteEnabled={hasWriteAccess && !isHistoryView}
+            isResolvingConflict={conflict !== null || isOverwriting}
           />
           <ConflictModal
             opened={conflict !== null}

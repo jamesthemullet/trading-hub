@@ -215,7 +215,6 @@ describe('Category Facet Management Editing', () => {
     );
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-      shouldUseV1: false,
       categoryIds: ['SubCategory_428'],
       countryCode: 'UK_IE',
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
@@ -292,7 +291,6 @@ describe('Category Facet Management Editing', () => {
     );
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-      shouldUseV1: false,
       categoryIds: ['SubCategory_428'],
       countryCode: 'IE',
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
@@ -360,9 +358,7 @@ describe('Category Facet Management Editing', () => {
     }));
 
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<Page id={ruleSetId} />, undefined, {
-      featureFlags: { hasOptimisticLocking: true },
-    });
+    renderWithProviders(<Page id={ruleSetId} />);
 
     await user.click(screen.getByRole('button', { name: 'Save' }));
     await user.click(
@@ -370,7 +366,7 @@ describe('Category Facet Management Editing', () => {
     );
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith(
-      expect.objectContaining({ shouldUseV1: true, version: 3 })
+      expect.objectContaining({ version: 3 })
     );
     expect(
       await screen.findByRole('dialog', {
@@ -566,7 +562,6 @@ describe('Category Facet Management Editing', () => {
     );
 
     expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-      shouldUseV1: false,
       categoryIds: ['SubCategory_428'],
       countryCode: 'UK_IE',
       excludedFacets: {
@@ -699,7 +694,6 @@ describe('Category Facet Management Editing', () => {
       });
 
       expect(mockUpdateRuleSet).toHaveBeenCalledWith({
-        shouldUseV1: false,
         categoryIds: ['SubCategory_428'],
         countryCode: 'UK_IE',
         excludedFacets: {
