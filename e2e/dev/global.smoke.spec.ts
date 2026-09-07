@@ -170,6 +170,12 @@ test.describe('Global Ranking', () => {
     await page
       .getByRole('button', { name: 'Save changes', exact: true })
       .click();
+
+    await expect(
+      page.getByRole('heading', { name: 'Review changes' })
+    ).toBeHidden();
+    await page.waitForURL(/\/global\/?(?:$|[?#])/);
+    await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
   });
 
   test('keeps changes for facets and products', async ({ page }) => {
