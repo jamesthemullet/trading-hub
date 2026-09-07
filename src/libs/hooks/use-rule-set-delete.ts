@@ -13,7 +13,7 @@ export const useRuleSetDelete = (): {
       setError('');
 
       try {
-        await search().betaMerchandisingCategoryRulesetDelete(rulesetId);
+        await search().deleteCategoryRuleSet(rulesetId);
       } catch (err) {
         const message =
           err !== null &&

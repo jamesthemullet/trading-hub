@@ -59,7 +59,7 @@ export const useCategoryProductSearch = (): {
         const promises = categories?.length
           ? categories.map((categoryId) =>
               search()
-                .betaMerchandisingProductCreate(merchandisingRules, {
+                .searchMerchandisingProducts(merchandisingRules, {
                   ...(query && { q: query }),
                   ...(!productIds && { rows }),
                   ...(!productIds && { start }),
@@ -70,7 +70,7 @@ export const useCategoryProductSearch = (): {
             )
           : catalogues.map((catalogue) =>
               search()
-                .betaMerchandisingProductCreate(merchandisingRules, {
+                .searchMerchandisingProducts(merchandisingRules, {
                   ...(query && { q: query }),
                   ...(productIds && { productId: productIds }),
                   ...(!productIds && { rows }),

@@ -14,6 +14,7 @@ servers:
 paths:
   /search/beta/merchandising/category:
     get:
+      operationId: getMerchandisingCategories
       security:
         - bearerAuth: []
       tags:
@@ -75,6 +76,8 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/attributes:
     get:
+      operationId: getMerchandisingAttributes
+      deprecated: true
       security:
         - bearerAuth: []
       tags:
@@ -143,6 +146,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/category/ruleset:
     get:
+      operationId: getCategoryRuleSets
       deprecated: true
       security:
         - bearerAuth: []
@@ -206,6 +210,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
     post:
+      operationId: createCategoryRuleSet
       security:
         - bearerAuth: []
       tags:
@@ -251,6 +256,8 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/category/ruleset/{ruleSetId}:
     put:
+      operationId: updateCategoryRuleSet
+      deprecated: true
       security:
         - bearerAuth: []
       tags:
@@ -303,6 +310,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
     get:
+      operationId: getCategoryRuleSet
       security:
         - bearerAuth: []
       tags:
@@ -356,6 +364,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingReturnedNotFound'
     delete:
+      operationId: deleteCategoryRuleSet
       security:
         - bearerAuth: []
       tags:
@@ -388,6 +397,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/category/ruleset/{ruleSetId}/history:
     get:
+      operationId: getCategoryRuleSetHistory
       security:
         - bearerAuth: []
       tags:
@@ -455,6 +465,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingReturnedNotFound'
   /search/beta/merchandising/preview:
     post:
+      operationId: previewMerchandisingRules
       security:
         - bearerAuth: []
       tags:
@@ -525,6 +536,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/keyword/ruleset:
     get:
+      operationId: getKeywordRuleSets
       deprecated: true
       security:
         - bearerAuth: []
@@ -588,6 +600,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
     post:
+      operationId: createKeywordRuleSet
       security:
         - bearerAuth: []
       tags:
@@ -633,6 +646,8 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/keyword/ruleset/{ruleSetId}:
     put:
+      operationId: updateKeywordRuleSet
+      deprecated: true
       security:
         - bearerAuth: []
       tags:
@@ -685,6 +700,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
     get:
+      operationId: getKeywordRuleSet
       security:
         - bearerAuth: []
       tags:
@@ -738,6 +754,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingReturnedNotFound'
     delete:
+      operationId: deleteKeywordRuleSet
       security:
         - bearerAuth: []
       tags:
@@ -770,6 +787,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/keyword/ruleset/{ruleSetId}/history:
     get:
+      operationId: getKeywordRuleSetHistory
       security:
         - bearerAuth: []
       tags:
@@ -837,6 +855,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingReturnedNotFound'
   /search/beta/merchandising/{catalogue}/global/ruleset:
     post:
+      operationId: createCatalogueGlobalRuleSet
       parameters:
         - in: path
           name: catalogue
@@ -890,6 +909,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/global/ruleset:
     get:
+      operationId: getGlobalRuleSets
       deprecated: true
       security:
         - bearerAuth: []
@@ -952,6 +972,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
     post:
+      operationId: createGlobalRuleSet
       security:
         - bearerAuth: []
       tags:
@@ -997,6 +1018,8 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/global/ruleset/{ruleSetId}:
     put:
+      operationId: updateGlobalRuleSet
+      deprecated: true
       security:
         - bearerAuth: []
       tags:
@@ -1049,6 +1072,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
     get:
+      operationId: getGlobalRuleSet
       security:
         - bearerAuth: []
       tags:
@@ -1102,6 +1126,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingReturnedNotFound'
     delete:
+      operationId: deleteGlobalRuleSet
       security:
         - bearerAuth: []
       tags:
@@ -1132,353 +1157,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
-  /search/merchandising/v1/{catalogue}/global/ruleset/{ruleSetId}:
-    put:
-      security:
-        - bearerAuth: []
-      tags:
-        - Search Merchandising API - Ruleset - Global
-      summary: Update Global Rule Set (optimistic locking)
-      description: >-
-        Persists merchandising rules using optimistic locking. The request body must include the
-        version last read by the caller; if it no longer matches the stored version a 409 Conflict
-        is returned with the current entity state.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MerchandisingRuleSetV1Update'
-      parameters:
-        - in: path
-          name: catalogue
-          schema:
-            type: string
-            enum: ['CLOTHING_AND_HOME']
-          required: true
-          description: The catalogue the ruleset applies to
-        - in: path
-          name: ruleSetId
-          schema:
-            type: string
-          required: true
-          description: The Rule Set to update
-      responses:
-        '200':
-          description: A JSON representation of merchandising rules
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSet'
-        '409':
-          description: Version conflict - the entity has been modified by another user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '500':
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '401':
-          description: Unauthorized e.g. no bearer token specified
-        '403':
-          description: Insufficient privileges
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '503':
-          description: Service Unavailable
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-  /search/merchandising/v1/{catalogue}/category/ruleset/{ruleSetId}:
-    put:
-      security:
-        - bearerAuth: []
-      tags:
-        - Search Merchandising API - Ruleset - Category
-      summary: Update Category Rule Set (optimistic locking)
-      description: >-
-        Persists merchandising rules using optimistic locking. The request body must include the
-        version last read by the caller; if it no longer matches the stored version a 409 Conflict
-        is returned with the current entity state.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MerchandisingCategoryRuleSetV1Update'
-      parameters:
-        - in: path
-          name: catalogue
-          schema:
-            type: string
-            enum: ['CLOTHING_AND_HOME']
-          required: true
-          description: The catalogue the ruleset applies to
-        - in: path
-          name: ruleSetId
-          schema:
-            type: string
-          required: true
-          description: The Rule Set to update
-      responses:
-        '200':
-          description: A JSON representation of merchandising rules
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSet'
-        '409':
-          description: Version conflict - the entity has been modified by another user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '500':
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '401':
-          description: Unauthorized e.g. no bearer token specified
-        '403':
-          description: Insufficient privileges
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '503':
-          description: Service Unavailable
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-  /search/merchandising/v1/{catalogue}/keyword/ruleset/{ruleSetId}:
-    put:
-      security:
-        - bearerAuth: []
-      tags:
-        - Search Merchandising API - Ruleset - Keyword
-      summary: Update Keyword Rule Set (optimistic locking)
-      description: >-
-        Persists merchandising rules using optimistic locking. The request body must include the
-        version last read by the caller; if it no longer matches the stored version a 409 Conflict
-        is returned with the current entity state.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MerchandisingKeywordRuleSetV1Update'
-      parameters:
-        - in: path
-          name: catalogue
-          schema:
-            type: string
-            enum: ['CLOTHING_AND_HOME']
-          required: true
-          description: The catalogue the ruleset applies to
-        - in: path
-          name: ruleSetId
-          schema:
-            type: string
-          required: true
-          description: The Rule Set to update
-      responses:
-        '200':
-          description: A JSON representation of merchandising rules
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSet'
-        '409':
-          description: Version conflict - the entity has been modified by another user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '500':
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '401':
-          description: Unauthorized e.g. no bearer token specified
-        '403':
-          description: Insufficient privileges
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '503':
-          description: Service Unavailable
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-  /search/merchandising/v1/{catalogue}/keyword/redirect/{redirectId}:
-    put:
-      security:
-        - bearerAuth: []
-      tags:
-        - Search Merchandising API - Keyword Redirect
-      summary: Update Keyword Redirect (optimistic locking)
-      description: >-
-        Persists a keyword redirect using optimistic locking. The request body must include the
-        version last read by the caller; if it no longer matches the stored version a 409 Conflict
-        is returned with the current entity state.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MerchandisingKeywordRedirectV1Update'
-      parameters:
-        - in: path
-          name: catalogue
-          schema:
-            type: string
-            enum: ['CLOTHING_AND_HOME']
-          required: true
-          description: The catalogue the redirect applies to
-        - in: path
-          name: redirectId
-          schema:
-            type: string
-          required: true
-          description: The redirect to update
-      responses:
-        '200':
-          description: A JSON representation of the keyword redirect
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingReturnedKeywordRedirect'
-        '409':
-          description: Version conflict - the entity has been modified by another user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '500':
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '401':
-          description: Unauthorized e.g. no bearer token specified
-        '403':
-          description: Insufficient privileges
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '503':
-          description: Service Unavailable
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-  /search/merchandising/v1/{catalogue}/facet/{facetId}:
-    put:
-      security:
-        - bearerAuth: []
-      tags:
-        - Search Merchandising API - Facets
-      summary: Update Global Facet (optimistic locking)
-      description: >-
-        Persists a global facet configuration using optimistic locking. The request body must include
-        the version last read by the caller; if it no longer matches the stored version a 409 Conflict
-        is returned with the current entity state.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MerchandisingFacetConfigV1Update'
-      parameters:
-        - in: path
-          name: catalogue
-          schema:
-            type: string
-            enum: ['CLOTHING_AND_HOME']
-          required: true
-          description: The catalogue the facet applies to
-        - in: path
-          name: facetId
-          schema:
-            type: string
-          required: true
-          description: The facet to update
-      responses:
-        '200':
-          description: A JSON representation of the global facet
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingReturnedGlobalFacet'
-        '409':
-          description: Version conflict - the entity has been modified by another user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '500':
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '401':
-          description: Unauthorized e.g. no bearer token specified
-        '403':
-          description: Insufficient privileges
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
-        '503':
-          description: Service Unavailable
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/global/ruleset/{ruleSetId}/history:
     get:
+      operationId: getGlobalRuleSetHistory
       security:
         - bearerAuth: []
       tags:
@@ -1546,6 +1227,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingReturnedNotFound'
   /search/beta/merchandising/facet:
     get:
+      operationId: getGlobalFacets
       security:
         - bearerAuth: []
       tags:
@@ -1605,6 +1287,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
     post:
+      operationId: createGlobalFacet
       security:
         - bearerAuth: []
       tags:
@@ -1652,6 +1335,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   '/search/beta/merchandising/facet/{facetId}':
     get:
+      operationId: getGlobalFacet
       security:
         - bearerAuth: []
       tags:
@@ -1704,6 +1388,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
     put:
+      operationId: updateGlobalFacet
+      deprecated: true
       tags:
         - Search Merchandising API Beta - Facets
       summary: Update a Facet at the global level
@@ -1753,6 +1439,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
     delete:
+      operationId: deleteGlobalFacet
       security:
         - bearerAuth: []
       tags:
@@ -1785,6 +1472,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/facet/{facetId}/history:
     get:
+      operationId: getGlobalFacetHistory
       security:
         - bearerAuth: []
       tags:
@@ -1852,6 +1540,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingReturnedNotFound'
   /search/beta/merchandising/facet/{facetId}/attributeValues:
     get:
+      operationId: getFacetAttributeValues
       security:
         - bearerAuth: []
       tags:
@@ -1939,6 +1628,8 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/product:
     post:
+      operationId: searchMerchandisingProducts
+      deprecated: true
       security:
         - bearerAuth: []
       tags:
@@ -2033,6 +1724,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/product/diagnostics:
     get:
+      operationId: getProductDiagnostics
       security:
         - bearerAuth: []
       tags:
@@ -2081,6 +1773,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/keyword/redirect:
     get:
+      operationId: getKeywordRedirects
       security:
         - bearerAuth: []
       tags:
@@ -2141,6 +1834,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
     post:
+      operationId: createKeywordRedirect
       security:
         - bearerAuth: []
       tags:
@@ -2186,6 +1880,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/keyword/redirect/{redirectId}:
     get:
+      operationId: getKeywordRedirect
       security:
         - bearerAuth: []
       tags:
@@ -2239,6 +1934,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
     put:
+      operationId: updateKeywordRedirect
+      deprecated: true
       security:
         - bearerAuth: []
       tags:
@@ -2291,6 +1988,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
     delete:
+      operationId: deleteKeywordRedirect
       security:
         - bearerAuth: []
       tags:
@@ -2335,6 +2033,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/beta/merchandising/keyword/redirect/{redirectId}/history:
     get:
+      operationId: getKeywordRedirectHistory
       security:
         - bearerAuth: []
       tags:
@@ -2402,6 +2101,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingReturnedNotFound'
   /search/merchandising/v1/{catalogue}/category/ruleset:
     get:
+      operationId: getCategoryRuleSetsLite
       security:
         - bearerAuth: []
       tags:
@@ -2414,8 +2114,8 @@ paths:
         - in: path
           name: catalogue
           schema:
-          type: string
-          enum: ['CLOTHING_AND_HOME']
+            type: string
+            enum: ['CLOTHING_AND_HOME']
           required: true
           description: The catalogue the ruleset applies to
         - in: query
@@ -2472,6 +2172,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/merchandising/v1/{catalogue}/keyword/ruleset:
     get:
+      operationId: getKeywordRuleSetsLite
       security:
         - bearerAuth: []
       tags:
@@ -2484,8 +2185,8 @@ paths:
         - in: path
           name: catalogue
           schema:
-          type: string
-          enum: ['CLOTHING_AND_HOME']
+            type: string
+            enum: ['CLOTHING_AND_HOME']
           required: true
           description: The catalogue the ruleset applies to
         - in: query
@@ -2542,6 +2243,7 @@ paths:
                 $ref: '#/components/schemas/MerchandisingErrorResponse'
   /search/merchandising/v1/{catalogue}/global/ruleset:
     get:
+      operationId: getGlobalRuleSetsLite
       security:
         - bearerAuth: []
       tags:
@@ -2553,8 +2255,8 @@ paths:
         - in: path
           name: catalogue
           schema:
-          type: string
-          enum: ['CLOTHING_AND_HOME']
+            type: string
+            enum: ['CLOTHING_AND_HOME', 'CFTO']
           required: true
           description: The catalogue the ruleset applies to
         - in: query
@@ -2583,6 +2285,537 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSetsLite'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+  /search/merchandising/v1/{catalogue}/category/ruleset/{ruleSetId}:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Category
+      summary: Update Category Rule Set
+      description: >-
+        Updates a merchandising rule set. The request must include the current version; if it no
+        longer matches the stored version the update is rejected with a 409 Conflict.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchandisingRuleSetUpdate'
+      parameters:
+        - in: path
+          name: catalogue
+          schema:
+            type: string
+            enum: ['CLOTHING_AND_HOME']
+          required: true
+          description: The catalogue the ruleset applies to
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to update
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedCategoryRuleSet'
+        '400':
+          description: Bad request e.g. version is missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '409':
+          description: Version conflict - the entity has been modified by another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+  /search/merchandising/v1/{catalogue}/global/ruleset/{ruleSetId}:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Global
+      summary: Update Global Rule Set
+      description: >-
+        Updates a merchandising rule set. The request must include the current version; if it no
+        longer matches the stored version the update is rejected with a 409 Conflict.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchandisingRuleSetUpdate'
+      parameters:
+        - in: path
+          name: catalogue
+          schema:
+            type: string
+            enum: ['CLOTHING_AND_HOME', 'CFTO']
+          required: true
+          description: The catalogue the ruleset applies to
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to update
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalRuleSet'
+        '400':
+          description: Bad request e.g. version is missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '409':
+          description: Version conflict - the entity has been modified by another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+  /search/merchandising/v1/{catalogue}/keyword/ruleset/{ruleSetId}:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Ruleset - Keyword
+      summary: Update Keyword Rule Set
+      description: >-
+        Updates a merchandising rule set. The request must include the current version; if it no
+        longer matches the stored version the update is rejected with a 409 Conflict.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchandisingRuleSetUpdate'
+      parameters:
+        - in: path
+          name: catalogue
+          schema:
+            type: string
+            enum: ['CLOTHING_AND_HOME']
+          required: true
+          description: The catalogue the ruleset applies to
+        - in: path
+          name: ruleSetId
+          schema:
+            type: string
+          required: true
+          description: The Rule Set to update
+      responses:
+        '200':
+          description: A JSON representation of merchandising rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRuleSet'
+        '400':
+          description: Bad request e.g. version is missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '409':
+          description: Version conflict - the entity has been modified by another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+  /search/merchandising/v1/{catalogue}/facet/{facetId}:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Facets
+      summary: Update Global Facet
+      description: >-
+        Updates a global facet. The request must include the current version; if it no longer
+        matches the stored version the update is rejected with a 409 Conflict.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchandisingFacetConfigUpdate'
+      parameters:
+        - in: path
+          name: catalogue
+          schema:
+            type: string
+            enum: ['CLOTHING_AND_HOME']
+          required: true
+          description: The catalogue the facet applies to
+        - in: path
+          name: facetId
+          schema:
+            type: string
+          required: true
+          description: The global facet to update
+      responses:
+        '200':
+          description: A JSON representation of the facet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedGlobalFacet'
+        '400':
+          description: Bad request e.g. version is missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '409':
+          description: Version conflict - the entity has been modified by another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+  /search/merchandising/v1/{catalogue}/keyword/redirect/{redirectId}:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API - Keyword Redirect
+      summary: Update Keyword Redirect
+      description: >-
+        Updates a keyword redirect. The request must include the current version; if it no longer
+        matches the stored version the update is rejected with a 409 Conflict.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchandisingKeywordRedirectUpdate'
+      parameters:
+        - in: path
+          name: catalogue
+          schema:
+            type: string
+            enum: ['CLOTHING_AND_HOME']
+          required: true
+          description: The catalogue the redirect applies to
+        - in: path
+          name: redirectId
+          schema:
+            type: string
+          required: true
+          description: The redirect to update
+      responses:
+        '200':
+          description: A JSON representation of a redirect
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingReturnedKeywordRedirect'
+        '400':
+          description: Bad request e.g. version is missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '409':
+          description: Version conflict - the entity has been modified by another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+  /search/merchandising/v1/{catalogue}/attributes:
+    get:
+      operationId: getMerchandisingAttributesV1
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API V1
+      summary: Get merchandising attributes
+      description: Returns the merchandising attributes for the specified catalogue and country
+      parameters:
+        - in: path
+          name: catalogue
+          schema:
+            type: string
+            enum: ['CLOTHING_AND_HOME', 'CFTO']
+          required: true
+          description: The catalogue to retrieve attributes for
+        - in: query
+          name: country
+          schema:
+            type: string
+            enum: ['UK', 'IE']
+          required: true
+          description: The country to retrieve attributes for
+        - in: query
+          name: searchTerm
+          schema:
+            type: array
+            items:
+              type: string
+          required: false
+          description: Filter values based on their relevance to this keyword search term
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: Query to filter alphanumeric result values, not supported for numeric attributeType
+        - in: query
+          name: type
+          schema:
+            $ref: '#/components/schemas/MerchandisingAttributeType'
+          required: false
+          description: The type of attributes to retrieve
+        - in: query
+          name: categoryId
+          schema:
+            type: string
+          description: The category to retrieve attributes for
+      responses:
+        '200':
+          description: A JSON representation of attributes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingAttributesResponse'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '401':
+          description: Unauthorized e.g. no bearer token specified
+        '403':
+          description: Insufficient privileges
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingErrorResponse'
+  /search/merchandising/v1/{catalogue}/product:
+    post:
+      operationId: searchMerchandisingProductsV1
+      security:
+        - bearerAuth: []
+      tags:
+        - Search Merchandising API V1
+      summary: Search products for merchandising
+      description: >-
+        Returns the products for the specified catalogue and country.
+        Can be queried by name, product ids or category id.
+        Merchandising rules (pin/block/boost) inside the request body will be used to set metadata in the response.
+      parameters:
+        - in: path
+          name: catalogue
+          schema:
+            type: string
+            enum: ['CLOTHING_AND_HOME', 'CFTO']
+          required: true
+          description: The catalogue to search products for
+        - in: query
+          name: country
+          schema:
+            type: string
+            enum: ['UK', 'IE']
+          required: true
+          description: The country to search products for
+        - in: query
+          name: productId
+          schema:
+            type: array
+            items:
+              type: string
+          required: false
+          description: The IDs of products which are to be retrieved
+        - in: query
+          name: categoryId
+          schema:
+            type: string
+          required: false
+          description: The category id to retrieve products for
+        - in: query
+          name: merchandisingSearchTerm
+          schema:
+            type: array
+            items:
+              type: string
+          required: false
+          description: Filter values based on their relevance to this keyword search term, not supported with categoryId
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: Query to filter result values, currently name/product id are supported
+        - in: query
+          name: start
+          schema:
+            type: integer
+          required: false
+          description: >-
+            Display products after this position.
+            Required for category, global or text search. Not allowed for specific products.
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          required: false
+          description: >-
+            Maximum number of products to be returned.
+            Required for category, global or text search. Not allowed for specific products.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchandisingRules'
+      responses:
+        '200':
+          description: A JSON representation of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchandisingProductSearchResponse'
         '500':
           description: Error
           content:
@@ -2647,6 +2880,14 @@ components:
         displayValue:
           type: string
           description: The value displayed to customers
+        version:
+          type: integer
+          format: int64
+          description: >-
+            Entity version used to detect conflicting updates. Returned on all responses; on an
+            update it must match the current stored version or the update is rejected with a 409
+            Conflict.
+          example: 0
         merged:
           type: array
           items:
@@ -2660,13 +2901,6 @@ components:
                   type: string
                 description: The values (case insensitive) that will be mapped to be displayed as the `displayValue`
           description: Array of objects, each of which describe a set of values that will be merged in to one when displayed to customers.
-        version:
-          type: integer
-          format: int32
-          description: >-
-            Optimistic-locking version. Returned on all responses; required on v1 update requests and
-            must match the current stored version or a 409 Conflict is returned.
-          example: 0
       required:
         - displayValue
         - indexPropertyName
@@ -2772,6 +3006,9 @@ components:
       allOf:
         - $ref: '#/components/schemas/MerchandisingKeywordRedirectWithInfo'
         - $ref: '#/components/schemas/MerchandisingLastChanged'
+        - type: object
+          required:
+            - version
     MerchandisingKeywordRedirect:
       type: object
       properties:
@@ -2779,6 +3016,14 @@ components:
           $ref: '#/components/schemas/MerchandisingCountryCode'
         isEnabled:
           type: boolean
+        version:
+          type: integer
+          format: int64
+          description: >-
+            Entity version used to detect conflicting updates. Returned on all responses; on an
+            update it must match the current stored version or the update is rejected with a 409
+            Conflict.
+          example: 0
         keywords:
           type: array
           items:
@@ -2799,13 +3044,6 @@ components:
           type: string
           pattern: '\d{4}-\d{2}-\d{2}[T]\d{2}:\d{2}:\d{2}\.\d{3}[Z]'
           example: '2024-02-06T15:21:44.123Z'
-        version:
-          type: integer
-          format: int32
-          description: >-
-            Optimistic-locking version. Returned on all responses; required on v1 update requests and
-            must match the current stored version or a 409 Conflict is returned.
-          example: 0
       required:
         - isEnabled
         - keywords
@@ -2878,6 +3116,14 @@ components:
           $ref: '#/components/schemas/MerchandisingCountryCode'
         isEnabled:
           type: boolean
+        version:
+          type: integer
+          format: int64
+          description: >-
+            Entity version used to detect conflicting updates. Returned on all responses; on an
+            update it must match the current stored version or the update is rejected with a 409
+            Conflict.
+          example: 0
         startDate:
           type: string
           pattern: '\d{4}-\d{2}-\d{2}[T]\d{2}:\d{2}:\d{2}\.\d{3}[Z]'
@@ -2895,13 +3141,6 @@ components:
           description: An array of the facets to display for these categories, optionally overriding config such as excludes and boosts.
         excludedFacets:
           $ref: '#/components/schemas/MerchandisingExcludedFacets'
-        version:
-          type: integer
-          format: int32
-          description: >-
-            Optimistic-locking version. Returned on all responses; required on v1 update requests and
-            must match the current stored version or a 409 Conflict is returned.
-          example: 0
       required:
         - rules
         - isEnabled
@@ -3016,6 +3255,33 @@ components:
                   - id
           required:
             - categoriesInfo
+    MerchandisingRuleSetUpdate:
+      description: >-
+        Rule set update payload. Include the current version so a conflicting update can be
+        detected; if it is omitted the request is rejected with a 400.
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingRuleSet'
+        - type: object
+          required:
+            - version
+    MerchandisingFacetConfigUpdate:
+      description: >-
+        Global facet update payload. Include the current version so a conflicting update can be
+        detected; if it is omitted the request is rejected with a 400.
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingFacetConfig'
+        - type: object
+          required:
+            - version
+    MerchandisingKeywordRedirectUpdate:
+      description: >-
+        Keyword redirect update payload. Include the current version so a conflicting update can be
+        detected; if it is omitted the request is rejected with a 400.
+      allOf:
+        - $ref: '#/components/schemas/MerchandisingKeywordRedirect'
+        - type: object
+          required:
+            - version
     MerchandisingReturnedCategoryRuleSet:
       allOf:
         - $ref: '#/components/schemas/MerchandisingCategoryRulesetWithInfo'
@@ -3024,6 +3290,9 @@ components:
       allOf:
         - $ref: '#/components/schemas/MerchandisingCategoryRulesetHistoryWithInfo'
         - $ref: '#/components/schemas/MerchandisingLastChanged'
+        - type: object
+          required:
+            - version
     MerchandisingReturnedCategoryRuleSetLite:
       allOf:
         - $ref: '#/components/schemas/MerchandisingCategoryRulesetLiteWithInfo'
@@ -3052,6 +3321,9 @@ components:
       allOf:
         - $ref: '#/components/schemas/MerchandisingKeywordRuleSetWithInfo'
         - $ref: '#/components/schemas/MerchandisingLastChanged'
+        - type: object
+          required:
+            - version
     MerchandisingReturnedKeywordRuleSetHistoryChange:
       allOf:
         - $ref: '#/components/schemas/MerchandisingKeywordRulesetHistoryWithInfo'
@@ -3084,6 +3356,9 @@ components:
       allOf:
         - $ref: '#/components/schemas/MerchandisingGlobalRulesetHistoryWithInfo'
         - $ref: '#/components/schemas/MerchandisingLastChanged'
+        - type: object
+          required:
+            - version
     MerchandisingReturnedGlobalRuleSetLite:
       allOf:
         - $ref: '#/components/schemas/MerchandisingGlobalRuleSetLiteWithInfo'
@@ -3231,6 +3506,9 @@ components:
       allOf:
         - $ref: '#/components/schemas/MerchandisingFacetConfigWithInfo'
         - $ref: '#/components/schemas/MerchandisingLastChanged'
+        - type: object
+          required:
+            - version
     MerchandisingReturnedRuleSetFacet:
       type: object
       allOf:
@@ -3603,36 +3881,6 @@ components:
       required:
         - status
         - message
-    MerchandisingRuleSetV1Update:
-      allOf:
-        - $ref: '#/components/schemas/MerchandisingRuleSet'
-        - type: object
-          required:
-            - version
-    MerchandisingCategoryRuleSetV1Update:
-      allOf:
-        - $ref: '#/components/schemas/MerchandisingCategoryRuleSet'
-        - type: object
-          required:
-            - version
-    MerchandisingKeywordRuleSetV1Update:
-      allOf:
-        - $ref: '#/components/schemas/MerchandisingKeywordRuleSet'
-        - type: object
-          required:
-            - version
-    MerchandisingKeywordRedirectV1Update:
-      allOf:
-        - $ref: '#/components/schemas/MerchandisingKeywordRedirect'
-        - type: object
-          required:
-            - version
-    MerchandisingFacetConfigV1Update:
-      allOf:
-        - $ref: '#/components/schemas/MerchandisingFacetConfig'
-        - type: object
-          required:
-            - version
     MerchandisingFacets:
       type: object
       properties:

@@ -1,6 +1,6 @@
 // istanbul ignore file
 import type {
-  BetaMerchandisingFacetListData,
+  GetGlobalFacetsData,
   MerchandisingAttributeValuesResponse,
   MerchandisingBoostsBuries,
   MerchandisingIncludesExcludes,
@@ -121,7 +121,7 @@ export const excludesMock: MerchandisingIncludesExcludes = {
   ],
 };
 
-export const facetsListMock: BetaMerchandisingFacetListData = {
+export const facetsListMock: GetGlobalFacetsData = {
   facets: [
     {
       displayValue: 'color',

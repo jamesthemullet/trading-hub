@@ -40,7 +40,7 @@ export const useSearchRuleSetPreview = (
     }
     const asyncCall = async () => {
       try {
-        const response = await api.betaMerchandisingKeywordRulesetDetail(id);
+        const response = await api.getKeywordRuleSet(id);
 
         const data = response.data;
 
@@ -49,7 +49,7 @@ export const useSearchRuleSetPreview = (
         const searchTerms = data.searchTerms;
         const searchTerm = searchTerms[0];
 
-        const searchPreview = await api.betaMerchandisingPreviewCreate(
+        const searchPreview = await api.previewMerchandisingRules(
           { rows: 12, start: 0, searchTerm },
           {
             facets: [],

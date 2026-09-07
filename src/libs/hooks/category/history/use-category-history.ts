@@ -7,5 +7,5 @@ type CategoryHistoryChange =
 
 export const useCategoryHistory =
   createUseHistoryPagination<CategoryHistoryChange>((id, params) =>
-    search().betaMerchandisingCategoryRulesetHistoryList(id, params)
+    search().getCategoryRuleSetHistory(id, params)
   );

@@ -7,5 +7,5 @@ type RedirectHistoryChange =
 
 export const useRedirectHistory =
   createUseHistoryPagination<RedirectHistoryChange>((id, params) =>
-    search().betaMerchandisingKeywordRedirectHistoryList(id, params)
+    search().getKeywordRedirectHistory(id, params)
   );

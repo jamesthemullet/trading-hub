@@ -23,8 +23,7 @@ export const useRedirectCreate = (): {
       setIsSaving(true);
 
       try {
-        const response =
-          await search().betaMerchandisingKeywordRedirectCreate(redirect);
+        const response = await search().createKeywordRedirect(redirect);
         setIsSaving(false);
         return response.data;
       } catch (error: unknown) {

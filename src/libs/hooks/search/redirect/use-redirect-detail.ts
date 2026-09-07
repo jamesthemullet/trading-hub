@@ -35,7 +35,7 @@ export const useRedirectDetail = (
 
     const asyncCall = async () => {
       try {
-        const response = await api.betaMerchandisingKeywordRedirectDetail(id);
+        const response = await api.getKeywordRedirect(id);
 
         const data = response.data;
 

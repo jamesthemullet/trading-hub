@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import type {
-  BetaMerchandisingAttributesListParamsCatalogueEnum,
+  GetMerchandisingAttributesParamsCatalogueEnum,
   MerchandisingCountryCode,
   MerchandisingReturnedGlobalFacet,
 } from '@/libs/api';
@@ -35,11 +35,11 @@ export const useFacetsList = ({
   const requestData = useCallback(
     async (
       query: string[],
-      catalogue: BetaMerchandisingAttributesListParamsCatalogueEnum,
+      catalogue: GetMerchandisingAttributesParamsCatalogueEnum,
       queryBy: 'categoryIds' | 'searchTerms'
     ) => {
       if (queryBy === 'searchTerms') {
-        const response = await search().betaMerchandisingFacetList({
+        const response = await search().getGlobalFacets({
           catalogue,
           searchTerm: query,
         });
@@ -58,7 +58,7 @@ export const useFacetsList = ({
         const results = await Promise.all(
           categoriesToFetch.map(async (shouldFetch, index) => {
             if (shouldFetch) {
-              const response = await search().betaMerchandisingFacetList({
+              const response = await search().getGlobalFacets({
                 catalogue,
                 categoryId: [query[index]],
               });

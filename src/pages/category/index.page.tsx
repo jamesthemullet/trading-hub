@@ -22,12 +22,12 @@ const mapping: RuleSetMapping<
   MerchandisingReturnedCategoryRuleSet,
   MerchandisingCategoryRuleSet
 > = {
-  queryAllRuleSets: search().betaMerchandisingCategoryRulesetList,
-  deleteRuleSetById: search().betaMerchandisingCategoryRulesetDelete,
-  queryRuleSetById: search().betaMerchandisingCategoryRulesetDetail,
-  updateRuleSetById: search().betaMerchandisingCategoryRulesetUpdate,
+  queryAllRuleSets: search().getCategoryRuleSets,
+  deleteRuleSetById: search().deleteCategoryRuleSet,
+  queryRuleSetById: search().getCategoryRuleSet,
+  updateRuleSetById: search().updateCategoryRuleSet,
   newRuleSet: (returnedRuleSet) =>
-    search().betaMerchandisingCategoryRulesetCreate({
+    search().createCategoryRuleSet({
       ...returnedRuleSet,
       facets: returnedRuleSet.facets ?? [],
     }),

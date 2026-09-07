@@ -51,8 +51,8 @@ export const useRuleSet = (
         setIsLoading(true);
         const apiCall =
           ruleSetType === 'category'
-            ? search().betaMerchandisingCategoryRulesetList
-            : search().betaMerchandisingGlobalRulesetList;
+            ? search().getCategoryRuleSets
+            : search().getGlobalRuleSets;
         const result = await apiCall({
           q: searchQuery,
           start,

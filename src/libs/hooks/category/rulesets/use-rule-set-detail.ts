@@ -43,7 +43,7 @@ export const useRuleSetDetail = (
 
     const asyncCall = async () => {
       try {
-        const response = await api.betaMerchandisingCategoryRulesetDetail(id);
+        const response = await api.getCategoryRuleSet(id);
 
         const data = response.data;
 

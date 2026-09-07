@@ -16,7 +16,7 @@ export const useFetchProductStatus = (
   ) => {
     dispatch({ type: 'FETCH_START' });
     try {
-      const result = await search().betaMerchandisingProductDiagnosticsList({
+      const result = await search().getProductDiagnostics({
         productId,
         catalogue: toCatalogue(market),
       });

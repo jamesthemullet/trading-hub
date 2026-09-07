@@ -89,7 +89,7 @@ export const usePreview = ({
       setIsLoading(true);
 
       try {
-        const searchPreview = await search().betaMerchandisingPreviewCreate(
+        const searchPreview = await search().previewMerchandisingRules(
           {
             ...(categoryId && { categoryId }),
             ...(searchTerm && { searchTerm }),

@@ -138,9 +138,7 @@ const FacetConfigContent = ({
       // optimistic-locking update. Remove once the list honours the contract.
       if (version == null) {
         try {
-          const { data } = await search().betaMerchandisingFacetDetail(
-            facet.id
-          );
+          const { data } = await search().getGlobalFacet(facet.id);
           version = data.version;
         } catch (err) {
           // Report the fetch failure for telemetry; version stays undefined so

@@ -34,8 +34,7 @@ export const useGlobalRuleSetCreate = (): {
           endDate,
           countryCode,
         };
-        const response =
-          await search().betaMerchandisingGlobalRulesetCreate2(body);
+        const response = await search().createGlobalRuleSet(body);
         return response.data;
       } catch (error) {
         setError(handleError(error));

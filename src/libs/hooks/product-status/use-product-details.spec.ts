@@ -1,4 +1,4 @@
-import type { BetaMerchandisingProductDiagnosticsListData } from '@/libs/api/generated/open-api';
+import type { GetProductDiagnosticsData } from '@/libs/api/generated/open-api';
 
 import { getProductDetails, ProductError } from './use-product-details';
 
@@ -14,7 +14,7 @@ const mockProduct = {
   metadata: { isPinned: false },
 };
 
-const onlineData: BetaMerchandisingProductDiagnosticsListData = {
+const onlineData: GetProductDiagnosticsData = {
   products: [mockProduct],
   pagination: { totalItems: 1 },
   issues: [],
@@ -42,7 +42,7 @@ describe('getProductDetails', () => {
   });
 
   describe('not indexed — push-available', () => {
-    const notIndexedData: BetaMerchandisingProductDiagnosticsListData = {
+    const notIndexedData: GetProductDiagnosticsData = {
       products: [],
       pagination: { totalItems: 0 },
       issues: [],
@@ -67,7 +67,7 @@ describe('getProductDetails', () => {
   });
 
   describe('out of stock', () => {
-    const outOfStockData: BetaMerchandisingProductDiagnosticsListData = {
+    const outOfStockData: GetProductDiagnosticsData = {
       products: [mockProduct],
       pagination: { totalItems: 1 },
       issues: [
@@ -93,7 +93,7 @@ describe('getProductDetails', () => {
   });
 
   describe('not saleable', () => {
-    const notSaleableData: BetaMerchandisingProductDiagnosticsListData = {
+    const notSaleableData: GetProductDiagnosticsData = {
       products: [mockProduct],
       pagination: { totalItems: 1 },
       issues: [
@@ -116,7 +116,7 @@ describe('getProductDetails', () => {
   });
 
   describe('out of stock and not saleable combined', () => {
-    const combinedData: BetaMerchandisingProductDiagnosticsListData = {
+    const combinedData: GetProductDiagnosticsData = {
       products: [mockProduct],
       pagination: { totalItems: 1 },
       issues: [
@@ -142,7 +142,7 @@ describe('getProductDetails', () => {
   });
 
   describe('unknown issues', () => {
-    const unknownIssueData: BetaMerchandisingProductDiagnosticsListData = {
+    const unknownIssueData: GetProductDiagnosticsData = {
       products: [mockProduct],
       pagination: { totalItems: 1 },
       issues: [{ reason: 'Some unexpected issue', action: 'Contact support.' }],
@@ -163,7 +163,7 @@ describe('getProductDetails', () => {
 
   describe('ranking attributes', () => {
     it('should include ranking attributes in productAssembly content when present', () => {
-      const dataWithRanking: BetaMerchandisingProductDiagnosticsListData = {
+      const dataWithRanking: GetProductDiagnosticsData = {
         ...onlineData,
         products: [
           {
@@ -187,7 +187,7 @@ describe('getProductDetails', () => {
 
   describe('optional product fields', () => {
     it('should include Rating when present on the product', () => {
-      const dataWithRating: BetaMerchandisingProductDiagnosticsListData = {
+      const dataWithRating: GetProductDiagnosticsData = {
         ...onlineData,
         products: [
           { ...mockProduct, rating: '4.5' } as typeof mockProduct & {

@@ -6,5 +6,5 @@ type GlobalHistoryChange =
   MerchandisingReturnedGlobalRuleSetHistory['changes'][number];
 
 export const useGlobalHistory = createUseHistoryPagination<GlobalHistoryChange>(
-  (id, params) => search().betaMerchandisingGlobalRulesetHistoryList(id, params)
+  (id, params) => search().getGlobalRuleSetHistory(id, params)
 );

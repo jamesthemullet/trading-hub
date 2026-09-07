@@ -1,5 +1,5 @@
 import type {
-  BetaMerchandisingProductDiagnosticsListData,
+  GetProductDiagnosticsData,
   MerchandisingProduct,
   MerchandisingRankingAttribute,
   ProductOfflineIssue,
@@ -70,7 +70,7 @@ const waitingForPush = <T>(content: T): Section<T> => ({
 });
 
 export const getProductDetails = (
-  data: BetaMerchandisingProductDiagnosticsListData
+  data: GetProductDiagnosticsData
 ): {
   isIndexed: boolean;
   product: Product | null;

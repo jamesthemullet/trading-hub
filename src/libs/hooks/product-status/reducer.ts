@@ -1,5 +1,5 @@
 import type {
-  BetaMerchandisingProductDiagnosticsListData,
+  GetProductDiagnosticsData,
   MerchandisingCountryCode,
   ProductOfflineIssue,
 } from '@/libs/api/generated/open-api';
@@ -64,7 +64,7 @@ export type Action =
   | { type: 'FETCH_START' }
   | {
       type: 'FETCH_SUCCESS';
-      payload: BetaMerchandisingProductDiagnosticsListData;
+      payload: GetProductDiagnosticsData;
       submittedQuery: string;
     }
   | { type: 'FETCH_ERROR'; payload: string }

@@ -34,7 +34,7 @@ export const useGetCategories = (): {
       try {
         const promises = catalogues.map((catalogue) =>
           search()
-            .betaMerchandisingCategoryList({
+            .getMerchandisingCategories({
               q: query,
               start,
               rows,

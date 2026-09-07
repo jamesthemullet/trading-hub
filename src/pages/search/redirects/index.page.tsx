@@ -21,11 +21,11 @@ const mapping: RuleSetMapping<
   MerchandisingReturnedKeywordRedirect,
   MerchandisingKeywordRedirect
 > = {
-  queryAllRuleSets: search().betaMerchandisingKeywordRedirectList,
-  deleteRuleSetById: search().betaMerchandisingKeywordRedirectDelete,
-  queryRuleSetById: search().betaMerchandisingKeywordRedirectDetail,
-  updateRuleSetById: search().betaMerchandisingKeywordRedirectUpdate,
-  newRuleSet: search().betaMerchandisingKeywordRedirectCreate,
+  queryAllRuleSets: search().getKeywordRedirects,
+  deleteRuleSetById: search().deleteKeywordRedirect,
+  queryRuleSetById: search().getKeywordRedirect,
+  updateRuleSetById: search().updateKeywordRedirect,
+  newRuleSet: search().createKeywordRedirect,
   ruleSetToRow: ({
     id,
     keywords,

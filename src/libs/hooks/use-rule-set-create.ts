@@ -40,8 +40,7 @@ export const useRuleSetCreate = (): {
           rules,
           startDate,
         };
-        const response =
-          await search().betaMerchandisingCategoryRulesetCreate(body);
+        const response = await search().createCategoryRuleSet(body);
         return response.data;
       } catch (error) {
         setError(handleError(error));

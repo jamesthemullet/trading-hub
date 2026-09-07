@@ -6,6 +6,5 @@ type SearchHistoryChange =
   MerchandisingReturnedKeywordRuleSetHistory['changes'][number];
 
 export const useSearchHistory = createUseHistoryPagination<SearchHistoryChange>(
-  (id, params) =>
-    search().betaMerchandisingKeywordRulesetHistoryList(id, params)
+  (id, params) => search().getKeywordRuleSetHistory(id, params)
 );

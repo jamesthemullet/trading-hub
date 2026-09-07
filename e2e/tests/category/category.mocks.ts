@@ -1,5 +1,5 @@
 import type {
-  BetaMerchandisingFacetListData,
+  GetGlobalFacetsData,
   MerchandisingAttributeValuesResponse,
   MerchandisingCategories,
   MerchandisingProductSearchResponse,
@@ -1586,7 +1586,7 @@ export const mockProducts: MerchandisingProductSearchResponse = {
   pagination: { totalItems: 130 },
 };
 
-export const mockFacets: BetaMerchandisingFacetListData = {
+export const mockFacets: GetGlobalFacetsData = {
   facets: [
     {
       type: 'root',

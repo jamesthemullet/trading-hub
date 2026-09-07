@@ -35,8 +35,7 @@ export const useSearchRuleSetCreate = (): {
           excludedFacets,
           facets,
         };
-        const response =
-          await search().betaMerchandisingKeywordRulesetCreate(body);
+        const response = await search().createKeywordRuleSet(body);
         return response.data;
       } catch (error) {
         setError(handleError(error));

@@ -1,4 +1,4 @@
-import type { BetaMerchandisingProductDiagnosticsListData } from '@/libs/api/generated/open-api';
+import type { GetProductDiagnosticsData } from '@/libs/api/generated/open-api';
 
 import type { RecentSearch } from './recent-searches-storage';
 import { createInitialState, initialState, reducer } from './reducer';
@@ -8,7 +8,7 @@ beforeEach(() => {
   localStorage.clear();
 });
 
-const mockOnlineData: BetaMerchandisingProductDiagnosticsListData = {
+const mockOnlineData: GetProductDiagnosticsData = {
   products: [
     {
       id: 'p1',
@@ -24,14 +24,14 @@ const mockOnlineData: BetaMerchandisingProductDiagnosticsListData = {
   issues: [],
 };
 
-const mockNotIndexedData: BetaMerchandisingProductDiagnosticsListData = {
+const mockNotIndexedData: GetProductDiagnosticsData = {
   products: [],
   pagination: { totalItems: 0 },
   issues: [],
 };
 
 const fetchSuccess = (
-  payload: BetaMerchandisingProductDiagnosticsListData,
+  payload: GetProductDiagnosticsData,
   submittedQuery = '60538523'
 ) =>
   reducer(
@@ -139,7 +139,7 @@ describe('reducer', () => {
   });
 
   describe('FETCH_SUCCESS — out of stock', () => {
-    const mockOutOfStockData: BetaMerchandisingProductDiagnosticsListData = {
+    const mockOutOfStockData: GetProductDiagnosticsData = {
       products: [{ ...mockOnlineData.products[0], isInStock: false }],
       pagination: { totalItems: 1 },
       issues: [
@@ -168,7 +168,7 @@ describe('reducer', () => {
   });
 
   describe('FETCH_SUCCESS — not saleable', () => {
-    const mockNotSaleableData: BetaMerchandisingProductDiagnosticsListData = {
+    const mockNotSaleableData: GetProductDiagnosticsData = {
       products: [mockOnlineData.products[0]],
       pagination: { totalItems: 1 },
       issues: [
@@ -196,7 +196,7 @@ describe('reducer', () => {
   });
 
   describe('FETCH_SUCCESS — out of stock and not saleable combined', () => {
-    const mockCombinedData: BetaMerchandisingProductDiagnosticsListData = {
+    const mockCombinedData: GetProductDiagnosticsData = {
       products: [{ ...mockOnlineData.products[0], isInStock: false }],
       pagination: { totalItems: 1 },
       issues: [
@@ -240,7 +240,7 @@ describe('reducer', () => {
   });
 
   describe('FETCH_SUCCESS — unknown issues go to productAssembly', () => {
-    const mockUnknownIssueData: BetaMerchandisingProductDiagnosticsListData = {
+    const mockUnknownIssueData: GetProductDiagnosticsData = {
       products: [mockOnlineData.products[0]],
       pagination: { totalItems: 1 },
       issues: [{ reason: 'Some unexpected issue', action: 'Contact support.' }],
@@ -266,7 +266,7 @@ describe('reducer', () => {
 
   describe('FETCH_SUCCESS — displayId already has P prefix', () => {
     it('should not double the P when productId already starts with P', () => {
-      const dataWithPPrefix: BetaMerchandisingProductDiagnosticsListData = {
+      const dataWithPPrefix: GetProductDiagnosticsData = {
         products: [{ ...mockOnlineData.products[0], productId: 'P60538523' }],
         pagination: { totalItems: 1 },
         issues: [],

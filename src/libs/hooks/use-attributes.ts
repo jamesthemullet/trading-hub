@@ -45,7 +45,7 @@ export const useAttributes = ({
         const promises = categories?.length
           ? categories.map((categoryId) =>
               search()
-                .betaMerchandisingAttributesList({
+                .getMerchandisingAttributes({
                   categoryId,
                   type,
                   catalogue: convertCategoryIdToCatalogue(categoryId),
@@ -54,7 +54,7 @@ export const useAttributes = ({
             )
           : catalogues.map((catalogue) =>
               search()
-                .betaMerchandisingAttributesList({
+                .getMerchandisingAttributes({
                   searchTerm: searchTerms,
                   type,
                   catalogue,

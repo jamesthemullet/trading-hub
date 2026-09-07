@@ -35,7 +35,7 @@ export const useGlobalRuleSetDetail = (
 
     const asyncCall = async () => {
       try {
-        const response = await api.betaMerchandisingGlobalRulesetDetail(id);
+        const response = await api.getGlobalRuleSet(id);
 
         const data = response.data;
 

@@ -1,5 +1,5 @@
 import type {
-  BetaMerchandisingCategoryRulesetListParamsHavingRulesEnum,
+  GetCategoryRuleSetsParamsHavingRulesEnum,
   HttpResponse,
   MerchandisingAlphanumericBoostBury,
   MerchandisingAlphanumericBoostBuryField,
@@ -149,8 +149,7 @@ export type Row = {
   countryCode?: string;
 };
 
-export type RuleTypeFilter =
-  BetaMerchandisingCategoryRulesetListParamsHavingRulesEnum;
+export type RuleTypeFilter = GetCategoryRuleSetsParamsHavingRulesEnum;
 
 export type GetRowsFn = (
   currentPage: number,

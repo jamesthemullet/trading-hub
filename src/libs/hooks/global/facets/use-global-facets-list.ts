@@ -23,7 +23,7 @@ export const useGlobalFacetsList = ({
     if (!enabled) return;
     const asyncCall = async () => {
       try {
-        const response = await search().betaMerchandisingFacetList();
+        const response = await search().getGlobalFacets();
 
         const facetList = response.data;
 

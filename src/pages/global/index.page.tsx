@@ -21,11 +21,11 @@ const mapping: RuleSetMapping<
   MerchandisingReturnedGlobalRuleSet,
   MerchandisingRuleSet
 > = {
-  queryAllRuleSets: search().betaMerchandisingGlobalRulesetList,
-  deleteRuleSetById: search().betaMerchandisingGlobalRulesetDelete,
-  queryRuleSetById: search().betaMerchandisingGlobalRulesetDetail,
-  updateRuleSetById: search().betaMerchandisingGlobalRulesetUpdate,
-  newRuleSet: search().betaMerchandisingGlobalRulesetCreate2,
+  queryAllRuleSets: search().getGlobalRuleSets,
+  deleteRuleSetById: search().deleteGlobalRuleSet,
+  queryRuleSetById: search().getGlobalRuleSet,
+  updateRuleSetById: search().updateGlobalRuleSet,
+  newRuleSet: search().createGlobalRuleSet,
   ruleSetToRow: ({ id, isEnabled, lastChanged, countryCode }) => ({
     id,
     identifier: '*',

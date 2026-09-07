@@ -48,7 +48,7 @@ describe('API', () => {
         )
       );
 
-      await search().betaMerchandisingCategoryRulesetList({
+      await search().getCategoryRuleSets({
         start: 0,
         rows: 10,
       });
@@ -69,7 +69,7 @@ describe('API', () => {
         )
       );
 
-      await search().betaMerchandisingCategoryRulesetUpdate('rule-set-1', {
+      await search().updateCategoryRuleSet('rule-set-1', {
         categoryIds: ['cat-1'],
         isEnabled: true,
         rules: mockMerchandisingRules,
@@ -87,7 +87,7 @@ describe('API', () => {
       );
 
       await search()
-        .betaMerchandisingCategoryRulesetUpdate('rule-set-1', {
+        .updateCategoryRuleSet('rule-set-1', {
           categoryIds: ['cat-1'],
           isEnabled: true,
           rules: mockMerchandisingRules,
@@ -109,7 +109,7 @@ describe('API', () => {
         )
       );
 
-      await search().betaMerchandisingCategoryRulesetList({
+      await search().getCategoryRuleSets({
         start: 0,
         rows: 10,
       });
@@ -127,7 +127,7 @@ describe('API', () => {
             )
           ),
         call: () =>
-          search().betaMerchandisingKeywordRulesetCreate({
+          search().createKeywordRuleSet({
             searchTerms: ['socks'],
             rules: mockMerchandisingRules,
             facets: [],
@@ -146,7 +146,7 @@ describe('API', () => {
             )
           ),
         call: () =>
-          search().betaMerchandisingKeywordRulesetUpdate('rule-set-1', {
+          search().updateKeywordRuleSet('rule-set-1', {
             searchTerms: ['socks'],
             rules: mockMerchandisingRules,
             facets: [],
@@ -163,8 +163,7 @@ describe('API', () => {
               HttpResponse.json({}, { status: 200 })
             )
           ),
-        call: () =>
-          search().betaMerchandisingKeywordRedirectCreate(redirectMock),
+        call: () => search().createKeywordRedirect(redirectMock),
       },
       {
         name: 'keyword redirect update',
@@ -175,11 +174,7 @@ describe('API', () => {
               () => HttpResponse.json({}, { status: 200 })
             )
           ),
-        call: () =>
-          search().betaMerchandisingKeywordRedirectUpdate(
-            'redirect-1',
-            redirectMock
-          ),
+        call: () => search().updateKeywordRedirect('redirect-1', redirectMock),
       },
       {
         name: 'global facet update',
@@ -190,7 +185,7 @@ describe('API', () => {
             )
           ),
         call: () =>
-          search().betaMerchandisingFacetUpdate('facet-1', {
+          search().updateGlobalFacet('facet-1', {
             displayValue: 'colour',
             indexPropertyName: 'color',
           }),
@@ -204,7 +199,7 @@ describe('API', () => {
             )
           ),
         call: () =>
-          search().betaMerchandisingGlobalRulesetCreate2({
+          search().createGlobalRuleSet({
             rules: mockMerchandisingRules,
             isEnabled: true,
             startDate: '',
@@ -222,7 +217,7 @@ describe('API', () => {
             )
           ),
         call: () =>
-          search().betaMerchandisingGlobalRulesetUpdate('rule-set-1', {
+          search().updateGlobalRuleSet('rule-set-1', {
             rules: mockMerchandisingRules,
             isEnabled: true,
           }),
@@ -261,8 +256,7 @@ describe('API', () => {
               () => HttpResponse.json({}, { status: 200 })
             )
           ),
-        call: () =>
-          search().betaMerchandisingCategoryRulesetDelete('rule-set-1'),
+        call: () => search().deleteCategoryRuleSet('rule-set-1'),
       },
       {
         name: 'keyword ruleset delete',
@@ -273,8 +267,7 @@ describe('API', () => {
               () => HttpResponse.json({}, { status: 200 })
             )
           ),
-        call: () =>
-          search().betaMerchandisingKeywordRulesetDelete('rule-set-1'),
+        call: () => search().deleteKeywordRuleSet('rule-set-1'),
       },
       {
         name: 'global ruleset delete',
@@ -285,7 +278,7 @@ describe('API', () => {
               () => HttpResponse.json({}, { status: 200 })
             )
           ),
-        call: () => search().betaMerchandisingGlobalRulesetDelete('rule-set-1'),
+        call: () => search().deleteGlobalRuleSet('rule-set-1'),
       },
     ])('emits a delete-success toast for $name', async ({ setup, call }) => {
       setup();
@@ -305,7 +298,7 @@ describe('API', () => {
         )
       );
 
-      await search().betaMerchandisingKeywordRedirectDelete('redirect-1');
+      await search().deleteKeywordRedirect('redirect-1');
 
       expect(emitSaveSuccess).toHaveBeenCalledWith(
         'Redirect deleted successfully'
@@ -319,7 +312,7 @@ describe('API', () => {
         )
       );
 
-      await search().betaMerchandisingFacetDelete('facet-1');
+      await search().deleteGlobalFacet('facet-1');
 
       expect(emitSaveSuccess).not.toHaveBeenCalled();
     });
