@@ -355,7 +355,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [deploy-prod]
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # master
+      - uses: actions/checkout@61b9e3751b92087fd0b06925ba6dd6314e06f089
 
       - name: Merge main -> hotfix
         uses: devmasx/merge-branch@854d3ac71ed1e9deb668e0074781b81fdd6e771f # v1.4.0
