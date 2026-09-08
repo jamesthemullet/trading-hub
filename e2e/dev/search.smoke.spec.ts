@@ -183,10 +183,23 @@ test.describe('Search Ranking', () => {
 
     const currentCount =
       (await page.getByTestId('results count').textContent()) ?? '';
-    const totalItems = parseInt(currentCount.split('out of')[1]?.trim() ?? '0');
+    const totalItemsMatch = currentCount.match(/out of\s+(\d+)/);
+    if (!totalItemsMatch) {
+      throw new Error(`Unexpected results count format: "${currentCount}"`);
+    }
+    const totalItems = parseInt(totalItemsMatch[1], 10);
+    if (totalItems < 2) {
+      throw new Error(
+        `Expected at least 2 rulesets to delete, got ${totalItems}: "${currentCount}"`
+      );
+    }
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
     await page.getByTestId('Delete rule').click();
+
+    await expect(page.getByTestId('results count')).toContainText(
+      `out of ${totalItems - 1}`
+    );
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();

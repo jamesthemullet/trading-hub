@@ -315,9 +315,17 @@ test.describe('Category Ranking', () => {
       `Unexpected results count format: "${currentCount}"`
     ).not.toBeNull();
     const totalItems = parseInt(totalItemsMatch?.[1] ?? '', 10);
+    expect(
+      totalItems,
+      `Expected at least 2 rulesets before deletion, but found ${totalItems}`
+    ).toBeGreaterThanOrEqual(2);
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
     await page.getByTestId('Delete rule').click();
+
+    await expect(page.getByTestId('results count')).toContainText(
+      `out of ${totalItems - 1}`
+    );
 
     await page.getByRole('button', { name: 'More options' }).first().click();
     await page.getByRole('button', { name: 'Delete' }).click();
