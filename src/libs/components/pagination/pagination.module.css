@@ -56,7 +56,7 @@
 }
 
 .paginationContainer button:focus svg {
-  outline: solid 2px #4273b7;
+  outline: solid 2px var(--color-role-outline-outline);
   border-radius: 50%;
 }
 

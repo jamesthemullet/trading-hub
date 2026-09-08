@@ -98,7 +98,7 @@ export const RulesetDiffModal = ({
           )}
 
           <Divider
-            color="var(--color-surface-dark-on-surface-dark-container)"
+            color="var(--color-role-outline-outline-variant)"
             mx={-20}
             mb="sm"
           />

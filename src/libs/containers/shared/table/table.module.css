@@ -27,7 +27,7 @@
   border-bottom: none;
   align-items: center;
   margin: 0 var(--mns-spacing-1-5) var(--mns-spacing-2-5);
-  box-shadow: #000 0 0 10px -5px;
+  box-shadow: var(--elevation-card);
   padding: var(--mns-spacing-2);
   grid-template-columns: 160px repeat(3, minmax(280px, 2fr)) 80px 40px;
 }
@@ -70,7 +70,7 @@
   align-items: flex-start;
   margin: 0;
   padding: var(--mns-spacing-2);
-  box-shadow: #000 0 0 10px -5px;
+  box-shadow: var(--elevation-card);
 }
 
 .editFacetAttributesModalTableRow:first-of-type {
@@ -250,7 +250,7 @@
 }
 
 .divider {
-  border-bottom: solid 1px var(--color-surface-dark-surface-dark);
+  border-bottom: solid 1px var(--color-role-outline-outline);
   width: 100%;
   display: inline-block;
 }

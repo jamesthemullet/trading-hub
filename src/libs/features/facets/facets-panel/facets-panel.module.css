@@ -2,9 +2,7 @@
   display: grid;
   border-bottom: none;
   align-items: center;
-  box-shadow:
-    0 2px 6px 2px var(--color-surface-dark-on-surface-dark-container),
-    0 2px 3px 0 var(--color-surface-dark-on-surface-dark-container);
+  box-shadow: var(--elevation-card);
   margin-bottom: var(--mns-spacing-2);
   padding: var(--mns-spacing-1-5) var(--mns-spacing-2);
   height: 80px;
@@ -168,7 +166,7 @@
 }
 
 .sectionWrapper {
-  box-shadow: #000 0 0 10px -5px;
+  box-shadow: var(--elevation-card);
   margin: var(--mns-spacing-2);
   margin-bottom: 0;
   border-radius: 4px;

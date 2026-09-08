@@ -27,7 +27,7 @@
 }
 
 .recentCard {
-  box-shadow: var(--color-surface-dark-surface-dark) 0 0 10px -5px;
+  box-shadow: var(--elevation-card);
   border-radius: 4px;
   background-color: var(--color-accent-primary-on-primary);
   overflow: hidden;

@@ -115,7 +115,7 @@ export const ConflictModal = ({
               )}
 
               <Divider
-                color="var(--color-surface-dark-on-surface-dark-container)"
+                color="var(--color-role-outline-outline-variant)"
                 mx={-20}
                 my="sm"
               />

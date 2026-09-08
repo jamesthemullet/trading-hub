@@ -56,6 +56,6 @@
   }
 
   & > input:focus + span::before {
-    outline: solid;
+    outline: solid var(--color-role-outline-outline);
   }
 }

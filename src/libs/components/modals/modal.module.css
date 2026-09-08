@@ -39,7 +39,7 @@
   position: sticky;
   bottom: 0;
   width: 100%;
-  border-top: solid 1px var(--color-surface-dark-on-surface-dark-variant);
+  border-top: solid 1px var(--color-role-outline-outline);
   padding: var(--mns-spacing-1);
   display: flex;
   justify-content: flex-end;

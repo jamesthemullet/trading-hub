@@ -42,6 +42,7 @@ export const SortableRow = ({
       : undefined,
     transition,
     zIndex: isDragging ? 10 : undefined,
+    boxShadow: isDragging ? 'var(--elevation-action)' : undefined,
   };
 
   return children({

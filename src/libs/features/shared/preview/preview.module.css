@@ -130,7 +130,7 @@
   z-index: 2;
   width: 290px;
   overflow: hidden;
-  box-shadow: rgb(0 0 0 / 24%) 0 8px 12px 0;
+  box-shadow: var(--elevation-overlay);
   padding: var(--mns-spacing-2);
 
   > div {

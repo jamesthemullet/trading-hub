@@ -48,6 +48,7 @@ describe('FacetAttributeSortableRow', () => {
           transform: 'translate3d(0px, -8px, 0)',
           transition: 'ease 200ms',
           zIndex: 10,
+          boxShadow: 'var(--elevation-action)',
         },
       })
     );

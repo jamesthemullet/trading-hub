@@ -67,6 +67,15 @@ body {
   --typography-weight-regular: 400;
   --typography-weight-semibold: 600;
   --typography-weight-bold: 700;
+
+  /* elevation | box-shadow (Figma: Colleague Design System / Effects) */
+  --elevation-overlay:
+    0 0 40px 0 rgb(0 0 0 / 10%), 0 4px 6px 0 rgb(0 0 0 / 30%),
+    0 4px 12px 2px rgb(0 0 0 / 15%);
+  --elevation-card:
+    0 2px 3px 0 rgb(0 0 0 / 30%), 0 2px 6px 2px rgb(0 0 0 / 15%);
+  --elevation-action:
+    0 1px 3px 1px rgb(0 0 0 / 15%), 0 1px 2px 0 rgb(0 0 0 / 30%);
 }
 
 .typographyDisplayLarge {
