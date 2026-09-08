@@ -1,5 +1,12 @@
 import { expect, test } from '@playwright/test';
 
+import {
+  discardConflictChanges,
+  expectConflictModalHidden,
+  expectConflictModalVisible,
+  mockOptimisticLockConflict,
+  overwriteConflictChanges,
+} from '../../helpers';
 import { checkAccessibility } from '../accessibility-utils';
 import {
   mockAttributeValues,
@@ -318,6 +325,92 @@ test.describe('global facets', () => {
     await expect(
       page.getByLabel('Edit display name for 3-5 years')
     ).toBeVisible();
+  });
+
+  test.describe('save conflict', () => {
+    const facetId = 'f0bc2d42-563e-11ef-a364-000000000000';
+    const v1Url = `*/**/api/search/merchandising/v1/*/facet/${facetId}*`;
+    const conflictingFacet = {
+      ...mockEditedFacet,
+      displayValue: 'Colour',
+      lastChanged: { date: '2024-10-02T09:15:00Z', user: 'Another Editor' },
+      version: 4,
+    };
+
+    test('shows the conflict modal, then overwrites with the current edit', async ({
+      page,
+    }) => {
+      await mockOptimisticLockConflict(page, {
+        url: v1Url,
+        currentEntity: conflictingFacet,
+        successJson: mockEditedFacet,
+      });
+
+      await page.goto('/global/facet-config');
+      await page.getByLabel('Edit display name for Age').click();
+      await page.getByLabel('Edit Age input field').fill('Hue');
+      await page.getByLabel('Save Age change').click();
+      await expect(
+        page.getByRole('heading', { name: 'Review changes' })
+      ).toBeVisible();
+      await page.getByRole('button', { name: 'Save changes' }).click();
+
+      await expectConflictModalVisible(page, 'facet');
+
+      await overwriteConflictChanges(page);
+
+      await expect(page.getByTestId('Label for Hue')).toBeVisible();
+    });
+
+    test('discards the current edit and reloads the other change', async ({
+      page,
+    }) => {
+      const { hasConflicted } = await mockOptimisticLockConflict(page, {
+        url: v1Url,
+        currentEntity: conflictingFacet,
+        successJson: mockEditedFacet,
+      });
+      // On the discard reload the facet list re-fetches; once the conflict has
+      // happened, serve the other user's display name for the Age facet.
+      await page.route(
+        '*/**/api/search/beta/merchandising/facet*',
+        async (route) => {
+          if (route.request().url().includes(facetId)) {
+            return route.fallback();
+          }
+          const facets = hasConflicted()
+            ? mockGlobalFacet.facets.map((facet) =>
+                facet.id === facetId
+                  ? { ...facet, displayValue: conflictingFacet.displayValue }
+                  : facet
+              )
+            : mockGlobalFacet.facets;
+          await route.fulfill({ status: 200, json: { facets } });
+        }
+      );
+
+      await page.goto('/global/facet-config');
+      await page.getByLabel('Edit display name for Age').click();
+      await page.getByLabel('Edit Age input field').fill('Hue');
+      await page.getByLabel('Save Age change').click();
+      await expect(
+        page.getByRole('heading', { name: 'Review changes' })
+      ).toBeVisible();
+      await page.getByRole('button', { name: 'Save changes' }).click();
+
+      await expectConflictModalVisible(page, 'facet');
+
+      await discardConflictChanges(page);
+
+      await expectConflictModalHidden(page, 'facet');
+      // Discard reloaded the list showing the other user's renamed facet.
+      // Scope to the Age row — `mockGlobalFacet` has another facet named Colour.
+      await expect(
+        page
+          .getByTestId(`facet-config-row-${facetId}`)
+          .getByTestId(`Label for ${conflictingFacet.displayValue}`)
+      ).toBeVisible();
+    });
   });
 });
 

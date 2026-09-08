@@ -1,5 +1,13 @@
 import { expect, test } from '@playwright/test';
 
+import {
+  discardConflictChanges,
+  expectConflictModalHidden,
+  expectConflictModalVisible,
+  mockOptimisticLockConflict,
+  mockReloadAfterConflict,
+  overwriteConflictChanges,
+} from '../../helpers';
 import { checkAccessibility } from '../accessibility-utils';
 import { mockRedirect, mockRedirectsList } from './redirects.mocks';
 
@@ -254,6 +262,84 @@ test.describe('Keyword Redirects', () => {
       await expect(
         page.getByRole('heading', { name: 'Keyword Redirect' })
       ).toBeVisible();
+    });
+  });
+
+  test.describe('save conflict', () => {
+    const redirectId = '2cf46391-1780-4016-9d20-5fd28b571579';
+    const v1Url = `*/**/api/search/merchandising/v1/*/keyword/redirect/${redirectId}*`;
+    const conflictingRedirect = {
+      ...mockRedirect,
+      destinationUrl: '/changed/by/someone-else',
+      lastChanged: { date: '2024-10-02T09:15:00Z', user: 'Another Editor' },
+      version: 5,
+    };
+
+    test('shows the conflict modal, then overwrites with the current edit', async ({
+      page,
+    }) => {
+      await mockOptimisticLockConflict(page, {
+        url: v1Url,
+        currentEntity: conflictingRedirect,
+        successJson: { ...mockRedirect, version: 6 },
+      });
+
+      await page.goto(`/search/redirects/edit/${redirectId}`);
+
+      const saveButton = page.getByRole('button', {
+        name: 'Save',
+        exact: true,
+      });
+      await expect(saveButton).toBeVisible();
+      await saveButton.click();
+
+      await expectConflictModalVisible(page, 'redirect');
+
+      await checkAccessibility(page);
+
+      await overwriteConflictChanges(page);
+
+      await expect(
+        page.getByRole('heading', { name: 'Keyword Redirect' })
+      ).toBeVisible();
+    });
+
+    test('discards the current edit and reloads the other change', async ({
+      page,
+    }) => {
+      const { hasConflicted } = await mockOptimisticLockConflict(page, {
+        url: v1Url,
+        currentEntity: conflictingRedirect,
+        successJson: mockRedirect,
+      });
+      await mockReloadAfterConflict(page, {
+        url: `*/**/api/search/beta/merchandising/keyword/redirect/${redirectId}*`,
+        before: mockRedirect,
+        after: conflictingRedirect,
+        hasConflicted,
+      });
+
+      await page.goto(`/search/redirects/edit/${redirectId}`);
+
+      const saveButton = page.getByRole('button', {
+        name: 'Save',
+        exact: true,
+      });
+      await expect(saveButton).toBeVisible();
+      await expect(page.getByPlaceholder('c/')).toHaveValue(
+        mockRedirect.destinationUrl
+      );
+      await saveButton.click();
+
+      await expectConflictModalVisible(page, 'redirect');
+
+      await discardConflictChanges(page);
+
+      await expectConflictModalHidden(page, 'redirect');
+      // Discard reloaded the editor with the other user's saved change.
+      await expect(page.getByPlaceholder('c/')).toHaveValue(
+        conflictingRedirect.destinationUrl
+      );
     });
   });
 });

@@ -1,7 +1,14 @@
 import { expect, test } from '@playwright/test';
 
 import {
+  clickSaveAndConfirmReviewIfPresent,
+  discardConflictChanges,
+  expectConflictModalHidden,
+  expectConflictModalVisible,
   getProductSearchResultPosition,
+  mockOptimisticLockConflict,
+  mockReloadAfterConflict,
+  overwriteConflictChanges,
   searchForProductAndWaitForResults,
 } from '../../helpers';
 import { checkAccessibility } from '../accessibility-utils';
@@ -604,6 +611,74 @@ test.describe('Keyword search', () => {
       await expect(
         page.getByRole('heading', { name: 'Product Grid' })
       ).toBeVisible();
+    });
+  });
+
+  test.describe('save conflict', () => {
+    const ruleSetId = '2b948868-cbe2-4d21-8b8a-0fd713516add';
+    // The save targets the loaded ruleset's own id (mockRuleSet.id), which
+    // differs from the URL id above, so match any id under the v1 path.
+    const v1Url = `*/**/api/search/merchandising/v1/*/keyword/ruleset/*`;
+    const conflictingRuleSet = {
+      ...mockRuleSet,
+      searchTerms: ['joggers', 'trainers'],
+      lastChanged: { date: '2024-10-02T09:15:00Z', user: 'Another Editor' },
+      version: 8,
+    };
+
+    test('shows the conflict modal, then overwrites with the current edit', async ({
+      page,
+    }) => {
+      await mockOptimisticLockConflict(page, {
+        url: v1Url,
+        currentEntity: conflictingRuleSet,
+        successJson: { ...mockRuleSet, version: 9 },
+      });
+
+      await page.goto(`/search/rulesets/edit/${ruleSetId}`);
+      await expect(
+        page.getByRole('heading', { name: 'Product Grid' })
+      ).toBeVisible();
+
+      await clickSaveAndConfirmReviewIfPresent(page);
+
+      await expectConflictModalVisible(page, 'keyword ruleset');
+
+      await overwriteConflictChanges(page);
+
+      await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
+    });
+
+    test('discards the current edit and reloads the other change', async ({
+      page,
+    }) => {
+      const { hasConflicted } = await mockOptimisticLockConflict(page, {
+        url: v1Url,
+        currentEntity: conflictingRuleSet,
+        successJson: mockRuleSet,
+      });
+      await mockReloadAfterConflict(page, {
+        url: `*/**/api/search/beta/merchandising/keyword/ruleset/${ruleSetId}*`,
+        before: mockRuleSet,
+        after: conflictingRuleSet,
+        hasConflicted,
+      });
+
+      await page.goto(`/search/rulesets/edit/${ruleSetId}`);
+      await expect(
+        page.getByRole('heading', { name: 'Product Grid' })
+      ).toBeVisible();
+      await expect(page.getByLabel('number of keywords')).toContainText('1');
+
+      await clickSaveAndConfirmReviewIfPresent(page);
+
+      await expectConflictModalVisible(page, 'keyword ruleset');
+
+      await discardConflictChanges(page);
+
+      await expectConflictModalHidden(page, 'keyword ruleset');
+      // Discard reloaded the editor with the other user's saved search terms.
+      await expect(page.getByLabel('number of keywords')).toContainText('2');
     });
   });
 });

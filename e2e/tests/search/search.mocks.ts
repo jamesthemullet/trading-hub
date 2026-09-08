@@ -812,6 +812,7 @@ export const mockRuleSet: MerchandisingReturnedKeywordRuleSet = {
   startDate: '2024-09-12T14:17:54Z',
   endDate: '2024-12-19T04:20:03Z',
   countryCode: 'UK_IE',
+  version: 7,
 };
 
 export const mockProducts: MerchandisingProductSearchResponse = {

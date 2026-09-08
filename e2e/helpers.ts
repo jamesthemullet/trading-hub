@@ -50,6 +50,114 @@ export const clickCreateAndConfirmReview = async (
   await reviewDialog.waitFor({ state: 'hidden' });
 };
 
+type OptimisticLockConflictConfig<T> = {
+  /** Glob matching the v1 update (PUT) endpoint for the entity under test. */
+  url: string;
+  /** Entity "someone else" saved — returned in the 409 body + on overwrite. */
+  currentEntity: T;
+  /** Body returned once the save succeeds (the overwrite PUT). */
+  successJson: T;
+};
+
+/**
+ * Simulates optimistic-locking on a v1 update endpoint: the first PUT (the
+ * user's save) returns a 409 — a `MerchandisingErrorResponse` carrying the
+ * entity someone else saved — and every later PUT (the conflict modal's
+ * "Overwrite") succeeds. Register it inside a test so it takes precedence over
+ * any endpoint stubbed in `beforeEach`.
+ *
+ * Returns `hasConflicted()` so a discard test can flip its reload GET to the
+ * other user's entity once the conflict has happened (see
+ * `mockReloadAfterConflict`).
+ */
+export const mockOptimisticLockConflict = async <T>(
+  page: Page,
+  { url, currentEntity, successJson }: OptimisticLockConflictConfig<T>
+): Promise<{ hasConflicted: () => boolean }> => {
+  let saveAttempts = 0;
+  let conflicted = false;
+  await page.route(url, async (route) => {
+    if (route.request().method() !== 'PUT') {
+      return route.fallback();
+    }
+    saveAttempts += 1;
+    if (saveAttempts === 1) {
+      conflicted = true;
+      return route.fulfill({
+        status: 409,
+        json: {
+          status: 'CONFLICT',
+          message: 'Version conflict',
+          currentEntity,
+        },
+      });
+    }
+    return route.fulfill({ status: 200, json: successJson });
+  });
+  return { hasConflicted: () => conflicted };
+};
+
+/**
+ * Discard reloads the editor, which re-fetches the entity; after a conflict the
+ * server holds the other user's version. This stubs that reload GET to serve
+ * `before` until the conflict happens and `after` once it has, so a discard
+ * test can prove the reloaded editor shows the other user's change instead of
+ * silently passing on the modal closing alone.
+ */
+export const mockReloadAfterConflict = async (
+  page: Page,
+  {
+    url,
+    before,
+    after,
+    hasConflicted,
+  }: {
+    url: string;
+    before: unknown;
+    after: unknown;
+    hasConflicted: () => boolean;
+  }
+): Promise<void> => {
+  await page.route(url, async (route) => {
+    if (route.request().method() !== 'GET') {
+      return route.fallback();
+    }
+    await route.fulfill({
+      status: 200,
+      json: hasConflicted() ? after : before,
+    });
+  });
+};
+
+const conflictHeading = (page: Page, entityLabel: string) =>
+  page.getByRole('heading', {
+    name: `This ${entityLabel} was changed by someone else`,
+  });
+
+export const expectConflictModalVisible = async (
+  page: Page,
+  entityLabel: string
+): Promise<void> => {
+  await expect(conflictHeading(page, entityLabel)).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Overwrite with my changes' })
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Discard my changes' })
+  ).toBeVisible();
+};
+
+export const expectConflictModalHidden = (
+  page: Page,
+  entityLabel: string
+): Promise<void> => expect(conflictHeading(page, entityLabel)).toBeHidden();
+
+export const overwriteConflictChanges = (page: Page): Promise<void> =>
+  page.getByRole('button', { name: 'Overwrite with my changes' }).click();
+
+export const discardConflictChanges = (page: Page): Promise<void> =>
+  page.getByRole('button', { name: 'Discard my changes' }).click();
+
 export const clickSaveAndConfirmReviewIfPresent = async (
   page: Page
 ): Promise<void> => {
