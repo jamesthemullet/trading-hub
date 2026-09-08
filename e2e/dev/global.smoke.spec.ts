@@ -32,8 +32,9 @@ test.describe('Global Ranking', () => {
 
     const responsePromise = page.waitForResponse(
       (r) =>
-        r.url().includes('/api/search/beta/merchandising/global/ruleset') &&
-        r.request().method() === 'POST'
+        /\/api\/search\/beta\/merchandising\/[^/]+\/global\/ruleset$/.test(
+          r.url()
+        ) && r.request().method() === 'POST'
     );
 
     await page.getByRole('button', { name: 'Create', exact: true }).click();
