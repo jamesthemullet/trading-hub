@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
 
 import type {
   GetGlobalRuleSetsLiteParamsCatalogueEnum,
@@ -57,7 +58,8 @@ const getMapping = (
   deleteRuleSetById: search().deleteGlobalRuleSet,
   queryRuleSetById: search().getGlobalRuleSet,
   updateRuleSetById: search().updateGlobalRuleSet,
-  newRuleSet: search().createGlobalRuleSet,
+  newRuleSet: (ruleSet) =>
+    search().createCatalogueGlobalRuleSet(catalogue, ruleSet),
   ruleSetToRow: ({ id, isEnabled, lastChanged, countryCode }) => ({
     id,
     identifier: '*',
@@ -92,10 +94,28 @@ const RuleSets = (): ReactElement => {
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
   const isCftoEnabled = useCftoFlag();
+  const router = useRouter();
   const [currentTab, setCurrentTab] = useState(0);
-  const catalogueTabs = isCftoEnabled
-    ? CATALOGUE_TABS
-    : CATALOGUE_TABS.filter((tab) => tab.catalogue !== 'CFTO');
+  const catalogueTabs = useMemo(
+    () =>
+      isCftoEnabled
+        ? CATALOGUE_TABS
+        : CATALOGUE_TABS.filter((tab) => tab.catalogue !== 'CFTO'),
+    [isCftoEnabled]
+  );
+
+  useEffect(() => {
+    if (router.isReady && isCftoEnabled && router.query.catalogue === 'CFTO') {
+      const cftoTabIndex = catalogueTabs.findIndex(
+        (tab) => tab.catalogue === 'CFTO'
+      );
+      // istanbul ignore else -- catalogueTabs always contains CFTO while isCftoEnabled is true
+      if (cftoTabIndex >= 0) {
+        setCurrentTab(cftoTabIndex);
+      }
+    }
+  }, [router.isReady, isCftoEnabled, router.query.catalogue, catalogueTabs]);
+
   const safeCurrentTab = Math.min(currentTab, catalogueTabs.length - 1);
   const activeCatalogue = catalogueTabs[safeCurrentTab].catalogue;
   const mapping = useMemo(() => getMapping(activeCatalogue), [activeCatalogue]);
@@ -119,7 +139,7 @@ const RuleSets = (): ReactElement => {
               isInline
               theme="filled"
               icon="plus-simple-white"
-              href={getNewRulesetRoute(RuleType.Global)}
+              href={`${getNewRulesetRoute(RuleType.Global)}?catalogue=${activeCatalogue}`}
               onClick={() =>
                 track({ event: `Add ${RuleType.Global} ranking rule` })
               }

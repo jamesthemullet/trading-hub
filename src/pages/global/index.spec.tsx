@@ -127,20 +127,40 @@ const server = setupServer(
       { status: 200 }
     );
   }),
-  http.post('/api/search/beta/merchandising/global/ruleset', async (ctx) => {
-    const ruleSet = (await ctx.request.json()) as object;
-    return HttpResponse.json(
-      {
-        id: MOCK_CATEGORY_ID,
-        lastChanged: {
-          date: '12/12/12',
-          user: 'me',
+  http.post(
+    '/api/search/beta/merchandising/CLOTHING_AND_HOME/global/ruleset',
+    async (ctx) => {
+      const ruleSet = (await ctx.request.json()) as object;
+      return HttpResponse.json(
+        {
+          id: MOCK_CATEGORY_ID,
+          lastChanged: {
+            date: '12/12/12',
+            user: 'me',
+          },
+          ...ruleSet,
         },
-        ...ruleSet,
-      },
-      { status: 200 }
-    );
-  })
+        { status: 200 }
+      );
+    }
+  ),
+  http.post(
+    '/api/search/beta/merchandising/CFTO/global/ruleset',
+    async (ctx) => {
+      const ruleSet = (await ctx.request.json()) as object;
+      return HttpResponse.json(
+        {
+          id: MOCK_CATEGORY_ID,
+          lastChanged: {
+            date: '12/12/12',
+            user: 'me',
+          },
+          ...ruleSet,
+        },
+        { status: 200 }
+      );
+    }
+  )
 );
 
 const mockRouter = {
@@ -308,6 +328,67 @@ describe('Index', () => {
         expect.objectContaining({ catalogue: 'CFTO' })
       );
     });
+  });
+
+  it('opens the cfto.com tab when navigated back to with a CFTO catalogue query param', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+    (useRouter as jest.Mock).mockReturnValue({
+      ...mockRouter,
+      query: { ...mockRouter.query, catalogue: 'CFTO' },
+    });
+
+    renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W'], {
+      featureFlags: { hasCfto: true },
+    });
+
+    await waitFor(() => {
+      expect(mockRefetchRuleSetList).toHaveBeenCalledWith(
+        expect.objectContaining({ catalogue: 'CFTO' })
+      );
+    });
+
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+  });
+
+  it('links the add ranking rule button to the CFTO catalogue when the cfto.com tab is selected', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+    renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W'], {
+      featureFlags: { hasCfto: true },
+    });
+
+    await user.click(screen.getByText('cfto.com'));
+
+    const addRankingRuleButton = await screen.findByRole('link', {
+      name: 'Add ranking rule',
+    });
+
+    expect(addRankingRuleButton).toHaveAttribute(
+      'href',
+      '/global/rulesets/new?catalogue=CFTO'
+    );
   });
 
   it('hides all catalogue tabs when the CFTO feature flag is disabled', () => {
@@ -577,6 +658,106 @@ describe('Index', () => {
         countryCode: 'IE',
       });
       expect(screen.getAllByText('IE only marksandspencer')[0]).toBeVisible();
+    });
+
+    it('duplicates a ruleset against the CFTO catalogue when the cfto.com tab is selected', async () => {
+      const user = userEvent.setup();
+      const mockId = 'cfto-ruleset-id';
+      jest.mocked(useRuleSet).mockReturnValue({
+        categoryRuleSets: [],
+        pagination: {
+          totalItems: 0,
+        },
+        globalRuleSets: [
+          {
+            id: mockId,
+            isEnabled: true,
+            lastChanged: {
+              user: 'user',
+              date: '2021-01-01',
+            },
+            rules: mockMerchandisingRules,
+            facets: [],
+          },
+        ],
+        refetchRuleSetList: jest.fn(),
+        setCategoryRuleSets: jest.fn(),
+        setGlobalRuleSets: jest.fn(),
+        error: '',
+        isLoading: false,
+      });
+
+      renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W'], {
+        featureFlags: { hasCfto: true },
+      });
+
+      await user.click(screen.getByText('cfto.com'));
+
+      const rulesetDropdown = await screen.findAllByTitle('More options');
+      await user.click(rulesetDropdown[0]);
+      await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', { name: 'Create a duplicate rule' })
+        ).toBeVisible();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Confirm' }));
+
+      await waitFor(() => {
+        expect(track).toHaveBeenCalledWith({
+          event: 'Duplicate global ruleset',
+        });
+      });
+    });
+
+    it('duplicates a ruleset against the default catalogue', async () => {
+      const user = userEvent.setup();
+      const mockId = 'default-ruleset-id';
+      jest.mocked(useRuleSet).mockReturnValue({
+        categoryRuleSets: [],
+        pagination: {
+          totalItems: 0,
+        },
+        globalRuleSets: [
+          {
+            id: mockId,
+            isEnabled: true,
+            lastChanged: {
+              user: 'user',
+              date: '2021-01-01',
+            },
+            rules: mockMerchandisingRules,
+            facets: [],
+          },
+        ],
+        refetchRuleSetList: jest.fn(),
+        setCategoryRuleSets: jest.fn(),
+        setGlobalRuleSets: jest.fn(),
+        error: '',
+        isLoading: false,
+      });
+
+      renderWithProviders(<RuleSets />);
+
+      const rulesetDropdown = await screen.findAllByTitle('More options');
+      await user.click(rulesetDropdown[0]);
+      await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', { name: 'Create a duplicate rule' })
+        ).toBeVisible();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Confirm' }));
+
+      await waitFor(() => {
+        expect(track).toHaveBeenCalledWith({
+          event: 'Duplicate global ruleset',
+        });
+      });
     });
   });
 });

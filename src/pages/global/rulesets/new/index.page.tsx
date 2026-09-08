@@ -13,13 +13,17 @@ import Head from 'next/head';
 const NewRuleSetPage = (): ReactElement => {
   const { createGlobalRuleSet, error } = useGlobalRuleSetCreate();
   const router = useRouter();
+  const catalogue =
+    router.query.catalogue?.toString() === 'CFTO'
+      ? 'CFTO'
+      : 'CLOTHING_AND_HOME';
 
   const createNewGlobalRuleSet = async (args: MerchandisingRuleSet) => {
-    const resp = await createGlobalRuleSet(args);
+    const resp = await createGlobalRuleSet(args, catalogue);
 
     // istanbul ignore else
     if (resp) {
-      return router.push('/global');
+      return router.push(`/global?catalogue=${catalogue}`);
     }
   };
 
@@ -46,7 +50,7 @@ const NewRuleSetPage = (): ReactElement => {
       <Ruleset
         isEnabled
         onCreateGlobalRuleset={createNewGlobalRuleSet}
-        onCancel={() => router.push('/global')}
+        onCancel={() => router.push(`/global?catalogue=${catalogue}`)}
         rulesetType="global"
         isWriteEnabled={hasWriteAccess}
       />

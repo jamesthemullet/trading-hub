@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import type {
+  CreateCatalogueGlobalRuleSetParamsEnum,
   MerchandisingReturnedGlobalRuleSet,
   MerchandisingRuleSet,
 } from '@/libs/api';
@@ -9,20 +10,24 @@ import { handleError } from '@/libs/hooks/utils/error';
 
 export const useGlobalRuleSetCreate = (): {
   createGlobalRuleSet: (
-    params: MerchandisingRuleSet
+    params: MerchandisingRuleSet,
+    catalogue: CreateCatalogueGlobalRuleSetParamsEnum
   ) => Promise<MerchandisingReturnedGlobalRuleSet | undefined>;
   error: string;
 } => {
   const [error, setError] = useState('');
 
   const createGlobalRuleSet = useCallback(
-    async ({
-      rules,
-      isEnabled,
-      startDate,
-      endDate,
-      countryCode,
-    }: MerchandisingRuleSet) => {
+    async (
+      {
+        rules,
+        isEnabled,
+        startDate,
+        endDate,
+        countryCode,
+      }: MerchandisingRuleSet,
+      catalogue: CreateCatalogueGlobalRuleSetParamsEnum
+    ) => {
       setError('');
 
       try {
@@ -34,7 +39,10 @@ export const useGlobalRuleSetCreate = (): {
           endDate,
           countryCode,
         };
-        const response = await search().createGlobalRuleSet(body);
+        const response = await search().createCatalogueGlobalRuleSet(
+          catalogue,
+          body
+        );
         return response.data;
       } catch (error) {
         setError(handleError(error));

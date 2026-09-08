@@ -20,6 +20,7 @@ jest.mock('@/libs/hooks', () => ({
 describe('Global Rulesets New', () => {
   const mockRouter = {
     push: jest.fn(),
+    query: {},
     events: {
       on: jest.fn(),
       off: jest.fn(),
@@ -69,7 +70,25 @@ describe('Global Rulesets New', () => {
 
     expect(screen.queryByText('Close without saving')).not.toBeInTheDocument();
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/global');
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      '/global?catalogue=CLOTHING_AND_HOME'
+    );
+  });
+
+  it('cancels new ruleset creation and returns to the cfto tab when open', async () => {
+    (useRouter as jest.Mock).mockReturnValue({
+      ...mockRouter,
+      query: { catalogue: 'CFTO' },
+    });
+    renderWithProviders(<Page />);
+
+    const cancel = await screen.findByText('Cancel');
+
+    act(() => {
+      cancel.click();
+    });
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/global?catalogue=CFTO');
   });
 
   it('should handle save action and create new global ruleset', async () => {
@@ -87,7 +106,32 @@ describe('Global Rulesets New', () => {
     expect(createGlobalRuleSet).toHaveBeenCalled();
 
     await waitFor(() => {
-      expect(mockRouter.push).toHaveBeenCalledWith('/global');
+      expect(mockRouter.push).toHaveBeenCalledWith(
+        '/global?catalogue=CLOTHING_AND_HOME'
+      );
+    });
+  });
+
+  it('creates the ruleset with the CFTO catalogue when the CFTO tab was open', async () => {
+    const user = userEvent.setup();
+    const createGlobalRuleSet = jest.fn().mockResolvedValue({});
+    jest.mocked(useGlobalRuleSetCreate).mockReturnValue({
+      createGlobalRuleSet,
+      error: '',
+    });
+    (useRouter as jest.Mock).mockReturnValue({
+      ...mockRouter,
+      query: { catalogue: 'CFTO' },
+    });
+    renderWithProviders(<Page />);
+
+    const createButton = screen.getByRole('button', { name: /create/i });
+    await user.click(createButton);
+
+    expect(createGlobalRuleSet).toHaveBeenCalledWith(expect.anything(), 'CFTO');
+
+    await waitFor(() => {
+      expect(mockRouter.push).toHaveBeenCalledWith('/global?catalogue=CFTO');
     });
   });
 });

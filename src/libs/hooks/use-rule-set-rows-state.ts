@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import type { MerchandisingPagination } from '@/libs/api';
 import type {
@@ -53,9 +53,15 @@ export const useRuleSetRowsState = <
   });
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  const latestRequestId = useRef(0);
 
   const getRows = useCallback<GetRowsFn>(
     (currentPage, currentPageSize, query, countryCode, havingRules) => {
+      // Mutating a ref's `.current` is the standard way to track request
+      // ordering without triggering a re-render (unlike setState).
+      // eslint-disable-next-line functional/immutable-data
+      latestRequestId.current += 1;
+      const requestId = latestRequestId.current;
       const asyncCall = async () => {
         setIsLoading(true);
         setError('');
@@ -69,6 +75,10 @@ export const useRuleSetRowsState = <
               ...(havingRules !== undefined ? { havingRules } : {}),
             })
           );
+
+          if (requestId !== latestRequestId.current) {
+            return;
+          }
 
           // istanbul ignore else
           if (error) {
@@ -95,7 +105,9 @@ export const useRuleSetRowsState = <
               ),
           });
         } finally {
-          setIsLoading(false);
+          if (requestId === latestRequestId.current) {
+            setIsLoading(false);
+          }
         }
       };
       return asyncCall();

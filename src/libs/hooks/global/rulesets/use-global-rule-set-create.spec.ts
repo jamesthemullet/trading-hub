@@ -10,7 +10,14 @@ const getRuleSetCreateMock = jest.fn();
 
 const baseUrl = 'http://localhost';
 const handlers = [
-  http.post(`${baseUrl}/search/beta/merchandising/global/ruleset`, () => {
+  http.post(
+    `${baseUrl}/search/beta/merchandising/CLOTHING_AND_HOME/global/ruleset`,
+    () => {
+      const { data, status } = getRuleSetCreateMock();
+      return HttpResponse.json(data, status);
+    }
+  ),
+  http.post(`${baseUrl}/search/beta/merchandising/CFTO/global/ruleset`, () => {
     const { data, status } = getRuleSetCreateMock();
     return HttpResponse.json(data, status);
   }),
@@ -57,7 +64,10 @@ describe('useGlobalRuleSetCreate', () => {
     const {
       result: { current },
     } = renderHook(() => useGlobalRuleSetCreate());
-    const resp = await current.createGlobalRuleSet(mockProps);
+    const resp = await current.createGlobalRuleSet(
+      mockProps,
+      'CLOTHING_AND_HOME'
+    );
 
     expect(resp).toEqual(mockResponse);
   });
@@ -70,9 +80,23 @@ describe('useGlobalRuleSetCreate', () => {
     const { result } = renderHook(() => useGlobalRuleSetCreate());
 
     await act(async () => {
-      await result.current.createGlobalRuleSet(mockProps);
+      await result.current.createGlobalRuleSet(mockProps, 'CLOTHING_AND_HOME');
     });
 
     expect(result.current.error).toBe('Error Validation Issues Bad Request');
+  });
+
+  it('should create a new ruleset against the CFTO catalogue when specified', async () => {
+    const mockResponse = { id: 'foo' };
+    getRuleSetCreateMock.mockReturnValueOnce({
+      data: mockResponse,
+      status: { status: 200 },
+    });
+    const {
+      result: { current },
+    } = renderHook(() => useGlobalRuleSetCreate());
+    const resp = await current.createGlobalRuleSet(mockProps, 'CFTO');
+
+    expect(resp).toEqual(mockResponse);
   });
 });
