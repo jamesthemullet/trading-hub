@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 
 import type { MerchandisingProduct } from '@/libs/api';
+import { renderWithProviders } from '@/test/render-with-providers';
 
 import { VisualEditor } from './visual-editor';
 
@@ -54,7 +55,7 @@ describe('VisualEditor', () => {
   });
 
   it('should render products', () => {
-    render(
+    renderWithProviders(
       <VisualEditor
         products={products}
         dispatch={jest.fn()}
@@ -67,5 +68,20 @@ describe('VisualEditor', () => {
     expect(
       screen.getByText(`${product1Brand} ${product1Title}`)
     ).toBeInTheDocument();
+  });
+
+  it('should mark selected products as selected', () => {
+    renderWithProviders(
+      <VisualEditor
+        products={products}
+        dispatch={jest.fn()}
+        onSelectProduct={jest.fn()}
+        isSelectionDisabled={false}
+        selectedProducts={[product1Id]}
+      />
+    );
+
+    expect(screen.getByLabelText(`Select ${product1Title}`)).toBeChecked();
+    expect(screen.getByLabelText(`Select ${product2Title}`)).not.toBeChecked();
   });
 });

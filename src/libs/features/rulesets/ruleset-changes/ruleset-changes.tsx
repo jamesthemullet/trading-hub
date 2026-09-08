@@ -1,4 +1,5 @@
 import type { Dispatch, ReactElement } from 'react';
+import { useMemo } from 'react';
 import { Skeleton } from '@mantine/core';
 
 import type {
@@ -35,6 +36,7 @@ const ProductsLoader = ({
   onSelectAll,
   onSelectProduct,
   selectedProducts,
+  selectedProductIds,
   isSelectionDisabled,
 }: {
   changeType: 'boost' | 'bury' | 'pin' | 'block';
@@ -54,6 +56,7 @@ const ProductsLoader = ({
     isSelected: boolean;
   }) => void;
   selectedProducts: string[];
+  selectedProductIds: ReadonlySet<string>;
   isSelectionDisabled: boolean;
 }) => {
   const {
@@ -84,7 +87,7 @@ const ProductsLoader = ({
           isPinnable={isPinnable}
           pinnedProductsCount={pinnedProductsCount}
           dispatch={dispatch}
-          isSelected={selectedProducts.includes(product.id)}
+          isSelected={selectedProductIds.has(product.id)}
           isSelectionDisabled={isSelectionDisabled}
           onSelectProduct={onSelectProduct}
         />
@@ -110,7 +113,7 @@ const ProductsLoader = ({
         dispatch={dispatch}
         isProductNumberEnabled
         changeType={changeType}
-        isSelected={selectedProducts.includes(id)}
+        isSelected={selectedProductIds.has(id)}
         isSelectionDisabled={isSelectionDisabled}
         onSelectProduct={onSelectProduct}
       />
@@ -227,18 +230,22 @@ export const RulesetChanges = ({
 
   const hasAttributeChanges = countOfAttributeChanges > 0;
 
+  const selectedProductIds = useMemo(
+    () => new Set(selectedProducts),
+    [selectedProducts]
+  );
   const hasSelectedProducts = selectedProducts.length > 0;
   const hasSelectedBlockedProduct = merchandisingRules.blockedProducts.some(
-    (p) => selectedProducts.includes(p.id)
+    (p) => selectedProductIds.has(p.id)
   );
   const hasSelectedBoostededProduct = merchandisingRules.boosts.product.some(
-    (p) => selectedProducts.includes(p.id)
+    (p) => selectedProductIds.has(p.id)
   );
   const hasSelectedBuriedProduct = merchandisingRules.buries.product.some((p) =>
-    selectedProducts.includes(p.id)
+    selectedProductIds.has(p.id)
   );
   const hasSelectedPinnedProduct = merchandisingRules.pinnedProducts.some((p) =>
-    selectedProducts.includes(p.id)
+    selectedProductIds.has(p.id)
   );
 
   return (
@@ -328,6 +335,7 @@ export const RulesetChanges = ({
             (hasSelectedProducts && !hasSelectedBlockedProduct)
           }
           selectedProducts={selectedProducts}
+          selectedProductIds={selectedProductIds}
           onSelectProduct={onSelectProduct}
           onSelectAll={onSelectAll}
         />
@@ -348,6 +356,7 @@ export const RulesetChanges = ({
             (hasSelectedProducts && !hasSelectedPinnedProduct)
           }
           selectedProducts={selectedProducts}
+          selectedProductIds={selectedProductIds}
           onSelectProduct={onSelectProduct}
           onSelectAll={onSelectAll}
         />
@@ -368,6 +377,7 @@ export const RulesetChanges = ({
             (hasSelectedProducts && !hasSelectedBoostededProduct)
           }
           selectedProducts={selectedProducts}
+          selectedProductIds={selectedProductIds}
           onSelectProduct={onSelectProduct}
           onSelectAll={onSelectAll}
         />
@@ -388,6 +398,7 @@ export const RulesetChanges = ({
             (hasSelectedProducts && !hasSelectedBuriedProduct)
           }
           selectedProducts={selectedProducts}
+          selectedProductIds={selectedProductIds}
           onSelectProduct={onSelectProduct}
           onSelectAll={onSelectAll}
         />

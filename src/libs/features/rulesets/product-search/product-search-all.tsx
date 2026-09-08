@@ -1,5 +1,5 @@
 import type { Dispatch, ReactElement } from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type {
   MerchandisingCountryCode,
@@ -56,6 +56,10 @@ export const ProductSearchAll = ({
   const [productSearchTerm, setProductSearchTerm] = useState('');
   const [products, setSearchProducts] = useState<ProductType[]>([]);
   const { searchForProduct } = useCategoryProductSearch();
+  const selectedProductIds = useMemo(
+    () => new Set(selectedProducts),
+    [selectedProducts]
+  );
 
   const fetchData = useCallback(async () => {
     const { products } = await searchForProduct({
@@ -148,7 +152,7 @@ export const ProductSearchAll = ({
       >
         {products.map((product, index) => {
           const id = `${product.id}-${index}`;
-          const isSelected = selectedProducts.includes(product.id);
+          const isSelected = selectedProductIds.has(product.id);
           return (
             <Product
               key={id}

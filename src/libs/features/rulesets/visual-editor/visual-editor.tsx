@@ -1,4 +1,5 @@
 import type { Dispatch, ReactElement } from 'react';
+import { useMemo } from 'react';
 
 import type { MerchandisingProduct as ProductType } from '@/libs/api';
 import type { RuleSetActions } from '@/libs/components/types';
@@ -32,6 +33,10 @@ export const VisualEditor = ({
   const pinnedProductsCount = products.filter(
     (product) => product.metadata?.isPinned
   ).length;
+  const selectedProductIds = useMemo(
+    () => new Set(selectedProducts),
+    [selectedProducts]
+  );
 
   return (
     <section className={styles.layout}>
@@ -43,7 +48,7 @@ export const VisualEditor = ({
             isPinnable
             dispatch={dispatch}
             onSelectProduct={onSelectProduct}
-            isSelected={selectedProducts.includes(product.id)}
+            isSelected={selectedProductIds.has(product.id)}
             isSelectionDisabled={isSelectionDisabled}
             pinnedProductsCount={pinnedProductsCount}
             hasSupplementaryInfo
