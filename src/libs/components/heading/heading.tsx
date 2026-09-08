@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 import { Breadcrumb } from '../breadcrumb/breadcrumb';
 import { Typography } from '../typography/typography';
@@ -7,9 +7,14 @@ import styles from './heading.module.css';
 type Props = {
   breadcrumbs: string[];
   title?: string;
+  actions?: ReactNode;
 };
 
-export const Heading = ({ breadcrumbs, title }: Props): ReactElement => {
+export const Heading = ({
+  breadcrumbs,
+  title,
+  actions,
+}: Props): ReactElement => {
   return (
     <div>
       <div className={styles.headingSpacer} />
@@ -32,6 +37,7 @@ export const Heading = ({ breadcrumbs, title }: Props): ReactElement => {
           <Typography variant="titleMedium" isStrong as="h1">
             {title}
           </Typography>
+          {actions}
         </div>
       )}
     </div>

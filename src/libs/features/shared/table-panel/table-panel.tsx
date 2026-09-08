@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 
 import type { MerchandisingCountryCode } from '@/libs/api';
 import {
-  Button,
   CombinedDropdown,
   DropdownVariant,
   ErrorMessage,
@@ -14,15 +13,8 @@ import {
 import { useFavouriteRulesetsFlag } from '@/libs/components/feature-flag/feature-flag';
 import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import type { RuleSetMapping, RuleTypeFilter } from '@/libs/components/types';
-import {
-  getNewFacetRoute,
-  getNewRulesetRoute,
-  ROUTES,
-} from '@/libs/constants/routes';
-import type { FacetType } from '@/libs/constants/rule-types';
 import { RuleType } from '@/libs/constants/rule-types';
 import { DataTable } from '@/libs/containers/shared/table/datatable';
-import { useDraftRuleset } from '@/libs/hooks';
 import {
   getStoredFavourites,
   removeFavourite,
@@ -36,7 +28,6 @@ import {
 } from '@/libs/hooks/use-rows-per-page-setting';
 import { useRuleSetRowsState } from '@/libs/hooks/use-rule-set-rows-state';
 import type { DiffItem } from '@/libs/hooks/use-ruleset-diff';
-import { track } from '@/libs/hooks/utils/analytics';
 import { DEBOUNCE_DELAY_MS } from '@/libs/hooks/utils/constants';
 import { createDiffItem } from '@/libs/hooks/utils/diff';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
@@ -53,22 +44,26 @@ const isPageSize = (value: number): value is PageSize =>
   (pageSizes as number[]).includes(value);
 
 export const TablePanel = <
-  A extends { pagination: { totalItems?: number } },
-  T,
-  N extends { isEnabled: boolean },
+  RuleSetListResponse extends { pagination: { totalItems?: number } },
+  ReturnedRuleSet extends RuleSetListItem,
+  RuleSetPayload extends { isEnabled: boolean },
+  RuleSetListItem = ReturnedRuleSet,
 >({
   basePath,
   headings,
   mapping,
   ruleType,
-  facetType,
   isWriteEnabled,
 }: {
   basePath: string;
   headings: string[];
-  mapping: RuleSetMapping<A, T, N>;
+  mapping: RuleSetMapping<
+    RuleSetListResponse,
+    ReturnedRuleSet,
+    RuleSetPayload,
+    RuleSetListItem
+  >;
   ruleType: RuleType;
-  facetType?: FacetType;
   isWriteEnabled: boolean;
 }): ReactElement => {
   const {
@@ -93,8 +88,6 @@ export const TablePanel = <
     MerchandisingCountryCode | undefined
   >();
   const [filterRules, setFilterRules] = useState<RuleTypeFilter | undefined>();
-
-  const { clearDraft } = useDraftRuleset();
 
   const isFavouriteRulesetsEnabled = useFavouriteRulesetsFlag();
   const [favouriteIds, setFavouriteIds] = useState<string[]>([]);
@@ -216,73 +209,6 @@ export const TablePanel = <
             onRuleTypeChange={setFilterRules}
             ariaLabel="Filter by rule type"
           />
-        )}
-
-        {isWriteEnabled && (
-          <>
-            {(ruleType === RuleType.CategoryRanking ||
-              ruleType === RuleType.SearchRanking) &&
-              facetType && (
-                <div className={styles.buttonGroup}>
-                  <Button
-                    as="a"
-                    isInline
-                    theme="outlined"
-                    icon="plus-simple-green"
-                    href={getNewFacetRoute(facetType)}
-                    onClick={() => {
-                      track({ event: `Add ${ruleType} facet rule` });
-                      clearDraft();
-                    }}
-                  >
-                    Add facet rule
-                  </Button>
-
-                  <Button
-                    as="a"
-                    isInline
-                    theme="filled"
-                    icon="plus-simple-white"
-                    href={getNewRulesetRoute(ruleType)}
-                    onClick={() =>
-                      track({ event: `Add ${ruleType} ranking rule` })
-                    }
-                  >
-                    Add ranking rule
-                  </Button>
-                </div>
-              )}
-            {ruleType === RuleType.Redirect && (
-              <div className={styles.buttonGroup}>
-                <Button
-                  as="a"
-                  isInline
-                  theme="filled"
-                  icon="plus-simple-white"
-                  href={ROUTES.SEARCH.REDIRECTS.NEW}
-                  onClick={() => track({ event: 'Add redirect rule' })}
-                >
-                  Add redirect rule
-                </Button>
-              </div>
-            )}
-            {ruleType === RuleType.Global && (
-              <div className={styles.buttonGroup}>
-                <Button
-                  as="a"
-                  isInline
-                  theme="filled"
-                  icon="plus-simple-white"
-                  href={getNewRulesetRoute(ruleType)}
-                  onClick={() =>
-                    track({ event: `Add ${ruleType} ranking rule` })
-                  }
-                >
-                  Add ranking rule
-                </Button>
-              </div>
-            )}
-          </>
         )}
       </div>
 

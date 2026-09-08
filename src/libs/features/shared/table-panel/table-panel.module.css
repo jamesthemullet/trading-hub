@@ -20,10 +20,3 @@
   max-width: 100%;
   align-items: center;
 }
-
-.buttonGroup {
-  display: flex;
-  margin-left: auto;
-  gap: var(--mns-spacing-2);
-  justify-content: end;
-}

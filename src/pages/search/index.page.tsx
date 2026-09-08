@@ -6,15 +6,23 @@ import type {
   MerchandisingReturnedKeywordRuleSets,
 } from '@/libs/api';
 import { search } from '@/libs/api';
-import { Heading } from '@/libs/components';
+import { Button, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import type { RuleSetMapping } from '@/libs/components/types';
-import { ROUTES } from '@/libs/constants/routes';
+import {
+  getNewFacetRoute,
+  getNewRulesetRoute,
+  ROUTES,
+} from '@/libs/constants/routes';
 import { FacetType, RuleType } from '@/libs/constants/rule-types';
 import { TablePanel } from '@/libs/features';
 import { useAccess } from '@/libs/hooks/use-access';
+import { useDraftRuleset } from '@/libs/hooks/use-draft-ruleset';
+import { track } from '@/libs/hooks/utils/analytics';
 
 import Head from 'next/head';
+
+import styles from './index.module.css';
 
 const mapping: RuleSetMapping<
   MerchandisingReturnedKeywordRuleSets,
@@ -72,6 +80,7 @@ const SearchRuleSets = (): ReactElement => {
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } =
     useAccess('Search');
+  const { clearDraft } = useDraftRuleset();
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -86,6 +95,38 @@ const SearchRuleSets = (): ReactElement => {
       <Heading
         breadcrumbs={['Search & Merchandising', 'Site search', 'Search']}
         title="Search"
+        actions={
+          hasWriteAccess && (
+            <div className={styles.buttonGroup}>
+              <Button
+                as="a"
+                isInline
+                theme="outlined"
+                icon="plus-simple-green"
+                href={getNewFacetRoute(FacetType.Search)}
+                onClick={() => {
+                  track({ event: `Add ${RuleType.SearchRanking} facet rule` });
+                  clearDraft();
+                }}
+              >
+                Add facet rule
+              </Button>
+
+              <Button
+                as="a"
+                isInline
+                theme="filled"
+                icon="plus-simple-white"
+                href={getNewRulesetRoute(RuleType.SearchRanking)}
+                onClick={() =>
+                  track({ event: `Add ${RuleType.SearchRanking} ranking rule` })
+                }
+              >
+                Add ranking rule
+              </Button>
+            </div>
+          )
+        }
       />
 
       <TablePanel
@@ -93,7 +134,6 @@ const SearchRuleSets = (): ReactElement => {
         headings={headings}
         mapping={mapping}
         ruleType={RuleType.SearchRanking}
-        facetType={FacetType.Search}
         isWriteEnabled={hasWriteAccess}
       />
     </>

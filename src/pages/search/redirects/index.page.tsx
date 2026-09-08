@@ -6,13 +6,14 @@ import type {
   MerchandisingReturnedKeywordRedirects,
 } from '@/libs/api';
 import { search } from '@/libs/api';
-import { Heading } from '@/libs/components';
+import { Button, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import type { RuleSetMapping } from '@/libs/components/types';
 import { ROUTES } from '@/libs/constants/routes';
 import { RuleType } from '@/libs/constants/rule-types';
 import { TablePanel } from '@/libs/features';
 import { useAccess } from '@/libs/hooks/use-access';
+import { track } from '@/libs/hooks/utils/analytics';
 
 import Head from 'next/head';
 
@@ -85,6 +86,20 @@ const RedirectRuleSets = (): ReactElement => {
       <Heading
         breadcrumbs={['Search & Merchandising', 'Site search', 'Redirects']}
         title="Keyword Redirect"
+        actions={
+          hasWriteAccess && (
+            <Button
+              as="a"
+              isInline
+              theme="filled"
+              icon="plus-simple-white"
+              href={ROUTES.SEARCH.REDIRECTS.NEW}
+              onClick={() => track({ event: 'Add redirect rule' })}
+            >
+              Add redirect rule
+            </Button>
+          )
+        }
       />
 
       <TablePanel

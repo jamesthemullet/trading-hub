@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 import { http, HttpResponse } from 'msw';
@@ -8,6 +8,7 @@ import type {
   MerchandisingKeywordRuleSet,
   MerchandisingReturnedKeywordRuleSet,
 } from '@/libs/api';
+import { track } from '@/libs/hooks/utils/analytics';
 import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -25,6 +26,10 @@ const useSearchRulesetList = jest.fn();
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
+}));
+
+jest.mock('@/libs/hooks/utils/analytics', () => ({
+  track: jest.fn(),
 }));
 
 const server = setupServer(
@@ -160,6 +165,87 @@ describe('Search Rulesets', () => {
         screen.getByRole('heading', { name: 'Search', level: 1 })
       ).toBeVisible();
     });
+  });
+
+  it('renders the add ranking rule button next to the title and tracks clicks', async () => {
+    jest.mocked(useSearchRulesetList).mockReturnValue({
+      ruleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      error: '',
+      refetchRuleSetList: jest.fn(),
+    });
+    renderWithProviders(<RuleSets />);
+
+    const addRankingRuleButton = await screen.findByRole('link', {
+      name: 'Add ranking rule',
+    });
+    expect(addRankingRuleButton).toBeVisible();
+
+    addRankingRuleButton.addEventListener('click', (event) =>
+      event.preventDefault()
+    );
+
+    act(() => {
+      addRankingRuleButton.click();
+    });
+
+    expect(track).toHaveBeenCalledWith({
+      event: 'Add searchRanking ranking rule',
+    });
+  });
+
+  it('renders the add facet rule button next to the title and tracks clicks', async () => {
+    jest.mocked(useSearchRulesetList).mockReturnValue({
+      ruleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      error: '',
+      refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
+    });
+    renderWithProviders(<RuleSets />);
+
+    const addFacetRuleButton = await screen.findByRole('link', {
+      name: 'Add facet rule',
+    });
+    expect(addFacetRuleButton).toBeVisible();
+
+    addFacetRuleButton.addEventListener('click', (event) =>
+      event.preventDefault()
+    );
+
+    act(() => {
+      addFacetRuleButton.click();
+    });
+
+    expect(track).toHaveBeenCalledWith({
+      event: 'Add searchRanking facet rule',
+    });
+  });
+
+  it('hides the add ranking rule button when the user lacks write access', async () => {
+    jest.mocked(useSearchRulesetList).mockReturnValue({
+      ruleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      error: '',
+      refetchRuleSetList: () => jest.fn,
+      setRuleSets: jest.fn(),
+    });
+    renderWithProviders(<RuleSets />, ['Search.R'], {
+      featureFlags: { hasAuthorization: true },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Search' })).toBeVisible();
+    });
+    expect(
+      screen.queryByRole('link', { name: 'Add ranking rule' })
+    ).not.toBeInTheDocument();
   });
 
   it('should render the access denied page', async () => {

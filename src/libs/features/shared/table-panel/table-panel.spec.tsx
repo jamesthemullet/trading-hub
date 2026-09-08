@@ -1,4 +1,3 @@
-import { act } from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
@@ -7,8 +6,7 @@ import type {
   MerchandisingReturnedCategoryRuleSet,
   MerchandisingReturnedCategoryRuleSets,
 } from '@/libs/api';
-import { FacetType, RuleType } from '@/libs/constants/rule-types';
-import { useDraftRuleset } from '@/libs/hooks';
+import { RuleType } from '@/libs/constants/rule-types';
 import {
   addFavourite,
   getStoredFavourites,
@@ -20,10 +18,6 @@ import { TablePanel } from './table-panel';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
-}));
-jest.mock('@/libs/hooks', () => ({
-  ...jest.requireActual('@/libs/hooks'),
-  useDraftRuleset: jest.fn(),
 }));
 jest.mock('@/libs/hooks/utils/analytics', () => ({
   ...jest.requireActual('@/libs/hooks/utils/analytics'),
@@ -132,14 +126,11 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-const mockClearDraft = jest.fn();
-
 const defaultProps = {
   basePath: '/global',
   headings,
   mapping: mappingMock,
   ruleType: RuleType.Global,
-  facetType: FacetType.Global,
   isWriteEnabled: true,
 } as const;
 
@@ -156,13 +147,6 @@ describe('TablePanel', () => {
       },
       status: 200,
     });
-
-    jest.mocked(useDraftRuleset).mockReturnValue({
-      saveDraft: jest.fn(),
-      getDraft: jest.fn(() => null),
-      clearDraft: mockClearDraft,
-      isDraftRuleset: jest.fn(),
-    });
   });
 
   afterEach(() => {
@@ -170,22 +154,15 @@ describe('TablePanel', () => {
   });
 
   it('should render the component', async () => {
-    renderWithProviders(<TablePanel {...defaultProps} basePath="/category" />);
-    await waitFor(() => {
-      expect(screen.getByText('Add ranking rule')).toBeInTheDocument();
-    });
-  });
-
-  it('should render the component with no access', async () => {
     renderWithProviders(
-      <TablePanel {...defaultProps} isWriteEnabled={false} />,
-      [],
-      {
-        featureFlags: { hasAuthorization: true },
-      }
+      <TablePanel
+        {...defaultProps}
+        basePath="/category"
+        ruleType={RuleType.CategoryRanking}
+      />
     );
     await waitFor(() => {
-      expect(screen.queryByText('Add ranking rule')).not.toBeInTheDocument();
+      expect(screen.getByPlaceholderText(/Search\.\.\./i)).toBeVisible();
     });
   });
 
@@ -204,89 +181,6 @@ describe('TablePanel', () => {
           'Error whilst retrieving ruleset: "Error Failed to fetch 500"'
         )
       ).toBeVisible();
-    });
-  });
-
-  describe('tracking', () => {
-    beforeEach(() => {
-      jest.spyOn(console, 'error').mockImplementation(jest.fn());
-    });
-
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should track creating a new category ranking rule', async () => {
-      renderWithProviders(
-        <TablePanel
-          {...defaultProps}
-          basePath="/category"
-          ruleType={RuleType.CategoryRanking}
-          facetType={FacetType.Category}
-        />
-      );
-
-      const createButton = await screen.findByText('Add ranking rule');
-      act(() => {
-        createButton.click();
-      });
-
-      expect(track).toHaveBeenCalledWith({
-        event: 'Add categoryRanking ranking rule',
-      });
-    });
-
-    it('should track creating a new search facet rule', async () => {
-      renderWithProviders(
-        <TablePanel
-          {...defaultProps}
-          basePath="/search"
-          ruleType={RuleType.SearchRanking}
-          facetType={FacetType.Search}
-        />
-      );
-
-      const createButton = await screen.findByText('Add facet rule');
-      act(() => {
-        createButton.click();
-      });
-
-      expect(track).toHaveBeenCalledWith({
-        event: 'Add searchRanking facet rule',
-      });
-
-      expect(mockClearDraft).toHaveBeenCalled();
-    });
-
-    it('should track creating a new redirect rule', async () => {
-      renderWithProviders(
-        <TablePanel
-          isWriteEnabled
-          basePath="/search"
-          headings={headings}
-          mapping={mappingMock}
-          ruleType={RuleType.Redirect}
-        />
-      );
-
-      const createButton = await screen.findByText('Add redirect rule');
-      act(() => {
-        createButton.click();
-      });
-      expect(track).toHaveBeenCalledWith({ event: 'Add redirect rule' });
-    });
-
-    it('should track creating a new global ranking rule', async () => {
-      renderWithProviders(<TablePanel {...defaultProps} />);
-
-      const createButton = await screen.findByText('Add ranking rule');
-      act(() => {
-        createButton.click();
-      });
-
-      expect(track).toHaveBeenCalledWith({
-        event: 'Add global ranking rule',
-      });
     });
   });
 
@@ -318,7 +212,6 @@ describe('TablePanel', () => {
           {...defaultProps}
           basePath="/category"
           ruleType={RuleType.CategoryRanking}
-          facetType={FacetType.Category}
         />
       );
 
@@ -877,7 +770,6 @@ describe('TablePanel', () => {
           {...defaultProps}
           basePath="/category"
           ruleType={RuleType.CategoryRanking}
-          facetType={FacetType.Category}
         />
       );
 
@@ -944,7 +836,6 @@ describe('TablePanel', () => {
           {...defaultProps}
           basePath="/category"
           ruleType={RuleType.CategoryRanking}
-          facetType={FacetType.Category}
         />
       );
 
@@ -1018,7 +909,6 @@ describe('TablePanel', () => {
           {...defaultProps}
           basePath="/category"
           ruleType={RuleType.CategoryRanking}
-          facetType={FacetType.Category}
         />
       );
 

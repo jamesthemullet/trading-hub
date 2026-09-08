@@ -65,4 +65,25 @@ describe('Tabs', () => {
     const wrapper = container.querySelector('[class*="tabsWrapper"]');
     expect(wrapper).toHaveAttribute('data-tabs', '2');
   });
+
+  it('should render icons next to a tab when provided', () => {
+    const { container } = render(
+      <Tabs
+        tabs={[
+          {
+            title: 'marksandspencer.com',
+            icons: [
+              '/trading-hub/asset/icon-uk-flag.svg',
+              '/trading-hub/asset/icon-ie-flag.svg',
+            ],
+          },
+          { title: 'cfto.com' },
+        ]}
+        currentTab={0}
+        onTabChange={jest.fn()}
+      />
+    );
+
+    expect(container.querySelectorAll('img')).toHaveLength(2);
+  });
 });

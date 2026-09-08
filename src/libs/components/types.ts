@@ -162,20 +162,45 @@ export type DeleteRowFn = (row: { id: string }) => Promise<boolean>;
 export type DuplicateRowFn = (id: string) => Promise<void>;
 export type ToggleRowFn = (row: { id: string }) => Promise<void>;
 
-export type RuleSetMapping<A, T, N> = {
-  getEmptyRuleSet?: () => N;
+/**
+ * Adapts a rule-set API (category/keyword/global/redirect) to the shared
+ * table-panel + rows-state hooks. Each rule-set type plugs in its own
+ * concrete types for the 4 generics below - this type itself has no
+ * knowledge of what a "ruleset" is, only how the pieces relate.
+ *
+ * - `RuleSetListResponse` - the paginated response returned by the list
+ *   endpoint, e.g. `MerchandisingReturnedGlobalRuleSetsLite`.
+ * - `ReturnedRuleSet` - a single ruleset as returned by the detail/create/
+ *   update endpoints, e.g. `MerchandisingReturnedGlobalRuleSet`.
+ * - `RuleSetPayload` - the request body shape sent to create/update, e.g.
+ *   `MerchandisingRuleSet`.
+ * - `RuleSetListItem` - the shape of each item inside `RuleSetListResponse`,
+ *   consumed by `ruleSetToRow`. Usually identical to `ReturnedRuleSet` (and
+ *   defaults to it), but some list endpoints (e.g. global rulesets) return a
+ *   slimmer "lite" item than the full detail type, so callers can override
+ *   it, e.g. `MerchandisingReturnedGlobalRuleSetLite`.
+ */
+export type RuleSetMapping<
+  RuleSetListResponse,
+  ReturnedRuleSet extends RuleSetListItem,
+  RuleSetPayload,
+  RuleSetListItem = ReturnedRuleSet,
+> = {
+  getEmptyRuleSet?: () => RuleSetPayload;
   queryAllRuleSets: (query: {
     countryCode?: MerchandisingCountryCode;
     havingRules?: RuleTypeFilter;
     q?: string;
     rows: number;
     start: number;
-  }) => Promise<HttpResponse<A, void | MerchandisingErrorResponse>>;
+  }) => Promise<
+    HttpResponse<RuleSetListResponse, void | MerchandisingErrorResponse>
+  >;
   deleteRuleSetById: (
     id: string
   ) => Promise<
     HttpResponse<
-      T,
+      ReturnedRuleSet,
       void | MerchandisingErrorResponse | MerchandisingReturnedNotFound
     >
   >;
@@ -183,23 +208,27 @@ export type RuleSetMapping<A, T, N> = {
     id: string
   ) => Promise<
     HttpResponse<
-      T,
+      ReturnedRuleSet,
       void | MerchandisingErrorResponse | MerchandisingReturnedNotFound
     >
   >;
   updateRuleSetById: (
     id: string,
-    data: N
-  ) => Promise<HttpResponse<T, void | MerchandisingErrorResponse>>;
+    data: RuleSetPayload
+  ) => Promise<
+    HttpResponse<ReturnedRuleSet, void | MerchandisingErrorResponse>
+  >;
   newRuleSet: (
-    data: N
-  ) => Promise<HttpResponse<T, void | MerchandisingErrorResponse>>;
+    data: RuleSetPayload
+  ) => Promise<
+    HttpResponse<ReturnedRuleSet, void | MerchandisingErrorResponse>
+  >;
   ruleSetToRow: (
-    ruleSet: T,
+    ruleSet: RuleSetListItem,
     context: { searchQuery?: string; featureFlags?: object }
   ) => Row;
-  allToArray: (data: A) => T[];
-  returnedToRuleSet: (data: T) => N;
+  allToArray: (data: RuleSetListResponse) => RuleSetListItem[];
+  returnedToRuleSet: (data: ReturnedRuleSet) => RuleSetPayload;
 };
 
 export type RowsApi = {

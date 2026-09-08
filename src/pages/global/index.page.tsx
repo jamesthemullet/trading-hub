@@ -1,27 +1,59 @@
 import type { ReactElement } from 'react';
+import { useMemo, useState } from 'react';
 
 import type {
+  GetGlobalRuleSetsLiteParamsCatalogueEnum,
   MerchandisingReturnedGlobalRuleSet,
-  MerchandisingReturnedGlobalRuleSets,
+  MerchandisingReturnedGlobalRuleSetLite,
+  MerchandisingReturnedGlobalRuleSetsLite,
   MerchandisingRuleSet,
 } from '@/libs/api';
 import { search } from '@/libs/api';
-import { Heading } from '@/libs/components';
+import { Button, Heading, Tabs } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { useCftoFlag } from '@/libs/components/feature-flag/feature-flag';
 import type { RuleSetMapping } from '@/libs/components/types';
-import { ROUTES } from '@/libs/constants/routes';
-import { FacetType, RuleType } from '@/libs/constants/rule-types';
+import { getNewRulesetRoute, ROUTES } from '@/libs/constants/routes';
+import { RuleType } from '@/libs/constants/rule-types';
 import { TablePanel } from '@/libs/features';
 import { useAccess } from '@/libs/hooks/use-access';
+import { track } from '@/libs/hooks/utils/analytics';
 
 import Head from 'next/head';
 
-const mapping: RuleSetMapping<
-  MerchandisingReturnedGlobalRuleSets,
+import styles from './index.module.css';
+
+type GlobalCatalogue = GetGlobalRuleSetsLiteParamsCatalogueEnum;
+
+const CATALOGUE_TABS: {
+  title: string;
+  catalogue: GlobalCatalogue;
+  icons?: string[];
+}[] = [
+  {
+    title: 'marksandspencer.com',
+    catalogue: 'CLOTHING_AND_HOME',
+    icons: [
+      '/trading-hub/asset/icon-uk-flag.svg',
+      '/trading-hub/asset/icon-ie-flag.svg',
+    ],
+  },
+  {
+    title: 'cfto.com',
+    catalogue: 'CFTO',
+    icons: ['/trading-hub/asset/christmas-tree.svg'],
+  },
+];
+
+const getMapping = (
+  catalogue: GlobalCatalogue
+): RuleSetMapping<
+  MerchandisingReturnedGlobalRuleSetsLite,
   MerchandisingReturnedGlobalRuleSet,
-  MerchandisingRuleSet
-> = {
-  queryAllRuleSets: search().getGlobalRuleSets,
+  MerchandisingRuleSet,
+  MerchandisingReturnedGlobalRuleSetLite
+> => ({
+  queryAllRuleSets: (query) => search().getGlobalRuleSetsLite(catalogue, query),
   deleteRuleSetById: search().deleteGlobalRuleSet,
   queryRuleSetById: search().getGlobalRuleSet,
   updateRuleSetById: search().updateGlobalRuleSet,
@@ -46,7 +78,7 @@ const mapping: RuleSetMapping<
       excludedFacets: returnedRuleSet.excludedFacets,
     };
   },
-};
+});
 
 const RuleSets = (): ReactElement => {
   const headings = [
@@ -59,7 +91,14 @@ const RuleSets = (): ReactElement => {
   ];
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
-
+  const isCftoEnabled = useCftoFlag();
+  const [currentTab, setCurrentTab] = useState(0);
+  const catalogueTabs = isCftoEnabled
+    ? CATALOGUE_TABS
+    : CATALOGUE_TABS.filter((tab) => tab.catalogue !== 'CFTO');
+  const safeCurrentTab = Math.min(currentTab, catalogueTabs.length - 1);
+  const activeCatalogue = catalogueTabs[safeCurrentTab].catalogue;
+  const mapping = useMemo(() => getMapping(activeCatalogue), [activeCatalogue]);
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
   }
@@ -73,14 +112,39 @@ const RuleSets = (): ReactElement => {
       <Heading
         breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
         title="Global"
+        actions={
+          hasWriteAccess && (
+            <Button
+              as="a"
+              isInline
+              theme="filled"
+              icon="plus-simple-white"
+              href={getNewRulesetRoute(RuleType.Global)}
+              onClick={() =>
+                track({ event: `Add ${RuleType.Global} ranking rule` })
+              }
+            >
+              Add ranking rule
+            </Button>
+          )
+        }
       />
+
+      {isCftoEnabled && (
+        <div className={styles.tabsWrapper}>
+          <Tabs
+            tabs={catalogueTabs}
+            currentTab={currentTab}
+            onTabChange={setCurrentTab}
+          />
+        </div>
+      )}
 
       <TablePanel
         basePath="/global"
         headings={headings}
         mapping={mapping}
         ruleType={RuleType.Global}
-        facetType={FacetType.Global}
         isWriteEnabled={hasWriteAccess}
       />
     </>

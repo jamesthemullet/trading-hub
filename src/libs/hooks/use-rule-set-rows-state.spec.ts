@@ -119,6 +119,44 @@ describe('useCategoryRuleSetApi', () => {
       expect(result.current.error).toEqual(
         'Error whilst retrieving ruleset: "Error something went wrong 500"'
       );
+      expect(result.current.rowsState).toEqual({
+        pagination: { totalItems: 0 },
+        rows: [],
+      });
+    });
+
+    it('should clear previously fetched rows when a subsequent fetch errors', async () => {
+      mappingMock.queryAllRuleSets.mockResolvedValueOnce({
+        data: mockResponse,
+        status: { status: 200 },
+      });
+
+      const { result } = renderHook(() => useRuleSetRowsState(mappingMock));
+
+      await act(async () => {
+        await result.current.getRows(1, 10, '', 'UK');
+      });
+
+      expect(result.current.rowsState).toEqual({
+        pagination: { totalItems: 10 },
+        rows: [mockRuleSet],
+      });
+
+      mappingMock.queryAllRuleSets.mockRejectedValueOnce({
+        error: {
+          message: 'something went wrong',
+          status: 500,
+        },
+      });
+
+      await act(async () => {
+        await result.current.getRows(1, 10, '', 'UK');
+      });
+
+      expect(result.current.rowsState).toEqual({
+        pagination: { totalItems: 0 },
+        rows: [],
+      });
     });
 
     it('should include havingRules when provided', async () => {

@@ -21,6 +21,21 @@
   width: 100%;
   background: none;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tabContent {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mns-spacing-1);
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--mns-spacing-0-5);
 }
 
 .tabButton[data-appearance='plain'] {

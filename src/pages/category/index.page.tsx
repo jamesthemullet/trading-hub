@@ -6,16 +6,24 @@ import type {
   MerchandisingReturnedCategoryRuleSets,
 } from '@/libs/api';
 import { search } from '@/libs/api';
-import { Heading } from '@/libs/components';
+import { Button, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import type { RuleSetMapping } from '@/libs/components/types';
-import { ROUTES } from '@/libs/constants/routes';
+import {
+  getNewFacetRoute,
+  getNewRulesetRoute,
+  ROUTES,
+} from '@/libs/constants/routes';
 import { FacetType, RuleType } from '@/libs/constants/rule-types';
 import { TablePanel } from '@/libs/features';
 import { useAccess } from '@/libs/hooks/use-access';
+import { useDraftRuleset } from '@/libs/hooks/use-draft-ruleset';
+import { track } from '@/libs/hooks/utils/analytics';
 import { formatCategoriesInfo } from '@/libs/utils/format-categories-info';
 
 import Head from 'next/head';
+
+import styles from './index.module.css';
 
 const mapping: RuleSetMapping<
   MerchandisingReturnedCategoryRuleSets,
@@ -80,6 +88,7 @@ const RuleSets = (): ReactElement => {
   ];
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
+  const { clearDraft } = useDraftRuleset();
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -94,6 +103,42 @@ const RuleSets = (): ReactElement => {
       <Heading
         breadcrumbs={['Search & Merchandising', 'Categories']}
         title="Categories"
+        actions={
+          hasWriteAccess && (
+            <div className={styles.buttonGroup}>
+              <Button
+                as="a"
+                isInline
+                theme="outlined"
+                icon="plus-simple-green"
+                href={getNewFacetRoute(FacetType.Category)}
+                onClick={() => {
+                  track({
+                    event: `Add ${RuleType.CategoryRanking} facet rule`,
+                  });
+                  clearDraft();
+                }}
+              >
+                Add facet rule
+              </Button>
+
+              <Button
+                as="a"
+                isInline
+                theme="filled"
+                icon="plus-simple-white"
+                href={getNewRulesetRoute(RuleType.CategoryRanking)}
+                onClick={() =>
+                  track({
+                    event: `Add ${RuleType.CategoryRanking} ranking rule`,
+                  })
+                }
+              >
+                Add ranking rule
+              </Button>
+            </div>
+          )
+        }
       />
 
       <TablePanel
@@ -101,7 +146,6 @@ const RuleSets = (): ReactElement => {
         headings={headings}
         mapping={mapping}
         ruleType={RuleType.CategoryRanking}
-        facetType={FacetType.Category}
         isWriteEnabled={hasWriteAccess}
       />
     </>

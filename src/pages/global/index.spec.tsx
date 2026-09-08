@@ -1,10 +1,11 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
 import type { MerchandisingReturnedGlobalRuleSet } from '@/libs/api/generated/open-api';
+import { track } from '@/libs/hooks/utils/analytics';
 import { mockMerchandisingRules } from '@/test/data/mock-merchandising-rules';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -19,11 +20,65 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
+jest.mock('@/libs/hooks/utils/analytics', () => ({
+  track: jest.fn(),
+}));
+
 const MOCK_CATEGORY_ID = 'Cat123';
 
 const mockPush = jest.fn();
 
 const server = setupServer(
+  http.get(
+    '/api/search/merchandising/v1/CLOTHING_AND_HOME/global/ruleset',
+    (ctx) => {
+      const url = new URL(ctx.request.url);
+      const countryCode = url.searchParams.get('countryCode');
+      const data = useRuleSet(
+        url.searchParams.get('q'),
+        Number(url.searchParams.get('start')),
+        Number(url.searchParams.get('rows')),
+        'global'
+      );
+      if ('refetchRuleSetList' in data) {
+        data.refetchRuleSetList();
+      }
+      mockRefetchRuleSetList({
+        countryCode,
+      });
+      return HttpResponse.json(
+        {
+          ruleSets: data.globalRuleSets,
+          pagination: data.pagination,
+        },
+        { status: 200 }
+      );
+    }
+  ),
+  http.get('/api/search/merchandising/v1/CFTO/global/ruleset', (ctx) => {
+    const url = new URL(ctx.request.url);
+    const countryCode = url.searchParams.get('countryCode');
+    const data = useRuleSet(
+      url.searchParams.get('q'),
+      Number(url.searchParams.get('start')),
+      Number(url.searchParams.get('rows')),
+      'global'
+    );
+    if ('refetchRuleSetList' in data) {
+      data.refetchRuleSetList();
+    }
+    mockRefetchRuleSetList({
+      countryCode,
+      catalogue: 'CFTO',
+    });
+    return HttpResponse.json(
+      {
+        ruleSets: data.globalRuleSets,
+        pagination: data.pagination,
+      },
+      { status: 200 }
+    );
+  }),
   http.get('/api/search/beta/merchandising/global/ruleset', (ctx) => {
     const url = new URL(ctx.request.url);
     const countryCode = url.searchParams.get('countryCode');
@@ -110,7 +165,7 @@ describe('Index', () => {
         totalItems: 0,
       },
       globalRuleSets: [],
-      refetchRuleSetList: () => jest.fn,
+      refetchRuleSetList: jest.fn(),
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
@@ -134,7 +189,7 @@ describe('Index', () => {
       pagination: {
         totalItems: 0,
       },
-      refetchRuleSetList: () => jest.fn,
+      refetchRuleSetList: jest.fn(),
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
@@ -145,6 +200,121 @@ describe('Index', () => {
     await waitFor(() => {
       expect(screen.getByText('Global')).toBeVisible();
     });
+  });
+
+  it('renders the add ranking rule button next to the title and tracks clicks', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+    renderWithProviders(<RuleSets />);
+
+    const addRankingRuleButton = await screen.findByRole('link', {
+      name: 'Add ranking rule',
+    });
+    expect(addRankingRuleButton).toBeVisible();
+
+    addRankingRuleButton.addEventListener('click', (event) =>
+      event.preventDefault()
+    );
+
+    act(() => {
+      addRankingRuleButton.click();
+    });
+
+    expect(track).toHaveBeenCalledWith({ event: 'Add global ranking rule' });
+  });
+
+  it('hides the add ranking rule button when the user lacks write access', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+    renderWithProviders(<RuleSets />, ['Glob.R'], {
+      featureFlags: { hasAuthorization: true },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Global')).toBeVisible();
+    });
+    expect(
+      screen.queryByRole('link', { name: 'Add ranking rule' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('displays the list of rules using the v1 endpoint when optimistic locking is enabled', async () => {
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+    renderWithProviders(<RuleSets />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Global')).toBeVisible();
+    });
+    expect(mockRefetchRuleSetList).toHaveBeenCalled();
+  });
+
+  it('switches the ruleset catalogue when the cfto.com tab is selected', async () => {
+    const user = userEvent.setup();
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      globalRuleSets: [],
+      pagination: {
+        totalItems: 0,
+      },
+      refetchRuleSetList: jest.fn(),
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+    renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W'], {
+      featureFlags: { hasCfto: true },
+    });
+
+    await waitFor(() => {
+      expect(mockRefetchRuleSetList).toHaveBeenCalled();
+    });
+
+    await user.click(screen.getByText('cfto.com'));
+
+    await waitFor(() => {
+      expect(mockRefetchRuleSetList).toHaveBeenCalledWith(
+        expect.objectContaining({ catalogue: 'CFTO' })
+      );
+    });
+  });
+
+  it('hides all catalogue tabs when the CFTO feature flag is disabled', () => {
+    renderWithProviders(<RuleSets />);
+
+    expect(screen.queryByText('cfto.com')).not.toBeInTheDocument();
+    expect(screen.queryByText('marksandspencer.com')).not.toBeInTheDocument();
   });
 
   it('should render the access denied page', async () => {
@@ -170,7 +340,7 @@ describe('Index', () => {
         totalItems: 0,
       },
       globalRuleSets: [],
-      refetchRuleSetList: () => jest.fn,
+      refetchRuleSetList: jest.fn(),
       setCategoryRuleSets: jest.fn(),
       setGlobalRuleSets: jest.fn(),
       error: '',
@@ -216,7 +386,7 @@ describe('Index', () => {
             facets: [],
           },
         ],
-        refetchRuleSetList: () => jest.fn,
+        refetchRuleSetList: jest.fn(),
         setCategoryRuleSets: jest.fn(),
         setGlobalRuleSets: jest.fn(),
         error: '',
@@ -343,7 +513,7 @@ describe('Index', () => {
           totalItems: undefined,
         },
         categoryRuleSets: [],
-        refetchRuleSetList: () => jest.fn,
+        refetchRuleSetList: jest.fn(),
         setCategoryRuleSets: jest.fn(),
         setGlobalRuleSets: jest.fn(),
         error: '',

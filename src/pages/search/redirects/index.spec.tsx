@@ -1,9 +1,10 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
+import { track } from '@/libs/hooks/utils/analytics';
 import { returnedRedirectMock } from '@/pages/api/search/mocks';
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -19,6 +20,10 @@ const createRedirect = jest.fn().mockResolvedValue({ id: mockNewRuleset });
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
+}));
+
+jest.mock('@/libs/hooks/utils/analytics', () => ({
+  track: jest.fn(),
 }));
 
 const server = setupServer(
@@ -154,6 +159,58 @@ describe('Search Rulesets', () => {
     await waitFor(() => {
       expect(screen.getByText('Keyword Redirect')).toBeVisible();
     });
+  });
+
+  it('renders the add redirect rule button next to the title and tracks clicks', async () => {
+    jest.mocked(useSearchRedirectList).mockReturnValue({
+      redirects: [],
+      pagination: {
+        totalItems: 0,
+      },
+      error: '',
+      refetchRedirectList: () => jest.fn,
+      setKeywordList: jest.fn(),
+    });
+
+    renderWithProviders(<RedirectRuleSets />);
+
+    const addRedirectRuleButton = await screen.findByRole('link', {
+      name: 'Add redirect rule',
+    });
+    expect(addRedirectRuleButton).toBeVisible();
+
+    addRedirectRuleButton.addEventListener('click', (event) =>
+      event.preventDefault()
+    );
+
+    act(() => {
+      addRedirectRuleButton.click();
+    });
+
+    expect(track).toHaveBeenCalledWith({ event: 'Add redirect rule' });
+  });
+
+  it('hides the add redirect rule button when the user lacks write access', async () => {
+    jest.mocked(useSearchRedirectList).mockReturnValue({
+      redirects: [],
+      pagination: {
+        totalItems: 0,
+      },
+      error: '',
+      refetchRedirectList: () => jest.fn,
+      setKeywordList: jest.fn(),
+    });
+
+    renderWithProviders(<RedirectRuleSets />, ['Search.R'], {
+      featureFlags: { hasAuthorization: true },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Keyword Redirect')).toBeVisible();
+    });
+    expect(
+      screen.queryByRole('link', { name: 'Add redirect rule' })
+    ).not.toBeInTheDocument();
   });
 
   it('should render the access denied page', async () => {

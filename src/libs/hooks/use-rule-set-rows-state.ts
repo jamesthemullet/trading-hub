@@ -30,11 +30,17 @@ const getPaginationTotalItems = <
 ) => data.pagination.totalItems;
 
 export const useRuleSetRowsState = <
-  A extends { pagination: { totalItems?: number } },
-  T,
-  N extends { isEnabled: boolean },
+  RuleSetListResponse extends { pagination: { totalItems?: number } },
+  ReturnedRuleSet extends RuleSetListItem,
+  RuleSetPayload extends { isEnabled: boolean },
+  RuleSetListItem = ReturnedRuleSet,
 >(
-  mapping: RuleSetMapping<A, T, N>
+  mapping: RuleSetMapping<
+    RuleSetListResponse,
+    ReturnedRuleSet,
+    RuleSetPayload,
+    RuleSetListItem
+  >
 ): RowsApi => {
   const [rowsState, setRowsState] = useState<{
     pagination: MerchandisingPagination;
@@ -52,6 +58,7 @@ export const useRuleSetRowsState = <
     (currentPage, currentPageSize, query, countryCode, havingRules) => {
       const asyncCall = async () => {
         setIsLoading(true);
+        setError('');
         try {
           const [error, data] = await handlePromise(
             mapping.queryAllRuleSets({
@@ -68,6 +75,12 @@ export const useRuleSetRowsState = <
             setError(
               `Error whilst retrieving ruleset: ${JSON.stringify(handleError(error))}`
             );
+            setRowsState({
+              pagination: {
+                totalItems: 0,
+              },
+              rows: [],
+            });
             return;
           }
 

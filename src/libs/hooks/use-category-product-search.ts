@@ -75,7 +75,11 @@ export const useCategoryProductSearch = (): {
                   ...(productIds && { productId: productIds }),
                   ...(!productIds && { rows }),
                   ...(!productIds && { start }),
-                  merchandisingSearchTerm: searchTerms,
+                  ...(searchTerms && searchTerms.length > 0
+                    ? {
+                        merchandisingSearchTerm: searchTerms,
+                      }
+                    : {}),
                   catalogue,
                 })
                 .then((response) => response.data)

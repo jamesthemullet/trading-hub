@@ -31,6 +31,15 @@ test.describe('global rulesets', () => {
       }
     );
     await page.route(
+      '*/**/api/search/merchandising/v1/CLOTHING_AND_HOME/global/ruleset*',
+      async (route) => {
+        if (route.request().method() === 'GET') {
+          const json = mockGlobalRulesets;
+          await route.fulfill({ status: 200, json });
+        }
+      }
+    );
+    await page.route(
       '*/**/api/search/beta/merchandising/global/ruleset/847f1f8b-dc75-4e97-9364-cecc9b66651c',
       async (route) => {
         const json = mockGlobalRuleset;

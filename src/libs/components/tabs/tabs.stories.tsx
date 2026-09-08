@@ -17,7 +17,9 @@ const meta: Meta<typeof Tabs> = {
 export default meta;
 type Story = StoryObj<typeof Tabs>;
 
-const TabsWithState = (args: { tabs: { title: string; count?: number }[] }) => {
+const TabsWithState = (args: {
+  tabs: { title: string; count?: number; icons?: string[] }[];
+}) => {
   const [currentTab, setCurrentTab] = useState(0);
 
   return (
@@ -43,6 +45,27 @@ export const WithCounts: Story = {
     tabs: [
       { title: 'Active', count: 12 },
       { title: 'Pending', count: 5 },
+    ],
+    currentTab: 0,
+    onTabChange: fn(),
+  },
+  render: (args) => <TabsWithState tabs={args.tabs} />,
+};
+
+export const WithIcons: Story = {
+  args: {
+    tabs: [
+      {
+        title: 'marksandspencer.com',
+        icons: [
+          '/trading-hub/asset/icon-uk-flag.svg',
+          '/trading-hub/asset/icon-ie-flag.svg',
+        ],
+      },
+      {
+        title: 'cfto.com',
+        icons: ['/trading-hub/asset/christmas-tree.svg'],
+      },
     ],
     currentTab: 0,
     onTabChange: fn(),
