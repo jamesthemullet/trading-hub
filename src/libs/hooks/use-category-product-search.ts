@@ -4,20 +4,22 @@ import type {
   MerchandisingCountryCode,
   MerchandisingProductSearchResponse,
   MerchandisingRules,
+  SearchMerchandisingProductsV1ParamsEnum,
 } from '@/libs/api';
 import { search } from '@/libs/api';
 
 import uniqBy from 'lodash/uniqBy';
 
 import {
-  convertCategoryIdToCatalogue,
-  convertCountryCodeToCatalogues,
-} from '../utils/convert-country-code-to-catalogues';
+  convertCategoryIdToCountry,
+  convertCountryCodeToCountries,
+} from '../utils/convert-country-code-to-countries';
 
 export const useCategoryProductSearch = (): {
   searchForProduct: (args: {
     merchandisingRules: MerchandisingRules;
     countryCode: MerchandisingCountryCode;
+    catalogue?: SearchMerchandisingProductsV1ParamsEnum;
     categories?: string[];
     productIds?: string[];
     query?: string;
@@ -34,6 +36,7 @@ export const useCategoryProductSearch = (): {
   const searchForProduct = useCallback(
     async ({
       categories,
+      catalogue = 'CLOTHING_AND_HOME',
       countryCode,
       productIds,
       query,
@@ -44,6 +47,7 @@ export const useCategoryProductSearch = (): {
     }: {
       merchandisingRules: MerchandisingRules;
       countryCode: MerchandisingCountryCode;
+      catalogue?: SearchMerchandisingProductsV1ParamsEnum;
       categories?: string[];
       productIds?: string[];
       query?: string;
@@ -55,33 +59,40 @@ export const useCategoryProductSearch = (): {
       setIsLoading(true);
 
       try {
-        const catalogues = convertCountryCodeToCatalogues(countryCode);
         const promises = categories?.length
           ? categories.map((categoryId) =>
               search()
-                .searchMerchandisingProducts(merchandisingRules, {
-                  ...(query && { q: query }),
-                  ...(!productIds && { rows }),
-                  ...(!productIds && { start }),
-                  categoryId,
-                  catalogue: convertCategoryIdToCatalogue(categoryId),
-                })
+                .searchMerchandisingProductsV1(
+                  catalogue,
+                  {
+                    ...(query && { q: query }),
+                    ...(!productIds && { rows }),
+                    ...(!productIds && { start }),
+                    categoryId,
+                    country: convertCategoryIdToCountry(categoryId),
+                  },
+                  merchandisingRules
+                )
                 .then((response) => response.data)
             )
-          : catalogues.map((catalogue) =>
+          : convertCountryCodeToCountries(countryCode).map((country) =>
               search()
-                .searchMerchandisingProducts(merchandisingRules, {
-                  ...(query && { q: query }),
-                  ...(productIds && { productId: productIds }),
-                  ...(!productIds && { rows }),
-                  ...(!productIds && { start }),
-                  ...(searchTerms && searchTerms.length > 0
-                    ? {
-                        merchandisingSearchTerm: searchTerms,
-                      }
-                    : {}),
+                .searchMerchandisingProductsV1(
                   catalogue,
-                })
+                  {
+                    ...(query && { q: query }),
+                    ...(productIds && { productId: productIds }),
+                    ...(!productIds && { rows }),
+                    ...(!productIds && { start }),
+                    ...(searchTerms && searchTerms.length > 0
+                      ? {
+                          merchandisingSearchTerm: searchTerms,
+                        }
+                      : {}),
+                    country,
+                  },
+                  merchandisingRules
+                )
                 .then((response) => response.data)
             );
 

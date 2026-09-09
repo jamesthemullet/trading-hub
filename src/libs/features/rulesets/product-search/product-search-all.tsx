@@ -5,6 +5,7 @@ import type {
   MerchandisingCountryCode,
   MerchandisingProduct as ProductType,
   MerchandisingRules,
+  SearchMerchandisingProductsV1ParamsEnum,
 } from '@/libs/api';
 import { Checkbox } from '@/libs/components/checkboxes/checkbox';
 import { Search } from '@/libs/components/search/search';
@@ -20,6 +21,7 @@ import styles from './product-search-all.module.css';
 
 export type ProductSearchProps = {
   countryCode?: MerchandisingCountryCode;
+  catalogue?: SearchMerchandisingProductsV1ParamsEnum;
   isSelectionDisabled: boolean;
   dispatch: Dispatch<RuleSetActions>;
   onSelectProduct: ({
@@ -41,6 +43,7 @@ export type ProductSearchProps = {
 
 export const ProductSearchAll = ({
   countryCode = 'UK_IE',
+  catalogue,
   dispatch,
   isPinnable,
   isSelectionDisabled,
@@ -72,6 +75,7 @@ export const ProductSearchAll = ({
       rows: 400,
       merchandisingRules,
       countryCode,
+      catalogue,
     });
 
     setSearchProducts(products);
@@ -82,6 +86,7 @@ export const ProductSearchAll = ({
     categoryIds,
     merchandisingRules,
     countryCode,
+    catalogue,
   ]);
 
   useEffect(() => {

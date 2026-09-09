@@ -52,6 +52,7 @@ const NewRuleSetPage = (): ReactElement => {
         onCreateGlobalRuleset={createNewGlobalRuleSet}
         onCancel={() => router.push(`/global?catalogue=${catalogue}`)}
         rulesetType="global"
+        catalogue={catalogue}
         isWriteEnabled={hasWriteAccess}
       />
     </>

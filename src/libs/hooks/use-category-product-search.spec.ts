@@ -29,7 +29,14 @@ const mockProduct = {
 };
 
 const handlers = [
-  http.post(`${baseUrl}/search/beta/merchandising/product`, () => {
+  http.post(
+    `${baseUrl}/search/merchandising/v1/CLOTHING_AND_HOME/product`,
+    () => {
+      const { data, status } = getProductsMock();
+      return HttpResponse.json(data, status);
+    }
+  ),
+  http.post(`${baseUrl}/search/merchandising/v1/CFTO/product`, () => {
     const { data, status } = getProductsMock();
     return HttpResponse.json(data, status);
   }),
@@ -113,7 +120,42 @@ describe('useCategoryProductSearch', () => {
       expect.objectContaining({
         request: expect.objectContaining({
           method: 'POST',
-          url: 'http://localhost/search/beta/merchandising/product?q=Socks&rows=10&start=0&categoryId=1&catalogue=MANDSUK',
+          url: 'http://localhost/search/merchandising/v1/CLOTHING_AND_HOME/product?q=Socks&rows=10&start=0&categoryId=1&country=UK',
+        }),
+      })
+    );
+  });
+
+  it('sends requests to the CFTO catalogue when specified', async () => {
+    const mockResponse: MerchandisingProductSearchResponse = {
+      products: [mockProduct],
+      pagination: {
+        totalItems: 3,
+      },
+    };
+    getProductsMock.mockReturnValueOnce({
+      data: mockResponse,
+      status: { status: 200 },
+    });
+
+    const { result } = renderHook(() => useCategoryProductSearch());
+
+    await act(async () => {
+      await result.current.searchForProduct({
+        query: 'Socks',
+        rows: 10,
+        start: 0,
+        merchandisingRules: mockMerchandisingRules,
+        countryCode: 'UK',
+        catalogue: 'CFTO',
+      });
+    });
+
+    expect(requestSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        request: expect.objectContaining({
+          method: 'POST',
+          url: 'http://localhost/search/merchandising/v1/CFTO/product?q=Socks&rows=10&start=0&country=UK',
         }),
       })
     );
@@ -281,7 +323,7 @@ describe('useCategoryProductSearch', () => {
       expect.objectContaining({
         request: expect.objectContaining({
           method: 'POST',
-          url: 'http://localhost/search/beta/merchandising/product?q=Socks&rows=10&start=0&merchandisingSearchTerm=foo&merchandisingSearchTerm=bar&merchandisingSearchTerm=baz&catalogue=MANDSUK',
+          url: 'http://localhost/search/merchandising/v1/CLOTHING_AND_HOME/product?q=Socks&rows=10&start=0&merchandisingSearchTerm=foo&merchandisingSearchTerm=bar&merchandisingSearchTerm=baz&country=UK',
         }),
       })
     );

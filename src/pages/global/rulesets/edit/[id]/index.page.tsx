@@ -136,6 +136,7 @@ const Page = ({ id }: PageProps): ReactElement => {
               rulesetType="global"
               rulesetId={id}
               countryCode={rulesetData.countryCode}
+              catalogue={catalogue}
               isWriteEnabled={hasWriteAccess && !isHistoryView}
               isResolvingConflict={conflict !== null || isOverwriting}
             />

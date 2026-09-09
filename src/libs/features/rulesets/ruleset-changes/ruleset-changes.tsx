@@ -6,6 +6,7 @@ import type {
   MerchandisingCountryCode,
   MerchandisingProduct,
   MerchandisingRules,
+  SearchMerchandisingProductsV1ParamsEnum,
 } from '@/libs/api';
 import { Button, Typography } from '@/libs/components';
 import { Checkbox } from '@/libs/components/checkboxes/checkbox';
@@ -33,6 +34,7 @@ const ProductsLoader = ({
   pinnedProductsCount,
   products,
   countryCode = 'UK_IE',
+  catalogue,
   onSelectAll,
   onSelectProduct,
   selectedProducts,
@@ -47,6 +49,7 @@ const ProductsLoader = ({
   pinnedProductsCount: number;
   products: ProductRule[];
   countryCode?: MerchandisingCountryCode;
+  catalogue?: SearchMerchandisingProductsV1ParamsEnum;
   onSelectAll: (args: string[]) => void;
   onSelectProduct: ({
     id,
@@ -65,7 +68,12 @@ const ProductsLoader = ({
     productsShown,
     setProductsShown,
     isLoading,
-  } = useProductsLoader({ products, merchandisingRules, countryCode });
+  } = useProductsLoader({
+    products,
+    merchandisingRules,
+    countryCode,
+    catalogue,
+  });
 
   const onSelectAllProducts = () => {
     const allProductIds = products.map(({ id }) => id);
@@ -186,6 +194,7 @@ export type RulesetChangesProps = {
   merchandisingRules: MerchandisingRules;
   dispatch: Dispatch<RuleSetActions>;
   countryCode?: MerchandisingCountryCode;
+  catalogue?: SearchMerchandisingProductsV1ParamsEnum;
 
   onSelectAll: (args: string[]) => void;
   onSelectProduct: ({
@@ -204,6 +213,7 @@ export const RulesetChanges = ({
   merchandisingRules,
   dispatch,
   countryCode,
+  catalogue,
   onSelectAll,
   onSelectProduct,
   selectedProducts,
@@ -330,6 +340,7 @@ export const RulesetChanges = ({
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.blockedProducts}
           countryCode={countryCode}
+          catalogue={catalogue}
           isSelectionDisabled={
             isSelectionDisabled ||
             (hasSelectedProducts && !hasSelectedBlockedProduct)
@@ -351,6 +362,7 @@ export const RulesetChanges = ({
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.pinnedProducts}
           countryCode={countryCode}
+          catalogue={catalogue}
           isSelectionDisabled={
             isSelectionDisabled ||
             (hasSelectedProducts && !hasSelectedPinnedProduct)
@@ -372,6 +384,7 @@ export const RulesetChanges = ({
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.boosts.product}
           countryCode={countryCode}
+          catalogue={catalogue}
           isSelectionDisabled={
             isSelectionDisabled ||
             (hasSelectedProducts && !hasSelectedBoostededProduct)
@@ -393,6 +406,7 @@ export const RulesetChanges = ({
           pinnedProductsCount={pinnedProductsCount}
           products={merchandisingRules.buries.product}
           countryCode={countryCode}
+          catalogue={catalogue}
           isSelectionDisabled={
             isSelectionDisabled ||
             (hasSelectedProducts && !hasSelectedBuriedProduct)

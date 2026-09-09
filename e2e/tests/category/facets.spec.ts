@@ -35,7 +35,7 @@ test.describe('Category rulesets', () => {
       }
     );
     await page.route(
-      '*/**/api/search/beta/merchandising/product*',
+      '*/**/api/search/merchandising/v1/CLOTHING_AND_HOME/product*',
       async (route) => {
         const json = mockProducts;
         await route.fulfill({ status: 200, json });

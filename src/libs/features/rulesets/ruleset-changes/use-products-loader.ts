@@ -5,6 +5,7 @@ import type {
   MerchandisingCountryCode,
   MerchandisingProduct as ProductType,
   MerchandisingRules,
+  SearchMerchandisingProductsV1ParamsEnum,
 } from '@/libs/api';
 import { useCategoryProductSearch } from '@/libs/hooks';
 
@@ -21,10 +22,12 @@ export const useProductsLoader = ({
   products,
   merchandisingRules,
   countryCode,
+  catalogue,
 }: {
   products: ProductRule[];
   merchandisingRules: MerchandisingRules;
   countryCode: MerchandisingCountryCode;
+  catalogue?: SearchMerchandisingProductsV1ParamsEnum;
 }): {
   productDetails: ProductType[];
   missingProductDetails: string[];
@@ -46,10 +49,11 @@ export const useProductsLoader = ({
         productIds,
         merchandisingRules,
         countryCode,
+        catalogue,
       });
       return data.products;
     },
-    [searchForProduct, merchandisingRules, countryCode]
+    [searchForProduct, merchandisingRules, countryCode, catalogue]
   );
 
   useEffect(() => {

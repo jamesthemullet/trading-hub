@@ -9,6 +9,7 @@ import type {
   MerchandisingRules,
   MerchandisingRuleSet,
   MerchandisingRuleSetFacetConfigWithId,
+  SearchMerchandisingProductsV1ParamsEnum,
 } from '@/libs/api';
 import {
   Button,
@@ -93,6 +94,7 @@ export const Ruleset = ({
   searchTerms,
   startDate,
   countryCode,
+  catalogue,
   isWriteEnabled,
   isResolvingConflict = false,
 }: {
@@ -131,6 +133,8 @@ export const Ruleset = ({
   startDate?: string;
   endDate?: string;
   countryCode?: MerchandisingCountryCode;
+  // Only relevant for global rulesets, which can be scoped to the CFTO catalogue via a tab
+  catalogue?: SearchMerchandisingProductsV1ParamsEnum;
   isWriteEnabled: boolean;
   // When a save-conflict is being resolved (overwrite/discard), the navigation
   // it triggers is intentional, so the unsaved-changes guard is suppressed.
@@ -609,6 +613,7 @@ export const Ruleset = ({
                         merchandisingRules={merchandisingRules}
                         dispatch={dispatch}
                         countryCode={ruleset.countryCode}
+                        catalogue={catalogue}
                         selectedProducts={selectedSearchProducts}
                         isSelectionDisabled={
                           !isWriteEnabled || !!selectedProducts.length
@@ -778,6 +783,7 @@ export const Ruleset = ({
                 dispatch={dispatch}
                 isPinnable={rulesetType !== 'global'}
                 countryCode={ruleset.countryCode}
+                catalogue={catalogue}
                 selectedProducts={selectedProducts}
                 onSelectAll={setSelectedProducts}
                 onSelectProduct={({ id, isSelected }) => {
