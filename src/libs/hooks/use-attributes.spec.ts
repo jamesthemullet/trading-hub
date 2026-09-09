@@ -244,14 +244,16 @@ describe('use-attributes', () => {
 
     it('should return errors when api fails', async () => {
       const categories = undefined;
-      server.close();
+      server.use(
+        http.get(`${baseUrl}/search/beta/merchandising/attributes`, () =>
+          HttpResponse.error()
+        )
+      );
       const { result } = renderHook(() =>
         useAttributes({ categories, countryCode: 'UK', type: 'alphanumeric' })
       );
       await waitFor(() => {
-        expect(result.current.fetchError).toEqual(
-          'Error: TypeError: fetch failed'
-        );
+        expect(result.current.fetchError).toContain('Failed to fetch');
       });
     });
   });

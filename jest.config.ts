@@ -18,6 +18,7 @@ const config: Config = {
   setupFilesAfterEnv: ['./jest.setup.ts'],
   coverageReporters: ['html', 'text', 'json-summary', 'lcov'],
   reporters: ['default', 'jest-junit'],
+  workerGracefulExitTimeout: 2000,
   collectCoverageFrom: [
     '**/*.{js,jsx,tsx,ts}',
     '!**/generated/*.{js,jsx,tsx,ts}',
