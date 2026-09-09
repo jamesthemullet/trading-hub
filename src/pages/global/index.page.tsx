@@ -57,7 +57,8 @@ const getMapping = (
   queryAllRuleSets: (query) => search().getGlobalRuleSetsLite(catalogue, query),
   deleteRuleSetById: search().deleteGlobalRuleSet,
   queryRuleSetById: search().getGlobalRuleSet,
-  updateRuleSetById: search().updateGlobalRuleSet,
+  updateRuleSetById: (id, ruleSet) =>
+    search().merchandisingV1GlobalRulesetUpdate(catalogue, id, ruleSet),
   newRuleSet: (ruleSet) =>
     search().createCatalogueGlobalRuleSet(catalogue, ruleSet),
   ruleSetToRow: ({ id, isEnabled, lastChanged, countryCode }) => ({
@@ -65,7 +66,7 @@ const getMapping = (
     identifier: '*',
     isEnabled,
     lastChanged,
-    url: ROUTES.GLOBAL.RULESETS.EDIT(id),
+    url: `${ROUTES.GLOBAL.RULESETS.EDIT(id)}?catalogue=${catalogue}`,
     countryCode,
   }),
   allToArray: (data) => data.ruleSets,
@@ -78,6 +79,7 @@ const getMapping = (
       startDate: returnedRuleSet.startDate,
       facets: returnedRuleSet.facets,
       excludedFacets: returnedRuleSet.excludedFacets,
+      version: returnedRuleSet.version,
     };
   },
 });
@@ -105,20 +107,31 @@ const RuleSets = (): ReactElement => {
   );
 
   useEffect(() => {
-    if (router.isReady && isCftoEnabled && router.query.catalogue === 'CFTO') {
-      const cftoTabIndex = catalogueTabs.findIndex(
-        (tab) => tab.catalogue === 'CFTO'
-      );
-      // istanbul ignore else -- catalogueTabs always contains CFTO while isCftoEnabled is true
-      if (cftoTabIndex >= 0) {
-        setCurrentTab(cftoTabIndex);
-      }
+    if (!router.isReady) return;
+    const matchedTabIndex = catalogueTabs.findIndex(
+      (tab) => tab.catalogue === router.query.catalogue
+    );
+    if (matchedTabIndex >= 0) {
+      setCurrentTab(matchedTabIndex);
     }
-  }, [router.isReady, isCftoEnabled, router.query.catalogue, catalogueTabs]);
+  }, [router.isReady, router.query.catalogue, catalogueTabs]);
 
   const safeCurrentTab = Math.min(currentTab, catalogueTabs.length - 1);
   const activeCatalogue = catalogueTabs[safeCurrentTab].catalogue;
   const mapping = useMemo(() => getMapping(activeCatalogue), [activeCatalogue]);
+
+  const handleTabChange = (index: number): void => {
+    setCurrentTab(index);
+    const nextCatalogue = catalogueTabs[index]?.catalogue;
+    // istanbul ignore else -- index is always within catalogueTabs bounds
+    if (nextCatalogue) {
+      void router.push({
+        pathname: router.pathname,
+        query: { ...router.query, catalogue: nextCatalogue },
+      });
+    }
+  };
+
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
   }
@@ -154,8 +167,8 @@ const RuleSets = (): ReactElement => {
         <div className={styles.tabsWrapper}>
           <Tabs
             tabs={catalogueTabs}
-            currentTab={currentTab}
-            onTabChange={setCurrentTab}
+            currentTab={safeCurrentTab}
+            onTabChange={handleTabChange}
           />
         </div>
       )}

@@ -32,6 +32,10 @@ const Page = ({ id }: PageProps): ReactElement => {
   const isHistoryView = router.query.history === 'true';
   const currentPage = Number(router.query.currentPage) || 1;
   const currentPageSize = Number(router.query.currentPageSize) || 20;
+  const catalogue =
+    router.query.catalogue?.toString() === 'CFTO'
+      ? 'CFTO'
+      : 'CLOTHING_AND_HOME';
 
   const {
     globalRuleSet,
@@ -79,8 +83,9 @@ const Page = ({ id }: PageProps): ReactElement => {
           ruleSetId: id,
           ruleSet: { facets, rules, isEnabled, excludedFacets, countryCode },
           version: versionOverride ?? globalRuleSet.version,
+          catalogue,
         }),
-      onSuccess: () => router.push('/global'),
+      onSuccess: () => router.push(`/global?catalogue=${catalogue}`),
     }
   );
 
@@ -90,7 +95,7 @@ const Page = ({ id }: PageProps): ReactElement => {
   );
 
   const handleCancel = () => {
-    router.push('/global');
+    router.push(`/global?catalogue=${catalogue}`);
   };
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');

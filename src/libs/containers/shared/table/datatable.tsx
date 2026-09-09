@@ -8,7 +8,6 @@ import { Typography } from '@/libs/components/typography/typography';
 import {
   getFacetRoute,
   getHistoryRoute,
-  getRulesetEditRoute,
   ROUTES,
 } from '@/libs/constants/routes';
 import type { FacetType } from '@/libs/constants/rule-types';
@@ -214,6 +213,7 @@ export const DataTable = ({
                 isEnabled,
                 lastChanged,
                 onToggle,
+                url,
                 categoryPlpUrl,
                 categoriesInfo,
                 searchTerms,
@@ -438,7 +438,7 @@ export const DataTable = ({
                               <>
                                 <Link
                                   className={styles.tableLink}
-                                  href={getRulesetEditRoute(ruleType, id)}
+                                  href={url}
                                   onClick={() =>
                                     track({
                                       event: `${editViewText} ${ruleType} ranking rule`,

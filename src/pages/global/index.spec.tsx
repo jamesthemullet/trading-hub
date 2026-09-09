@@ -127,6 +127,26 @@ const server = setupServer(
       { status: 200 }
     );
   }),
+  http.put(
+    '/api/search/merchandising/v1/:catalogue/global/ruleset/:id',
+    async (ctx) => {
+      const data = useRuleSet();
+      const ruleSetReturned = data.globalRuleSets.find(
+        (ruleSet: MerchandisingReturnedGlobalRuleSet) =>
+          ruleSet.id === ctx.params.id
+      );
+      const ruleSet = (await ctx.request.json()) as object;
+      mockUpdateRuleSet({
+        ruleSet,
+        ruleSetId: ctx.params.id,
+        catalogue: ctx.params.catalogue,
+      });
+      return HttpResponse.json(
+        { ...ruleSetReturned, ...ruleSet },
+        { status: 200 }
+      );
+    }
+  ),
   http.post(
     '/api/search/beta/merchandising/CLOTHING_AND_HOME/global/ruleset',
     async (ctx) => {
@@ -398,6 +418,22 @@ describe('Index', () => {
     expect(screen.queryByText('marksandspencer.com')).not.toBeInTheDocument();
   });
 
+  it('does not change tab while the router is not ready', async () => {
+    (useRouter as jest.Mock).mockReturnValue({
+      ...mockRouter,
+      isReady: false,
+      query: { ...mockRouter.query, catalogue: 'CFTO' },
+    });
+
+    renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W'], {
+      featureFlags: { hasCfto: true },
+    });
+
+    expect(screen.getByText('marksandspencer.com')).toBeVisible();
+
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+  });
+
   it('should render the access denied page', async () => {
     renderWithProviders(<RuleSets />, [], {
       featureFlags: {
@@ -497,6 +533,67 @@ describe('Index', () => {
           facets: [],
           rules: mockMerchandisingRules,
         },
+        catalogue: 'CLOTHING_AND_HOME',
+      });
+    });
+
+    it('enables or disables a ruleset against the CFTO catalogue when the cfto.com tab is selected', async () => {
+      const user = userEvent.setup();
+      const mockId = 'cfto-toggle-ruleset-id';
+      jest.mocked(useRuleSet).mockReturnValue({
+        categoryRuleSets: [],
+        pagination: {
+          totalItems: 0,
+        },
+        globalRuleSets: [
+          {
+            id: mockId,
+            isEnabled: true,
+            lastChanged: {
+              user: 'user',
+              date: '2021-01-01',
+            },
+            rules: mockMerchandisingRules,
+            facets: [],
+          },
+        ],
+        refetchRuleSetList: jest.fn(),
+        setCategoryRuleSets: jest.fn(),
+        setGlobalRuleSets: jest.fn(),
+        error: '',
+        isLoading: false,
+      });
+
+      renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W'], {
+        featureFlags: { hasCfto: true },
+      });
+
+      await user.click(screen.getByText('cfto.com'));
+
+      const rulesetToggle = await screen.findAllByTitle('Toggle');
+
+      await user.click(rulesetToggle[0]);
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', {
+            name: 'Review changes',
+          })
+        ).toBeVisible();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Save changes' }));
+
+      await waitFor(() => {
+        expect(mockUpdateRuleSet).toHaveBeenCalledWith({
+          ruleSetId: mockId,
+          ruleSet: {
+            isEnabled: false,
+            facets: [],
+            rules: mockMerchandisingRules,
+          },
+          catalogue: 'CFTO',
+        });
       });
     });
 

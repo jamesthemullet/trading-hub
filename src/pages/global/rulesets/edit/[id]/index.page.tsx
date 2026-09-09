@@ -30,6 +30,10 @@ const Page = ({ id }: PageProps): ReactElement => {
   const isHistoryView = router.query.history === 'true';
   const currentPage = Number(router.query.currentPage) || 1;
   const currentPageSize = Number(router.query.currentPageSize) || 20;
+  const catalogue =
+    router.query.catalogue?.toString() === 'CFTO'
+      ? 'CFTO'
+      : 'CLOTHING_AND_HOME';
 
   const historyData = useGlobalHistory(
     isHistoryView ? id : '',
@@ -72,8 +76,9 @@ const Page = ({ id }: PageProps): ReactElement => {
         ruleSetId,
         ruleSet,
         version: versionOverride ?? globalRuleSet.version,
+        catalogue,
       }),
-    onSuccess: () => router.push('/global'),
+    onSuccess: () => router.push(`/global?catalogue=${catalogue}`),
   });
 
   const conflictDiffItems = useRulesetDiff(
@@ -124,7 +129,7 @@ const Page = ({ id }: PageProps): ReactElement => {
                 ruleSetId: string;
                 ruleSet: MerchandisingRuleSet;
               }) => runSave({ ruleSetId, ruleSet })}
-              onCancel={() => router.push('/global')}
+              onCancel={() => router.push(`/global?catalogue=${catalogue}`)}
               rulesetMerchandisingRules={rulesetData.rules}
               rulesetFacets={rulesetData.facets}
               rulesetExcludedFacets={rulesetData.excludedFacets}

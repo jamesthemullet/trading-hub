@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import type {
   MerchandisingReturnedGlobalRuleSet,
   MerchandisingRuleSet,
+  MerchandisingV1GlobalRulesetUpdateParamsEnum,
 } from '@/libs/api';
 import { search } from '@/libs/api';
 import {
@@ -14,6 +15,7 @@ type SaveGlobalRulesetParams = {
   ruleSetId: string;
   ruleSet: MerchandisingRuleSet;
   version?: number;
+  catalogue: MerchandisingV1GlobalRulesetUpdateParamsEnum;
 };
 
 export const useGlobalRuleSetUpdate = (): {
@@ -26,16 +28,15 @@ export const useGlobalRuleSetUpdate = (): {
     useOptimisticUpdate<MerchandisingReturnedGlobalRuleSet>();
 
   const saveGlobalRuleset = useCallback(
-    ({ ruleSetId, ruleSet, version }: SaveGlobalRulesetParams) =>
+    ({ ruleSetId, ruleSet, version, catalogue }: SaveGlobalRulesetParams) =>
       runUpdate({
         version,
         entity: 'ruleset',
         update: (lockVersion) =>
-          search().merchandisingV1GlobalRulesetUpdate(
-            'CLOTHING_AND_HOME',
-            ruleSetId,
-            { ...ruleSet, version: lockVersion }
-          ),
+          search().merchandisingV1GlobalRulesetUpdate(catalogue, ruleSetId, {
+            ...ruleSet,
+            version: lockVersion,
+          }),
       }),
     [runUpdate]
   );

@@ -227,7 +227,9 @@ describe('Global Facet Management Editing', () => {
       confirmCancelButton.click();
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/global');
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      '/global?catalogue=CLOTHING_AND_HOME'
+    );
   });
 
   it('should save changes to a facet', async () => {
@@ -278,9 +280,39 @@ describe('Global Facet Management Editing', () => {
         isEnabled: true,
         countryCode: 'UK',
       },
+      catalogue: 'CLOTHING_AND_HOME',
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/global');
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      '/global?catalogue=CLOTHING_AND_HOME'
+    );
+  });
+
+  it('saves against the CFTO catalogue when navigated to with a CFTO catalogue query param', async () => {
+    (useRouter as jest.Mock).mockReturnValue({
+      ...mockRouter,
+      query: { ...mockRouter.query, catalogue: 'CFTO' },
+    });
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', {
+          name: 'Review changes',
+        })
+      ).toBeVisible();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Save changes' }));
+
+    expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(
+      expect.objectContaining({ catalogue: 'CFTO' })
+    );
+    expect(mockRouter.push).toHaveBeenCalledWith('/global?catalogue=CFTO');
   });
 
   it('sends the v1 flag + version and shows the conflict modal on a 409', async () => {

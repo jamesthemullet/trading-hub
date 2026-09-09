@@ -142,6 +142,7 @@ describe('Index', () => {
         countryCode: 'UK_IE',
       },
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+      catalogue: 'CLOTHING_AND_HOME',
     };
     const user = userEvent.setup({ delay: null });
 
@@ -166,7 +167,9 @@ describe('Index', () => {
     await user.click(screen.getByRole('button', { name: 'Save changes' }));
 
     expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(expectedRuleSet);
-    expect(mockRouter.push).toHaveBeenCalledWith('/global');
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      '/global?catalogue=CLOTHING_AND_HOME'
+    );
   });
 
   it('should not save ruleset with server errors', async () => {
@@ -201,6 +204,7 @@ describe('Index', () => {
         countryCode: 'UK_IE',
       },
       ruleSetId: '090152b8-2517-4e42-a5f3-48fcab8d9942',
+      catalogue: 'CLOTHING_AND_HOME',
     };
     const user = userEvent.setup({ delay: null });
 
@@ -235,7 +239,45 @@ describe('Index', () => {
 
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/global');
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      '/global?catalogue=CLOTHING_AND_HOME'
+    );
+  });
+
+  it('saves ruleset against the CFTO catalogue when navigated to with a CFTO catalogue query param', async () => {
+    jest.mocked(useGlobalRuleSetDetail).mockImplementation(() => {
+      return {
+        globalRuleSet: mockRuleData,
+        isLoading: false,
+        error: '',
+      };
+    });
+    (useRouter as jest.Mock).mockReturnValue({
+      ...mockRouter,
+      query: { catalogue: 'CFTO' },
+    });
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', {
+          name: 'Review changes',
+        })
+      ).toBeVisible();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Save changes' }));
+
+    expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(
+      expect.objectContaining({ catalogue: 'CFTO' })
+    );
+    expect(mockRouter.push).toHaveBeenCalledWith('/global?catalogue=CFTO');
+
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
 
   describe('Optimistic locking conflict', () => {
@@ -305,7 +347,9 @@ describe('Index', () => {
         expect.objectContaining({ version: 7 })
       );
       await waitFor(() =>
-        expect(mockRouter.push).toHaveBeenCalledWith('/global')
+        expect(mockRouter.push).toHaveBeenCalledWith(
+          '/global?catalogue=CLOTHING_AND_HOME'
+        )
       );
     });
 

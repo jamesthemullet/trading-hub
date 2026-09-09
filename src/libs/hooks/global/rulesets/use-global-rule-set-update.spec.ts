@@ -10,12 +10,20 @@ const baseUrl = 'http://localhost';
 const ruleSetId = '38760268-4e84-4bf8-a12e-e151bc18c44e';
 
 const v1Handler = jest.fn();
+const cftoHandler = jest.fn();
 
 const handlers = [
   http.put(
     `${baseUrl}/search/merchandising/v1/CLOTHING_AND_HOME/global/ruleset/${ruleSetId}`,
     async ({ request }) => {
       v1Handler(await request.json());
+      return HttpResponse.json({}, { status: 200 });
+    }
+  ),
+  http.put(
+    `${baseUrl}/search/merchandising/v1/CFTO/global/ruleset/${ruleSetId}`,
+    async ({ request }) => {
+      cftoHandler(await request.json());
       return HttpResponse.json({}, { status: 200 });
     }
   ),
@@ -50,11 +58,31 @@ describe('useGlobalRuleSetUpdate', () => {
         ruleSetId,
         ruleSet,
         version: 5,
+        catalogue: 'CLOTHING_AND_HOME',
       });
     });
 
     expect(res).toEqual({ status: 'success' });
     expect(v1Handler).toHaveBeenCalledWith(
+      expect.objectContaining({ version: 5 })
+    );
+  });
+
+  it('updates via the CFTO catalogue endpoint when catalogue is CFTO', async () => {
+    const { result } = renderHook(() => useGlobalRuleSetUpdate());
+
+    let res;
+    await act(async () => {
+      res = await result.current.saveGlobalRuleset({
+        ruleSetId,
+        ruleSet,
+        version: 5,
+        catalogue: 'CFTO',
+      });
+    });
+
+    expect(res).toEqual({ status: 'success' });
+    expect(cftoHandler).toHaveBeenCalledWith(
       expect.objectContaining({ version: 5 })
     );
   });
