@@ -17,7 +17,6 @@
 
 .mainContainerPanel {
   --product-search-panel-width: 360px;
-  border-top: 1px solid var(--color-role-outline-outline);
   margin: 0 var(--mns-spacing-1);
   display: flex;
   position: relative;

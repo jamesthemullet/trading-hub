@@ -242,7 +242,7 @@ describe('Search Rulesets', () => {
     });
     renderWithProviders(<RedirectRuleSets />);
 
-    const search = screen.getByPlaceholderText(/Search\.\.\./i);
+    const search = screen.getByPlaceholderText(/Search rules/i);
 
     await user.type(search, mockKeywords[0]);
 

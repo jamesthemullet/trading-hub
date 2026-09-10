@@ -544,7 +544,13 @@ export const Ruleset = ({
             )}
 
             {rulesetType === 'global' && (
-              <InfoBox text="You are currently editing all pages on the M&S website and app" />
+              <InfoBox
+                text={
+                  catalogue === 'CFTO'
+                    ? 'You are currently editing all CFTO pages on the M&S website and app'
+                    : 'You are currently editing all pages on the M&S website and app'
+                }
+              />
             )}
             {rulesetType !== 'global' && (
               <div>

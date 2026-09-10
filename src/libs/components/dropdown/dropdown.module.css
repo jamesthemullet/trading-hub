@@ -154,6 +154,10 @@
   }
 }
 
+main[data-is-ruleset-page='true'] .dropdownButton {
+  background-color: var(--color-surface-bright-surface-bright);
+}
+
 .flagContainer {
   display: flex;
   align-items: center;

@@ -1,5 +1,10 @@
 .tabsContainerWrapper {
   margin: 0 var(--mns-spacing-1);
+  border-bottom: 1px solid var(--color-state-disabled-on-disabled-on-dark);
+}
+
+main[data-is-ruleset-page='true'] .tabsContainerWrapper {
+  margin: 0 var(--mns-spacing-2);
 }
 
 .tabsWrapper {

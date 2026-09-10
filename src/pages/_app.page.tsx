@@ -17,6 +17,7 @@ import { setupGlobalErrorHandlers } from '@/libs/utils/dynatrace';
 
 import { accented } from 'accented';
 import type { AppProps } from 'next/app';
+import { usePathname } from 'next/navigation';
 import Script from 'next/script';
 import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
@@ -24,6 +25,9 @@ import sanitize from 'xss';
 
 import { Navigation } from '../libs/components/navigation/navigation';
 import styles from './_app.module.css';
+
+// Ruleset listing pages only (e.g. /category, /search, /global, /search/redirects)
+const RULESET_PAGE_PATTERN = /^\/(category|search|global|search\/redirects)$/;
 
 const theme = createTheme({
   components: {
@@ -72,6 +76,8 @@ export default function App({
   pageProps,
 }: AppProps<{ session: Session | null }>): ReactElement {
   const { session } = pageProps;
+  const pathname = usePathname();
+  const isRulesetPage = RULESET_PAGE_PATTERN.test(pathname);
 
   // istanbul ignore next
   useEffect(() => {
@@ -114,7 +120,11 @@ export default function App({
                   Skip to main content
                 </a>
                 <Navigation />
-                <main id="main-content" className={styles.main}>
+                <main
+                  id="main-content"
+                  className={styles.main}
+                  data-is-ruleset-page={isRulesetPage}
+                >
                   <Component {...pageProps} />
                 </main>
               </div>

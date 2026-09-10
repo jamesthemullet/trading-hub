@@ -6,6 +6,7 @@
 .dataTable {
   --row-height: 83px;
   min-height: calc(11 * var(--row-height)); /* 10 rows + 1 header row */
+  background: var(--color-surface-surface-container);
 }
 
 .tableRow {

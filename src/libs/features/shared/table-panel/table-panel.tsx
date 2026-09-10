@@ -194,7 +194,12 @@ export const TablePanel = <
   return (
     <div className={styles.wrapper}>
       <div className={styles.toolsContainer}>
-        <Search value={searchInputValue} onChange={handleSearchInputChange} />
+        <Search
+          name="Search rules"
+          value={searchInputValue}
+          onChange={handleSearchInputChange}
+          placeholder="Search rules"
+        />
         <CombinedDropdown
           variant={DropdownVariant.CountryFilter}
           onChange={(country) =>

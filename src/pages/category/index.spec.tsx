@@ -332,7 +332,7 @@ describe('Categories', () => {
 
     renderWithProviders(<Categories />);
 
-    const search = screen.getByPlaceholderText(/Search\.\.\./i);
+    const search = screen.getByPlaceholderText(/Search rules/i);
 
     await user.type(search, 'search-search');
 

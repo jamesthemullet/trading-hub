@@ -544,6 +544,24 @@ describe('Ruleset', () => {
     );
   });
 
+  it('should show CFTO specific info text for global rulesets scoped to the CFTO catalogue', () => {
+    renderWithProviders(
+      <Ruleset
+        {...defaultProps}
+        onCreateGlobalRuleset={jest.fn()}
+        onCancel={jest.fn()}
+        rulesetType="global"
+        catalogue="CFTO"
+      />
+    );
+
+    expect(
+      screen.getByText(
+        'You are currently editing all CFTO pages on the M&S website and app'
+      )
+    ).toBeInTheDocument();
+  });
+
   it('should edit a ruleset', async () => {
     const user = userEvent.setup();
     const mockSave = jest.fn();

@@ -162,7 +162,7 @@ describe('TablePanel', () => {
       />
     );
     await waitFor(() => {
-      expect(screen.getByPlaceholderText(/Search\.\.\./i)).toBeVisible();
+      expect(screen.getByPlaceholderText(/Search rules/i)).toBeVisible();
     });
   });
 
@@ -724,7 +724,7 @@ describe('TablePanel', () => {
 
       renderWithProviders(<TablePanel {...defaultProps} />);
 
-      const search = screen.getByPlaceholderText(/Search\.\.\./i);
+      const search = screen.getByPlaceholderText(/Search rules/i);
 
       await user.type(search, 'search-search');
 
@@ -775,7 +775,7 @@ describe('TablePanel', () => {
 
       expect(await screen.findByText('Page 4 of 8')).toBeVisible();
 
-      const search = screen.getByPlaceholderText(/Search\.\.\./i);
+      const search = screen.getByPlaceholderText(/Search rules/i);
 
       await user.type(search, 'search-search');
 
@@ -912,7 +912,7 @@ describe('TablePanel', () => {
         />
       );
 
-      const search = screen.getByPlaceholderText(/Search\.\.\./i);
+      const search = screen.getByPlaceholderText(/Search rules/i);
 
       await user.type(search, 'search-search');
 

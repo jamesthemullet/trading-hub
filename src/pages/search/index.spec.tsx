@@ -289,7 +289,7 @@ describe('Search Rulesets', () => {
     });
     renderWithProviders(<RuleSets />);
 
-    const search = screen.getByPlaceholderText(/Search\.\.\./i);
+    const search = screen.getByPlaceholderText(/Search rules/i);
 
     await user.type(search, mockSearchTerms[0]);
 

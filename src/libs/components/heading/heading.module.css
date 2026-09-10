@@ -8,6 +8,7 @@
   width: 100%;
   z-index: 3;
   height: var(--mns-spacing-5);
+  box-shadow: var(--elevation-action);
 
   @media (--mns-media-xxl-up) {
     padding: var(--mns-spacing-1) var(--mns-spacing-2);
