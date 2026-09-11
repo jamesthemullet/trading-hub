@@ -67,3 +67,4 @@ test-results.json
 
 *storybook.log
 biome.json
+/storybook-static/

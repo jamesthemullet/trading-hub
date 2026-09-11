@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v7
       - name: Check composite parameter for the reusable pipeline
         id: check-composite-vars
-        uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@v1.6.6
+        uses: DigitalInnovation/brightcloud/.github/actions/check-layer-runtime-type@v1.6.8
     outputs:
       linux-fx-version: ${{ steps.check-composite-vars.outputs.linux-fx-version }}
 
@@ -46,7 +46,7 @@ jobs:
     needs:
       - check-vars
     if: ${{ needs.check-vars.outputs.linux-fx-version != 'docker' }}
-    uses: DigitalInnovation/brightcloud/.github/workflows/tf-webapp-stack-oidc.yml@v1.6.6
+    uses: DigitalInnovation/brightcloud/.github/workflows/tf-webapp-stack-oidc.yml@v1.6.8
     with:
       TRIGGER_EVENT: ${{ github.event_name }}
     secrets:
@@ -60,7 +60,7 @@ jobs:
     needs:
       - check-vars
     if: ${{ needs.check-vars.outputs.linux-fx-version == 'docker' }}
-    uses: DigitalInnovation/brightcloud/.github/workflows/tf-webapp-container-stack-oidc.yml@v1.6.6
+    uses: DigitalInnovation/brightcloud/.github/workflows/tf-webapp-container-stack-oidc.yml@v1.6.8
     with:
       TRIGGER_EVENT: ${{ github.event_name }}
     secrets:
