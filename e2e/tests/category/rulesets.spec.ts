@@ -127,8 +127,8 @@ test.describe('Categories', () => {
     await checkAccessibility(page);
 
     await page.getByRole('button', { name: 'Edit', exact: true }).click();
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('Dresses');
+    await page.getByLabel('Search categories').click();
+    await page.getByLabel('Search categories').fill('Dresses');
     await page
       .getByText('SubCategory_429 | Dresses | l/women/dresses', { exact: true })
       .click();
@@ -186,8 +186,8 @@ test.describe('Categories', () => {
 
     await checkAccessibility(page);
 
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('Dresses');
+    await page.getByLabel('Search categories').click();
+    await page.getByLabel('Search categories').fill('Dresses');
     await page
       .getByText('IE_SubCategory_1002041 | Dresses | ie/l/women/dresses')
       .click();
@@ -231,8 +231,8 @@ test.describe('Categories', () => {
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Edit', exact: true }).click();
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('Dresses');
+    await page.getByLabel('Search categories').click();
+    await page.getByLabel('Search categories').fill('Dresses');
     await page.getByText('SubCategory_429 | Dresses | l/women/dresses').click();
 
     await page
@@ -241,18 +241,18 @@ test.describe('Categories', () => {
       })
       .click();
 
-    await page.getByPlaceholder('Search...').fill('Dresses');
+    await page.getByLabel('Search categories').fill('Dresses');
     await page
       .getByText('IE_SubCategory_7585102 | Dresses | ie/l/baby/dresses')
       .click();
 
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('Dresses');
+    await page.getByLabel('Search categories').click();
+    await page.getByLabel('Search categories').fill('Dresses');
     await page
       .getByText('IE_SubCategory_1002041 | Dresses | ie/l/women/dresses')
       .click();
 
-    await page.getByPlaceholder('Search...').click();
+    await page.getByLabel('Search categories').click();
 
     await checkAccessibility(page);
 
@@ -636,8 +636,8 @@ test.describe('Categories', () => {
       ).toBeVisible();
 
       await page.getByRole('button', { name: 'Edit', exact: true }).click();
-      await page.getByPlaceholder('Search...').click();
-      await page.getByPlaceholder('Search...').fill('Dresses');
+      await page.getByLabel('Search categories').click();
+      await page.getByLabel('Search categories').fill('Dresses');
       await page
         .getByText('SubCategory_429 | Dresses | l/women/dresses', {
           exact: true,

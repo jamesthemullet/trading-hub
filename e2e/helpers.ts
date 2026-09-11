@@ -27,7 +27,7 @@ export const searchAndWaitForResults = async (
   const resultsCount = page.getByTestId('results count');
   const initialCount = await resultsCount.textContent();
 
-  const searchInput = page.getByPlaceholder('Search...');
+  const searchInput = page.getByLabel('Search rules');
   await searchInput.click();
   await searchInput.fill(searchTerm);
 

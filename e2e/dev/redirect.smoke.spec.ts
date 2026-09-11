@@ -57,8 +57,8 @@ test.describe('Search Redirect', () => {
       page.getByRole('heading', { name: 'Keyword Redirect' })
     ).toBeVisible();
 
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('Gravy');
+    await page.getByLabel('Search rules').click();
+    await page.getByLabel('Search rules').fill('Gravy');
     await expect(page.getByText('Gravy').first()).toBeVisible();
   });
 
@@ -96,8 +96,8 @@ test.describe('Search Redirect', () => {
 
   test('duplicates and edits a rule', async ({ page }) => {
     await page.goto('/search/redirects');
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('Gravy');
+    await page.getByPlaceholder('Search rules').click();
+    await page.getByPlaceholder('Search rules').fill('Gravy');
     await expect(page.getByText('Gravy').first()).toBeVisible();
 
     await page.getByRole('button', { name: 'More options' }).first().click();

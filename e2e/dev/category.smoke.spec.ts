@@ -47,8 +47,8 @@ test.describe('Category Ranking', () => {
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Edit', exact: true }).click();
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill(TEST_CATEGORY_ID);
+    await page.getByLabel('Search categories').click();
+    await page.getByLabel('Search categories').fill(TEST_CATEGORY_ID);
 
     await expect(page.getByText(TEST_CATEGORY_NAME)).toBeVisible();
     await page.getByText(TEST_CATEGORY_NAME).click();
@@ -278,8 +278,8 @@ test.describe('Category Ranking', () => {
 
     await page.getByRole('button', { name: 'Edit', exact: true }).click();
 
-    await page.getByPlaceholder('Search...').click();
-    await page.getByPlaceholder('Search...').fill('Scarves');
+    await page.getByLabel('Search categories').click();
+    await page.getByLabel('Search categories').fill('Scarves');
 
     await page
       .getByRole('button', { name: 'Select category IE_SubCategory_1012341' })
