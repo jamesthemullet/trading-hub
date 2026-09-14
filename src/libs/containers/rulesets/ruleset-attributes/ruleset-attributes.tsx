@@ -7,6 +7,7 @@ import type {
   MerchandisingIncludeExclude,
   MerchandisingNumericBoostBury,
   MerchandisingRules,
+  SearchMerchandisingProductsV1ParamsEnum,
 } from '@/libs/api';
 import { Button, Typography } from '@/libs/components';
 import { AlphanumericAttribute } from '@/libs/components/ruleset-attributes/alphanumeric-attribute';
@@ -20,6 +21,7 @@ import styles from './ruleset-attributes.module.css';
 
 type RulesetAttributesProps = {
   countryCode: MerchandisingCountryCode;
+  catalogue?: SearchMerchandisingProductsV1ParamsEnum;
   categories?: string[];
   searchTerms?: string[];
   merchandisingRules: MerchandisingRules;
@@ -30,6 +32,7 @@ type RulesetAttributesProps = {
 
 export const RulesetAttributes = ({
   countryCode,
+  catalogue,
   categories,
   merchandisingRules,
   dispatch,
@@ -327,6 +330,7 @@ export const RulesetAttributes = ({
         onCloseModal={handleCloseModal}
         dispatch={dispatch}
         countryCode={countryCode}
+        catalogue={catalogue}
         categories={categories}
         searchTerms={searchTerms}
         editData={editData}

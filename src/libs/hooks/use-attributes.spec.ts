@@ -124,15 +124,25 @@ const mockedIENumericResponse: MerchandisingAttributesResponse = {
   ],
 };
 
+const mockedCftoResponse: MerchandisingAttributesResponse = {
+  attributes: [
+    {
+      type: 'alphanumeric',
+      name: 'CFTO Attribute',
+      values: [{ value: 'Foo' }],
+    },
+  ],
+};
+
 const server = setupServer(
   http.get(
-    `${baseUrl}/search/beta/merchandising/attributes`,
+    `${baseUrl}/search/merchandising/v1/CLOTHING_AND_HOME/attributes`,
     async ({ request }) => {
       const url = new URL(request.url);
-      const catalogue = url.searchParams.get('catalogue');
+      const country = url.searchParams.get('country');
       const type = url.searchParams.get('type');
 
-      if (catalogue === 'MANDSIE') {
+      if (country === 'IE') {
         return HttpResponse.json(
           type === 'numeric' ? mockedIENumericResponse : mockedIEResponse
         );
@@ -182,6 +192,30 @@ describe('use-attributes', () => {
       );
       await waitFor(() => {
         expect(result.current.attributes).toEqual([]);
+      });
+    });
+
+    it('should request the CFTO catalogue when specified', async () => {
+      // Only registered for /v1/CFTO/attributes, so a dropped/ignored catalogue falls through to the CLOTHING_AND_HOME handler and fails this assertion
+      server.use(
+        http.get(`${baseUrl}/search/merchandising/v1/CFTO/attributes`, () =>
+          HttpResponse.json(mockedCftoResponse)
+        )
+      );
+
+      const categories = ['SubCategory_429'];
+      const { result } = renderHook(() =>
+        useAttributes({
+          categories,
+          countryCode: 'UK',
+          type: 'alphanumeric',
+          catalogue: 'CFTO',
+        })
+      );
+      await waitFor(() => {
+        expect(result.current.attributes).toEqual(
+          mockedCftoResponse.attributes
+        );
       });
     });
 
@@ -245,8 +279,9 @@ describe('use-attributes', () => {
     it('should return errors when api fails', async () => {
       const categories = undefined;
       server.use(
-        http.get(`${baseUrl}/search/beta/merchandising/attributes`, () =>
-          HttpResponse.error()
+        http.get(
+          `${baseUrl}/search/merchandising/v1/CLOTHING_AND_HOME/attributes`,
+          () => HttpResponse.error()
         )
       );
       const { result } = renderHook(() =>

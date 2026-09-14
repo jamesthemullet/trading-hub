@@ -631,6 +631,51 @@ describe('DataTable', () => {
       });
     });
 
+    it('should not render the edit facet rule link for a CFTO global ruleset', async () => {
+      const user = userEvent.setup();
+
+      renderWithProviders(
+        <DataTable
+          {...defaultProps}
+          ruleType={RuleType.Global}
+          rows={[{ ...rows[0], url: 'path/to/ruleset?catalogue=CFTO' }]}
+        />
+      );
+
+      await user.click(
+        screen.getAllByRole('button', { name: 'More options' })[0]
+      );
+
+      expect(
+        screen.queryByRole('link', { name: 'Edit facet rule' })
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByRole('link', { name: 'Edit ranking rule' })
+      ).toBeInTheDocument();
+    });
+
+    it('should render the edit facet rule link for a non-CFTO global ruleset', async () => {
+      const user = userEvent.setup();
+
+      renderWithProviders(
+        <DataTable
+          {...defaultProps}
+          ruleType={RuleType.Global}
+          rows={[
+            { ...rows[0], url: 'path/to/ruleset?catalogue=CLOTHING_AND_HOME' },
+          ]}
+        />
+      );
+
+      await user.click(
+        screen.getAllByRole('button', { name: 'More options' })[0]
+      );
+
+      expect(
+        screen.getByRole('link', { name: 'Edit facet rule' })
+      ).toBeInTheDocument();
+    });
+
     it('should track editing a ranking rule', async () => {
       const user = userEvent.setup();
 

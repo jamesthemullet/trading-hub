@@ -1,20 +1,32 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import type { MerchandisingReturnedGlobalRuleSet } from '@/libs/api';
+import type {
+  GetGlobalRuleSetsLiteParamsCatalogueEnum,
+  MerchandisingReturnedGlobalRuleSet,
+} from '@/libs/api';
 import { search } from '@/libs/api';
 import { EMPTY_MERCHANDISING_RULES } from '@/libs/hooks/utils/constants';
 import { handleError } from '@/libs/hooks/utils/error';
 
+/**
+ * The catalogue field is present on the beta global ruleset response at
+ * runtime but is not yet declared in api.yml, so it's not part of the
+ * generated MerchandisingReturnedGlobalRuleSet type.
+ */
+export type GlobalRuleSetWithCatalogue = MerchandisingReturnedGlobalRuleSet & {
+  catalogue?: GetGlobalRuleSetsLiteParamsCatalogueEnum;
+};
+
 export const useGlobalRuleSetDetail = (
   id: string
 ): {
-  globalRuleSet: MerchandisingReturnedGlobalRuleSet;
+  globalRuleSet: GlobalRuleSetWithCatalogue;
   error: string;
   isLoading: boolean;
 } => {
   const api = useMemo(() => search(), []);
   const [globalRuleSet, setGlobalRuleSet] =
-    useState<MerchandisingReturnedGlobalRuleSet>({
+    useState<GlobalRuleSetWithCatalogue>({
       id: '',
       isEnabled: false,
       lastChanged: {

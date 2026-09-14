@@ -223,6 +223,10 @@ export const DataTable = ({
               }: Row) => {
                 const isOptionDropdownOpen = optionToggle === id;
                 const isRowFavourite = favouriteIds.includes(id);
+                const isCftoGlobalRuleset =
+                  ruleType === RuleType.Global &&
+                  new URLSearchParams(url.split('?')[1]).get('catalogue') ===
+                    'CFTO';
                 const favouriteActionLabel = isRowFavourite
                   ? 'Remove from favourites'
                   : 'Add to favourites';
@@ -447,21 +451,23 @@ export const DataTable = ({
                                 >
                                   {editViewText} ranking rule
                                 </Link>
-                                <Link
-                                  className={styles.tableLink}
-                                  href={getFacetRoute(
-                                    basePath.replace('/', '') as FacetType,
-                                    'edit',
-                                    id
-                                  )}
-                                  onClick={() =>
-                                    track({
-                                      event: `${editViewText} ${ruleType} facet rule`,
-                                    })
-                                  }
-                                >
-                                  {editViewText} facet rule
-                                </Link>
+                                {!isCftoGlobalRuleset && (
+                                  <Link
+                                    className={styles.tableLink}
+                                    href={getFacetRoute(
+                                      basePath.replace('/', '') as FacetType,
+                                      'edit',
+                                      id
+                                    )}
+                                    onClick={() =>
+                                      track({
+                                        event: `${editViewText} ${ruleType} facet rule`,
+                                      })
+                                    }
+                                  >
+                                    {editViewText} facet rule
+                                  </Link>
+                                )}
                               </>
                             )}
                             {ruleType === RuleType.Redirect && (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import type {
+  GetMerchandisingAttributesV1ParamsEnum,
   MerchandisingAttributeResponseItem,
   MerchandisingAttributesResponse,
   MerchandisingAttributeType,
@@ -11,19 +12,21 @@ import { search } from '@/libs/api';
 import uniqBy from 'lodash/uniqBy';
 
 import {
-  convertCategoryIdToCatalogue,
-  convertCountryCodeToCatalogues,
-} from '../utils/convert-country-code-to-catalogues';
+  convertCategoryIdToCountry,
+  convertCountryCodeToCountries,
+} from '../utils/convert-country-code-to-countries';
 
 type Props = {
   countryCode: MerchandisingCountryCode;
   type: MerchandisingAttributeType;
+  catalogue?: GetMerchandisingAttributesV1ParamsEnum;
   categories?: string[];
   searchTerms?: string[];
 };
 
 export const useAttributes = ({
   categories,
+  catalogue = 'CLOTHING_AND_HOME',
   countryCode,
   searchTerms,
   type,
@@ -41,23 +44,23 @@ export const useAttributes = ({
       try {
         setFetchError('');
 
-        const catalogues = convertCountryCodeToCatalogues(countryCode);
+        const countries = convertCountryCodeToCountries(countryCode);
         const promises = categories?.length
           ? categories.map((categoryId) =>
               search()
-                .getMerchandisingAttributes({
+                .getMerchandisingAttributesV1(catalogue, {
                   categoryId,
                   type,
-                  catalogue: convertCategoryIdToCatalogue(categoryId),
+                  country: convertCategoryIdToCountry(categoryId),
                 })
                 .then((response) => response.data.attributes)
             )
-          : catalogues.map((catalogue) =>
+          : countries.map((country) =>
               search()
-                .getMerchandisingAttributes({
+                .getMerchandisingAttributesV1(catalogue, {
                   searchTerm: searchTerms,
                   type,
-                  catalogue,
+                  country,
                 })
                 .then((response) => response.data.attributes)
             );
@@ -100,7 +103,7 @@ export const useAttributes = ({
     };
 
     void asyncCall();
-  }, [categories, countryCode, searchTerms, type]);
+  }, [categories, catalogue, countryCode, searchTerms, type]);
 
   return { attributes, fetchError };
 };

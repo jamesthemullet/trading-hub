@@ -55,30 +55,11 @@ test.describe('Keyword search', () => {
       }
     );
     await page.route(
-      '*/**/api/search/beta/merchandising/attributes?searchTerm=joggers&type=numeric&catalogue=MANDSUK',
-      async (route) => {
-        const json = mockCategoryNumericAttributes;
-        await route.fulfill({ status: 200, json });
-      }
-    );
-    await page.route(
-      '*/**/api/search/beta/merchandising/attributes?searchTerm=joggers&type=alphanumeric&catalogue=MANDSUK',
-      async (route) => {
-        const json = mockCategoryAlphanumericAttributes;
-        await route.fulfill({ status: 200, json });
-      }
-    );
-    await page.route(
-      '*/**/api/search/beta/merchandising/attributes?searchTerm=joggers&type=numeric&catalogue=MANDSIE',
-      async (route) => {
-        const json = mockCategoryNumericAttributes;
-        await route.fulfill({ status: 200, json });
-      }
-    );
-    await page.route(
-      '*/**/api/search/beta/merchandising/attributes?searchTerm=joggers&type=alphanumeric&catalogue=MANDSIE',
-      async (route) => {
-        const json = mockCategoryAlphanumericAttributes;
+      '*/**/api/search/merchandising/v1/CLOTHING_AND_HOME/attributes*',
+      async (route, request) => {
+        const json = request.url().includes('type=numeric')
+          ? mockCategoryNumericAttributes
+          : mockCategoryAlphanumericAttributes;
         await route.fulfill({ status: 200, json });
       }
     );

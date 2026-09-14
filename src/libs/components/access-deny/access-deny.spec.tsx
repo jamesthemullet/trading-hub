@@ -31,4 +31,14 @@ describe('AccessDeny', () => {
     );
     expect(message).not.toHaveTextContent('"');
   });
+
+  it('renders the custom message when provided instead of the default access denied text', () => {
+    renderWithProviders(
+      <AccessDeny message="Facet rules cannot be edited for the CFTO catalogue." />
+    );
+
+    expect(
+      screen.getByText('Facet rules cannot be edited for the CFTO catalogue.')
+    ).toBeInTheDocument();
+  });
 });

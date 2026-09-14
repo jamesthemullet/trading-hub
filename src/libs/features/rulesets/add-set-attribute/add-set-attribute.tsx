@@ -1,6 +1,9 @@
 import type { ReactElement } from 'react';
 
-import type { MerchandisingCountryCode } from '@/libs/api';
+import type {
+  MerchandisingCountryCode,
+  SearchMerchandisingProductsV1ParamsEnum,
+} from '@/libs/api';
 import { ErrorMessage } from '@/libs/components';
 import type { AttributeEdit, RulesetAttribute } from '@/libs/components/types';
 import { useAttributes } from '@/libs/hooks';
@@ -11,6 +14,7 @@ type Props = {
   onCancel: () => void;
   onSelect: (attribute: RulesetAttribute) => void;
   countryCode: MerchandisingCountryCode;
+  catalogue?: SearchMerchandisingProductsV1ParamsEnum;
   categories?: string[];
   searchTerms?: string[];
   isEditMode: boolean;
@@ -21,6 +25,7 @@ export const AddSetAttribute = ({
   onCancel,
   onSelect,
   countryCode,
+  catalogue,
   categories,
   searchTerms,
   isEditMode,
@@ -32,6 +37,7 @@ export const AddSetAttribute = ({
       searchTerms,
       type: 'numeric',
       countryCode,
+      catalogue,
     });
   const {
     attributes: alphanumericAttributes,
@@ -41,6 +47,7 @@ export const AddSetAttribute = ({
     searchTerms,
     type: 'alphanumeric',
     countryCode,
+    catalogue,
   });
 
   return (

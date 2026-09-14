@@ -288,31 +288,95 @@ describe('Global Facet Management Editing', () => {
     );
   });
 
-  it('saves against the CFTO catalogue when navigated to with a CFTO catalogue query param', async () => {
+  it('does not allow editing facet rules when navigated to with a CFTO catalogue query param', () => {
     (useRouter as jest.Mock).mockReturnValue({
       ...mockRouter,
       query: { ...mockRouter.query, catalogue: 'CFTO' },
     });
-    const user = userEvent.setup({ delay: null });
 
     renderWithProviders(<Page id={ruleSetId} />);
 
-    await user.click(screen.getByRole('button', { name: 'Save' }));
+    expect(
+      screen.getByText('Facet rules cannot be edited for the CFTO catalogue.')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Save' })
+    ).not.toBeInTheDocument();
+  });
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('heading', {
-          name: 'Review changes',
-        })
-      ).toBeVisible();
+  it('does not allow editing facet rules when the ruleset itself belongs to the CFTO catalogue', () => {
+    jest.mocked(useGlobalRuleSetDetail).mockReturnValue({
+      globalRuleSet: {
+        id: '123',
+        catalogue: 'CFTO',
+        isEnabled: true,
+        lastChanged: {
+          date: '2021-01-01',
+          user: 'Test user',
+        },
+        rules: mockMerchandisingRules,
+        facets: [],
+        excludedFacets: { facets: [] },
+      },
+      error: '',
+      isLoading: false,
     });
 
-    await user.click(screen.getByRole('button', { name: 'Save changes' }));
+    renderWithProviders(<Page id={ruleSetId} />);
 
-    expect(mockUpdateGlobalRuleSet).toHaveBeenCalledWith(
-      expect.objectContaining({ catalogue: 'CFTO' })
+    expect(
+      screen.getByText('Facet rules cannot be edited for the CFTO catalogue.')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Save' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not allow viewing facet history for a CFTO ruleset even though the history route omits the catalogue', () => {
+    (useRouter as jest.Mock).mockReturnValue({
+      ...mockRouter,
+      query: { history: 'true', historyId: 'history-change-id' },
+    });
+
+    jest.mocked(useGlobalRuleSetDetail).mockImplementation((requestedId) =>
+      requestedId
+        ? {
+            globalRuleSet: {
+              id: '123',
+              catalogue: 'CFTO',
+              isEnabled: true,
+              lastChanged: {
+                date: '2021-01-01',
+                user: 'Test user',
+              },
+              rules: mockMerchandisingRules,
+              facets: [],
+              excludedFacets: { facets: [] },
+            },
+            error: '',
+            isLoading: false,
+          }
+        : {
+            globalRuleSet: {
+              id: '',
+              isEnabled: false,
+              lastChanged: { date: '', user: '' },
+              rules: mockMerchandisingRules,
+              facets: [],
+            },
+            error: '',
+            isLoading: false,
+          }
     );
-    expect(mockRouter.push).toHaveBeenCalledWith('/global?catalogue=CFTO');
+
+    renderWithProviders(<Page id={ruleSetId} />);
+
+    expect(
+      screen.getByText('Facet rules cannot be edited for the CFTO catalogue.')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Cancel' })
+    ).not.toBeInTheDocument();
   });
 
   it('sends the v1 flag + version and shows the conflict modal on a 409', async () => {

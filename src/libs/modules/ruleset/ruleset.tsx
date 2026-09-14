@@ -649,6 +649,7 @@ export const Ruleset = ({
                           // istanbul ignore next
                           'UK_IE'
                         }
+                        catalogue={catalogue}
                         dispatch={dispatch}
                         searchTerms={rulesetSearchTerms}
                         isWriteEnabled={isWriteEnabled}

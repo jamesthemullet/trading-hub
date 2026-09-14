@@ -6,6 +6,7 @@ import type {
   MerchandisingCountryCode,
   MerchandisingIncludeExclude,
   MerchandisingNumericBoostBury,
+  SearchMerchandisingProductsV1ParamsEnum,
 } from '@/libs/api';
 import {
   type AttributeEdit,
@@ -21,6 +22,7 @@ const MODAL_WIDTH = 435;
 type RulesetAttributesModalProps = {
   isModalOpen: boolean;
   countryCode: MerchandisingCountryCode;
+  catalogue?: SearchMerchandisingProductsV1ParamsEnum;
   categories?: string[];
   searchTerms?: string[];
   editData: AttributeEdit | null;
@@ -31,6 +33,7 @@ export const RulesetAttributesModal = ({
   isModalOpen,
   categories,
   countryCode,
+  catalogue,
   searchTerms,
   editData,
   onCloseModal,
@@ -261,6 +264,7 @@ export const RulesetAttributesModal = ({
           <AddSetAttribute
             categories={categories}
             countryCode={countryCode}
+            catalogue={catalogue}
             searchTerms={searchTerms}
             onCancel={onCloseModal}
             onSelect={handleSave}

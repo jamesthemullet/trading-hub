@@ -32,7 +32,7 @@ const Page = ({ id }: PageProps): ReactElement => {
   const isHistoryView = router.query.history === 'true';
   const currentPage = Number(router.query.currentPage) || 1;
   const currentPageSize = Number(router.query.currentPageSize) || 20;
-  const catalogue =
+  const catalogueFromQuery =
     router.query.catalogue?.toString() === 'CFTO'
       ? 'CFTO'
       : 'CLOTHING_AND_HOME';
@@ -41,7 +41,9 @@ const Page = ({ id }: PageProps): ReactElement => {
     globalRuleSet,
     error: globalRulesetError,
     isLoading: isCurrentLoading,
-  } = useGlobalRuleSetDetail(isHistoryView ? '' : id);
+  } = useGlobalRuleSetDetail(id);
+
+  const catalogue = globalRuleSet.catalogue ?? catalogueFromQuery;
 
   const historyData = useGlobalHistory(
     isHistoryView ? id : '',
@@ -109,6 +111,12 @@ const Page = ({ id }: PageProps): ReactElement => {
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
+  }
+
+  if (catalogue === 'CFTO') {
+    return (
+      <AccessDeny message="Facet rules cannot be edited for the CFTO catalogue." />
+    );
   }
 
   return (
