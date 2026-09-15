@@ -3,6 +3,9 @@
   "assigneesFromCodeOwners": true,
   "schedule": ["after 5pm every weekday", "before 9am every weekday"],
   "prConcurrentLimit": 3,
+  "toolSettings": {
+    "nodeMaxMemory": 2048
+  },
   "minimumReleaseAge": "1 day",
   "lockFileMaintenance": {
     "enabled": true
