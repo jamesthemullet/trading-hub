@@ -375,6 +375,11 @@ describe('GlobalFacetAttributesPageLayout', () => {
     await user.click(boostedCheckbox);
     await user.click(algoCheckbox);
     await user.click(excludedCheckbox);
+    await waitFor(() => {
+      expect(boostedCheckbox).toBeChecked();
+      expect(algoCheckbox).toBeChecked();
+      expect(excludedCheckbox).toBeChecked();
+    });
 
     const mergeButton = screen.getByRole('button', { name: 'Merge' });
     await waitFor(() => {
@@ -387,13 +392,13 @@ describe('GlobalFacetAttributesPageLayout', () => {
     });
 
     expect(
-      screen.getByLabelText('Remove merged facet for 13 - 14.4')
+      await screen.findByLabelText('Remove merged facet for 13 - 14.4')
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText('Remove merged facet for 14.5 - 20')
+      await screen.findByLabelText('Remove merged facet for 14.5 - 20')
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText('Remove merged facet for Over 20')
+      await screen.findByLabelText('Remove merged facet for Over 20')
     ).toBeInTheDocument();
   });
 
