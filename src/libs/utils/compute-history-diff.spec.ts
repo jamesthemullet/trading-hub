@@ -882,6 +882,19 @@ describe('computeHistoryDiff', () => {
       expect(result).toContain("'colour' facet set to algo control");
     });
 
+    it('ignores excluded facets without an id', () => {
+      const current = {
+        ...baseSnapshot,
+        excludedFacets: { facets: [{ id: undefined }] },
+      };
+      const previous = {
+        ...baseSnapshot,
+        excludedFacets: { facets: [{ id: undefined }] },
+      };
+
+      expect(computeHistoryDiff(current, previous)).toEqual([]);
+    });
+
     it('labels boosted values added and removed within a facet', () => {
       const current = {
         ...baseSnapshot,

@@ -1,7 +1,6 @@
 import type {
   MerchandisingAlphanumericBoostBuryField,
   MerchandisingBlockedProduct,
-  MerchandisingExcludedFacet,
   MerchandisingExcludedFacets,
   MerchandisingNumericBoostBury,
   MerchandisingPinnedProduct,
@@ -20,7 +19,6 @@ type AlphanumericRule = {
   weight?: number;
 };
 type FacetRule = MerchandisingRuleSetFacetConfigWithId;
-type ExcludedFacetRule = MerchandisingExcludedFacet;
 
 export type RulesetSnapshot = {
   rules?: {
@@ -192,11 +190,11 @@ const diffDate = (
 
 const getFacetStatus = (
   id: string,
-  includedFacets: FacetRule[] = [],
-  excludedFacets: ExcludedFacetRule[] = []
+  includedFacetIds: ReadonlySet<string>,
+  excludedFacetIds: ReadonlySet<string>
 ): 'included' | 'algo control' | 'excluded' => {
-  if (includedFacets.some((facet) => facet.id === id)) return 'included';
-  if (excludedFacets.some((facet) => facet.id === id)) return 'excluded';
+  if (includedFacetIds.has(id)) return 'included';
+  if (excludedFacetIds.has(id)) return 'excluded';
   return 'algo control';
 };
 
@@ -211,29 +209,37 @@ const diffFacetStatus = (
   const previousById = new Map(
     (previous.facets ?? []).map((facet) => [facet.id, facet])
   );
+  const currentIncludedIds = new Set(currentById.keys());
+  const previousIncludedIds = new Set(previousById.keys());
+  const currentExcludedIds = new Set(
+    (current.excludedFacets?.facets ?? []).flatMap((facet) =>
+      facet.id === undefined ? [] : [facet.id]
+    )
+  );
+  const previousExcludedIds = new Set(
+    (previous.excludedFacets?.facets ?? []).flatMap((facet) =>
+      facet.id === undefined ? [] : [facet.id]
+    )
+  );
 
   const allIds = new Set([
-    ...(current.facets ?? []).map((facet) => facet.id),
-    ...(previous.facets ?? []).map((facet) => facet.id),
-    ...(current.excludedFacets?.facets ?? [])
-      .map((facet) => facet.id)
-      .filter((id): id is string => id !== undefined),
-    ...(previous.excludedFacets?.facets ?? [])
-      .map((facet) => facet.id)
-      .filter((id): id is string => id !== undefined),
+    ...currentIncludedIds,
+    ...previousIncludedIds,
+    ...currentExcludedIds,
+    ...previousExcludedIds,
   ]);
 
   return [...allIds].flatMap((id) => {
     const name = facetLabel(id);
     const currentStatus = getFacetStatus(
       id,
-      current.facets,
-      current.excludedFacets?.facets
+      currentIncludedIds,
+      currentExcludedIds
     );
     const previousStatus = getFacetStatus(
       id,
-      previous.facets,
-      previous.excludedFacets?.facets
+      previousIncludedIds,
+      previousExcludedIds
     );
 
     const statusChange =
@@ -247,25 +253,29 @@ const diffFacetStatus = (
     const prevBoosted = prev?.boosted ?? [];
     const curExcluded = cur?.excludedValues ?? [];
     const prevExcluded = prev?.excludedValues ?? [];
+    const curBoostedSet = new Set(curBoosted);
+    const prevBoostedSet = new Set(prevBoosted);
+    const curExcludedSet = new Set(curExcluded);
+    const prevExcludedSet = new Set(prevExcluded);
 
     const boostedAdded = curBoosted
       .filter(
-        (value) => !prevBoosted.includes(value) && !curExcluded.includes(value)
+        (value) => !prevBoostedSet.has(value) && !curExcludedSet.has(value)
       )
       .map((value) => `'${value}' value set to included in '${name}' facet`);
     const boostedRemoved = prevBoosted
       .filter(
-        (value) => !curBoosted.includes(value) && !curExcluded.includes(value)
+        (value) => !curBoostedSet.has(value) && !curExcludedSet.has(value)
       )
       .map(
         (value) => `'${value}' value set to algo control in '${name}' facet`
       );
     const excludedAdded = curExcluded
-      .filter((value) => !prevExcluded.includes(value))
+      .filter((value) => !prevExcludedSet.has(value))
       .map((value) => `'${value}' value set to excluded in '${name}' facet`);
     const excludedRemoved = prevExcluded
       .filter(
-        (value) => !curExcluded.includes(value) && !curBoosted.includes(value)
+        (value) => !curExcludedSet.has(value) && !curBoostedSet.has(value)
       )
       .map(
         (value) => `'${value}' value set to algo control in '${name}' facet`
