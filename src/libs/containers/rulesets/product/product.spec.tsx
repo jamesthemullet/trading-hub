@@ -469,6 +469,22 @@ describe('Product', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('should hide edit position when pinned products count is missing', () => {
+      renderWithProviders(
+        <Product
+          {...productProps}
+          metadata={{ ...productProps.metadata, isPinned: true }}
+          pinnedProductsCount={undefined}
+        />
+      );
+
+      openActionsMenu(screen);
+
+      expect(
+        screen.queryByRole('button', { name: 'Edit position' })
+      ).not.toBeInTheDocument();
+    });
+
     it('should only allow pinning from position 1', async () => {
       const expectedError =
         'Please choose a position sequentially starting from 1';

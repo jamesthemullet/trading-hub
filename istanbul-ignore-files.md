@@ -3,7 +3,7 @@
 - [x] src/libs/components/ruleset-attributes/alphanumeric-attribute.tsx (1)
 - [x] src/libs/components/ruleset-attributes/numeric-attribute.tsx (1)
 - [x] src/libs/containers/facets/facet-row/facet-row.tsx (3)
-- [ ] src/libs/containers/rulesets/product/product.tsx (3)
+- [ ] src/libs/containers/rulesets/product/product.tsx (2)
 - [ ] src/libs/containers/rulesets/ruleset-attributes/ruleset-attributes.tsx (7)
 - [ ] src/libs/containers/shared/calendar/date-picker-single.tsx (1)
 - [ ] src/libs/containers/shared/calendar/date-picker.tsx (1)

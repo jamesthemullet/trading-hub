@@ -231,8 +231,7 @@ export const Product = ({
     dispatch,
     onConfirm: () => setIsMenuOpen(false),
   });
-  const totalPinnedProducts =
-    pinnedProductsCount || /* istanbul ignore next */ 0;
+  const totalPinnedProducts = pinnedProductsCount ?? 0;
   const slotPositionInputId = `slot-position-${id}`;
   const boostWeightInputId = `boost-weight-${id}`;
   const canOpenPinPositionMenu =
