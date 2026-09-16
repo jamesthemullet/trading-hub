@@ -89,17 +89,25 @@ export const CategoryAndSearchFacetsPanelPageLayout = ({
     facetLocalState.excludedValues
   );
 
-  const algoControlValues = attributeValues
-    .filter((value) => !boostedValues.includes(value.displayValue))
-    .filter((value) => !excludedFacetValues.includes(value.displayValue));
-  const includedValues = boostedValues.map((value, index) => ({
-    displayValue: value,
-    order: index + 1,
-  }));
+  const { algoControlValues, includedValues, excludedValues } = useMemo(() => {
+    const boostedValueSet = new Set(boostedValues);
+    const excludedValueSet = new Set(excludedFacetValues);
 
-  const excludedValues = attributeValues.filter((value) =>
-    excludedFacetValues.includes(value.displayValue)
-  );
+    return {
+      algoControlValues: attributeValues.filter(
+        (value) =>
+          !boostedValueSet.has(value.displayValue) &&
+          !excludedValueSet.has(value.displayValue)
+      ),
+      includedValues: boostedValues.map((value, index) => ({
+        displayValue: value,
+        order: index + 1,
+      })),
+      excludedValues: attributeValues.filter((value) =>
+        excludedValueSet.has(value.displayValue)
+      ),
+    };
+  }, [attributeValues, boostedValues, excludedFacetValues]);
 
   const isUndoButtonVisible = facetType === FacetType.Category;
 
