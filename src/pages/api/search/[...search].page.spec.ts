@@ -140,6 +140,11 @@ const performPost = async (
   return res;
 };
 
+const createClosedStreamError = (): Error & { code: string } =>
+  Object.assign(new Error('Cannot pipe to a closed or destroyed stream'), {
+    code: 'ERR_STREAM_UNABLE_TO_PIPE',
+  });
+
 describe('Search api proxy', () => {
   beforeAll(() => {
     server.listen();
@@ -380,6 +385,85 @@ describe('Search api proxy', () => {
       );
       expect(res.destroy).toHaveBeenCalledWith(streamError);
       expect(res.json).not.toHaveBeenCalled();
+    });
+
+    it.each(['closed', 'destroyed', 'writableEnded'] as const)(
+      'does not re-destroy a %s response after a streaming error',
+      async (closedProperty) => {
+        const response = responses[0][0];
+        const streamError = new Error('stream boom');
+        jest.mocked(pipeline).mockImplementationOnce(async (_source, dest) => {
+          Object.defineProperties(dest, {
+            [closedProperty]: { value: true, configurable: true },
+            headersSent: { value: true, configurable: true },
+          });
+          throw streamError;
+        });
+        const consoleErrorSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation();
+
+        const res = await performGet(
+          '/search/beta/merchandising/facet',
+          response
+        );
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          'Error streaming response from merchandising API',
+          streamError
+        );
+        expect(res.destroy).not.toHaveBeenCalled();
+        expect(res.json).not.toHaveBeenCalled();
+      }
+    );
+
+    it.each(['closed', 'destroyed', 'writableEnded'] as const)(
+      'does not log or re-destroy when the response stream is already %s',
+      async (closedProperty) => {
+        const response = responses[0][0];
+        const streamError = createClosedStreamError();
+        jest.mocked(pipeline).mockImplementationOnce(async (_source, dest) => {
+          Object.defineProperty(dest, closedProperty, {
+            value: true,
+            configurable: true,
+          });
+          throw streamError;
+        });
+        const consoleErrorSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation();
+
+        const res = await performGet(
+          '/search/beta/merchandising/facet',
+          response
+        );
+
+        expect(consoleErrorSpy).not.toHaveBeenCalled();
+        expect(res.destroy).not.toHaveBeenCalled();
+        expect(res.json).not.toHaveBeenCalled();
+      }
+    );
+
+    it('handles an unable-to-pipe error when the response stream is open', async () => {
+      const response = responses[0][0];
+      const streamError = createClosedStreamError();
+      jest.mocked(pipeline).mockRejectedValueOnce(streamError);
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      const res = await performGet(
+        '/search/beta/merchandising/facet',
+        response
+      );
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error streaming response from merchandising API',
+        streamError
+      );
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'Failed to stream response from merchandising API',
+        status: '500',
+      });
     });
 
     it('wraps a non-Error value thrown while streaming in an Error', async () => {

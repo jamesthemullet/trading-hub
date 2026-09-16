@@ -151,6 +151,28 @@ describe('ProductStatus page', () => {
     expect(screen.queryByText('1 issue detected')).not.toBeInTheDocument();
   });
 
+  it('should exit the loading state when the request fails at the network layer', async () => {
+    server.use(
+      http.get('/api/search/beta/merchandising/product/diagnostics', () =>
+        HttpResponse.error()
+      )
+    );
+
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<ProductStatus />);
+
+    await user.type(screen.getByPlaceholderText('e.g. 60538523'), '60538523');
+    await user.keyboard('{Enter}');
+
+    await waitFor(() => {
+      expect(screen.queryByText('Searching...')).not.toBeInTheDocument();
+    });
+    expect(
+      screen.queryByText('Product is operational')
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('1 issue detected')).not.toBeInTheDocument();
+  });
+
   it('should show UK Market label when results are displayed', async () => {
     server.use(
       http.get('/api/search/beta/merchandising/product/diagnostics', () =>

@@ -10,6 +10,10 @@ export type MerchandisingEnvironment = {
   merchandisingApiBaseUrl: string;
 };
 
+type StreamError = Error & {
+  code?: string;
+};
+
 const isErrorSchemaCompatible = (
   err: unknown
 ): err is MerchandisingErrorResponse =>
@@ -19,6 +23,9 @@ const isErrorSchemaCompatible = (
   'status' in err &&
   typeof err.message === 'string' &&
   typeof err.status === 'string';
+
+const isResponseClosed = (res: NextApiResponse): boolean =>
+  res.closed || res.destroyed || res.writableEnded;
 
 const proxy = async (
   req: NextApiRequest,
@@ -81,14 +88,18 @@ const proxy = async (
         res
       );
     } catch (err: unknown) {
-      const error = err instanceof Error ? err : new Error(String(err));
+      const error: StreamError =
+        err instanceof Error ? err : new Error(String(err));
+      if (error.code === 'ERR_STREAM_UNABLE_TO_PIPE' && isResponseClosed(res)) {
+        return;
+      }
       console.error('Error streaming response from merchandising API', error);
-      if (!res.headersSent) {
+      if (!res.headersSent && !isResponseClosed(res)) {
         res.status(500).json({
           message: 'Failed to stream response from merchandising API',
           status: '500',
         });
-      } else {
+      } else if (!isResponseClosed(res)) {
         res.destroy(error);
       }
     }
