@@ -1,6 +1,7 @@
 import type { Config } from 'jest';
 
 const config: Config = {
+  maxWorkers: process.env.CI ? 2 : '50%',
   testEnvironment: '<rootDir>/src/test/helpers/jsdom-extended.js',
   clearMocks: true,
   collectCoverage: true,
@@ -64,7 +65,9 @@ const config: Config = {
       },
     ],
   },
-  transformIgnorePatterns: [],
+  transformIgnorePatterns: [
+    '/node_modules/(?!.*(?:rettime|accented|@open-draft|until-async))',
+  ],
   testEnvironmentOptions: {
     customExportConditions: [''],
   },
