@@ -414,6 +414,37 @@ export const FacetsList = ({
   const availableFacets =
     facetType === FacetType.Global ? globalFacets : facets;
 
+  const availableFacetsById = useMemo(
+    () =>
+      new Map([...availableFacets].reverse().map((facet) => [facet.id, facet])),
+    [availableFacets]
+  );
+
+  const globalFacetsById = useMemo(
+    () =>
+      facetType === FacetType.Global
+        ? availableFacetsById
+        : new Map(
+            [...globalFacets].reverse().map((facet) => [facet.id, facet])
+          ),
+    [availableFacetsById, facetType, globalFacets]
+  );
+
+  const includedFacetIds = useMemo(
+    () => new Set((ruleset.facets ?? []).map((facet) => facet.id)),
+    [ruleset.facets]
+  );
+
+  const excludedFacetIds = useMemo(
+    () =>
+      new Set(
+        (ruleset.excludedFacets?.facets ?? []).flatMap((facet) =>
+          facet.id === undefined ? [] : [facet.id]
+        )
+      ),
+    [ruleset.excludedFacets?.facets]
+  );
+
   const filteredFacets = filter.length
     ? availableFacets.filter(
         (facet) =>
@@ -428,12 +459,12 @@ export const FacetsList = ({
         // Ghost-facet detection must use the unfiltered facet lists, so a
         // facet only matching the search filter isn't mistaken for one
         // that's genuinely no longer available.
-        const found = availableFacets.find((f) => f.id === facetConfig.id);
+        const found = availableFacetsById.get(facetConfig.id);
         const isGlobalFacetsReady = !isFacetsLoading && !isGlobalFacetsLoading;
         const resolvedFacet =
           found ??
           (isGlobalFacetsReady
-            ? globalFacets.find((f) => f.id === facetConfig.id)
+            ? globalFacetsById.get(facetConfig.id)
             : undefined);
 
         if (!resolvedFacet) return undefined;
@@ -453,8 +484,8 @@ export const FacetsList = ({
       }) || [],
     [
       ruleset.facets,
-      availableFacets,
-      globalFacets,
+      availableFacetsById,
+      globalFacetsById,
       isFacetsLoading,
       isGlobalFacetsLoading,
       filter,
@@ -494,22 +525,14 @@ export const FacetsList = ({
     []
   );
 
-  const excludedFacets = filteredFacets
-    .map((facet) =>
-      ruleset.excludedFacets?.facets?.some((f) => f.id === facet.id)
-        ? facet
-        : null
-    )
-    .filter(Boolean);
+  const excludedFacets = filteredFacets.filter((facet) =>
+    excludedFacetIds.has(facet.id)
+  );
 
-  const defaultFacets = filteredFacets
-    .map((facet) =>
-      !ruleset.excludedFacets?.facets?.some((f) => f.id === facet.id) &&
-      !ruleset.facets?.some((f) => f.id === facet.id)
-        ? facet
-        : null
-    )
-    .filter(Boolean);
+  const defaultFacets = filteredFacets.filter(
+    (facet) =>
+      !excludedFacetIds.has(facet.id) && !includedFacetIds.has(facet.id)
+  );
 
   const handleCancel = () => {
     clearDraft();

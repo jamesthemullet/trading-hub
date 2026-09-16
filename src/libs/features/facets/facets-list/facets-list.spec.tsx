@@ -468,6 +468,68 @@ describe('FacetsList', () => {
     expect(screen.getByTestId('Row showing size as algoControl')).toBeVisible();
   });
 
+  it('should categorise facets by ruleset membership', () => {
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [{ id: facetsListMock.facets[0].id }],
+          excludedFacets: {
+            facets: [{}, { id: facetsListMock.facets[1].id }],
+          },
+        }}
+        categoriesInfo={[
+          {
+            id: categoryId1,
+            name: categoryName1,
+            plpUrl: categoryPath1,
+          },
+        ]}
+      />
+    );
+
+    expect(screen.getByTestId('Row showing color as included')).toBeVisible();
+    expect(screen.getByTestId('Row showing size as excluded')).toBeVisible();
+    expect(
+      screen.getByTestId('Row showing brand as algoControl')
+    ).toBeVisible();
+  });
+
+  it('should use the first facet when duplicate IDs are returned', () => {
+    const firstFacet = facetsListMock.facets[0];
+    jest.mocked(useFacetsList).mockReturnValue({
+      facets: [
+        firstFacet,
+        { ...firstFacet, displayValue: 'duplicate display value' },
+      ],
+      isLoading: false,
+      error: '',
+    });
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [{ id: firstFacet.id }],
+        }}
+        categoriesInfo={[
+          {
+            id: categoryId1,
+            name: categoryName1,
+            plpUrl: categoryPath1,
+          },
+        ]}
+      />
+    );
+
+    expect(screen.getByTestId('Row showing color as included')).toBeVisible();
+    expect(
+      screen.queryByTestId('Row showing duplicate display value as included')
+    ).not.toBeInTheDocument();
+  });
+
   it('should change a facet display type', async () => {
     const user = userEvent.setup({ delay: null });
     const categoriesInfo = [
