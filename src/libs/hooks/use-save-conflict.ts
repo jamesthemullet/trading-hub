@@ -38,7 +38,6 @@ export const useSaveConflict = <T extends { version?: number }, P>({
   );
 
   const handleOverwrite = useCallback(async () => {
-    // istanbul ignore if
     if (!conflict) return;
 
     setIsOverwriting(true);

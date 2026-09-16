@@ -92,6 +92,18 @@ describe('useSaveConflict', () => {
     expect(result.current.conflict).toBeNull();
   });
 
+  it('does not overwrite when there is no conflict', async () => {
+    const save = jest.fn();
+    const { result } = setup(save);
+
+    await act(async () => {
+      await result.current.handleOverwrite();
+    });
+
+    expect(save).not.toHaveBeenCalled();
+    expect(result.current.isOverwriting).toBe(false);
+  });
+
   it('keeps the modal open and refreshes the entity on a repeat conflict', async () => {
     const onSuccess = jest.fn();
     const newerEntity: Entity = {
