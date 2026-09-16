@@ -63,7 +63,6 @@ export const useGetCategories = (): {
 
         return combinedData;
       } catch (error) {
-        // istanbul ignore else
         if (error && typeof error === 'object' && 'status' in error) {
           setGetCategoriesError(`GET status ${error.status}`);
           return;

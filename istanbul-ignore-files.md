@@ -23,7 +23,7 @@
 - [ ] src/libs/hooks/search/redirect/use-redirect-detail.ts (1)
 - [ ] src/libs/hooks/search/ruleset/use-search-ruleset-preview.ts (1)
 - [ ] src/libs/hooks/use-draft-ruleset.ts (3)
-- [ ] src/libs/hooks/use-get-categories.ts (1)
+- [x] src/libs/hooks/use-get-categories.ts (0)
 - [ ] src/libs/hooks/use-global-facet-attributes-edit-modal.ts (1)
 - [ ] src/libs/hooks/use-preview.ts (1)
 - [ ] src/libs/hooks/use-rule-set-rows-state.ts (4)
