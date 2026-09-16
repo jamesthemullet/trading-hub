@@ -18,7 +18,7 @@ const meta: Meta<typeof NavigationMenu> = {
     },
   },
   decorators: [
-    (Story): ReactElement => (
+    (Story: () => ReactElement): ReactElement => (
       <div style={{ width: '100px', backgroundColor: '#1D1D1B' }}>
         <Story />
       </div>

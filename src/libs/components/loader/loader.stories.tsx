@@ -37,7 +37,7 @@ export const InModal: Story = {
     layout: 'centered',
   },
   decorators: [
-    (Story): ReactElement => (
+    (Story: () => ReactElement): ReactElement => (
       <div className={styles.modalContainer}>
         <Story />
       </div>
