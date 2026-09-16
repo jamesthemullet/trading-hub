@@ -67,6 +67,27 @@ describe('date-picker', () => {
     expect(mockOnChange).toHaveBeenCalledWith(dayjs('2021-01-02').toDate());
   });
 
+  it('should call onChange with null when the selected date is deselected', () => {
+    jest.useFakeTimers().setSystemTime(new Date('2021-01-01'));
+
+    const mockOnChange = jest.fn();
+    render(
+      <MantineProvider>
+        <DatePickerSingle
+          startTime="00:00"
+          setStartTime={jest.fn()}
+          onChange={mockOnChange}
+          value={dayjs('2021-01-01').toDate()}
+          allowDeselect
+        />
+      </MantineProvider>
+    );
+
+    screen.getByLabelText('1 January 2021').click();
+
+    expect(mockOnChange).toHaveBeenCalledWith(null);
+  });
+
   it('should be able to select start time', async () => {
     const user = userEvent.setup();
     const mockSetStartTime = jest.fn();

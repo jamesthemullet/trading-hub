@@ -46,7 +46,6 @@ export const DatePickerSingle = ({
 
   const isTimeValueLabel = Boolean(value) && !isToggleEnabled;
 
-  // istanbul ignore next
   const handleChange = (val: string | null) =>
     onChange(val ? new Date(val) : null);
 

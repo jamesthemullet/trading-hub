@@ -5,7 +5,7 @@
 - [x] src/libs/containers/facets/facet-row/facet-row.tsx (3)
 - [ ] src/libs/containers/rulesets/product/product.tsx (2)
 - [ ] src/libs/containers/rulesets/ruleset-attributes/ruleset-attributes.tsx (7)
-- [ ] src/libs/containers/shared/calendar/date-picker-single.tsx (1)
+- [x] src/libs/containers/shared/calendar/date-picker-single.tsx (0)
 - [ ] src/libs/containers/shared/calendar/date-picker.tsx (1)
 - [ ] src/libs/containers/shared/calendar/date-time-picker-modal.tsx (2)
 - [ ] src/libs/containers/shared/editable-label/editable-label.tsx (2)
