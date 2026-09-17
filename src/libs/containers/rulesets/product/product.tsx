@@ -485,7 +485,6 @@ export const Product = ({
                     <form
                       onSubmit={(e) => {
                         e.preventDefault();
-                        // istanbul ignore else — button is disabled when boostWeight is 0 or there is an error
                         if (!boostWeightError && boostWeight > 0) {
                           confirmBoost();
                         }

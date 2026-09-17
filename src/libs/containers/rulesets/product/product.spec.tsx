@@ -280,7 +280,17 @@ describe('Product', () => {
       await user.clear(input);
       await user.type(input, '150');
 
-      await user.keyboard('{Enter}');
+      const form = screen
+        .getByRole('button', { name: 'Boost 150%' })
+        .closest('form');
+
+      expect(form).not.toBeNull();
+
+      if (!form) {
+        throw new Error('Expected boost form');
+      }
+
+      fireEvent.submit(form);
 
       expect(mockDispatch).not.toHaveBeenCalled();
     });
