@@ -333,9 +333,7 @@ describe('Index', () => {
       error: '',
       isLoading: false,
     });
-    renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W'], {
-      featureFlags: { hasCfto: true },
-    });
+    renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W']);
 
     await waitFor(() => {
       expect(mockRefetchRuleSetList).toHaveBeenCalled();
@@ -368,9 +366,7 @@ describe('Index', () => {
       query: { ...mockRouter.query, catalogue: 'CFTO' },
     });
 
-    renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W'], {
-      featureFlags: { hasCfto: true },
-    });
+    renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W']);
 
     await waitFor(() => {
       expect(mockRefetchRuleSetList).toHaveBeenCalledWith(
@@ -395,9 +391,7 @@ describe('Index', () => {
       error: '',
       isLoading: false,
     });
-    renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W'], {
-      featureFlags: { hasCfto: true },
-    });
+    renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W']);
 
     await user.click(screen.getByText('cfto.com'));
 
@@ -411,11 +405,11 @@ describe('Index', () => {
     );
   });
 
-  it('hides all catalogue tabs when the CFTO feature flag is disabled', () => {
+  it('displays all catalogue tabs', () => {
     renderWithProviders(<RuleSets />);
 
-    expect(screen.queryByText('cfto.com')).not.toBeInTheDocument();
-    expect(screen.queryByText('marksandspencer.com')).not.toBeInTheDocument();
+    expect(screen.getByText('cfto.com')).toBeVisible();
+    expect(screen.getByText('marksandspencer.com')).toBeVisible();
   });
 
   it('does not change tab while the router is not ready', async () => {
@@ -425,9 +419,7 @@ describe('Index', () => {
       query: { ...mockRouter.query, catalogue: 'CFTO' },
     });
 
-    renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W'], {
-      featureFlags: { hasCfto: true },
-    });
+    renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W']);
 
     expect(screen.getByText('marksandspencer.com')).toBeVisible();
 
@@ -564,9 +556,7 @@ describe('Index', () => {
         isLoading: false,
       });
 
-      renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W'], {
-        featureFlags: { hasCfto: true },
-      });
+      renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W']);
 
       await user.click(screen.getByText('cfto.com'));
 
@@ -784,9 +774,7 @@ describe('Index', () => {
         isLoading: false,
       });
 
-      renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W'], {
-        featureFlags: { hasCfto: true },
-      });
+      renderWithProviders(<RuleSets />, ['Cat.W', 'Search.W', 'Glob.W']);
 
       await user.click(screen.getByText('cfto.com'));
 

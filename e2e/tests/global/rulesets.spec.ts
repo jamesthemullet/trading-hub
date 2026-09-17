@@ -40,6 +40,15 @@ test.describe('global rulesets', () => {
       }
     );
     await page.route(
+      '*/**/api/search/merchandising/v1/CFTO/global/ruleset*',
+      async (route) => {
+        if (route.request().method() === 'GET') {
+          const json = mockGlobalRulesets;
+          await route.fulfill({ status: 200, json });
+        }
+      }
+    );
+    await page.route(
       '*/**/api/search/beta/merchandising/global/ruleset/847f1f8b-dc75-4e97-9364-cecc9b66651c',
       async (route) => {
         const json = mockGlobalRuleset;
@@ -69,6 +78,13 @@ test.describe('global rulesets', () => {
     );
     await page.route(
       '*/**/api/search/merchandising/v1/CLOTHING_AND_HOME/product*',
+      async (route) => {
+        const json = mockProducts;
+        await route.fulfill({ status: 200, json });
+      }
+    );
+    await page.route(
+      '*/**/api/search/merchandising/v1/CFTO/product*',
       async (route) => {
         const json = mockProducts;
         await route.fulfill({ status: 200, json });
@@ -113,6 +129,41 @@ test.describe('global rulesets', () => {
         name: 'Open menu',
       })
     ).toBeVisible();
+
+    await getProductSearchResultPosition(page, 2)
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Boost to Top' }).click();
+    await page.getByLabel('Boost amount %').fill('95');
+    await page.getByRole('button', { name: 'Boost 95%' }).click();
+
+    await getProductSearchResultPosition(page, 3)
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Bury to Bottom' }).click();
+
+    await getProductSearchResultPosition(page, 5)
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Block Product' }).click();
+
+    await expect(page.getByRole('button', { name: 'Changes3' })).toBeVisible();
+  });
+
+  test('edits a CFTO global ruleset to bury, boost and block products', async ({
+    page,
+  }) => {
+    await page.goto('/global');
+    await page.getByText('cfto.com').click();
+    await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
+
+    await page.getByRole('button', { name: 'More options' }).first().click();
+    await page.getByRole('link', { name: 'Edit ranking rule' }).click();
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+
+    await searchForProductAndWaitForResults(page, 'dress', 5);
 
     await getProductSearchResultPosition(page, 2)
       .getByRole('button', { name: 'Open menu' })

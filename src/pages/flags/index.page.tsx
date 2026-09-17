@@ -16,19 +16,13 @@ const FeatureFlags = () => {
       'flagAuthorizationRoleOverride',
       'flagProfilePage',
       'flagFavouriteRulesets',
-      'flagCfto',
     ],
     {
       doNotUpdate: true,
     }
   );
 
-  const {
-    flagAuthorization,
-    flagProfilePage,
-    flagFavouriteRulesets,
-    flagCfto,
-  } = cookies;
+  const { flagAuthorization, flagProfilePage, flagFavouriteRulesets } = cookies;
 
   return (
     <div className={styles.wrapper}>
@@ -127,16 +121,6 @@ const FeatureFlags = () => {
               'flagFavouriteRulesets',
               JSON.stringify(!flagFavouriteRulesets)
             );
-          }}
-        />
-      </div>
-      <div className={styles.flag}>
-        <Typography>CFTO:&nbsp;</Typography>
-        <Toggle
-          aria-label="Toggle CFTO feature flag"
-          checked={flagCfto}
-          onChange={() => {
-            setCookie('flagCfto', JSON.stringify(!flagCfto));
           }}
         />
       </div>

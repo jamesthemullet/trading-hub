@@ -15,7 +15,6 @@ export type FeatureFlags = {
   authorizationRoleOverride: AuthorizationRoleOverride;
   hasProfilePage: boolean;
   hasFavouriteRulesets: boolean;
-  hasCfto: boolean;
 };
 
 export const defaultFeatureFlags: FeatureFlags = {
@@ -27,7 +26,6 @@ export const defaultFeatureFlags: FeatureFlags = {
   },
   hasProfilePage: false,
   hasFavouriteRulesets: false,
-  hasCfto: false,
 };
 
 export const FeatureFlagContext =
@@ -78,15 +76,4 @@ export const useFavouriteRulesetsFlag = (): boolean => {
   }, [featureFlags.hasFavouriteRulesets]);
 
   return favouriteRulesetsEnabled;
-};
-
-export const useCftoFlag = (): boolean => {
-  const featureFlags = useContext(FeatureFlagContext);
-  const [cftoEnabled, setCftoEnabled] = useState(false);
-
-  useEffect(() => {
-    setCftoEnabled(featureFlags.hasCfto);
-  }, [featureFlags.hasCfto]);
-
-  return cftoEnabled;
 };

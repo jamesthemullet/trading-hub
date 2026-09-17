@@ -12,7 +12,6 @@ import type {
 import { search } from '@/libs/api';
 import { Button, Heading, Tabs } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
-import { useCftoFlag } from '@/libs/components/feature-flag/feature-flag';
 import type { RuleSetMapping } from '@/libs/components/types';
 import { getNewRulesetRoute, ROUTES } from '@/libs/constants/routes';
 import { RuleType } from '@/libs/constants/rule-types';
@@ -95,16 +94,9 @@ const RuleSets = (): ReactElement => {
   ];
 
   const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
-  const isCftoEnabled = useCftoFlag();
   const router = useRouter();
   const [currentTab, setCurrentTab] = useState(0);
-  const catalogueTabs = useMemo(
-    () =>
-      isCftoEnabled
-        ? CATALOGUE_TABS
-        : CATALOGUE_TABS.filter((tab) => tab.catalogue !== 'CFTO'),
-    [isCftoEnabled]
-  );
+  const catalogueTabs = CATALOGUE_TABS;
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -163,15 +155,13 @@ const RuleSets = (): ReactElement => {
         }
       />
 
-      {isCftoEnabled && (
-        <div className={styles.tabsWrapper}>
-          <Tabs
-            tabs={catalogueTabs}
-            currentTab={safeCurrentTab}
-            onTabChange={handleTabChange}
-          />
-        </div>
-      )}
+      <div className={styles.tabsWrapper}>
+        <Tabs
+          tabs={catalogueTabs}
+          currentTab={safeCurrentTab}
+          onTabChange={handleTabChange}
+        />
+      </div>
 
       <TablePanel
         basePath="/global"

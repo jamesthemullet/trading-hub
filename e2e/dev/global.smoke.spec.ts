@@ -4,6 +4,22 @@ test.describe.configure({ mode: 'serial' });
 
 test.describe('Global Ranking', () => {
   let createdRulesetId: string | undefined;
+  let createdCftoRulesetId: string | undefined;
+
+  test.afterEach(async ({ request }) => {
+    if (!createdCftoRulesetId) return;
+    const rulesetId = createdCftoRulesetId;
+    createdCftoRulesetId = undefined;
+    const del = await request.delete(
+      `/api/search/beta/merchandising/global/ruleset/${rulesetId}`
+    );
+
+    if (!del.ok() && del.status() !== 404) {
+      throw new Error(
+        `CFTO teardown DELETE failed for ${rulesetId}: ${del.status()}`
+      );
+    }
+  });
 
   test.afterAll(async ({ request }) => {
     if (!createdRulesetId) return;
@@ -177,6 +193,100 @@ test.describe('Global Ranking', () => {
     ).toBeHidden();
     await page.waitForURL(/\/global\/?(?:$|[?#])/);
     await expect(page.getByRole('heading', { name: 'Global' })).toBeVisible();
+  });
+
+  test('edits a CFTO ruleset with block, bury and boost product actions', async ({
+    page,
+    request,
+  }) => {
+    const cftoRulesetsResponse = await request.get(
+      '/api/search/merchandising/v1/CFTO/global/ruleset?start=0&rows=1'
+    );
+
+    test.skip(
+      !cftoRulesetsResponse.ok(),
+      `CFTO API unavailable: ${cftoRulesetsResponse.status()}`
+    );
+
+    await page.goto('/global');
+    await page.getByText('cfto.com').click();
+    await expect(page).toHaveURL(/catalogue=CFTO/);
+
+    await page.getByRole('link', { name: 'Add ranking rule' }).click();
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+
+    const createCftoRulesetResponse = page.waitForResponse(
+      (response) =>
+        response
+          .url()
+          .endsWith('/api/search/beta/merchandising/CFTO/global/ruleset') &&
+        response.request().method() === 'POST'
+    );
+    await page.getByRole('button', { name: 'Create', exact: true }).click();
+    const createdCftoResponse = await createCftoRulesetResponse;
+    if (!createdCftoResponse.ok()) {
+      throw new Error(
+        `CFTO create POST failed: ${createdCftoResponse.status()}`
+      );
+    }
+    ({ id: createdCftoRulesetId } = await createdCftoResponse.json());
+
+    await page.goto(
+      `/global/rulesets/edit/${createdCftoRulesetId}?catalogue=CFTO`
+    );
+    await expect(
+      page.getByRole('heading', { name: 'Product Grid' })
+    ).toBeVisible();
+
+    await page.getByPlaceholder('Search for product').fill('christmas');
+    await expect(
+      page.getByTestId('product-search-result').getByTestId('Position 3')
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole('button', { name: 'Changes', exact: true })
+    ).toBeVisible();
+
+    await page
+      .getByTestId('Position 1')
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Boost to Top' }).click();
+    await page.getByLabel('Boost amount %').fill('95');
+    await page.getByRole('button', { name: 'Boost 95%' }).click();
+
+    await page
+      .getByTestId('Position 2')
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Bury to Bottom' }).click();
+
+    await page
+      .getByTestId('Position 3')
+      .getByRole('button', { name: 'Open menu' })
+      .click();
+    await page.getByRole('button', { name: 'Block Product' }).click();
+
+    await expect(page.getByRole('button', { name: 'Changes3' })).toBeVisible();
+
+    const updateResponse = page.waitForResponse(
+      (response) =>
+        response
+          .url()
+          .endsWith(
+            `/api/search/merchandising/v1/CFTO/global/ruleset/${createdCftoRulesetId}`
+          ) && response.request().method() === 'PUT'
+    );
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await page
+      .getByRole('button', { name: 'Save changes', exact: true })
+      .click();
+    const response = await updateResponse;
+    expect(response.ok(), `CFTO update PUT failed: ${response.status()}`).toBe(
+      true
+    );
   });
 
   test('keeps changes for facets and products', async ({ page }) => {
