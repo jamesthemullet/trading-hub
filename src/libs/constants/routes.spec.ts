@@ -1,4 +1,5 @@
 import {
+  getFacetConfigRoute,
   getFacetRoute,
   getHistoryRoute,
   getNewFacetRoute,
@@ -37,6 +38,15 @@ describe('getFacetRoute', () => {
     [FacetType.Global, 'valuesEdit' as const, '/global/facets/values/edit/abc'],
   ])('returns correct route for %s/%s', (facetType, routeType, expected) => {
     expect(getFacetRoute(facetType, routeType, 'abc')).toBe(expected);
+  });
+});
+
+describe('getFacetConfigRoute', () => {
+  it.each([
+    ['valuesEdit' as const, '/global/facet-config/values/edit/abc'],
+    ['history' as const, '/global/facet-config/history/abc'],
+  ])('returns correct facet config route for %s', (routeType, expected) => {
+    expect(getFacetConfigRoute(routeType, 'abc')).toBe(expected);
   });
 });
 

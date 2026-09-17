@@ -57,7 +57,9 @@ describe('HistoryList', () => {
       <HistoryList items={mockItems} ruleType={RuleType.CategoryRanking} />
     );
 
-    expect(screen.getByText('View current')).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'View current' })
+    ).toBeInTheDocument();
     expect(screen.getAllByText('View')).toHaveLength(2);
   });
 
@@ -180,7 +182,7 @@ describe('HistoryList', () => {
       <HistoryList items={mockItems} ruleType={RuleType.CategoryRanking} />
     );
 
-    const currentLink = screen.getByText('View current').closest('a');
+    const currentLink = screen.getByRole('link', { name: 'View current' });
     expect(currentLink).toHaveAttribute(
       'href',
       '/category/rulesets/edit/ruleset-1'
@@ -320,12 +322,47 @@ describe('HistoryList', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('should render without tabs when disabled', () => {
+    renderWithProviders(
+      <HistoryList
+        items={mockItems}
+        ruleType={RuleType.CategoryRanking}
+        hasTabs={false}
+      />
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'Rulesets' })
+    ).not.toBeInTheDocument();
+    expect(screen.getByText('View current')).toBeInTheDocument();
+  });
+
+  it('should link to facet config values with history query params', () => {
+    renderWithProviders(
+      <HistoryList
+        items={mockItems}
+        ruleType={RuleType.CategoryRanking}
+        identifier="Colour"
+        linkTarget="facetConfigValues"
+      />
+    );
+
+    expect(screen.getByRole('link', { name: 'View current' })).toHaveAttribute(
+      'href',
+      '/global/facet-config/values/edit/ruleset-1?displayName=Colour'
+    );
+    expect(screen.getAllByText('View')[0].closest('a')).toHaveAttribute(
+      'href',
+      '/global/facet-config/values/edit/ruleset-1?displayName=Colour&history=true&historyId=change-2&currentPage=1&currentPageSize=20'
+    );
+  });
+
   it('should link to ruleset edit route by default (Rulesets tab active)', () => {
     renderWithProviders(
       <HistoryList items={mockItems} ruleType={RuleType.CategoryRanking} />
     );
 
-    const currentLink = screen.getByText('View current').closest('a');
+    const currentLink = screen.getByRole('link', { name: 'View current' });
     expect(currentLink).toHaveAttribute(
       'href',
       '/category/rulesets/edit/ruleset-1'
@@ -341,7 +378,7 @@ describe('HistoryList', () => {
 
     await user.click(screen.getByRole('button', { name: 'Facets' }));
 
-    const currentLink = screen.getByText('View current').closest('a');
+    const currentLink = screen.getByRole('link', { name: 'View current' });
     expect(currentLink).toHaveAttribute(
       'href',
       '/category/facets/edit/ruleset-1'
@@ -374,7 +411,7 @@ describe('HistoryList', () => {
 
     await user.click(screen.getByRole('button', { name: 'Facets' }));
 
-    const currentLink = screen.getByText('View current').closest('a');
+    const currentLink = screen.getByRole('link', { name: 'View current' });
     expect(currentLink).toHaveAttribute(
       'href',
       '/search/facets/edit/ruleset-1'
@@ -390,7 +427,7 @@ describe('HistoryList', () => {
       />
     );
 
-    const currentLink = screen.getByText('View current').closest('a');
+    const currentLink = screen.getByRole('link', { name: 'View current' });
     expect(currentLink).toHaveAttribute(
       'href',
       '/category/facets/edit/ruleset-1'
@@ -422,7 +459,7 @@ describe('HistoryList', () => {
       />
     );
 
-    expect(screen.getByText('View current').closest('a')).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'View current' })).toHaveAttribute(
       'href',
       '/category/rulesets/edit/ruleset-1'
     );
@@ -435,7 +472,7 @@ describe('HistoryList', () => {
       />
     );
 
-    expect(screen.getByText('View current').closest('a')).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'View current' })).toHaveAttribute(
       'href',
       '/category/facets/edit/ruleset-1'
     );

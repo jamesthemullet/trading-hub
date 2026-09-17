@@ -125,10 +125,57 @@ describe('Global Facet Config', () => {
     ).toBeVisible();
   });
 
-  it('should show edit merge groups buttons for each facet', async () => {
+  it('should show edit values menu options for each facet', async () => {
     renderWithProviders(<FacetConfig />);
 
-    expect(await screen.findAllByText('Edit values')).toHaveLength(2);
+    expect(await screen.findAllByTitle('More options')).toHaveLength(2);
+
+    await userEvent.click(screen.getAllByTitle('More options')[0]);
+
+    expect(screen.getByRole('link', { name: 'Edit values' })).toBeVisible();
+  });
+
+  it('should open and close facet options with the keyboard', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<FacetConfig />);
+
+    const optionsButton = (await screen.findAllByTitle('More options'))[0];
+    optionsButton.focus();
+    await user.keyboard('{Enter}');
+
+    expect(screen.getByRole('link', { name: 'Edit values' })).toBeVisible();
+
+    await user.keyboard('{Escape}');
+
+    expect(
+      screen.queryByRole('link', { name: 'Edit values' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('should close facet options when clicking outside the menu', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<FacetConfig />);
+
+    const optionsButton = (await screen.findAllByTitle('More options'))[0];
+    await user.click(optionsButton);
+    expect(screen.getByRole('link', { name: 'Edit values' })).toBeVisible();
+
+    await user.click(optionsButton);
+    expect(
+      screen.queryByRole('link', { name: 'Edit values' })
+    ).not.toBeInTheDocument();
+
+    await user.click(optionsButton);
+    await user.click(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Global Facet Configuration',
+      })
+    );
+
+    expect(
+      screen.queryByRole('link', { name: 'Edit values' })
+    ).not.toBeInTheDocument();
   });
 
   it('should show a loader while facets are loading', async () => {
@@ -180,7 +227,9 @@ describe('Global Facet Config', () => {
       featureFlags: { hasAuthorization: true },
     });
 
-    expect(await screen.findAllByText('View values')).toHaveLength(2);
+    await userEvent.click((await screen.findAllByTitle('More options'))[0]);
+
+    expect(screen.getByRole('link', { name: 'View values' })).toBeVisible();
   });
 
   describe('searching', () => {
@@ -866,5 +915,19 @@ describe('Global Facet Config', () => {
 
       await waitFor(() => expect(overwriteBody).toMatchObject({ version: 9 }));
     });
+  });
+
+  it('should show View history menu options for each facet', async () => {
+    renderWithProviders(<FacetConfig />);
+
+    expect(await screen.findByText('Colour')).toBeVisible();
+
+    await userEvent.click(screen.getAllByTitle('More options')[0]);
+
+    const historyLink = screen.getByRole('link', { name: 'View history' });
+    expect(historyLink).toHaveAttribute(
+      'href',
+      expect.stringContaining('/global/facet-config/history/facet-1')
+    );
   });
 });

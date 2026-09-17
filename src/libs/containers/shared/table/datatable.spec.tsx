@@ -349,13 +349,15 @@ describe('DataTable', () => {
       });
       await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
-      await user.click(screen.getAllByTitle('More options')[0]);
-      expect(
-        screen.getByRole('heading', {
-          level: 2,
-          name: 'Do you want to delete this rule?',
-        })
-      ).not.toBeVisible();
+      await waitFor(() => {
+        expect(
+          screen.queryByRole('heading', {
+            level: 2,
+            name: 'Do you want to delete this rule?',
+          })
+        ).not.toBeInTheDocument();
+      });
+      expect(mockDelete).not.toHaveBeenCalled();
     });
   });
 

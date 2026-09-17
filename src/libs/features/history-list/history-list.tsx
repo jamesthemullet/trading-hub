@@ -2,7 +2,11 @@ import type { ReactElement } from 'react';
 import { useEffect, useState } from 'react';
 
 import { Button, TablePagination, Tabs, Typography } from '@/libs/components';
-import { getFacetRoute, getRulesetEditRoute } from '@/libs/constants/routes';
+import {
+  getFacetConfigRoute,
+  getFacetRoute,
+  getRulesetEditRoute,
+} from '@/libs/constants/routes';
 import { FacetType, RuleType } from '@/libs/constants/rule-types';
 
 import Link from 'next/link';
@@ -43,6 +47,15 @@ type HistoryItem = {
   changes: string[];
 };
 
+type HistoryLinkTarget = 'ruleset' | 'facetConfigValues';
+
+type HistoryItemHref =
+  | string
+  | {
+      pathname: string;
+      query: Record<string, string | number>;
+    };
+
 type HistoryRowProps = {
   item: HistoryItem;
   absoluteIndex: number;
@@ -51,6 +64,8 @@ type HistoryRowProps = {
   currentPageSize: number;
   isShowingFacets: boolean;
   facetType: FacetType | null;
+  identifier?: string;
+  linkTarget: HistoryLinkTarget;
 };
 
 const DiffLine = ({ desc }: { desc: string }) => {
@@ -68,6 +83,38 @@ const DiffLine = ({ desc }: { desc: string }) => {
   );
 };
 
+const diffLineKey = (desc: string, previousDescriptions: string[]): string => {
+  const occurrence = previousDescriptions.filter(
+    (previousDescription) => previousDescription === desc
+  ).length;
+
+  return `${desc}-${occurrence}`;
+};
+
+const getHistoryItemBaseHref = ({
+  facetType,
+  isShowingFacets,
+  item,
+  linkTarget,
+  ruleType,
+}: {
+  facetType: FacetType | null;
+  isShowingFacets: boolean;
+  item: HistoryItem;
+  linkTarget: HistoryLinkTarget;
+  ruleType: RuleType;
+}): string => {
+  if (linkTarget === 'facetConfigValues') {
+    return getFacetConfigRoute('valuesEdit', item.rulesetId);
+  }
+
+  if (isShowingFacets && facetType) {
+    return getFacetRoute(facetType, 'edit', item.rulesetId);
+  }
+
+  return getRulesetEditRoute(ruleType, item.rulesetId);
+};
+
 const HistoryRow = ({
   item,
   absoluteIndex,
@@ -76,6 +123,8 @@ const HistoryRow = ({
   currentPageSize,
   isShowingFacets,
   facetType,
+  identifier,
+  linkTarget,
 }: HistoryRowProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const date = new Date(item.date);
@@ -83,15 +132,23 @@ const HistoryRow = ({
   const formattedTime = date.toLocaleTimeString('en-GB', TIME_FORMAT_OPTIONS);
   const isLatest = absoluteIndex === 0;
   const linkText = isLatest ? 'View current' : 'View';
-  const baseHref =
-    isShowingFacets && facetType
-      ? getFacetRoute(facetType, 'edit', item.rulesetId)
-      : getRulesetEditRoute(ruleType, item.rulesetId);
-  const href = isLatest
-    ? baseHref
+  const baseHref = getHistoryItemBaseHref({
+    facetType,
+    isShowingFacets,
+    item,
+    linkTarget,
+    ruleType,
+  });
+  const displayNameQuery: Record<string, string | number> =
+    linkTarget === 'facetConfigValues' && identifier
+      ? { displayName: identifier }
+      : {};
+  const href: HistoryItemHref = isLatest
+    ? { pathname: baseHref, query: displayNameQuery }
     : {
         pathname: baseHref,
         query: {
+          ...displayNameQuery,
           history: 'true',
           historyId: item.id,
           currentPage,
@@ -104,6 +161,10 @@ const HistoryRow = ({
   const visibleDiffs = isExpanded
     ? allDiffs
     : allDiffs.slice(0, MAX_VISIBLE_DIFFS);
+  const visibleDiffsWithKeys = visibleDiffs.map((desc, index) => ({
+    desc,
+    key: diffLineKey(desc, visibleDiffs.slice(0, index)),
+  }));
 
   return (
     <li className={styles.historyRow} key={item.id}>
@@ -112,9 +173,8 @@ const HistoryRow = ({
       <div className={styles.changeDiffs}>
         {visibleDiffs.length > 0 ? (
           <>
-            {visibleDiffs.map((desc, i) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <DiffLine key={`${i}-${desc}`} desc={desc} />
+            {visibleDiffsWithKeys.map(({ desc, key }) => (
+              <DiffLine key={key} desc={desc} />
             ))}
             {hasOverflow && (
               <Button
@@ -154,6 +214,9 @@ type HistoryListProps = {
   handlePageChange?: (page: number, pageSize: number) => void;
   initialTab?: number;
   onTabChange?: (tab: number) => void;
+  hasTabs?: boolean;
+  identifier?: string;
+  linkTarget?: HistoryLinkTarget;
 };
 
 export const HistoryList = ({
@@ -168,10 +231,13 @@ export const HistoryList = ({
   handlePageChange,
   initialTab = 0,
   onTabChange,
+  hasTabs = true,
+  identifier,
+  linkTarget = 'ruleset',
 }: HistoryListProps): ReactElement => {
   const [activeTab, setActiveTab] = useState(initialTab);
   const facetType = RULE_TYPE_TO_FACET_TYPE[ruleType];
-  const isShowingFacets = activeTab === 1;
+  const isShowingFacets = hasTabs && activeTab === 1;
 
   useEffect(() => {
     setActiveTab(initialTab);
@@ -179,7 +245,7 @@ export const HistoryList = ({
 
   return (
     <div>
-      {facetType !== null && (
+      {facetType !== null && hasTabs && (
         <div className={styles.tabsWrapper}>
           <Tabs
             tabs={HISTORY_TABS}
@@ -210,6 +276,8 @@ export const HistoryList = ({
               currentPageSize={currentPageSize}
               isShowingFacets={isShowingFacets}
               facetType={facetType}
+              identifier={identifier}
+              linkTarget={linkTarget}
             />
           ))}
         </ul>

@@ -52,6 +52,23 @@ export const mockGlobalRuleset: MerchandisingReturnedGlobalRuleSet = {
   lastChanged: { date: '2024-09-19T15:39:49Z', user: 'Graham Licence' },
 };
 
+export const mockAgeFacet: MerchandisingReturnedGlobalFacet = {
+  type: 'root',
+  id: 'f0bc2d42-563e-11ef-a364-000000000000',
+  indexPropertyName: 'recommendedAgeRange',
+  displayValue: 'Age',
+  lastChanged: { date: '2024-09-10T11:34:34Z', user: 'James Winfield' },
+  excludedValues: ['2-5 years'],
+  boosted: ['0-10 years', '3+ years', '6+ years', 'All ages'],
+  merged: [
+    {
+      displayValue: 'Name your mergey',
+      mergedValues: ['6+ years', 'All ages'],
+    },
+    { displayValue: '0-2 Years', mergedValues: ['0-2 years'] },
+  ],
+};
+
 export const mockGlobalFacet: MerchandisingFacetsList = {
   facets: [
     {
@@ -64,22 +81,7 @@ export const mockGlobalFacet: MerchandisingFacetsList = {
       boosted: [],
       merged: [],
     },
-    {
-      type: 'root',
-      id: 'f0bc2d42-563e-11ef-a364-000000000000',
-      indexPropertyName: 'recommendedAgeRange',
-      displayValue: 'Age',
-      lastChanged: { date: '2024-09-10T11:34:34Z', user: 'James Winfield' },
-      excludedValues: ['2-5 years'],
-      boosted: ['0-10 years', '3+ years', '6+ years', 'All ages'],
-      merged: [
-        {
-          displayValue: 'Name your mergey',
-          mergedValues: ['6+ years', 'All ages'],
-        },
-        { displayValue: '0-2 Years', mergedValues: ['0-2 years'] },
-      ],
-    },
+    mockAgeFacet,
     {
       type: 'root',
       id: '4f8d4800-3eb0-11ef-9a6a-000000000000',

@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
 import { useGlobalFacetsList } from '@/libs/hooks';
+import { useFacetHistory } from '@/libs/hooks/global/facets/use-facet-history';
 import { useGetFacetAttributeValues } from '@/libs/hooks/use-get-facet-attribute-values';
 import { attributeValuesMock, facetsListMock } from '@/pages/api/search/mocks';
 import { createMockNextRouter } from '@/test/create-mock-next-router';
@@ -16,6 +17,10 @@ jest.mock('next/router', () => ({
 
 jest.mock('@/libs/hooks/global/facets/use-global-facets-list', () => ({
   useGlobalFacetsList: jest.fn(),
+}));
+
+jest.mock('@/libs/hooks/global/facets/use-facet-history', () => ({
+  useFacetHistory: jest.fn(),
 }));
 
 jest.mock('@/libs/hooks/use-get-facet-attribute-values', () => ({
@@ -45,6 +50,11 @@ describe('Index', () => {
       error: '',
       isLoading: false,
     });
+    jest.mocked(useFacetHistory).mockReturnValue({
+      history: { changes: [], pagination: { totalItems: 0 } },
+      error: '',
+      isLoading: false,
+    });
   });
 
   afterEach(() => {
@@ -56,6 +66,148 @@ describe('Index', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Facet values settings: Color')).toBeVisible();
+    });
+  });
+
+  it('should render without write actions when readOnly is true', async () => {
+    jest.mocked(useRouter).mockReturnValue(
+      createMockNextRouter({
+        query: {
+          id: facetId,
+          displayName: 'Color',
+          readOnly: 'true',
+        },
+      })
+    );
+
+    renderWithProviders(<Page />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Facet values settings: Color')).toBeVisible();
+    });
+    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
+  });
+
+  it('should render a historical facet snapshot when history is true', async () => {
+    jest.mocked(useRouter).mockReturnValue(
+      createMockNextRouter({
+        query: {
+          id: facetId,
+          displayName: 'Color',
+          history: 'true',
+          historyId: 'change-2',
+          currentPage: '2',
+          currentPageSize: '10',
+        },
+      })
+    );
+    jest.mocked(useFacetHistory).mockReturnValue({
+      history: {
+        changes: [
+          {
+            id: 'change-2',
+            change: {
+              ...facetsListMock.facets[0],
+              displayValue: 'Historical Color',
+              boosted: ['Silk'],
+              excludedValues: [],
+              merged: [],
+            },
+          },
+        ],
+        pagination: { totalItems: 4 },
+      },
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<Page />);
+
+    expect(useGlobalFacetsList).toHaveBeenCalledWith({ enabled: false });
+    expect(useFacetHistory).toHaveBeenCalledWith(facetId, 2, 10);
+    expect(
+      await screen.findByText('Facet values settings: Historical Color')
+    ).toBeVisible();
+    expect(
+      screen.getByText('Value settings of: Historical Color')
+    ).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
+  });
+
+  it('should fall back to the query display name when the historical facet is missing', async () => {
+    jest.mocked(useRouter).mockReturnValue(
+      createMockNextRouter({
+        query: {
+          id: facetId,
+          displayName: 'Color',
+          history: 'true',
+          historyId: 'missing-change',
+        },
+      })
+    );
+
+    renderWithProviders(<Page />);
+
+    expect(
+      await screen.findByText('Facet values settings: Color')
+    ).toBeVisible();
+    expect(
+      screen.queryByText('Value settings of: Color')
+    ).not.toBeInTheDocument();
+  });
+
+  it('should render a history error when history loading fails', async () => {
+    jest.mocked(useRouter).mockReturnValue(
+      createMockNextRouter({
+        query: {
+          id: facetId,
+          displayName: 'Color',
+          history: 'true',
+          historyId: 'change-2',
+        },
+      })
+    );
+    jest.mocked(useFacetHistory).mockReturnValue({
+      history: { changes: [], pagination: { totalItems: 0 } },
+      error: 'Failed to load history',
+      isLoading: false,
+    });
+
+    renderWithProviders(<Page />);
+
+    expect(
+      await screen.findByText(
+        'Error whilst retrieving history: Failed to load history'
+      )
+    ).toBeVisible();
+  });
+
+  it('should not render current facet list errors in history view', async () => {
+    jest.mocked(useRouter).mockReturnValue(
+      createMockNextRouter({
+        query: {
+          id: facetId,
+          displayName: 'Color',
+          history: 'true',
+          historyId: 'change-2',
+        },
+      })
+    );
+    jest.mocked(useGlobalFacetsList).mockReturnValue({
+      isLoading: false,
+      facets: [],
+      error: 'Current facets failed',
+      onRefreshFacetList: jest.fn(),
+    });
+
+    renderWithProviders(<Page />);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText('Error whilst retrieving global facet list:', {
+          exact: false,
+        })
+      ).not.toBeInTheDocument();
     });
   });
 

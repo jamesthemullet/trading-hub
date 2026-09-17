@@ -45,6 +45,7 @@ export const ROUTES = {
     FACET_CONFIG: '/global/facet-config',
     FACET_CONFIG_VALUES: (id: string) =>
       `/global/facet-config/values/edit/${id}`,
+    FACET_CONFIG_HISTORY: (id: string) => `/global/facet-config/history/${id}`,
     RULESETS: {
       NEW: '/global/rulesets/new',
       EDIT: (id: string) => `/global/rulesets/edit/${id}`,
@@ -71,6 +72,18 @@ export const getFacetRoute = (
   }
 
   return route.FACETS.VALUES.EDIT(id);
+};
+
+export const getFacetConfigRoute = (
+  routeType: 'valuesEdit' | 'history',
+  id: string
+): string => {
+  const routeMap = {
+    valuesEdit: ROUTES.GLOBAL.FACET_CONFIG_VALUES,
+    history: ROUTES.GLOBAL.FACET_CONFIG_HISTORY,
+  };
+
+  return routeMap[routeType](id);
 };
 
 export const getNewFacetRoute = (facetType: FacetType): string => {

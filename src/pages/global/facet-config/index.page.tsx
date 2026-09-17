@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { KeyboardEvent, MouseEvent, ReactElement } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 
 import type {
@@ -20,6 +20,7 @@ import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/f
 import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import { ROUTES } from '@/libs/constants/routes';
 import { EditableLabel } from '@/libs/containers/shared/editable-label/editable-label';
+import tableStyles from '@/libs/containers/shared/table/table.module.css';
 import styles from '@/libs/features/facets/facets-panel/facets-panel.module.css';
 import { useGlobalFacetsList, useGlobalFacetUpdate } from '@/libs/hooks';
 import { useAccess } from '@/libs/hooks/use-access';
@@ -27,8 +28,10 @@ import { useSaveConflict } from '@/libs/hooks/use-save-conflict';
 import { createDiffItem } from '@/libs/hooks/utils/diff';
 import { handleError } from '@/libs/hooks/utils/error';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
+import { useOnOutsideClick } from '@/libs/hooks/utils/use-on-outside-click';
 
 import Head from 'next/head';
+import Link from 'next/link';
 
 const COLUMNS = ['Facet', 'Display Name', 'Merge Groups', ''];
 
@@ -58,11 +61,27 @@ const FacetConfigContent = ({
   >({});
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [optionToggle, setOptionToggle] = useState('');
 
   const [pendingDisplayNameChange, setPendingDisplayNameChange] = useState<{
     facet: MerchandisingReturnedFacet;
     value: string;
   } | null>(null);
+
+  const onClose = useCallback(() => {
+    setOptionToggle('');
+  }, []);
+
+  const dropdownWrapperRef = useOnOutsideClick<HTMLDivElement>({
+    handler: onClose,
+  });
+
+  const handleOptionToggle = useCallback(
+    (id: string) => {
+      setOptionToggle(optionToggle === id ? '' : id);
+    },
+    [optionToggle]
+  );
 
   const { callback: handleSearch } = useDebounce((val: string) => {
     setSearchQuery(val);
@@ -293,6 +312,21 @@ const FacetConfigContent = ({
             {filteredFacets.map((facet) => {
               const mergeCount = facet.merged?.length ?? 0;
               const errorMessage = errorStates[facet.id]?.message ?? '';
+              const isOptionDropdownOpen = optionToggle === facet.id;
+              const valuesUrl = (() => {
+                const baseUrl = ROUTES.GLOBAL.FACET_CONFIG_VALUES(facet.id);
+                const params = new URLSearchParams({
+                  displayName: facet.displayValue,
+                });
+                return `${baseUrl}?${params.toString()}`;
+              })();
+              const historyUrl = (() => {
+                const baseUrl = ROUTES.GLOBAL.FACET_CONFIG_HISTORY(facet.id);
+                const params = new URLSearchParams({
+                  displayName: facet.displayValue,
+                });
+                return `${baseUrl}?${params.toString()}`;
+              })();
 
               return (
                 <div
@@ -356,21 +390,50 @@ const FacetConfigContent = ({
                   </div>
 
                   <div className={styles.tableCol}>
-                    <Button
-                      theme="secondary"
-                      as="a"
-                      href={(() => {
-                        const baseUrl = ROUTES.GLOBAL.FACET_CONFIG_VALUES(
-                          facet.id
-                        );
-                        const params = new URLSearchParams({
-                          displayName: facet.displayValue,
-                        });
-                        return `${baseUrl}?${params.toString()}`;
-                      })()}
-                    >
-                      {hasWriteAccess ? 'Edit values' : 'View values'}
-                    </Button>
+                    <div className={tableStyles.tableActions}>
+                      <Button
+                        appearance="icon"
+                        onMouseDown={(event: MouseEvent<HTMLButtonElement>) => {
+                          event.stopPropagation();
+                          handleOptionToggle(facet.id);
+                        }}
+                        onKeyDown={(
+                          event: KeyboardEvent<HTMLButtonElement>
+                        ) => {
+                          if (event.key === 'Enter') {
+                            event.stopPropagation();
+                            handleOptionToggle(facet.id);
+                          }
+                          if (event.key === 'Escape' && optionToggle !== '') {
+                            setOptionToggle('');
+                          }
+                        }}
+                        aria-label="More options"
+                        title="More options"
+                      >
+                        <span className={tableStyles.menuButton} />
+                      </Button>
+                      {isOptionDropdownOpen && (
+                        <div
+                          className={tableStyles.dropdownOptions}
+                          ref={dropdownWrapperRef}
+                        >
+                          <Link
+                            className={tableStyles.tableLink}
+                            href={valuesUrl}
+                          >
+                            {hasWriteAccess ? 'Edit values' : 'View values'}
+                          </Link>
+                          <Link
+                            className={tableStyles.tableLink}
+                            title="view history"
+                            href={historyUrl}
+                          >
+                            View history
+                          </Link>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               );

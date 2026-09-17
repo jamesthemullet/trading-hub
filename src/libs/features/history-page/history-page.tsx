@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 
+import type { MerchandisingGlobalOnlyFacetConfig } from '@/libs/api';
 import { AccessDeny, Button, ErrorMessage, Heading } from '@/libs/components';
 import { Typography } from '@/libs/components/typography/typography';
 import { RuleType } from '@/libs/constants/rule-types';
@@ -21,21 +22,35 @@ import styles from './history-page.module.css';
 
 type AccessType = 'Cat' | 'Search' | 'Glob';
 
+type HistorySnapshot = RulesetSnapshot & {
+  id: string;
+  displayValue?: string;
+  merged?: MerchandisingGlobalOnlyFacetConfig['merged'];
+  boosted?: string[];
+  excludedValues?: string[];
+  lastChanged: {
+    date: string;
+    user: string;
+  };
+};
+
 type HistoryData = {
   changes: Array<{
     id: string;
-    change: RulesetSnapshot & {
-      id: string;
-      lastChanged: {
-        date: string;
-        user: string;
-      };
-    };
+    change: HistorySnapshot;
   }>;
   pagination: {
     totalItems?: number;
   };
 };
+
+type HistoryDiff = (
+  current: HistorySnapshot,
+  previous: HistorySnapshot,
+  facetNames: Record<string, string>
+) => string[];
+
+type HistoryLinkTarget = 'ruleset' | 'facetConfigValues';
 
 type HistoryPageProps = {
   title: string;
@@ -45,6 +60,10 @@ type HistoryPageProps = {
   history: HistoryData;
   isLoading: boolean;
   error: string;
+  identifier?: string;
+  diffHistoryItem?: HistoryDiff;
+  hasTabs?: boolean;
+  linkTarget?: HistoryLinkTarget;
 };
 
 export const HistoryPage = ({
@@ -55,6 +74,10 @@ export const HistoryPage = ({
   history,
   isLoading,
   error,
+  identifier,
+  diffHistoryItem,
+  hasTabs,
+  linkTarget,
 }: HistoryPageProps): ReactElement => {
   const { hasReadAccess, requiredReadRole } = useAccess(accessType);
   const router = useRouter();
@@ -64,12 +87,12 @@ export const HistoryPage = ({
   const facetNames = Object.fromEntries(
     globalFacets?.map((f) => [f.id, f.displayValue]) ?? []
   );
-  const identifier = router.query.identifier;
   const pageSizes = [...PAGE_SIZES];
   const currentPage = Number(router.query.currentPage) || 1;
   const currentPageSize = Number(router.query.currentPageSize) || 20;
   const currentTab = Number(router.query.tab) || 0;
   const startIndex = getPaginationOffset(currentPage, currentPageSize);
+  const identifierLabel = identifier ?? router.query.identifier;
 
   const handlePageChange = (page: number, pageSize: number) => {
     updateQueryParams(router, {
@@ -91,16 +114,21 @@ export const HistoryPage = ({
   }
 
   const historyItems = history.changes.map((item, index, changes) => {
-    const previousChange = history.changes?.[index + 1]?.change ?? null;
     const isOldestOnPage = index === changes.length - 1;
+    const changesMade = isOldestOnPage
+      ? []
+      : (diffHistoryItem ?? computeHistoryDiff)(
+          item.change,
+          changes[index + 1].change,
+          facetNames
+        );
+
     return {
       id: item.id,
       date: item.change.lastChanged.date,
       user: item.change.lastChanged.user,
       rulesetId: item.change.id,
-      changes: isOldestOnPage
-        ? []
-        : computeHistoryDiff(item.change, previousChange, facetNames),
+      changes: changesMade,
     };
   });
   const normalisedTotalItems =
@@ -128,11 +156,13 @@ export const HistoryPage = ({
         </Button>
       </div>
 
-      <div className={styles.labelWrapper}>
-        <Typography variant="bodySmall" hasMargin>
-          {identifier}
-        </Typography>
-      </div>
+      {identifierLabel && (
+        <div className={styles.labelWrapper}>
+          <Typography variant="bodySmall" hasMargin>
+            {identifierLabel}
+          </Typography>
+        </div>
+      )}
       {error && (
         <ErrorMessage centred>
           Error whilst retrieving history: {error}
@@ -152,6 +182,11 @@ export const HistoryPage = ({
             handlePageChange={handlePageChange}
             initialTab={currentTab}
             onTabChange={handleTabChange}
+            hasTabs={hasTabs}
+            identifier={
+              typeof identifierLabel === 'string' ? identifierLabel : ''
+            }
+            linkTarget={linkTarget}
           />
         )}
       </section>

@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { Button } from '@/libs/components/button/button';
 import { RuleType } from '@/libs/constants/rule-types';
 import { updateQueryParams } from '@/libs/hooks/utils/update-query-params';
+import { createMockNextRouter } from '@/test/create-mock-next-router';
 import { renderWithProviders } from '@/test/render-with-providers';
 
 import { HistoryPage } from './history-page';
@@ -73,7 +74,7 @@ jest.mock('@/libs/components', () => ({
 }));
 
 describe('HistoryPage', () => {
-  const router = {
+  const router = createMockNextRouter({
     query: {
       identifier: 'SUB-CAT-1',
       currentPage: '1',
@@ -82,11 +83,11 @@ describe('HistoryPage', () => {
     pathname: '/category/history/[id]',
     push: jest.fn(),
     back: jest.fn(),
-  };
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.mocked(useRouter).mockReturnValue(router as never);
+    jest.mocked(useRouter).mockReturnValue(router);
   });
 
   it('should pass pagination totalItems to HistoryList', () => {
@@ -217,10 +218,14 @@ describe('HistoryPage', () => {
   });
 
   it('should pass initialTab from router.query.tab to HistoryList', () => {
-    jest.mocked(useRouter).mockReturnValue({
-      ...router,
-      query: { ...router.query, tab: '1' },
-    } as never);
+    jest.mocked(useRouter).mockReturnValue(
+      createMockNextRouter({
+        pathname: router.pathname,
+        push: router.push,
+        back: router.back,
+        query: { ...router.query, tab: '1' },
+      })
+    );
 
     renderWithProviders(
       <HistoryPage
@@ -252,10 +257,15 @@ describe('HistoryPage', () => {
 
   it('should update tab query param when onTabChange is called', () => {
     const mockReplace = jest.fn();
-    jest.mocked(useRouter).mockReturnValue({
-      ...router,
-      replace: mockReplace,
-    } as never);
+    jest.mocked(useRouter).mockReturnValue(
+      createMockNextRouter({
+        pathname: router.pathname,
+        query: router.query,
+        push: router.push,
+        back: router.back,
+        replace: mockReplace,
+      })
+    );
 
     renderWithProviders(
       <HistoryPage
@@ -594,10 +604,14 @@ describe('HistoryPage', () => {
   });
 
   it('should default to page 1 and page size 20 when query params are absent', () => {
-    jest.mocked(useRouter).mockReturnValueOnce({
-      ...router,
-      query: { identifier: 'SUB-CAT-1' },
-    } as never);
+    jest.mocked(useRouter).mockReturnValueOnce(
+      createMockNextRouter({
+        pathname: router.pathname,
+        push: router.push,
+        back: router.back,
+        query: { identifier: 'SUB-CAT-1' },
+      })
+    );
 
     renderWithProviders(
       <HistoryPage
@@ -627,6 +641,44 @@ describe('HistoryPage', () => {
         currentPage: 1,
         currentPageSize: 20,
       })
+    );
+  });
+
+  it('should pass an empty identifier to HistoryList when the router identifier is not a string', () => {
+    jest.mocked(useRouter).mockReturnValueOnce(
+      createMockNextRouter({
+        pathname: router.pathname,
+        push: router.push,
+        back: router.back,
+        query: { ...router.query, identifier: ['SUB-CAT-1'] },
+      })
+    );
+
+    renderWithProviders(
+      <HistoryPage
+        title="Category History"
+        breadcrumbs={['Categories', 'Ranking rules']}
+        accessType="Cat"
+        ruleType={RuleType.CategoryRanking}
+        history={{
+          pagination: { totalItems: 1 },
+          changes: [
+            {
+              id: 'change-1',
+              change: {
+                id: 'ruleset-1',
+                lastChanged: { date: '2024-01-01T00:00:00Z', user: 'user-1' },
+              },
+            },
+          ],
+        }}
+        isLoading={false}
+        error=""
+      />
+    );
+
+    expect(mockHistoryList).toHaveBeenCalledWith(
+      expect.objectContaining({ identifier: '' })
     );
   });
 });

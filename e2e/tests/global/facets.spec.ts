@@ -9,6 +9,7 @@ import {
 } from '../../helpers';
 import { checkAccessibility } from '../accessibility-utils';
 import {
+  mockAgeFacet,
   mockAttributeValues,
   mockEditedFacet,
   mockGlobalFacet,
@@ -110,9 +111,7 @@ test.describe('global facets', () => {
     page,
   }) => {
     const facetId = 'f0bc2d42-563e-11ef-a364-000000000000';
-    const ageFacet = mockGlobalFacet.facets.find(
-      (facet) => facet.id === facetId
-    )!;
+    const ageFacet = mockAgeFacet;
 
     let facetListState = mockGlobalFacet.facets;
     let lastPutBody: Record<string, unknown> = {};
@@ -165,10 +164,9 @@ test.describe('global facets', () => {
         merged: ageFacet.merged,
       });
 
-    await page
-      .getByTestId(`facet-config-row-${facetId}`)
-      .getByRole('link', { name: 'Edit values' })
-      .click();
+    const updatedFacetRow = page.getByTestId(`facet-config-row-${facetId}`);
+    await updatedFacetRow.getByRole('button', { name: 'More options' }).click();
+    await updatedFacetRow.getByRole('link', { name: 'Edit values' }).click();
 
     await expect(
       page.getByRole('heading', { name: 'Value settings of: Hue' })
