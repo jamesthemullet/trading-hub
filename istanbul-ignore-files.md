@@ -25,7 +25,7 @@
 - [ ] src/libs/hooks/use-draft-ruleset.ts (3)
 - [x] src/libs/hooks/use-get-categories.ts (0)
 - [ ] src/libs/hooks/use-global-facet-attributes-edit-modal.ts (1)
-- [ ] src/libs/hooks/use-preview.ts (1)
+- [x] src/libs/hooks/use-preview.ts (0)
 - [ ] src/libs/hooks/use-rule-set-rows-state.ts (4)
 - [x] src/libs/hooks/use-save-conflict.ts (0)
 - [ ] src/libs/hooks/utils/analytics.ts (1)

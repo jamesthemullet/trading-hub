@@ -113,11 +113,8 @@ export const usePreview = ({
         setError('');
         setIsLoading(false);
       } catch (error: unknown) {
-        // istanbul ignore else
-        if (error) {
-          setError(handleError(error));
-          setIsLoading(false);
-        }
+        setError(handleError(error));
+        setIsLoading(false);
       }
     };
 

@@ -153,6 +153,30 @@ describe('useRuleSet', () => {
     await waitFor(() => {
       expect(result.current.error).toEqual(expectedData.error);
     });
+
+    expect(result.current.isLoading).toBe(false);
+  });
+
+  it('should return an unknown error when the api call rejects with undefined', async () => {
+    const fetchSpy = jest
+      .spyOn(global, 'fetch')
+      .mockRejectedValueOnce(undefined);
+
+    const { result } = renderHook(() =>
+      usePreview({
+        countryCode: 'UK',
+        searchTerm: 'foo',
+        merchandisingRules: mockMerchandisingRules,
+        facetConfig: [],
+      })
+    );
+
+    await waitFor(() => {
+      expect(result.current.error).toEqual('Unknown error');
+    });
+
+    expect(result.current.isLoading).toBe(false);
+    fetchSpy.mockRestore();
   });
 
   it('should return data for search preview', async () => {
