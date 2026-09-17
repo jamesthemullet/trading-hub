@@ -109,20 +109,48 @@ jobs:
               }
             }' || echo "Failed to send code-quality timing event to Dynatrace"
 
-  dependency-audit:
-    name: Dependency Audit
+  dependency-review-critical:
+    name: Dependency Review
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
+      - name: Dependency review (pull request)
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+        with:
+          fail-on-severity: critical
+          comment-summary-in-pr: always
+      - name: Dependency review (merge queue)
+        if: github.event_name == 'merge_group'
+        uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+        with:
+          fail-on-severity: critical
+          base-ref: ${{ github.event.merge_group.base_sha }}
+          head-ref: ${{ github.event.merge_group.head_sha }}
 
-      - name: Prepare node and install dependencies
-        uses: ./.github/actions/prepare
-
-      - name: Audit dependencies
-        run: pnpm audit --audit-level=high --ignore-unfixable
+  dependency-review-high:
+    name: Dependency Review (High findings)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Dependency review (pull request)
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: always
+      - name: Dependency review (merge queue)
+        if: github.event_name == 'merge_group'
+        uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+        with:
+          fail-on-severity: high
+          base-ref: ${{ github.event.merge_group.base_sha }}
+          head-ref: ${{ github.event.merge_group.head_sha }}
 
   istanbul-ignore-check:
     name: Istanbul Ignore Reasons
@@ -234,7 +262,7 @@ jobs:
   build:
     name: Build and upload the app
     runs-on: ubuntu-latest
-    needs: dependency-audit
+    needs: dependency-review-critical
     steps:
       - name: Record job start time
         id: job-start
