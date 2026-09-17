@@ -149,6 +149,79 @@ describe('useSaveConflict', () => {
     expect(onSuccess).not.toHaveBeenCalled();
   });
 
+  it('runs a per-save onSuccess override instead of the default on success', async () => {
+    const onSuccess = jest.fn();
+    const onSuccessOverride = jest.fn();
+    const save = jest.fn().mockResolvedValue({ status: 'success' });
+    const { result } = setup(save, onSuccess);
+
+    await act(async () => {
+      await result.current.runSave(
+        { name: 'a' },
+        { onSuccess: onSuccessOverride }
+      );
+    });
+
+    expect(onSuccessOverride).toHaveBeenCalledTimes(1);
+    expect(onSuccess).not.toHaveBeenCalled();
+  });
+
+  it('keeps the per-save onSuccess override through a conflict and runs it after overwrite', async () => {
+    const onSuccess = jest.fn();
+    const onSuccessOverride = jest.fn();
+    const save = jest
+      .fn()
+      .mockResolvedValueOnce({ status: 'conflict', currentEntity })
+      .mockResolvedValueOnce({ status: 'success' });
+    const { result } = setup(save, onSuccess);
+
+    await act(async () => {
+      await result.current.runSave(
+        { name: 'a' },
+        { onSuccess: onSuccessOverride }
+      );
+    });
+    expect(result.current.conflict?.onSuccess).toBe(onSuccessOverride);
+
+    await act(async () => {
+      await result.current.handleOverwrite();
+    });
+
+    expect(onSuccessOverride).toHaveBeenCalledTimes(1);
+    expect(onSuccess).not.toHaveBeenCalled();
+    expect(result.current.conflict).toBeNull();
+  });
+
+  it('preserves the per-save onSuccess override on a repeat conflict', async () => {
+    const onSuccessOverride = jest.fn();
+    const newerEntity: Entity = {
+      version: 6,
+      lastChanged: { date: '2024-01-02T00:00:00Z', user: 'another' },
+    };
+    const save = jest
+      .fn()
+      .mockResolvedValueOnce({ status: 'conflict', currentEntity })
+      .mockResolvedValueOnce({
+        status: 'conflict',
+        currentEntity: newerEntity,
+      });
+    const { result } = setup(save);
+
+    await act(async () => {
+      await result.current.runSave(
+        { name: 'a' },
+        { onSuccess: onSuccessOverride }
+      );
+    });
+    await act(async () => {
+      await result.current.handleOverwrite();
+    });
+
+    expect(result.current.conflict?.currentEntity).toEqual(newerEntity);
+    expect(result.current.conflict?.onSuccess).toBe(onSuccessOverride);
+    expect(onSuccessOverride).not.toHaveBeenCalled();
+  });
+
   it('reloads the page and clears the conflict on discard', async () => {
     const save = jest
       .fn()

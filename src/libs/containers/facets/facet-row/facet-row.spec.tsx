@@ -12,6 +12,7 @@ import { FacetRow } from './facet-row';
 const mockDispatch = jest.fn();
 const mockSaveDraft = jest.fn();
 const mockPush = jest.fn();
+const mockSaveAndContinue = jest.fn();
 
 const mockRuleset = {
   isEnabled: true,
@@ -82,6 +83,7 @@ const includedProps: FacetRowProps = {
   countryCode: 'UK_IE',
   rulesetId: 'test-ruleset-id',
   currentRuleset: mockRuleset,
+  onSaveAndContinue: mockSaveAndContinue,
 };
 
 describe('FacetRow', () => {
@@ -361,7 +363,7 @@ describe('FacetRow', () => {
     ).toBeInTheDocument();
   });
 
-  it('should navigate to edit values href when confirming unsaved changes modal', async () => {
+  it('should save and continue (not navigate straight away) when confirming the unsaved changes modal for an existing ruleset', async () => {
     const user = userEvent.setup({ delay: null });
 
     renderWithProviders(
@@ -376,12 +378,45 @@ describe('FacetRow', () => {
 
     await user.click(screen.getByRole('link', { name: 'Edit values' }));
     await user.click(
-      screen.getByRole('button', { name: 'Discard changes and continue' })
+      screen.getByRole('button', { name: 'Save changes and continue' })
     );
+
+    expect(mockSaveAndContinue).toHaveBeenCalledWith(expect.any(Function));
+    expect(mockPush).not.toHaveBeenCalled();
+    expect(mockSaveDraft).not.toHaveBeenCalled();
+
+    const [navigateToEditValues] = mockSaveAndContinue.mock.calls[0];
+    navigateToEditValues();
 
     expect(mockPush).toHaveBeenCalledWith(
       expect.stringContaining('/facets/values/edit/color-123')
     );
+  });
+
+  it('should save the draft and navigate straight to edit values when confirming for a new ruleset', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <FacetRow
+        {...includedProps}
+        displayType="included"
+        isDragDisabled={false}
+        isWriteEnabled
+        hasChanges
+        isNewRuleset
+      />
+    );
+
+    await user.click(screen.getByRole('link', { name: 'Edit values' }));
+    await user.click(
+      screen.getByRole('button', { name: 'Save changes and continue' })
+    );
+
+    expect(mockSaveDraft).toHaveBeenCalled();
+    expect(mockPush).toHaveBeenCalledWith(
+      expect.stringContaining('/facets/values/edit/color-123')
+    );
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
   });
 
   it('should close unsaved changes modal and stay on page when continuing to edit', async () => {
@@ -430,7 +465,7 @@ describe('FacetRow', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        /Until this change is saved, any updates made in Edit facet values cannot be saved/i
+        /Your changes will be saved before you continue to Edit facet values/i
       )
     ).toBeInTheDocument();
   });

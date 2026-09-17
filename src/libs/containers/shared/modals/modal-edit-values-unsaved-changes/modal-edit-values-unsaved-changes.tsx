@@ -36,8 +36,8 @@ export const ModalEditValuesUnsavedChanges = ({
           </Modal.Title>
           <Typography variant="bodySmall">
             {isNewlyIncluded
-              ? 'You’ve changed this facet to Include only, but haven’t saved it. Until this change is saved, any updates made in Edit facet values cannot be saved and will be lost. Do you want to continue?'
-              : 'Navigating to edit facet values will discard your unsaved changes. Do you want to continue?'}
+              ? 'You’ve changed this facet to Include only, but haven’t saved it. Your changes will be saved before you continue to Edit facet values. Do you want to continue?'
+              : 'Navigating to edit facet values will save your unsaved changes. Do you want to continue?'}
           </Typography>
           <span className={styles.divider} />
           <div className={styles.buttons}>
@@ -45,7 +45,7 @@ export const ModalEditValuesUnsavedChanges = ({
               Stay on page
             </Button>
             <Button isInline onClick={onConfirm}>
-              Discard changes and continue
+              Save changes and continue
             </Button>
           </div>
         </Modal.Body>

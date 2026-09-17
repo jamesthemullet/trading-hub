@@ -1272,6 +1272,70 @@ describe('FacetsList', () => {
     });
   });
 
+  it('should save the ruleset and then continue to edit values when confirming the unsaved changes modal', async () => {
+    const user = userEvent.setup({ delay: null });
+    const onSaveSpy = jest.fn();
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={{
+          ...mockRuleset,
+          facets: [
+            {
+              id: facetsListMock.facets[0].id,
+              boosted: [],
+              excludedValues: [],
+            },
+          ],
+        }}
+        isNewRuleset={false}
+        facetType={FacetType.Search}
+        searchTerms={['socks']}
+        onSave={onSaveSpy}
+      />
+    );
+
+    expect(screen.getByTestId('Row showing color as included')).toBeVisible();
+
+    const secondFacetDropdown = screen.getAllByTestId(
+      'button to open facet order dropdown'
+    )[1];
+    await user.click(secondFacetDropdown);
+    await user.click(
+      within(secondFacetDropdown.parentElement!).getByRole('menuitemradio', {
+        name: 'Exclude only',
+      })
+    );
+    await waitFor(() => {
+      expect(screen.getByTestId('Row showing size as excluded')).toBeVisible();
+    });
+
+    await user.click(screen.getByRole('link', { name: 'Edit values' }));
+    await user.click(
+      screen.getByRole('button', { name: 'Save changes and continue' })
+    );
+
+    // The ruleset is saved with a per-save continuation (to Edit values)
+    // instead of the default post-save redirect to the listing.
+    expect(onSaveSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ searchTerms: ['socks'] }),
+      { onSuccess: expect.any(Function) }
+    );
+    expect(pushMock).not.toHaveBeenCalledWith(
+      expect.stringContaining('/facets/values/edit/')
+    );
+
+    const [, options] = onSaveSpy.mock.calls[0];
+    options.onSuccess();
+
+    expect(pushMock).toHaveBeenCalledWith(
+      expect.stringContaining(
+        `/facets/values/edit/${facetsListMock.facets[0].id}`
+      )
+    );
+  });
+
   it('should not allow to edit values of an algoControl facet', async () => {
     renderWithProviders(
       <FacetsList

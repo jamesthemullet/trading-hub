@@ -21,14 +21,14 @@ describe('ModalEditValuesUnsavedChanges', () => {
       screen.getByRole('button', { name: 'Stay on page' })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Discard changes and continue' })
+      screen.getByRole('button', { name: 'Save changes and continue' })
     ).toBeInTheDocument();
     expect(
-      screen.queryByText(/any changes made in the edit values screen/i)
+      screen.queryByRole('button', { name: 'Discard changes and continue' })
     ).not.toBeInTheDocument();
     expect(
       screen.getByText(
-        'Navigating to edit facet values will discard your unsaved changes. Do you want to continue?'
+        'Navigating to edit facet values will save your unsaved changes. Do you want to continue?'
       )
     ).toBeInTheDocument();
     expect(
@@ -50,7 +50,7 @@ describe('ModalEditValuesUnsavedChanges', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        /Until this change is saved, any updates made in Edit facet values cannot be saved/i
+        /Your changes will be saved before you continue to Edit facet values/i
       )
     ).toBeInTheDocument();
     expect(
@@ -72,7 +72,7 @@ describe('ModalEditValuesUnsavedChanges', () => {
     expect(mockCancel).toHaveBeenCalled();
   });
 
-  it('should call onConfirm when Discard changes and continue is clicked', async () => {
+  it('should call onConfirm when Save changes and continue is clicked', async () => {
     const mockConfirm = jest.fn();
     const user = userEvent.setup();
     renderWithProviders(
@@ -83,7 +83,7 @@ describe('ModalEditValuesUnsavedChanges', () => {
     );
 
     await user.click(
-      screen.getByRole('button', { name: 'Discard changes and continue' })
+      screen.getByRole('button', { name: 'Save changes and continue' })
     );
     expect(mockConfirm).toHaveBeenCalled();
   });

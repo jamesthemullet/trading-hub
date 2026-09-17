@@ -64,6 +64,7 @@ type IncludedFacetRowProps = FacetRowDisplayValue &
     rulesetId: string;
     isNewRuleset?: boolean;
     currentRuleset: MerchandisingRuleSet;
+    onSaveAndContinue: (onSuccess: () => void) => void;
   };
 
 type NonIncludedFacetRowProps = FacetRowDisplayValue &
@@ -142,9 +143,19 @@ export const FacetRow = memo<FacetRowProps>((props: FacetRowProps) => {
 
   const handleModalConfirm = useCallback(() => {
     setShouldShowUnsavedChangesModal(false);
-    handleEditValuesForNewRuleset();
-    router.push(pendingEditValuesHref);
-  }, [handleEditValuesForNewRuleset, pendingEditValuesHref, router]);
+    const navigateToEditValues = () => router.push(pendingEditValuesHref);
+
+    if ('isNewRuleset' in props && props.isNewRuleset) {
+      handleEditValuesForNewRuleset();
+      navigateToEditValues();
+      return;
+    }
+
+    // istanbul ignore else -- the modal only renders for included facets, which carry onSaveAndContinue
+    if ('onSaveAndContinue' in props) {
+      props.onSaveAndContinue(navigateToEditValues);
+    }
+  }, [handleEditValuesForNewRuleset, pendingEditValuesHref, props, router]);
 
   const renderRow = (sortableProps?: SortableRowRenderArgs) => (
     <div

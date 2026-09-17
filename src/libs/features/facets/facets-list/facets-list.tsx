@@ -38,6 +38,7 @@ import {
 } from '@/libs/hooks';
 import { useFacetListDiff } from '@/libs/hooks/use-facet-list-diff';
 import { useFacetOrderInput } from '@/libs/hooks/use-facet-order-input';
+import type { SaveSuccessHandler } from '@/libs/hooks/use-save-conflict';
 import { track } from '@/libs/hooks/utils/analytics';
 import { DEBOUNCE_DELAY_MS } from '@/libs/hooks/utils/constants';
 import { useDebounce } from '@/libs/hooks/utils/use-debounce';
@@ -97,7 +98,7 @@ export type FacetsListProps = {
   facetType: FacetType;
   isNewRuleset: boolean;
   onCancel: () => void;
-  onSave: (args: SaveType) => void;
+  onSave: (args: SaveType, options?: { onSuccess: SaveSuccessHandler }) => void;
   isWriteEnabled: boolean;
   currentRuleset?: MerchandisingRuleSet;
   categoriesInfo?: Array<{
@@ -358,13 +359,19 @@ export const FacetsList = ({
     setIsReviewModalOpen(true);
   };
 
+  const buildSaveArgs = (): SaveType => ({
+    ...ruleset,
+    categoryIds: selectedCategories,
+    searchTerms: selectedSearchTerms,
+  });
+
   const handleConfirmSave = () => {
-    onSave({
-      ...ruleset,
-      categoryIds: selectedCategories,
-      searchTerms: selectedSearchTerms,
-    });
+    onSave(buildSaveArgs());
     setIsReviewModalOpen(false);
+  };
+
+  const handleSaveAndContinue = (onSuccess: SaveSuccessHandler) => {
+    onSave(buildSaveArgs(), { onSuccess });
   };
 
   const sensors = useSensors(
@@ -829,6 +836,7 @@ export const FacetsList = ({
                       currentRuleset={ruleset}
                       hasChanges={hasChanges}
                       isNewlyIncluded={!initialFacetIdSet.has(facet.id)}
+                      onSaveAndContinue={handleSaveAndContinue}
                     />
                   )
               )}
