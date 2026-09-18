@@ -1,5 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
+
+import { renderWithProviders } from '@/test/render-with-providers';
 
 import ErrorPage from './error.page';
 
@@ -21,7 +24,7 @@ describe('Error Page', () => {
   });
 
   it('should render correctly', () => {
-    render(<ErrorPage />);
+    renderWithProviders(<ErrorPage />);
 
     expect(
       screen.getByText('An unknown error occurred. Please try again later.')
@@ -36,7 +39,35 @@ describe('Error Page', () => {
       query: {},
     });
 
-    render(<ErrorPage />);
+    renderWithProviders(<ErrorPage />);
+
+    expect(
+      screen.getByText('An unknown error occurred. Please try again later.')
+    ).toBeInTheDocument();
+  });
+
+  it('should render the matching error message for a recognized error', () => {
+    (useRouter as jest.Mock).mockReturnValue({
+      query: {
+        error: 'OAuthCallback',
+      },
+    });
+
+    renderWithProviders(<ErrorPage />);
+
+    expect(
+      screen.getByText('An error occurred. Please try again later.')
+    ).toBeInTheDocument();
+  });
+
+  it('should render the default message for an array-valued error query', () => {
+    (useRouter as jest.Mock).mockReturnValue({
+      query: {
+        error: ['OAuthCallback'],
+      },
+    });
+
+    renderWithProviders(<ErrorPage />);
 
     expect(
       screen.getByText('An unknown error occurred. Please try again later.')
@@ -50,19 +81,20 @@ describe('Error Page', () => {
       },
     });
 
-    render(<ErrorPage />);
+    renderWithProviders(<ErrorPage />);
 
     expect(screen.getByText('Authentication Error')).toBeInTheDocument();
   });
 
-  it('should redirect to the home page when the button is clicked', () => {
-    render(<ErrorPage />);
+  it('should redirect to the home page when the button is clicked', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<ErrorPage />);
 
     const button = screen.getByRole('button', {
       name: 'Go Back to Sign In',
     });
 
-    button.click();
+    await user.click(button);
 
     expect(push).toHaveBeenCalledWith('/');
   });

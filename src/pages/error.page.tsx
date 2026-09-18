@@ -5,23 +5,29 @@ import { Button, Typography } from '@/libs/components';
 
 import styles from './error.module.css';
 
+const ERROR_MESSAGES = {
+  OAuthSignin:
+    'There was an issue signing in with the provider. Please try again.',
+  OAuthCallback: 'An error occurred. Please try again later.',
+  CredentialsSignin:
+    'The credentials provided are incorrect. Please check and try again.',
+  default: 'An unknown error occurred. Please try again later.',
+};
+
+const isErrorMessageKey = (
+  error: string
+): error is keyof typeof ERROR_MESSAGES =>
+  Object.prototype.hasOwnProperty.call(ERROR_MESSAGES, error);
+
 export default function AuthError(): ReactElement {
   const router = useRouter();
   const { error = 'default', source = '' } = router.query;
 
   const sourceOfError = source === 'auth' ? 'Authentication ' : '';
-
-  const errorMessages = {
-    OAuthSignin:
-      'There was an issue signing in with the provider. Please try again.',
-    OAuthCallback: 'An error occurred. Please try again later.',
-    CredentialsSignin:
-      'The credentials provided are incorrect. Please check and try again.',
-    default: 'An unknown error occurred. Please try again later.',
-  };
-
   const errorMessage =
-    errorMessages[error as keyof typeof errorMessages] || errorMessages.default;
+    typeof error === 'string' && isErrorMessageKey(error)
+      ? ERROR_MESSAGES[error]
+      : ERROR_MESSAGES.default;
 
   return (
     <div className={styles.wrapper}>
