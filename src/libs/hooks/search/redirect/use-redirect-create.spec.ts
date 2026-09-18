@@ -29,6 +29,7 @@ describe('useRedirectCreate', () => {
 
   afterEach(() => {
     server.resetHandlers();
+    jest.restoreAllMocks();
   });
 
   afterAll(() => {
@@ -65,5 +66,19 @@ describe('useRedirectCreate', () => {
     });
 
     expect(result.current.error).toBe('Unknown error');
+    expect(result.current.isSaving).toBe(false);
+  });
+
+  it('should return a generic error for falsy rejections', async () => {
+    jest.spyOn(global, 'fetch').mockRejectedValueOnce(undefined);
+
+    const { result } = renderHook(() => useRedirectCreate());
+
+    await act(async () => {
+      await result.current.createRedirect({ redirect: redirectMock });
+    });
+
+    expect(result.current.error).toBe('Unknown error');
+    expect(result.current.isSaving).toBe(false);
   });
 });

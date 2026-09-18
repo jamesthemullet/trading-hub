@@ -19,7 +19,7 @@
 - [ ] src/libs/features/rulesets/ruleset-attributes-modal/ruleset-attributes-modal.tsx (1)
 - [ ] src/libs/features/shared/search-keywords/search-keywords.tsx (2)
 - [ ] src/libs/features/shared/table-panel/table-panel.tsx (1)
-- [ ] src/libs/hooks/search/redirect/use-redirect-create.ts (1)
+- [x] src/libs/hooks/search/redirect/use-redirect-create.ts (0)
 - [ ] src/libs/hooks/search/redirect/use-redirect-detail.ts (1)
 - [ ] src/libs/hooks/search/ruleset/use-search-ruleset-preview.ts (1)
 - [ ] src/libs/hooks/use-draft-ruleset.ts (3)
