@@ -8,13 +8,18 @@ const nextConfig = {
   poweredByHeader: false,
   pageExtensions: ['page.tsx', 'page.ts'],
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'asset1.cxnmarksandspencer.com',
         port: '',
         pathname: '/is/image/mands/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'static.marksandspencer.com',
+        port: '',
+        pathname: '/**',
       },
     ],
   },
