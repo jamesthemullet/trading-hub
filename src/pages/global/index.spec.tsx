@@ -405,11 +405,72 @@ describe('Index', () => {
     );
   });
 
-  it('displays all catalogue tabs', () => {
+  it('displays all catalogue tabs', async () => {
+    const refetchRuleSetList = jest.fn();
+    const globalRuleSets = [
+      {
+        id: 'global-ruleset-id',
+        isEnabled: true,
+        lastChanged: {
+          user: 'user',
+          date: '2021-01-01',
+        },
+        rules: mockMerchandisingRules,
+        facets: [],
+      },
+    ];
+    jest.mocked(useRuleSet).mockReturnValue({
+      categoryRuleSets: [],
+      pagination: {
+        totalItems: 1,
+      },
+      globalRuleSets,
+      refetchRuleSetList,
+      setCategoryRuleSets: jest.fn(),
+      setGlobalRuleSets: jest.fn(),
+      error: '',
+      isLoading: false,
+    });
+    let releaseResponse: () => void = () => {};
+    const responsePending = new Promise<void>((resolve) => {
+      releaseResponse = resolve;
+    });
+    server.use(
+      http.get(
+        '/api/search/merchandising/v1/CLOTHING_AND_HOME/global/ruleset',
+        async (ctx) => {
+          await responsePending;
+          const url = new URL(ctx.request.url);
+          const countryCode = url.searchParams.get('countryCode');
+          refetchRuleSetList();
+          mockRefetchRuleSetList({
+            countryCode,
+          });
+          return HttpResponse.json(
+            {
+              ruleSets: globalRuleSets,
+              pagination: { totalItems: 1 },
+            },
+            { status: 200 }
+          );
+        }
+      )
+    );
+
     renderWithProviders(<RuleSets />);
 
     expect(screen.getByText('cfto.com')).toBeVisible();
     expect(screen.getByText('marksandspencer.com')).toBeVisible();
+    await waitFor(() => {
+      expect(screen.getByTestId('table-pagination-skeleton')).toBeVisible();
+    });
+
+    releaseResponse();
+
+    expect(await screen.findByText('1 - 1 out of 1')).toBeVisible();
+    await waitFor(() => {
+      expect(refetchRuleSetList).toHaveBeenCalled();
+    });
   });
 
   it('does not change tab while the router is not ready', async () => {
