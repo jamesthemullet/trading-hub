@@ -26,9 +26,8 @@
       "enabled": false
     },
     {
-      "description": "Skip npm artifact generation for major updates while Renovate is hitting the memory limit",
+      "description": "Skip npm artifact generation while Renovate is hitting the memory limit",
       "matchManagers": ["npm"],
-      "matchUpdateTypes": ["major"],
       "skipArtifactsUpdate": true
     },
     {
