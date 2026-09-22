@@ -2,6 +2,7 @@
   "extends": ["config:recommended"],
   "assigneesFromCodeOwners": true,
   "schedule": ["after 5pm every weekday", "before 9am every weekday"],
+  "enabledManagers": ["npm", "github-actions", "dockerfile", "docker-compose"],
   "prConcurrentLimit": 1,
   "branchConcurrentLimit": 1,
   "prHourlyLimit": 2,
@@ -16,6 +17,18 @@
   "recreateWhen": "never",
   "ignoreDeps": ["node"],
   "packageRules": [
+    {
+      "description": "Temporarily prevent pnpm package-manager updates while Renovate is memory constrained",
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["packageManager"],
+      "enabled": false
+    },
+    {
+      "description": "Skip npm artifact generation for major updates while Renovate is hitting the memory limit",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["major"],
+      "skipArtifactsUpdate": true
+    },
     {
       "groupName": "mantine",
       "matchPackageNames": ["/mantine/"]
