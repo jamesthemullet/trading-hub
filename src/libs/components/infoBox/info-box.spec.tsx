@@ -15,9 +15,9 @@ describe('InfoBox', () => {
     expect(container.querySelector('img')).toBeInTheDocument();
   });
 
-  it('should hide the icon when showIcon is false', () => {
+  it('should hide the icon when shouldShowIcon is false', () => {
     const { container } = renderWithProviders(
-      <InfoBox text="test info" showIcon={false} />
+      <InfoBox text="test info" shouldShowIcon={false} />
     );
     expect(container.querySelector('img')).not.toBeInTheDocument();
   });

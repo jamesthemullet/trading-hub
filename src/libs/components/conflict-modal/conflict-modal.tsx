@@ -13,7 +13,7 @@ import Image from 'next/image';
 import styles from './conflict-modal.module.css';
 
 type ConflictModalProps = {
-  opened: boolean;
+  isOpen: boolean;
   onDiscard: () => void;
   onOverwrite: () => void;
   onClose: () => void;
@@ -24,7 +24,7 @@ type ConflictModalProps = {
 };
 
 export const ConflictModal = ({
-  opened,
+  isOpen,
   diffItems,
   onDiscard,
   onOverwrite,
@@ -35,7 +35,7 @@ export const ConflictModal = ({
 }: ConflictModalProps): ReactElement => {
   return (
     <Modal.Root
-      opened={opened}
+      opened={isOpen}
       onClose={onClose}
       centered
       padding={20}

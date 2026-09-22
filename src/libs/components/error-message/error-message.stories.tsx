@@ -7,7 +7,7 @@ const meta: Meta<typeof ErrorMessage> = {
   component: ErrorMessage,
   tags: ['autodocs'],
   argTypes: {
-    centred: {
+    isCentred: {
       control: {
         type: 'boolean',
       },
@@ -32,14 +32,14 @@ type Story = StoryObj<typeof ErrorMessage>;
 export const Default: Story = {
   args: {
     children: 'An error occurred while processing your request.',
-    centred: false,
+    isCentred: false,
   },
 };
 
 export const Centred: Story = {
   args: {
     children: 'An error occurred while loading this page.',
-    centred: true,
+    isCentred: true,
   },
   parameters: {
     layout: 'fullscreen',
@@ -50,6 +50,6 @@ export const LongMessage: Story = {
   args: {
     children:
       'We encountered an unexpected error while trying to save your changes. Please try again later, or contact support if the problem persists.',
-    centred: false,
+    isCentred: false,
   },
 };

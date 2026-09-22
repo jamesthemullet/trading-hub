@@ -219,9 +219,9 @@ const Page = (): ReactElement => {
         ]}
       />
 
-      {error && <ErrorMessage centred>{error}</ErrorMessage>}
+      {error && <ErrorMessage isCentred>{error}</ErrorMessage>}
       {updateRuleSetError && (
-        <ErrorMessage centred>
+        <ErrorMessage isCentred>
           Error whilst updating ruleset: {updateRuleSetError}
         </ErrorMessage>
       )}
@@ -244,7 +244,7 @@ const Page = (): ReactElement => {
             lastChanged={ruleSet.lastChanged}
           />
           <ConflictModal
-            opened={conflict !== null}
+            isOpen={conflict !== null}
             entityLabel="keyword ruleset"
             diffItems={conflictDiffItems}
             changedBy={conflict?.currentEntity.lastChanged.user}

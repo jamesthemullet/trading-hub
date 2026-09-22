@@ -164,7 +164,7 @@ export const HistoryPage = ({
         </div>
       )}
       {error && (
-        <ErrorMessage centred>
+        <ErrorMessage isCentred>
           Error whilst retrieving history: {error}
         </ErrorMessage>
       )}

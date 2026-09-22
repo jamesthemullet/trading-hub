@@ -175,7 +175,7 @@ const Page = ({ id }: PageProps): ReactElement => {
         ))}
 
       <ConflictModal
-        opened={conflict !== null}
+        isOpen={conflict !== null}
         entityLabel="global ruleset"
         diffItems={conflictDiffItems}
         changedBy={conflict?.currentEntity.lastChanged.user}

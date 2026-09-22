@@ -22,14 +22,14 @@ describe('CombinedDropdown', () => {
         {
           index: 0,
           label: 'All rule types',
-          selected: false,
+          isSelected: false,
           value: undefined,
           ariaLabel: 'show all rule types',
         },
         {
           index: 1,
           label: 'Ranking rules',
-          selected: true,
+          isSelected: true,
           value: 'RANKING',
           ariaLabel: 'show rule types with ranking rules',
         },
@@ -43,14 +43,14 @@ describe('CombinedDropdown', () => {
         {
           index: 0,
           label: 'All rule types',
-          selected: false,
+          isSelected: false,
           value: undefined,
           ariaLabel: 'show all rule types',
         },
         {
           index: 1,
           label: 'Ranking rules',
-          selected: false,
+          isSelected: false,
           value: 'RANKING',
           ariaLabel: 'show rule types with ranking rules',
         },

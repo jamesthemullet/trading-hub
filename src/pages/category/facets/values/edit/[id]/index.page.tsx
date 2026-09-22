@@ -260,7 +260,7 @@ const Page = (): ReactElement => {
               lastChanged={ruleSetDetail.lastChanged}
             />
             <ConflictModal
-              opened={conflict !== null}
+              isOpen={conflict !== null}
               entityLabel="category ruleset"
               diffItems={conflictDiffItems}
               changedBy={conflict?.currentEntity.lastChanged.user}

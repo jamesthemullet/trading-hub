@@ -34,7 +34,7 @@ export const OperationSelector = ({
         icon={label.icon}
         width={150}
         ariaLabel={`Select to ${hasIncludeExclude ? 'include, exclude, ' : ''}boost or bury`}
-        closeFromChild={shouldCloseDropdown}
+        shouldCloseFromChild={shouldCloseDropdown}
         onOpen={() => {
           setShouldCloseDropdown(false);
         }}

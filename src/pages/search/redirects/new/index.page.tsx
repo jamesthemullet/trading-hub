@@ -43,7 +43,7 @@ const CreateRedirect = (): ReactElement => {
         ]}
       />
 
-      {error && <ErrorMessage centred>{error}</ErrorMessage>}
+      {error && <ErrorMessage isCentred>{error}</ErrorMessage>}
 
       <Redirect
         onCreate={createNewRedirect}

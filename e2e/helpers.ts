@@ -75,14 +75,14 @@ export const mockOptimisticLockConflict = async <T>(
   { url, currentEntity, successJson }: OptimisticLockConflictConfig<T>
 ): Promise<{ hasConflicted: () => boolean }> => {
   let saveAttempts = 0;
-  let conflicted = false;
+  let hasConflicted = false;
   await page.route(url, async (route) => {
     if (route.request().method() !== 'PUT') {
       return route.fallback();
     }
     saveAttempts += 1;
     if (saveAttempts === 1) {
-      conflicted = true;
+      hasConflicted = true;
       return route.fulfill({
         status: 409,
         json: {
@@ -94,7 +94,7 @@ export const mockOptimisticLockConflict = async <T>(
     }
     return route.fulfill({ status: 200, json: successJson });
   });
-  return { hasConflicted: () => conflicted };
+  return { hasConflicted: () => hasConflicted };
 };
 
 /**

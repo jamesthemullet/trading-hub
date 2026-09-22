@@ -32,12 +32,12 @@ export const CopyMessageBox = ({
   message: string;
   isMultiline?: boolean;
 }): ReactElement => {
-  const [copied, setCopied] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   const handleCopy = () => {
     void navigator.clipboard.writeText(message);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
   };
 
   return (
@@ -60,9 +60,9 @@ export const CopyMessageBox = ({
           appearance="plain"
           onClick={handleCopy}
           className={styles.copyButton}
-          aria-label={copied ? 'Copied' : 'Copy to clipboard'}
+          aria-label={isCopied ? 'Copied' : 'Copy to clipboard'}
         >
-          {copied ? (
+          {isCopied ? (
             <Image
               src="/trading-hub/asset/icon-tick-in-circle-success.svg"
               width={24}

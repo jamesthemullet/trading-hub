@@ -268,13 +268,13 @@ const FacetConfigContent = ({
       />
 
       {facetsListError && (
-        <ErrorMessage centred>
+        <ErrorMessage isCentred>
           Error whilst retrieving facets: {facetsListError}
         </ErrorMessage>
       )}
 
       {updateError && (
-        <ErrorMessage centred>
+        <ErrorMessage isCentred>
           Error whilst updating facet: {updateError}
         </ErrorMessage>
       )}
@@ -453,7 +453,7 @@ const FacetConfigContent = ({
       />
 
       <ConflictModal
-        opened={conflict !== null}
+        isOpen={conflict !== null}
         entityLabel="facet"
         diffItems={conflictDiffItems}
         changedBy={conflict?.currentEntity.lastChanged.user}

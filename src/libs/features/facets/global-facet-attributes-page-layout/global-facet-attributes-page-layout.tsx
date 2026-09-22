@@ -337,7 +337,7 @@ export const GlobalFacetAttributesPageLayout = ({
       />
 
       <ConflictModal
-        opened={conflict !== null}
+        isOpen={conflict !== null}
         entityLabel="facet"
         diffItems={conflictDiffItems}
         changedBy={conflict?.currentEntity.lastChanged.user}

@@ -13,7 +13,7 @@ export enum DropdownVariant {
 type RuleTypeFilterOption = {
   index: number;
   label: string;
-  selected: boolean;
+  isSelected: boolean;
   value: RuleTypeFilter | undefined;
   ariaLabel: string;
 };
@@ -64,21 +64,21 @@ export const RULE_TYPE_FILTER_OPTIONS: RuleTypeFilterOption[] = [
   {
     index: 0,
     label: 'All rule types',
-    selected: true,
+    isSelected: true,
     value: undefined,
     ariaLabel: 'show all rule types',
   },
   {
     index: 1,
     label: 'Ranking rules',
-    selected: false,
+    isSelected: false,
     value: 'RANKING',
     ariaLabel: 'show rule types with ranking rules',
   },
   {
     index: 2,
     label: 'Facet rules',
-    selected: false,
+    isSelected: false,
     value: 'FACET',
     ariaLabel: 'show rule types with facet rules',
   },
@@ -105,4 +105,4 @@ export const VARIANT_TEST_IDS: Partial<Record<DropdownVariant, string>> = {
 export const getSelectedRuleTypeFilterOption = (
   options: RuleTypeFilterOption[]
 ): RuleTypeFilterOption | undefined =>
-  options.find((option) => option.selected) ?? options[0];
+  options.find((option) => option.isSelected) ?? options[0];

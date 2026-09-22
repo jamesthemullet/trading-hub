@@ -33,13 +33,13 @@ export const FeatureFlagContext =
 
 export const useAuthorizationFlag = (): boolean => {
   const featureFlags = useContext(FeatureFlagContext);
-  const [authorizationEnabled, setAuthorizationEnabled] = useState(false);
+  const [isAuthorizationEnabled, setIsAuthorizationEnabled] = useState(false);
 
   useEffect(() => {
-    setAuthorizationEnabled(featureFlags.hasAuthorization);
+    setIsAuthorizationEnabled(featureFlags.hasAuthorization);
   }, [featureFlags.hasAuthorization]);
 
-  return authorizationEnabled;
+  return isAuthorizationEnabled;
 };
 
 export const useAuthorizationRoleOverride = (): AuthorizationRoleOverride => {
@@ -57,23 +57,23 @@ export const useAuthorizationRoleOverride = (): AuthorizationRoleOverride => {
 
 export const useProfilePageFlag = (): boolean => {
   const featureFlags = useContext(FeatureFlagContext);
-  const [profilePageEnabled, setProfilePageEnabled] = useState(false);
+  const [isProfilePageEnabled, setIsProfilePageEnabled] = useState(false);
 
   useEffect(() => {
-    setProfilePageEnabled(featureFlags.hasProfilePage);
+    setIsProfilePageEnabled(featureFlags.hasProfilePage);
   }, [featureFlags.hasProfilePage]);
 
-  return profilePageEnabled;
+  return isProfilePageEnabled;
 };
 
 export const useFavouriteRulesetsFlag = (): boolean => {
   const featureFlags = useContext(FeatureFlagContext);
-  const [favouriteRulesetsEnabled, setFavouriteRulesetsEnabled] =
+  const [isFavouriteRulesetsEnabled, setIsFavouriteRulesetsEnabled] =
     useState(false);
 
   useEffect(() => {
-    setFavouriteRulesetsEnabled(featureFlags.hasFavouriteRulesets);
+    setIsFavouriteRulesetsEnabled(featureFlags.hasFavouriteRulesets);
   }, [featureFlags.hasFavouriteRulesets]);
 
-  return favouriteRulesetsEnabled;
+  return isFavouriteRulesetsEnabled;
 };

@@ -9,7 +9,7 @@ type Props = {
   text: string;
   title?: string;
   variant?: 'info' | 'error' | 'warning';
-  showIcon?: boolean;
+  shouldShowIcon?: boolean;
   width?: string;
   height?: string;
   children?: ReactNode;
@@ -19,7 +19,7 @@ export const InfoBox = ({
   text,
   title,
   variant = 'info',
-  showIcon = true,
+  shouldShowIcon = true,
   width = '340px',
   height = '56px',
   children,
@@ -36,7 +36,7 @@ export const InfoBox = ({
         } as React.CSSProperties
       }
     >
-      {showIcon && (
+      {shouldShowIcon && (
         <Image
           src="/trading-hub/asset/icon-info.svg"
           width={20}

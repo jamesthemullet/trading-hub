@@ -111,7 +111,7 @@ const EditRedirect = ({ id }: Props): ReactElement => {
       />
 
       {(error || updateError || historyError) && (
-        <ErrorMessage centred>
+        <ErrorMessage isCentred>
           {error || updateError || historyError}
         </ErrorMessage>
       )}
@@ -126,7 +126,7 @@ const EditRedirect = ({ id }: Props): ReactElement => {
             isWriteEnabled={hasWriteAccess && !isHistoryView}
           />
           <ConflictModal
-            opened={conflict !== null}
+            isOpen={conflict !== null}
             entityLabel="redirect"
             diffItems={conflictDiffItems}
             changedBy={conflict?.currentEntity.lastChanged.user}

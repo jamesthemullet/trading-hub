@@ -137,7 +137,7 @@ const Page = ({ id }: PageProps): ReactElement => {
       />
 
       {(error || updateError || historyError) && (
-        <ErrorMessage centred>
+        <ErrorMessage isCentred>
           {error || updateError || historyError}
         </ErrorMessage>
       )}
@@ -163,7 +163,7 @@ const Page = ({ id }: PageProps): ReactElement => {
             isResolvingConflict={conflict !== null || isOverwriting}
           />
           <ConflictModal
-            opened={conflict !== null}
+            isOpen={conflict !== null}
             entityLabel="keyword ruleset"
             diffItems={conflictDiffItems}
             changedBy={conflict?.currentEntity.lastChanged.user}

@@ -5,16 +5,16 @@ import styles from './error-message.module.css';
 
 type ErrorMessageProps = {
   children: React.ReactNode;
-  centred?: boolean;
+  isCentred?: boolean;
 };
 
 export const ErrorMessage = ({
   children,
-  centred = false,
+  isCentred = false,
   ...rest
 }: ErrorMessageProps): ReactElement => (
   <Typography
-    className={centred ? styles.centredError : styles.errorMessage}
+    className={isCentred ? styles.centredError : styles.errorMessage}
     role="alert"
     {...rest}
   >

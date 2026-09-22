@@ -185,7 +185,7 @@ const Page = ({ id }: { id: string }): ReactElement => {
             lastChanged={rulesetData?.lastChanged}
           />
           <ConflictModal
-            opened={conflict !== null}
+            isOpen={conflict !== null}
             entityLabel="category ruleset"
             diffItems={conflictDiffItems}
             changedBy={conflict?.currentEntity.lastChanged.user}

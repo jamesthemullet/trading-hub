@@ -36,7 +36,7 @@ type GenericDropdownProps = {
   ariaLabel?: string;
   onOpen?: () => void;
   onClose?: (closingType?: ClosingType) => void;
-  closeFromChild?: boolean;
+  shouldCloseFromChild?: boolean;
 };
 
 type CountryDropdownProps = {
@@ -78,8 +78,8 @@ type DropdownOptionButtonProps = {
   ariaLabel?: string;
   onClick: () => void;
   role?: string;
-  ariaChecked?: boolean;
-  ariaSelected?: boolean;
+  isAriaChecked?: boolean;
+  isAriaSelected?: boolean;
   children: ReactNode;
 };
 
@@ -87,8 +87,8 @@ const DropdownOptionButton = ({
   ariaLabel,
   onClick,
   role = 'menuitemradio',
-  ariaChecked,
-  ariaSelected,
+  isAriaChecked,
+  isAriaSelected,
   children,
 }: DropdownOptionButtonProps) => (
   <Button
@@ -98,8 +98,8 @@ const DropdownOptionButton = ({
     aria-label={ariaLabel}
     onClick={onClick}
     role={role}
-    aria-checked={ariaChecked}
-    aria-selected={ariaSelected}
+    aria-checked={isAriaChecked}
+    aria-selected={isAriaSelected}
   >
     {children}
   </Button>
@@ -116,7 +116,7 @@ export const CombinedDropdown = ({
   onOpen,
   onClose,
   onChange,
-  closeFromChild,
+  shouldCloseFromChild,
   selectedCountryCode,
   countrySelectorOptions = COUNTRY_SELECTOR_OPTIONS,
   status,
@@ -140,10 +140,10 @@ export const CombinedDropdown = ({
   );
 
   useEffect(() => {
-    if (closeFromChild) {
+    if (shouldCloseFromChild) {
       closeDropdown();
     }
-  }, [closeFromChild, closeDropdown]);
+  }, [shouldCloseFromChild, closeDropdown]);
 
   const openDropdown = useCallback(() => {
     setIsOpen(true);
@@ -349,7 +349,7 @@ export const CombinedDropdown = ({
           <DropdownOptionButton
             key={option.label}
             onClick={() => handleCountryFilterSelect(option.index)}
-            ariaChecked={option.index === selectedCountryFilterIndex}
+            isAriaChecked={option.index === selectedCountryFilterIndex}
           >
             <Typography as="span" variant="bodySmall">
               {option.label}
@@ -362,7 +362,7 @@ export const CombinedDropdown = ({
           <DropdownOptionButton
             key={option.label}
             onClick={() => handleCountrySelectorSelect(option.index)}
-            ariaChecked={option.countryCode === selectedCountryCode}
+            isAriaChecked={option.countryCode === selectedCountryCode}
           >
             {option.flagsToShow.map((flag) => (
               <Image
@@ -386,7 +386,7 @@ export const CombinedDropdown = ({
             <DropdownOptionButton
               key={option.label}
               onClick={() => handleFacetOrderSelect(option.index)}
-              ariaChecked={option.name === selectedFacetName}
+              isAriaChecked={option.name === selectedFacetName}
             >
               <Image src={option.src as string} alt="" width={24} height={24} />
               <Typography as="span" variant="bodySmall">
@@ -410,7 +410,7 @@ export const CombinedDropdown = ({
               }
               closeDropdown();
             }}
-            ariaChecked={currentPageSize === size}
+            isAriaChecked={currentPageSize === size}
           >
             <Typography as="span" variant="bodySmall">
               {size}
@@ -423,7 +423,7 @@ export const CombinedDropdown = ({
           <DropdownOptionButton
             key={option.label}
             onClick={() => handleRuleTypeFilterSelect(option.index)}
-            ariaChecked={option.index === selectedRuleTypeIndex}
+            isAriaChecked={option.index === selectedRuleTypeIndex}
           >
             <Typography as="span" variant="bodySmall">
               {option.label}

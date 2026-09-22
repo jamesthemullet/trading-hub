@@ -35,7 +35,7 @@ const InfoCardContainer = ({
         {section.issues.map((issue) => (
           <li key={issue.reason}>
             <InfoBox
-              showIcon={false}
+              shouldShowIcon={false}
               variant={issue.type}
               title={issue.reason}
               text={issue.action}
@@ -126,7 +126,7 @@ export const ProductResult = ({ productDisplay }: Props): ReactElement => {
             {productAssembly.issues.map((issue) => (
               <li key={issue.reason}>
                 <InfoBox
-                  showIcon={false}
+                  shouldShowIcon={false}
                   variant={issue.type}
                   title={issue.reason}
                   text={issue.action}

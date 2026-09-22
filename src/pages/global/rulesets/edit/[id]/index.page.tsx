@@ -141,7 +141,7 @@ const Page = ({ id }: PageProps): ReactElement => {
               isResolvingConflict={conflict !== null || isOverwriting}
             />
             <ConflictModal
-              opened={conflict !== null}
+              isOpen={conflict !== null}
               diffItems={conflictDiffItems}
               changedBy={conflict?.currentEntity.lastChanged.user}
               isSaving={isOverwriting}

@@ -17,7 +17,7 @@ const diffItems: DiffItem[] = [
 ];
 
 const baseProps = {
-  opened: true,
+  isOpen: true,
   diffItems,
   onDiscard: jest.fn(),
   onOverwrite: jest.fn(),
@@ -105,7 +105,7 @@ describe('ConflictModal', () => {
   });
 
   it('does not render when closed', () => {
-    renderWithProviders(<ConflictModal {...baseProps} opened={false} />);
+    renderWithProviders(<ConflictModal {...baseProps} isOpen={false} />);
 
     expect(
       screen.queryByRole('dialog', { name: MODAL_NAME })
@@ -115,7 +115,7 @@ describe('ConflictModal', () => {
   it('renders a message-only modal with a custom entity label when diffItems is omitted', () => {
     renderWithProviders(
       <ConflictModal
-        opened
+        isOpen
         entityLabel="redirect"
         changedBy="Jane"
         onDiscard={jest.fn()}
