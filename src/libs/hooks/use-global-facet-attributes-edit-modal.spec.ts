@@ -411,6 +411,70 @@ describe('useGlobalFacetAttributesEditModal', () => {
     );
   });
 
+  it('handleEditModalSave allows an existing merge group to keep its custom name when a value is added to it', async () => {
+    mockCheckMergeNameUnique.mockResolvedValue({ isUniqueValue: true });
+
+    const state: GlobalAttributesPageState = {
+      ...baseState,
+      boostedRows: [
+        {
+          displayName: 'Wildlife Prints',
+          attributes: ['Leopard print', 'Camouflage'],
+          isMergeGroup: true,
+          isChecked: true,
+          order: 1,
+        },
+        {
+          displayName: 'Geometric',
+          attributes: ['Geometric'],
+          isMergeGroup: false,
+          isChecked: true,
+          order: 2,
+        },
+      ],
+      merged: [
+        {
+          displayValue: 'Wildlife Prints',
+          mergedValues: ['Leopard print', 'Camouflage'],
+        },
+      ],
+    };
+
+    const { result } = renderHook(() =>
+      useGlobalFacetAttributesEditModal({
+        facet: mockFacet,
+        displayName: 'dn',
+        dispatch: mockDispatch,
+        globalAttributesLocalState: state,
+        setIsAwaitingUpdate: mockSetIsAwaitingUpdate,
+      })
+    );
+
+    await act(async () => {
+      await result.current.handleEditModalSave('Wildlife Prints');
+    });
+
+    expect(mockCheckMergeNameUnique).toHaveBeenCalledWith(
+      expect.objectContaining({
+        searchQuery: 'Wildlife Prints',
+        localAttributeValues: expect.arrayContaining(['Wildlife Prints']),
+        exceptions: expect.arrayContaining([
+          'Leopard print',
+          'Camouflage',
+          'Geometric',
+          'Wildlife Prints',
+        ]),
+      })
+    );
+    expect(result.current.editModalError).toBe('');
+    expect(mockDispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'UPDATE_MERGE_GROUP',
+        payload: expect.objectContaining({ displayValue: 'Wildlife Prints' }),
+      })
+    );
+  });
+
   it('handleEditModalSave dispatches REMOVE_FROM_MERGE_GROUP for demerged values from existing merge group', async () => {
     mockCheckMergeNameUnique.mockResolvedValue({ isUniqueValue: true });
 

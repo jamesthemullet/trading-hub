@@ -530,4 +530,44 @@ test.describe('global Material Type facet value merging', () => {
       page.getByLabel('Edit display name for Camouflage')
     ).toBeVisible();
   });
+
+  test('adds a value to a merge group that has a custom display name', async ({
+    page,
+  }) => {
+    await page.goto(materialTypeValuesEditorUrl);
+    await expect(
+      page.getByRole('heading', { name: 'Value settings of: Material Type' })
+    ).toBeVisible();
+
+    await page.getByLabel('Select Leopard print to merge').click();
+    await page.getByLabel('Select Camouflage to merge').click();
+    await page.getByRole('button', { name: 'Merge', exact: true }).click();
+    await page.getByRole('dialog').getByRole('textbox').fill('Wildlife Prints');
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Save' })
+      .click();
+
+    await expect(
+      page.getByLabel('Edit display name for Wildlife Prints')
+    ).toBeVisible();
+
+    await page.getByLabel('Select Wildlife Prints to merge').click();
+    await page.getByLabel('Select Geometric to merge').click();
+    await page.getByRole('button', { name: 'Merge', exact: true }).click();
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Save' })
+      .click();
+
+    await expect(
+      page.getByText('Wildlife Prints is not a unique value')
+    ).toBeHidden();
+    await expect(
+      page.getByLabel('Remove merged facet for Geometric')
+    ).toBeVisible();
+    await expect(
+      page.getByLabel('Edit display name for Wildlife Prints')
+    ).toBeVisible();
+  });
 });

@@ -99,9 +99,14 @@ export const useGlobalFacetAttributesEditModal = ({
         facetId: facet.id,
         searchQuery: trimmedNewValue,
         countryCode: countryCode ?? 'UK_IE',
-        exceptions: selectedRows
-          .flatMap((row) => row.attributes)
-          .filter((val) => !demergedValues.includes(val)),
+        exceptions: [
+          ...selectedRows
+            .flatMap((row) => row.attributes)
+            .filter((val) => !demergedValues.includes(val)),
+          ...selectedRows
+            .filter((row) => row.isMergeGroup)
+            .map((row) => row.displayName),
+        ],
         localAttributeValues: [
           ...globalAttributesLocalState.boostedRows.map(
             (row) => row.displayName
