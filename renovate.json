@@ -6,7 +6,9 @@
   "prConcurrentLimit": 1,
   "branchConcurrentLimit": 1,
   "prHourlyLimit": 2,
-  "dependencyDashboard": false,
+  "dependencyDashboard": true,
+  "dependencyDashboardApproval": true,
+  "dependencyDashboardAutoclose": true,
   "toolSettings": {
     "nodeMaxMemory": 1024
   },
