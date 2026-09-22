@@ -38,6 +38,7 @@ See [Local Development](./docs/local-development.md) for full setup details, inc
 
 ### CI/CD and Pipelines
 - [Pipelines](./docs/pipelines.md): Information about CI/CD workflows, security, and monitoring.
+- [Dependency updates](./docs/pipelines.md#dependency-updates-renovate): Renovate scheduling, grouping, and memory-limit safeguards.
 
 ### Additional Resources
 - [Dynatrace](./docs/dynatrace.md): Monitoring and performance insights.

@@ -56,6 +56,14 @@
   - Email notifications after 2 consecutive failures
   - Early warning after single failure
 
+## Dependency Updates (Renovate)
+
+Renovate runs on weekdays and uses the Dependency Dashboard issue to queue updates for approval.
+
+The repository has a 3 GiB Renovate memory limit. Updating the pnpm lockfile for a large group of npm dependencies exceeded that limit, so npm updates remain individually bounded (apart from related package groups such as React and Mantine). GitHub Actions and Docker updates are grouped, and Renovate creates at most two branches at once.
+
+Lock-file maintenance and pnpm package-manager updates are disabled while this limit applies. npm major updates skip artifact generation; update the lockfile before merging one if CI reports a frozen-lockfile mismatch.
+
 ## Security Features
 
 - OIDC (OpenID Connect) authentication
