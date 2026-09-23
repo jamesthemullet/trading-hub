@@ -26,7 +26,7 @@ jobs:
           SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
         run: |
           if [[ -z "$SAML_GITHUB_TOKEN" ]]; then
-            echo "::error::SAML_GITHUB_TOKEN is required to push the lockfile and trigger PR validation."
+            echo "::error::SAML_GITHUB_TOKEN is required to update the lockfile and trigger PR validation."
             exit 1
           fi
 
@@ -53,19 +53,32 @@ jobs:
       - name: Generate lockfile
         run: pnpm install --lockfile-only --ignore-scripts --no-frozen-lockfile --config.pnpmfile=/dev/null
 
-      - name: Commit and push lockfile
+      - name: Check lockfile changes
+        id: lockfile
+        run: |
+          if git diff --quiet -- pnpm-lock.yaml; then
+            echo "pnpm-lock.yaml is already current."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit lockfile through GitHub API
+        if: steps.lockfile.outputs.has_changes == 'true'
         env:
           GH_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
-          if git diff --quiet -- pnpm-lock.yaml; then
-            echo "pnpm-lock.yaml is already current."
-            exit 0
-          fi
+          current_sha="$(gh api --method GET "repos/${GITHUB_REPOSITORY}/contents/pnpm-lock.yaml" -f ref="${HEAD_REF}" --jq '.sha')"
+          content="$(base64 -w 0 pnpm-lock.yaml)"
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pnpm-lock.yaml
-          git commit -m "chore: update pnpm lockfile"
-          gh auth setup-git
-          git push origin "HEAD:${HEAD_REF}"
+          jq -n \
+            --arg message "chore: update pnpm lockfile" \
+            --arg content "$content" \
+            --arg sha "$current_sha" \
+            --arg branch "$HEAD_REF" \
+            '{message: $message, content: $content, sha: $sha, branch: $branch}' \
+            | gh api \
+              --method PUT \
+              "repos/${GITHUB_REPOSITORY}/contents/pnpm-lock.yaml" \
+              --input -
