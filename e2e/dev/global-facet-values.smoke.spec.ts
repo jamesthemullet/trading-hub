@@ -3,27 +3,31 @@ import { expect, test } from '@playwright/test';
 
 test.describe.configure({ mode: 'serial' });
 
-// Clicks "Save changes" and waits for either a successful navigation back to
-// the facet list, or a conflict (someone else saved this facet in the
-// meantime - e.g. an overlapping scheduled smoke test run). If a conflict
-// modal appears, resolve it by overwriting with our own changes so the test
-// doesn't silently lose the edit it just made.
-const saveChanges = async (page: Page): Promise<void> => {
+const saveChanges = async (page: Page, facetId: string): Promise<void> => {
+  const waitForSaveResponse = () =>
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === 'PUT' &&
+        new URL(response.url()).pathname ===
+          `/api/search/merchandising/v1/CLOTHING_AND_HOME/facet/${facetId}`
+    );
+
+  const saveResponsePromise = waitForSaveResponse();
   await page.getByRole('button', { name: 'Save changes', exact: true }).click();
+  let saveResponse = await saveResponsePromise;
 
   const overwriteButton = page.getByRole('button', {
     name: 'Overwrite with my changes',
   });
 
-  await Promise.race([
-    page.waitForURL(/\/global\/facet-config/),
-    overwriteButton.waitFor({ state: 'visible' }),
-  ]);
-
-  if (await overwriteButton.isVisible()) {
+  if (saveResponse.status() === 409) {
+    await overwriteButton.waitFor({ state: 'visible' });
+    const overwriteResponsePromise = waitForSaveResponse();
     await overwriteButton.click();
-    await page.waitForURL(/\/global\/facet-config/);
+    saveResponse = await overwriteResponsePromise;
   }
+
+  expect(saveResponse.status()).toBe(200);
 };
 
 const reloadUntilVisible = async (
@@ -104,8 +108,11 @@ test.describe('Global Material Type facet value merging', () => {
   });
 
   test('merges and reverses Material Type facet values', async ({ page }) => {
-    // Guards against navigating to a URL with an undefined id when the facet is missing in this environment
-    test.skip(!materialTypeFacetId, 'Material Type facet not found');
+    if (!materialTypeFacetId) {
+      test.skip(true, 'Material Type facet not found');
+
+      return;
+    }
 
     const valuesEditorUrl = `/global/facet-config/values/edit/${materialTypeFacetId}?displayName=Material+Type`;
     const mergedGroupName = 'Animal Prints Group';
@@ -139,7 +146,7 @@ test.describe('Global Material Type facet value merging', () => {
 
     // Persist to the API via the review changes modal
     await page.getByRole('button', { name: 'Save', exact: true }).click();
-    await saveChanges(page);
+    await saveChanges(page, materialTypeFacetId);
 
     // ── Verify merge persisted ───────────────────────────────────────────────
 
@@ -174,7 +181,7 @@ test.describe('Global Material Type facet value merging', () => {
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Save', exact: true }).click();
-    await saveChanges(page);
+    await saveChanges(page, materialTypeFacetId);
 
     // ── Verify expanded group persisted ──────────────────────────────────────
 
@@ -192,7 +199,7 @@ test.describe('Global Material Type facet value merging', () => {
     await page.getByLabel('Remove merged facet for Geometric').click();
 
     await page.getByRole('button', { name: 'Save', exact: true }).click();
-    await saveChanges(page);
+    await saveChanges(page, materialTypeFacetId);
 
     // ── Verify reversal persisted ────────────────────────────────────────────
 
