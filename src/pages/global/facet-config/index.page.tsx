@@ -35,6 +35,11 @@ import Link from 'next/link';
 
 const COLUMNS = ['Facet', 'Display Name', 'Merge Groups', ''];
 
+const withDisplayName = (url: string, displayName: string): string => {
+  const params = new URLSearchParams({ displayName });
+  return `${url}?${params.toString()}`;
+};
+
 type FacetConfigContentProps = {
   hasWriteAccess: boolean;
 };
@@ -313,20 +318,14 @@ const FacetConfigContent = ({
               const mergeCount = facet.merged?.length ?? 0;
               const errorMessage = errorStates[facet.id]?.message ?? '';
               const isOptionDropdownOpen = optionToggle === facet.id;
-              const valuesUrl = (() => {
-                const baseUrl = ROUTES.GLOBAL.FACET_CONFIG_VALUES(facet.id);
-                const params = new URLSearchParams({
-                  displayName: facet.displayValue,
-                });
-                return `${baseUrl}?${params.toString()}`;
-              })();
-              const historyUrl = (() => {
-                const baseUrl = ROUTES.GLOBAL.FACET_CONFIG_HISTORY(facet.id);
-                const params = new URLSearchParams({
-                  displayName: facet.displayValue,
-                });
-                return `${baseUrl}?${params.toString()}`;
-              })();
+              const valuesUrl = withDisplayName(
+                ROUTES.GLOBAL.FACET_CONFIG_VALUES(facet.id),
+                facet.displayValue
+              );
+              const historyUrl = withDisplayName(
+                ROUTES.GLOBAL.FACET_CONFIG_HISTORY(facet.id),
+                facet.displayValue
+              );
 
               return (
                 <div
