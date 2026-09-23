@@ -1,0 +1,71 @@
+name: Update Renovate lockfile
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, labeled]
+
+permissions:
+  contents: read
+
+concurrency:
+  cancel-in-progress: true
+  group: '${{ github.workflow }}-${{ github.event.pull_request.number }}'
+
+jobs:
+  update-lockfile:
+    name: Generate and commit pnpm-lock.yaml
+    if: >-
+      contains(github.event.pull_request.labels.*.name, 'dependencies') &&
+      github.event.pull_request.user.login == 'renovate[bot]' &&
+      startsWith(github.event.pull_request.head.ref, 'renovate/') &&
+      github.event.pull_request.head.repo.full_name == 'DigitalInnovation/trading-hub'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require workflow-triggering token
+        env:
+          SAML_GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+        run: |
+          if [[ -z "$SAML_GITHUB_TOKEN" ]]; then
+            echo "::error::SAML_GITHUB_TOKEN is required to push the lockfile and trigger PR validation."
+            exit 1
+          fi
+
+      - name: Checkout Renovate branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: DigitalInnovation/trading-hub
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Read Node.js version
+        id: versions
+        run: echo "node=$(jq -r '.engines.node' package.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ steps.versions.outputs.node }}
+          cache: pnpm
+
+      - name: Generate lockfile
+        run: pnpm install --lockfile-only --ignore-scripts --no-frozen-lockfile --config.pnpmfile=/dev/null
+
+      - name: Commit and push lockfile
+        env:
+          GH_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          if git diff --quiet -- pnpm-lock.yaml; then
+            echo "pnpm-lock.yaml is already current."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pnpm-lock.yaml
+          git commit -m "chore: update pnpm lockfile"
+          gh auth setup-git
+          git push origin "HEAD:${HEAD_REF}"

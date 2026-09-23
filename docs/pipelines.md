@@ -62,7 +62,9 @@ Renovate runs on weekdays and uses the Dependency Dashboard issue to queue updat
 
 The repository has a 3 GiB Renovate memory limit. Updating the pnpm lockfile for a large group of npm dependencies exceeded that limit, so npm updates remain individually bounded (apart from related package groups such as React and Mantine). GitHub Actions and Docker updates are grouped, and Renovate creates at most two branches at once.
 
-Lock-file maintenance and pnpm package-manager updates are disabled while this limit applies. npm major updates skip artifact generation; update the lockfile before merging one if CI reports a frozen-lockfile mismatch.
+Lock-file maintenance and pnpm package-manager updates are disabled while this limit applies. Renovate skips artifact generation for all npm updates to stay within the memory limit. The `Update Renovate lockfile` workflow generates only `pnpm-lock.yaml` with lifecycle scripts disabled, then pushes it back to same-repository PRs that have the `dependencies` label, are authored by `renovate[bot]`, and use a `renovate/` branch.
+
+The workflow requires the `SAML_GITHUB_TOKEN` Actions secret to push the lockfile. Unlike the default `GITHUB_TOKEN`, this token causes the push to trigger the normal PR validation workflow. It is exposed only to the guarded job for same-repository Renovate PRs and is not available to arbitrary or forked pull requests.
 
 ## Security Features
 
