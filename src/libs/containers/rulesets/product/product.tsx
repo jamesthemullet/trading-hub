@@ -607,7 +607,6 @@ export const Product = ({
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    // istanbul ignore else
                     if (
                       positionToLockTo &&
                       positionToLockTo < totalPinnedProducts + 2

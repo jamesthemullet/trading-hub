@@ -533,6 +533,24 @@ describe('Product', () => {
       expect(confirmButton).toBeDisabled();
     });
 
+    it('should not pin when the form is submitted without a position', () => {
+      render(<Product {...productProps} />);
+
+      openActionsMenu(screen);
+      openPinningMenu(screen);
+
+      const input = screen.getByPlaceholderText('i.e. 3');
+      const form = input.closest('form');
+
+      if (!form) {
+        throw new Error('Expected pinning form');
+      }
+
+      fireEvent.submit(form);
+
+      expect(mockDispatch).not.toHaveBeenCalled();
+    });
+
     it('should pin correctly', async () => {
       const expectedCall: RuleSetActions = {
         type: 'product',
