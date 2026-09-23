@@ -68,13 +68,22 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          EXPECTED_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
+          current_head_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/${HEAD_REF}" --jq '.object.sha')"
+          if [[ "$current_head_sha" != "$EXPECTED_HEAD_SHA" ]]; then
+            echo "::error::Branch advanced during lockfile generation (expected ${EXPECTED_HEAD_SHA}, got ${current_head_sha}). Re-run against the latest head."
+            exit 1
+          fi
+
           current_sha="$(gh api --method GET "repos/${GITHUB_REPOSITORY}/contents/pnpm-lock.yaml" -f ref="${HEAD_REF}" --jq '.sha')"
-          content="$(base64 -w 0 pnpm-lock.yaml)"
+          lockfile_content_path="$(mktemp)"
+          trap 'rm -f "$lockfile_content_path"' EXIT
+          base64 -w 0 pnpm-lock.yaml | tr -d '\n' > "$lockfile_content_path"
 
           jq -n \
             --arg message "chore: update pnpm lockfile" \
-            --arg content "$content" \
+            --rawfile content "$lockfile_content_path" \
             --arg sha "$current_sha" \
             --arg branch "$HEAD_REF" \
             '{message: $message, content: $content, sha: $sha, branch: $branch}' \
