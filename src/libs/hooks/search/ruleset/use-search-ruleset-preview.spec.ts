@@ -166,6 +166,33 @@ describe('useSearchRuleSetPreview', () => {
     });
   });
 
+  it('should stop loading when the api fails to fetch', async () => {
+    const errorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    try {
+      server.use(
+        http.get(
+          `/search/beta/merchandising/keyword/ruleset/${mockRulesetId}`,
+          () => HttpResponse.error()
+        )
+      );
+
+      const { result } = renderHook(() =>
+        useSearchRuleSetPreview(mockRulesetId)
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.error).toBe('');
+    } finally {
+      errorSpy.mockRestore();
+    }
+  });
+
   it('should not make API calls when id is empty', async () => {
     const { result } = renderHook(() => useSearchRuleSetPreview(''));
 

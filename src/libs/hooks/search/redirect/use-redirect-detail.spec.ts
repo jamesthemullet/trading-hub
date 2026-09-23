@@ -88,7 +88,7 @@ describe('useRedirectDetail', () => {
 
     const expectedData = {
       redirect,
-      error: 'POST status 500',
+      error: 'GET status 500',
       isLoading: false,
     };
 

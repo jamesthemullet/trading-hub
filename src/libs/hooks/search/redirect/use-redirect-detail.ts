@@ -42,9 +42,8 @@ export const useRedirectDetail = (
         setRedirect(data);
         setError('');
       } catch (error) {
-        // istanbul ignore else
         if (error && typeof error === 'object' && 'status' in error) {
-          setError(`POST status ${error.status}`);
+          setError(`GET status ${error.status}`);
           setIsLoading(false);
           return;
         }
