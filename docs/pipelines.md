@@ -58,13 +58,15 @@
 
 ## Dependency Updates (Renovate)
 
-Renovate runs on weekdays and uses the Dependency Dashboard issue to queue updates for approval.
+Renovate runs during its configured weekday schedule and creates updates without requiring Dependency Dashboard approval. The dashboard remains available to track updates.
 
-The repository has a 3 GiB Renovate memory limit. Updating the pnpm lockfile for a large group of npm dependencies exceeded that limit, so npm updates remain individually bounded (apart from related package groups such as React and Mantine). GitHub Actions and Docker updates are grouped, and Renovate creates at most two branches at once.
+Renovate config sets `toolSettings.nodeMaxMemory` to 1024 MiB (1 GiB) for the Node heap. This is separate from any runner or container memory limit, which is not defined in the repository configuration. Previous npm lockfile generation hit memory limits, so npm updates remain individually bounded (apart from related package groups such as React and Mantine). Renovate creates at most one branch and one PR at a time.
 
-Lock-file maintenance and pnpm package-manager updates are disabled while this limit applies. Renovate skips artifact generation for all npm updates to stay within the memory limit. The `Update Renovate lockfile` workflow generates only `pnpm-lock.yaml` with lifecycle scripts disabled, then pushes it back to same-repository PRs that have the `dependencies` label, are authored by `renovate[bot]`, and use a `renovate/` branch.
+Lock-file maintenance and pnpm package-manager updates are disabled while these memory safeguards apply. Renovate skips artifact generation for all npm updates to avoid further memory failures. The `Update Renovate lockfile` workflow generates only `pnpm-lock.yaml` with lifecycle scripts disabled, then pushes it back to same-repository PRs that have the `dependencies` label, are authored by `renovate[bot]`, and use a `renovate/` branch.
 
-The workflow requires the `SAML_GITHUB_TOKEN` Actions secret to push the lockfile. Unlike the default `GITHUB_TOKEN`, this token causes the push to trigger the normal PR validation workflow. It is exposed only to the guarded job for same-repository Renovate PRs and is not available to arbitrary or forked pull requests.
+The workflow requires the `SAML_GITHUB_TOKEN` Actions secret with repository write access and the organisation's required SSO authorisation for GraphQL. It commits the lockfile using GitHub's `createCommitOnBranch` mutation, which provides GitHub-signed commits to satisfy the verified-signature rule. The mutation's `expectedHeadOid` atomically rejects an update if the branch has advanced since checkout; a new run must use the latest head.
+
+Using this token allows the commit to trigger normal PR validation automatically, without the default `GITHUB_TOKEN`'s workflow-trigger restrictions. It is exposed only to the guarded job for same-repository Renovate PRs and is not available to arbitrary or forked pull requests.
 
 ## Security Features
 

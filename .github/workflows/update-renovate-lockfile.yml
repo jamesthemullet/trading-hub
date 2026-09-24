@@ -63,31 +63,41 @@ jobs:
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Commit lockfile through GitHub API
+      - name: Commit lockfile through GitHub signed-commit API
         if: steps.lockfile.outputs.has_changes == 'true'
         env:
           GH_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
           EXPECTED_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          current_head_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/${HEAD_REF}" --jq '.object.sha')"
-          if [[ "$current_head_sha" != "$EXPECTED_HEAD_SHA" ]]; then
-            echo "::error::Branch advanced during lockfile generation (expected ${EXPECTED_HEAD_SHA}, got ${current_head_sha}). Re-run against the latest head."
-            exit 1
-          fi
+          set -euo pipefail
 
-          current_sha="$(gh api --method GET "repos/${GITHUB_REPOSITORY}/contents/pnpm-lock.yaml" -f ref="${HEAD_REF}" --jq '.sha')"
           lockfile_content_path="$(mktemp)"
           trap 'rm -f "$lockfile_content_path"' EXIT
-          base64 -w 0 pnpm-lock.yaml | tr -d '\n' > "$lockfile_content_path"
+          base64 -w 0 pnpm-lock.yaml > "$lockfile_content_path"
 
           jq -n \
+            --arg query 'mutation($input: CreateCommitOnBranchInput!) {
+              createCommitOnBranch(input: $input) {
+                commit { oid url }
+              }
+            }' \
+            --arg repository "$GITHUB_REPOSITORY" \
+            --arg branch "$HEAD_REF" \
+            --arg expectedHeadOid "$EXPECTED_HEAD_SHA" \
             --arg message "chore: update pnpm lockfile" \
             --rawfile content "$lockfile_content_path" \
-            --arg sha "$current_sha" \
-            --arg branch "$HEAD_REF" \
-            '{message: $message, content: $content, sha: $sha, branch: $branch}' \
-            | gh api \
-              --method PUT \
-              "repos/${GITHUB_REPOSITORY}/contents/pnpm-lock.yaml" \
-              --input -
+            '{
+              query: $query,
+              variables: {
+                input: {
+                  branch: {repositoryNameWithOwner: $repository, branchName: $branch},
+                  expectedHeadOid: $expectedHeadOid,
+                  message: {headline: $message},
+                  fileChanges: {
+                    additions: [{path: "pnpm-lock.yaml", contents: $content}]
+                  }
+                }
+              }
+            }' \
+            | gh api graphql --input -
