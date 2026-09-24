@@ -570,21 +570,21 @@ describe('Search Keywords', () => {
         ['Cat.W', 'Search.W', 'Glob.W']
       );
 
-      await waitFor(async () => {
-        await user.click(screen.getByRole('button', { name: 'Edit' }));
-      });
+      await user.click(screen.getByRole('button', { name: 'Edit' }));
 
-      await waitFor(async () => {
-        await user.type(
-          screen.getByLabelText('Add keyword to list'),
-          'alpha{enter}'
-        );
-      });
+      const modal = await screen.findByLabelText('Search Keywords Modal');
+
+      await user.type(
+        within(modal).getByLabelText('Add keyword to list'),
+        'alpha{enter}'
+      );
 
       expect(addSearchTermsStub).not.toHaveBeenCalled();
-      expect(
-        screen.getByText('Keyword alpha has already been added')
-      ).toBeVisible();
+      await waitFor(() => {
+        expect(
+          within(modal).getByText('Keyword alpha has already been added')
+        ).toBeVisible();
+      });
     });
 
     it('should skip duplicates and show summary with skipped count', async () => {
