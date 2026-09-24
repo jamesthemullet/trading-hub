@@ -2,20 +2,13 @@ import type { Dispatch, ReactElement } from 'react';
 import { Modal } from '@mantine/core';
 
 import type {
-  MerchandisingAlphanumericBoostBury,
   MerchandisingCountryCode,
-  MerchandisingIncludeExclude,
-  MerchandisingNumericBoostBury,
   SearchMerchandisingProductsV1ParamsEnum,
 } from '@/libs/api';
-import {
-  type AttributeEdit,
-  isBoostOrBury,
-  type RuleSetActions,
-  type RulesetAttribute,
-} from '@/libs/components/types';
+import type { AttributeEdit, RuleSetActions } from '@/libs/components/types';
 
 import { AddSetAttribute } from '../add-set-attribute/add-set-attribute';
+import { useRulesetAttributeSave } from './use-ruleset-attribute-save';
 
 const MODAL_WIDTH = 435;
 
@@ -39,210 +32,11 @@ export const RulesetAttributesModal = ({
   onCloseModal,
   dispatch,
 }: RulesetAttributesModalProps): ReactElement => {
-  const handleSave = (attribute: RulesetAttribute) => {
-    if (attribute.change === 'modify' && editData) {
-      if (
-        attribute.type === 'alphanumeric' &&
-        isBoostOrBury(attribute.operation)
-      ) {
-        if (attribute.operation === editData.operation) {
-          const data =
-            attribute.attribute as MerchandisingAlphanumericBoostBury;
-          dispatch({
-            type: 'alphanumericBoostBuryAttribute',
-            payload: {
-              change: 'modify',
-              index: editData.index,
-              data,
-              operation: attribute.operation,
-            },
-          });
-        } else {
-          const data =
-            attribute.attribute as MerchandisingAlphanumericBoostBury;
-          dispatch({
-            type: 'alphanumericBoostBuryAttribute',
-            payload: {
-              change: 'add',
-              index: 0,
-              data,
-              operation: attribute.operation,
-            },
-          });
-          if (isBoostOrBury(editData.operation)) {
-            dispatch({
-              type: 'alphanumericBoostBuryAttribute',
-              payload: {
-                change: 'remove',
-                index: editData.index,
-                operation: editData.operation,
-                data: {
-                  fields: [],
-                  weight: 0,
-                },
-              },
-            });
-          } else {
-            dispatch({
-              type: 'alphanumericIncludeExcludeAttribute',
-              payload: {
-                change: 'remove',
-                index: editData.index,
-                operation: editData.operation,
-                data: {
-                  fields: [],
-                },
-              },
-            });
-          }
-        }
-      }
-      if (
-        attribute.type === 'alphanumeric' &&
-        (attribute.operation === 'include' || attribute.operation === 'exclude')
-      ) {
-        if (attribute.operation === editData.operation) {
-          const data = attribute.attribute as MerchandisingIncludeExclude;
-          dispatch({
-            type: 'alphanumericIncludeExcludeAttribute',
-            payload: {
-              change: 'modify',
-              index: editData.index,
-              data: {
-                fields: data.fields,
-              },
-              operation: attribute.operation,
-            },
-          });
-        } else {
-          const data = attribute.attribute as MerchandisingIncludeExclude;
-          dispatch({
-            type: 'alphanumericIncludeExcludeAttribute',
-            payload: {
-              change: 'add',
-              index: 0,
-              data: {
-                fields: data.fields,
-              },
-              operation: attribute.operation,
-            },
-          });
-          if (isBoostOrBury(editData.operation)) {
-            dispatch({
-              type: 'alphanumericBoostBuryAttribute',
-              payload: {
-                change: 'remove',
-                index: editData.index,
-                operation: editData.operation,
-                data: {
-                  fields: [],
-                  weight: 0,
-                },
-              },
-            });
-          } else {
-            dispatch({
-              type: 'alphanumericIncludeExcludeAttribute',
-              payload: {
-                change: 'remove',
-                index: editData.index,
-                operation: editData.operation,
-                data: {
-                  fields: [],
-                },
-              },
-            });
-          }
-        }
-      }
-      if (attribute.type === 'numeric' && isBoostOrBury(attribute.operation)) {
-        if (attribute.operation === editData.operation) {
-          const data = attribute.attribute as MerchandisingNumericBoostBury;
-          dispatch({
-            type: 'numericAttribute',
-            payload: {
-              change: 'modify',
-              index: editData.index,
-              data,
-              operation: attribute.operation,
-            },
-          });
-        } else {
-          const data = attribute.attribute as MerchandisingNumericBoostBury;
-          dispatch({
-            type: 'numericAttribute',
-            payload: {
-              change: 'add',
-              index: 0,
-              data,
-              operation: attribute.operation,
-            },
-          });
-          dispatch({
-            type: 'numericAttribute',
-            payload: {
-              change: 'remove',
-              index: editData.index,
-              operation: editData.operation as 'boost' | 'bury',
-              data: {
-                field: '',
-                weight: 0,
-              },
-            },
-          });
-        }
-      }
-    } else {
-      if (attribute.type === 'numeric' && isBoostOrBury(attribute.operation)) {
-        const data = attribute.attribute as MerchandisingNumericBoostBury;
-        dispatch({
-          type: 'numericAttribute',
-          payload: {
-            change: 'add',
-            index: 0,
-            data,
-            operation: attribute.operation,
-          },
-        });
-      }
-
-      if (
-        attribute.type === 'alphanumeric' &&
-        isBoostOrBury(attribute.operation)
-      ) {
-        const data = attribute.attribute as MerchandisingAlphanumericBoostBury;
-        dispatch({
-          type: 'alphanumericBoostBuryAttribute',
-          payload: {
-            change: 'add',
-            index: 0,
-            data,
-            operation: attribute.operation,
-          },
-        });
-      }
-
-      if (
-        attribute.type === 'alphanumeric' &&
-        (attribute.operation === 'include' || attribute.operation === 'exclude')
-      ) {
-        const data = attribute.attribute as MerchandisingIncludeExclude;
-        dispatch({
-          type: 'alphanumericIncludeExcludeAttribute',
-          payload: {
-            change: 'add',
-            index: 0,
-            data: {
-              fields: data.fields,
-            },
-            operation: attribute.operation,
-          },
-        });
-      }
-    }
-
-    onCloseModal();
-  };
+  const handleSave = useRulesetAttributeSave({
+    dispatch,
+    editData,
+    onCloseModal,
+  });
 
   return (
     <Modal.Root
