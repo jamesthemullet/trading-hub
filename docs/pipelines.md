@@ -68,6 +68,8 @@ The workflow requires the `SAML_GITHUB_TOKEN` Actions secret with repository wri
 
 Using this token allows the commit to trigger normal PR validation automatically, without the default `GITHUB_TOKEN`'s workflow-trigger restrictions. It is exposed only to the guarded job for same-repository Renovate PRs and is not available to arbitrary or forked pull requests.
 
+Minor and patch update PRs are also given the `auto-cab` label so the required `Automated CAB Process / Check CAB Approval` check creates a change request for them automatically. Major/breaking update PRs are not auto-labelled, since they may need closer review before a change request is raised.
+
 ## Security Features
 
 - OIDC (OpenID Connect) authentication
