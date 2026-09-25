@@ -9,7 +9,7 @@
 - [ ] src/libs/containers/shared/calendar/date-picker.tsx (1)
 - [ ] src/libs/containers/shared/calendar/date-time-picker-modal.tsx (2)
 - [ ] src/libs/containers/shared/editable-label/editable-label.tsx (2)
-- [ ] src/libs/containers/shared/input/input.tsx (1)
+- [x] src/libs/containers/shared/input/input.tsx (0)
 - [ ] src/libs/containers/shared/table/datatable.tsx (5)
 - [ ] src/libs/features/facets/category-and-search-facet-attributes-page-layout/category-and-search-facet-attributes-page-layout.tsx (1)
 - [ ] src/libs/features/facets/facets-list/facets-list.tsx (1)

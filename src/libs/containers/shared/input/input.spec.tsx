@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/render-with-providers';
 
@@ -49,5 +50,16 @@ describe('Input', () => {
 
     expect(screen.queryByText(/need input/i)).not.toBeInTheDocument();
     expect(screen.getByLabelText(/need input/i)).toBeInTheDocument();
+  });
+
+  it('should update its value when cleared', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Input id="id" name="input" label="Need input" />);
+    const input = screen.getByLabelText(/need input/i);
+
+    await user.type(input, 'value');
+    await user.clear(input);
+
+    expect(input).toHaveValue('');
   });
 });

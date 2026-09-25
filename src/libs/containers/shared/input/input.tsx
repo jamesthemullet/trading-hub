@@ -48,7 +48,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const handleChange = useCallback(
       (event: ChangeEvent<HTMLInputElement>) => {
-        setInputVal(event.target.value || /* istanbul ignore next */ '');
+        setInputVal(event.target.value || '');
         onChange?.(event);
       },
       [onChange]
