@@ -711,9 +711,11 @@ describe('Search Keywords', () => {
       });
 
       expect(addSearchTermsStub).not.toHaveBeenCalled();
-      expect(
-        screen.getByText('0 keywords added, 2 duplicates skipped')
-      ).toBeVisible();
+      await waitFor(() => {
+        expect(
+          screen.getByText('0 keywords added, 2 duplicates skipped')
+        ).toBeVisible();
+      });
     });
 
     it('should keep commas within a keyword when comma-splitting is switched off', async () => {
