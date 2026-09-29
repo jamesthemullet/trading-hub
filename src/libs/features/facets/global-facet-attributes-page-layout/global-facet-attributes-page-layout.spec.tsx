@@ -121,6 +121,68 @@ describe('GlobalFacetAttributesPageLayout', () => {
     expect(mockRouter.push).toHaveBeenCalledWith('/global/facet-config');
   });
 
+  describe('unsaved changes navigation guard', () => {
+    const changeAnAttribute = async (
+      user: ReturnType<typeof userEvent.setup>
+    ) => {
+      const boostedRow = screen.getByTestId('included attribute 0 Cotton');
+      await user.click(
+        within(boostedRow).getByRole('button', {
+          name: /select to set as included, excluded or algo control/i,
+        })
+      );
+      await user.click(
+        within(boostedRow).getByRole('menuitemradio', {
+          name: /exclude only/i,
+        })
+      );
+    };
+
+    // The guard re-registers whenever hasChanges flips, so take the latest.
+    const getRouteChangeStartHandler = () => {
+      const calls = mockRouter.events.on.mock.calls.filter(
+        ([event]) => event === 'routeChangeStart'
+      );
+      return calls[calls.length - 1][1] as () => void;
+    };
+
+    let confirmSpy: jest.SpyInstance<boolean, [message?: string]>;
+
+    beforeEach(() => {
+      confirmSpy = jest.spyOn(window, 'confirm').mockImplementation(() => true);
+    });
+
+    // Restore here as well as asserting, so a failing test cannot leak the
+    // window.confirm spy into later tests.
+    afterEach(() => {
+      confirmSpy.mockRestore();
+    });
+
+    it('does not warn about unsaved changes when navigating after a successful save', async () => {
+      const user = userEvent.setup();
+
+      renderWithProviders(
+        <GlobalFacetAttributesPageLayout {...defaultProps} />
+      );
+
+      await changeAnAttribute(user);
+
+      await user.click(screen.getByRole('button', { name: 'Save' }));
+      const dialog = await screen.findByRole('dialog');
+      await user.click(
+        within(dialog).getByRole('button', { name: 'Save changes' })
+      );
+
+      await waitFor(() => {
+        expect(mockRouter.push).toHaveBeenCalledWith('/global/facet-config');
+      });
+
+      getRouteChangeStartHandler()();
+
+      expect(confirmSpy).not.toHaveBeenCalled();
+    });
+  });
+
   describe('unsaved changes modal', () => {
     const makeChange = async (user: ReturnType<typeof userEvent.setup>) => {
       const boostedRow = screen.getByTestId('included attribute 0 Cotton');

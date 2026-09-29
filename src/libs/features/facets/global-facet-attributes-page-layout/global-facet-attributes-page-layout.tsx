@@ -192,7 +192,10 @@ export const GlobalFacetAttributesPageLayout = ({
         data,
         version: versionOverride ?? facet.version,
       }),
-    onSuccess: () => router.push(ROUTES.GLOBAL.FACET_CONFIG),
+    // navigateBack (rather than a bare router.push) so the post-save
+    // navigation calls confirmNavigation() first, which tells the
+    // unsaved-changes guard to skip its confirm prompt for this route change.
+    onSuccess: navigateBack,
   });
 
   // Diff between the facet as it was when this page loaded and the latest
