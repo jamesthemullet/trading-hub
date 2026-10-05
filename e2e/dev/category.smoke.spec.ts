@@ -95,7 +95,7 @@ test.describe('Category Ranking', () => {
       .click();
 
     await page
-      .getByTestId('Row showing Categories as algoControl')
+      .getByTestId('Row showing Denier as algoControl')
       .getByRole('button', { name: 'Algo control' })
       .first()
       .click();
@@ -230,7 +230,7 @@ test.describe('Category Ranking', () => {
       page.getByTestId('Row showing Material as included')
     ).toBeVisible();
     await expect(
-      page.getByTestId('Row showing Categories as excluded')
+      page.getByTestId('Row showing Denier as excluded')
     ).toBeVisible();
 
     await page.getByTitle('Category Rules').click();
