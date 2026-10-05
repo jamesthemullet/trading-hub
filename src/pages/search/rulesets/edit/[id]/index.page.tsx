@@ -8,6 +8,7 @@ import type {
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { ReadOnlyBanner } from '@/libs/components/read-only-banner/read-only-banner';
 import { ROUTES } from '@/libs/constants/routes';
 import { useSearchRuleSetPreview, useSearchRuleSetUpdate } from '@/libs/hooks';
 import { useSearchHistory } from '@/libs/hooks/search/history/use-search-history';
@@ -120,7 +121,7 @@ const Page = ({ id }: PageProps): ReactElement => {
     type: 'search',
   });
 
-  const { hasReadAccess, hasWriteAccess, requiredReadRole } =
+  const { hasReadAccess, hasWriteAccess, requiredReadRole, requiredWriteRole } =
     useAccess('Search');
 
   if (!hasReadAccess) {
@@ -135,6 +136,10 @@ const Page = ({ id }: PageProps): ReactElement => {
       <Heading
         breadcrumbs={['Search & Merchandising', 'Site search', 'Ranking rules']}
       />
+
+      {hasReadAccess && !hasWriteAccess && !isHistoryView && (
+        <ReadOnlyBanner requiredWriteRole={requiredWriteRole} />
+      )}
 
       {(error || updateError || historyError) && (
         <ErrorMessage isCentred>

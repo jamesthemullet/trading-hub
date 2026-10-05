@@ -8,6 +8,7 @@ import type {
 import { search } from '@/libs/api';
 import { Button, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ReadOnlyBanner } from '@/libs/components/read-only-banner/read-only-banner';
 import type { RuleSetMapping } from '@/libs/components/types';
 import {
   getNewFacetRoute,
@@ -87,7 +88,8 @@ const RuleSets = (): ReactElement => {
     'Actions',
   ];
 
-  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
+  const { hasReadAccess, hasWriteAccess, requiredReadRole, requiredWriteRole } =
+    useAccess('Cat');
   const { clearDraft } = useDraftRuleset();
 
   if (!hasReadAccess) {
@@ -103,6 +105,11 @@ const RuleSets = (): ReactElement => {
       <Heading
         breadcrumbs={['Search & Merchandising', 'Categories']}
         title="Categories"
+        banner={
+          !hasWriteAccess && (
+            <ReadOnlyBanner requiredWriteRole={requiredWriteRole} />
+          )
+        }
         actions={
           hasWriteAccess && (
             <div className={styles.buttonGroup}>

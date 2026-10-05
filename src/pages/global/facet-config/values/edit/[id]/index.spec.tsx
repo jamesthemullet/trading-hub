@@ -88,6 +88,33 @@ describe('Index', () => {
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
   });
 
+  it('should not show the read-only banner in explicit read-only mode', async () => {
+    jest.mocked(useRouter).mockReturnValue(
+      createMockNextRouter({
+        query: {
+          id: facetId,
+          displayName: 'Color',
+          readOnly: 'true',
+        },
+      })
+    );
+
+    renderWithProviders(<Page />, ['Glob.R'], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Facet values settings: Color')).toBeVisible();
+    });
+    expect(
+      screen.queryByText(/you're viewing this page in read-only mode/i, {
+        exact: false,
+      })
+    ).not.toBeInTheDocument();
+  });
+
   it('should render a historical facet snapshot when history is true', async () => {
     jest.mocked(useRouter).mockReturnValue(
       createMockNextRouter({
@@ -132,6 +159,53 @@ describe('Index', () => {
       screen.getByText('Value settings of: Historical Color')
     ).toBeVisible();
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
+  });
+
+  it('should not show the read-only banner in history view', async () => {
+    jest.mocked(useRouter).mockReturnValue(
+      createMockNextRouter({
+        query: {
+          id: facetId,
+          displayName: 'Color',
+          history: 'true',
+          historyId: 'change-2',
+        },
+      })
+    );
+    jest.mocked(useFacetHistory).mockReturnValue({
+      history: {
+        changes: [
+          {
+            id: 'change-2',
+            change: {
+              ...facetsListMock.facets[0],
+              displayValue: 'Historical Color',
+              boosted: ['Silk'],
+              excludedValues: [],
+              merged: [],
+            },
+          },
+        ],
+        pagination: { totalItems: 4 },
+      },
+      error: '',
+      isLoading: false,
+    });
+
+    renderWithProviders(<Page />, ['Glob.R'], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      await screen.findByText('Facet values settings: Historical Color')
+    ).toBeVisible();
+    expect(
+      screen.queryByText(/you're viewing this page in read-only mode/i, {
+        exact: false,
+      })
+    ).not.toBeInTheDocument();
   });
 
   it('should fall back to the query display name when the historical facet is missing', async () => {
@@ -466,6 +540,36 @@ describe('Index', () => {
           exact: false,
         })
       ).toBeVisible();
+    });
+
+    it('should show read-only banner for read-only users', async () => {
+      renderWithProviders(<Page />, ['Glob.R'], {
+        featureFlags: {
+          hasAuthorization: true,
+        },
+      });
+
+      expect(
+        await screen.findByText(/you're viewing this page in read-only mode/i, {
+          exact: false,
+        })
+      ).toBeVisible();
+    });
+
+    it('should not show read-only banner for write-enabled users', async () => {
+      renderWithProviders(<Page />, ['Glob.W'], {
+        featureFlags: {
+          hasAuthorization: true,
+        },
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.queryByText(/you're viewing this page in read-only mode/i, {
+            exact: false,
+          })
+        ).not.toBeInTheDocument();
+      });
     });
   });
 });

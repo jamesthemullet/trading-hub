@@ -17,6 +17,7 @@ import {
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
 import { FilteredResultsPanel } from '@/libs/components/filtered-results-panel/filtered-results-panel';
+import { ReadOnlyBanner } from '@/libs/components/read-only-banner/read-only-banner';
 import { RulesetDiffModal } from '@/libs/components/ruleset-diff-modal/ruleset-diff-modal';
 import { ROUTES } from '@/libs/constants/routes';
 import { EditableLabel } from '@/libs/containers/shared/editable-label/editable-label';
@@ -42,10 +43,12 @@ const withDisplayName = (url: string, displayName: string): string => {
 
 type FacetConfigContentProps = {
   hasWriteAccess: boolean;
+  requiredWriteRole: string;
 };
 
 const FacetConfigContent = ({
   hasWriteAccess,
+  requiredWriteRole,
 }: FacetConfigContentProps): ReactElement => {
   const {
     facets,
@@ -270,6 +273,11 @@ const FacetConfigContent = ({
       <Heading
         breadcrumbs={['Setup', 'Global Ranking Rules']}
         title="Global Facet Configuration"
+        banner={
+          !hasWriteAccess && (
+            <ReadOnlyBanner requiredWriteRole={requiredWriteRole} />
+          )
+        }
       />
 
       {facetsListError && (
@@ -466,13 +474,19 @@ const FacetConfigContent = ({
 };
 
 const FacetConfig = (): ReactElement => {
-  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
+  const { hasReadAccess, hasWriteAccess, requiredReadRole, requiredWriteRole } =
+    useAccess('Glob');
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
   }
 
-  return <FacetConfigContent hasWriteAccess={hasWriteAccess} />;
+  return (
+    <FacetConfigContent
+      hasWriteAccess={hasWriteAccess}
+      requiredWriteRole={requiredWriteRole}
+    />
+  );
 };
 
 export default FacetConfig;

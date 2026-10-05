@@ -200,6 +200,39 @@ describe('Global Facet Management Editing', () => {
     ).toBeVisible();
   });
 
+  it('should show read-only banner for read-only users', async () => {
+    renderWithProviders(<Page id={ruleSetId} />, ['Glob.R'], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      await screen.findByText(/you're viewing this page in read-only mode/i, {
+        exact: false,
+      })
+    ).toBeVisible();
+    expect(
+      screen.getByText(/request the "Glob.W" role/i, { exact: false })
+    ).toBeVisible();
+  });
+
+  it('should not show read-only banner for write-enabled users', async () => {
+    renderWithProviders(<Page id={ruleSetId} />, ['Glob.W'], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(/you're viewing this page in read-only mode/i, {
+          exact: false,
+        })
+      ).not.toBeInTheDocument();
+    });
+  });
+
   it('should render column headings', () => {
     renderWithProviders(<Page id={ruleSetId} />);
 

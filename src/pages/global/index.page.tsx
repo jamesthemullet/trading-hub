@@ -12,6 +12,7 @@ import type {
 import { search } from '@/libs/api';
 import { Button, Heading, Tabs } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ReadOnlyBanner } from '@/libs/components/read-only-banner/read-only-banner';
 import type { RuleSetMapping } from '@/libs/components/types';
 import { getNewRulesetRoute, ROUTES } from '@/libs/constants/routes';
 import { RuleType } from '@/libs/constants/rule-types';
@@ -93,7 +94,8 @@ const RuleSets = (): ReactElement => {
     'Actions',
   ];
 
-  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
+  const { hasReadAccess, hasWriteAccess, requiredReadRole, requiredWriteRole } =
+    useAccess('Glob');
   const router = useRouter();
   const [currentTab, setCurrentTab] = useState(0);
   const catalogueTabs = CATALOGUE_TABS;
@@ -137,6 +139,11 @@ const RuleSets = (): ReactElement => {
       <Heading
         breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
         title="Global"
+        banner={
+          !hasWriteAccess && (
+            <ReadOnlyBanner requiredWriteRole={requiredWriteRole} />
+          )
+        }
         actions={
           hasWriteAccess && (
             <Button

@@ -9,6 +9,7 @@ import type {
 } from '@/libs/api';
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { ReadOnlyBanner } from '@/libs/components/read-only-banner/read-only-banner';
 import { FacetType } from '@/libs/constants/rule-types';
 import { CategoryAndSearchFacetsPanelPageLayout } from '@/libs/features';
 import {
@@ -197,7 +198,7 @@ const Page = (): ReactElement => {
     return runSave(newFacet);
   };
 
-  const { hasReadAccess, requiredReadRole, hasWriteAccess } =
+  const { hasReadAccess, requiredReadRole, hasWriteAccess, requiredWriteRole } =
     useAccess('Search');
 
   if (!hasReadAccess) {
@@ -218,6 +219,10 @@ const Page = (): ReactElement => {
           `Facet values settings: ${displayName}`,
         ]}
       />
+
+      {hasReadAccess && !hasWriteAccess && !isReadOnly && (
+        <ReadOnlyBanner requiredWriteRole={requiredWriteRole} />
+      )}
 
       {error && <ErrorMessage isCentred>{error}</ErrorMessage>}
       {updateRuleSetError && (

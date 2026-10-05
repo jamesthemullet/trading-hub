@@ -8,6 +8,7 @@ import type {
 import { search } from '@/libs/api';
 import { Button, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
+import { ReadOnlyBanner } from '@/libs/components/read-only-banner/read-only-banner';
 import type { RuleSetMapping } from '@/libs/components/types';
 import {
   getNewFacetRoute,
@@ -78,7 +79,7 @@ const SearchRuleSets = (): ReactElement => {
     'Actions',
   ];
 
-  const { hasReadAccess, hasWriteAccess, requiredReadRole } =
+  const { hasReadAccess, hasWriteAccess, requiredReadRole, requiredWriteRole } =
     useAccess('Search');
   const { clearDraft } = useDraftRuleset();
 
@@ -95,6 +96,11 @@ const SearchRuleSets = (): ReactElement => {
       <Heading
         breadcrumbs={['Search & Merchandising', 'Site search', 'Search']}
         title="Search"
+        banner={
+          !hasWriteAccess && (
+            <ReadOnlyBanner requiredWriteRole={requiredWriteRole} />
+          )
+        }
         actions={
           hasWriteAccess && (
             <div className={styles.buttonGroup}>

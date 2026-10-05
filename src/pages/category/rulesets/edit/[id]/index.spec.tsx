@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
 
@@ -180,6 +180,55 @@ describe('Index', () => {
         exact: false,
       })
     ).toBeVisible();
+  });
+
+  it('should show read-only banner for read-only users', async () => {
+    jest
+      .mocked(useRuleSetDetail)
+      .mockImplementation(() => mockUseRuleSetPreviewData);
+    jest.mocked(useAttributes).mockImplementation(() => ({
+      attributes: [],
+      fetchError: '',
+    }));
+
+    renderWithProviders(<Page id={ruleSetId} />, ['Cat.R'], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    expect(
+      await screen.findByText(/you're viewing this page in read-only mode/i, {
+        exact: false,
+      })
+    ).toBeVisible();
+    expect(
+      screen.getByText(/request the "Cat.W" role/i, { exact: false })
+    ).toBeVisible();
+  });
+
+  it('should not show read-only banner for write-enabled users', async () => {
+    jest
+      .mocked(useRuleSetDetail)
+      .mockImplementation(() => mockUseRuleSetPreviewData);
+    jest.mocked(useAttributes).mockImplementation(() => ({
+      attributes: [],
+      fetchError: '',
+    }));
+
+    renderWithProviders(<Page id={ruleSetId} />, ['Cat.W'], {
+      featureFlags: {
+        hasAuthorization: true,
+      },
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(/you're viewing this page in read-only mode/i, {
+          exact: false,
+        })
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('should save country change to a ruleset', async () => {

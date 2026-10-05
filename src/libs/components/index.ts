@@ -18,6 +18,7 @@ export * from './operation-selector/operation-selector';
 export * from './pagination/pagination';
 export * from './pagination/table-pagination';
 export * from './radio-buttons/radio-buttons';
+export * from './read-only-banner/read-only-banner';
 export { Search } from './search/search';
 export * from './tabs/tabs';
 export * from './toast/toast';

@@ -8,6 +8,7 @@ import type {
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { ReadOnlyBanner } from '@/libs/components/read-only-banner/read-only-banner';
 import { ROUTES } from '@/libs/constants/routes';
 import { useGlobalRuleSetDetail, useGlobalRuleSetUpdate } from '@/libs/hooks';
 import { useGlobalHistory } from '@/libs/hooks/global/history/use-global-history';
@@ -93,7 +94,8 @@ const Page = ({ id }: PageProps): ReactElement => {
     type: 'global',
   });
 
-  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
+  const { hasReadAccess, hasWriteAccess, requiredReadRole, requiredWriteRole } =
+    useAccess('Glob');
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -108,6 +110,10 @@ const Page = ({ id }: PageProps): ReactElement => {
       <Heading
         breadcrumbs={['Setup', 'Global Ranking Rules', 'Product Grid']}
       />
+
+      {hasReadAccess && !hasWriteAccess && !isHistoryView && (
+        <ReadOnlyBanner requiredWriteRole={requiredWriteRole} />
+      )}
 
       {(error || historyError) && (
         <ErrorMessage>{error || historyError}</ErrorMessage>

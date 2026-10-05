@@ -8,6 +8,7 @@ import type {
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { ReadOnlyBanner } from '@/libs/components/read-only-banner/read-only-banner';
 import { ROUTES } from '@/libs/constants/routes';
 import { useCategoryHistory } from '@/libs/hooks/category/history/use-category-history';
 import { useRuleSetDetail } from '@/libs/hooks/category/rulesets/use-rule-set-detail';
@@ -111,7 +112,8 @@ const Page = ({ id }: PageProps): ReactElement => {
     type: 'category',
   });
 
-  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Cat');
+  const { hasReadAccess, hasWriteAccess, requiredReadRole, requiredWriteRole } =
+    useAccess('Cat');
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -124,6 +126,10 @@ const Page = ({ id }: PageProps): ReactElement => {
       </Head>
 
       <Heading breadcrumbs={['Categories', 'Ranking rules', 'Product Grid']} />
+
+      {hasReadAccess && !hasWriteAccess && !isHistoryView && (
+        <ReadOnlyBanner requiredWriteRole={requiredWriteRole} />
+      )}
 
       {(error || historyError) && (
         <ErrorMessage>{error || historyError}</ErrorMessage>

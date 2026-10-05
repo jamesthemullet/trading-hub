@@ -8,6 +8,7 @@ import type {
 import { ErrorMessage, Heading, Loader } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { ReadOnlyBanner } from '@/libs/components/read-only-banner/read-only-banner';
 import { ROUTES } from '@/libs/constants/routes';
 import { useRedirectDetail, useRedirectUpdate } from '@/libs/hooks';
 import { useRedirectHistory } from '@/libs/hooks/search/redirect/history/use-redirect-history';
@@ -90,7 +91,7 @@ const EditRedirect = ({ id }: Props): ReactElement => {
     type: 'redirect',
   });
 
-  const { hasReadAccess, hasWriteAccess, requiredReadRole } =
+  const { hasReadAccess, hasWriteAccess, requiredReadRole, requiredWriteRole } =
     useAccess('Search');
 
   if (!hasReadAccess) {
@@ -109,6 +110,10 @@ const EditRedirect = ({ id }: Props): ReactElement => {
           'Keyword redirect',
         ]}
       />
+
+      {hasReadAccess && !hasWriteAccess && !isHistoryView && (
+        <ReadOnlyBanner requiredWriteRole={requiredWriteRole} />
+      )}
 
       {(error || updateError || historyError) && (
         <ErrorMessage isCentred>

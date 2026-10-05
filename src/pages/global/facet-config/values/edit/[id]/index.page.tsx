@@ -1,6 +1,7 @@
 import { type ChangeEvent, type ReactElement, useMemo, useState } from 'react';
 
 import { AccessDeny, ErrorMessage, Heading } from '@/libs/components';
+import { ReadOnlyBanner } from '@/libs/components/read-only-banner/read-only-banner';
 import { GlobalFacetAttributesPageLayout } from '@/libs/features';
 import { useFacetHistory } from '@/libs/hooks/global/facets/use-facet-history';
 import { useGlobalFacetsList } from '@/libs/hooks/global/facets/use-global-facets-list';
@@ -70,7 +71,8 @@ const Page = (): ReactElement => {
     ? (facet?.displayValue ?? displayName)
     : displayName;
 
-  const { hasReadAccess, requiredReadRole, hasWriteAccess } = useAccess('Glob');
+  const { hasReadAccess, requiredReadRole, hasWriteAccess, requiredWriteRole } =
+    useAccess('Glob');
 
   if (!hasReadAccess) {
     return <AccessDeny requiredRole={requiredReadRole} />;
@@ -90,6 +92,10 @@ const Page = (): ReactElement => {
           `Facet values settings: ${displayNameLabel}`,
         ]}
       />
+
+      {hasReadAccess && !hasWriteAccess && !isReadOnly && !isHistoryView && (
+        <ReadOnlyBanner requiredWriteRole={requiredWriteRole} />
+      )}
 
       {globalFacetsListError && !isHistoryView && (
         <ErrorMessage>

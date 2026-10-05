@@ -293,6 +293,7 @@ describe('Index', () => {
     await waitFor(() => {
       expect(screen.getByText('Global')).toBeVisible();
     });
+    expect(screen.getByRole('status')).toBeVisible();
     expect(
       screen.queryByRole('link', { name: 'Add ranking rule' })
     ).not.toBeInTheDocument();

@@ -8,6 +8,7 @@ import type {
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { ReadOnlyBanner } from '@/libs/components/read-only-banner/read-only-banner';
 import { ROUTES } from '@/libs/constants/routes';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsPanelSkeleton } from '@/libs/containers';
@@ -132,7 +133,8 @@ const Page = ({ id }: { id: string }): ReactElement => {
     }
   );
 
-  const { hasReadAccess, requiredReadRole, hasWriteAccess } = useAccess('Cat');
+  const { hasReadAccess, requiredReadRole, hasWriteAccess, requiredWriteRole } =
+    useAccess('Cat');
 
   useTrackRecentlyViewed({
     id,
@@ -153,6 +155,10 @@ const Page = ({ id }: { id: string }): ReactElement => {
         <title>Merchandising Hub | M&S | Edit Category Ruleset Facets</title>
       </Head>
       <Heading breadcrumbs={['Categories', 'Facet Management', 'Editor']} />
+
+      {hasReadAccess && !hasWriteAccess && !isHistoryView && (
+        <ReadOnlyBanner requiredWriteRole={requiredWriteRole} />
+      )}
 
       {getRulesetDetailError && (
         <ErrorMessage>

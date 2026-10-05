@@ -227,6 +227,10 @@ describe('Global Facet Config', () => {
       featureFlags: { hasAuthorization: true },
     });
 
+    expect(
+      await screen.findByText(/you're viewing this page in read-only mode/i)
+    ).toBeVisible();
+
     await userEvent.click((await screen.findAllByTitle('More options'))[0]);
 
     expect(screen.getByRole('link', { name: 'View values' })).toBeVisible();

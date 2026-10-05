@@ -1,0 +1,9 @@
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mns-spacing-4);
+  padding: var(--mns-spacing-2) var(--mns-spacing-4);
+  background-color: var(--color-role-info-info-container);
+  margin-bottom: var(--mns-spacing-4);
+}

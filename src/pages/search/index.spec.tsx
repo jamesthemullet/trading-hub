@@ -243,6 +243,7 @@ describe('Search Rulesets', () => {
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: 'Search' })).toBeVisible();
     });
+    expect(screen.getByRole('status')).toBeVisible();
     expect(
       screen.queryByRole('link', { name: 'Add ranking rule' })
     ).not.toBeInTheDocument();

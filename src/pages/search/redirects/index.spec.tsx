@@ -208,6 +208,7 @@ describe('Search Rulesets', () => {
     await waitFor(() => {
       expect(screen.getByText('Keyword Redirect')).toBeVisible();
     });
+    expect(screen.getByRole('status')).toBeVisible();
     expect(
       screen.queryByRole('link', { name: 'Add redirect rule' })
     ).not.toBeInTheDocument();

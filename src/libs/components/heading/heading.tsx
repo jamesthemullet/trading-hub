@@ -8,12 +8,14 @@ type Props = {
   breadcrumbs: string[];
   title?: string;
   actions?: ReactNode;
+  banner?: ReactNode;
 };
 
 export const Heading = ({
   breadcrumbs,
   title,
   actions,
+  banner,
 }: Props): ReactElement => {
   return (
     <div>
@@ -32,6 +34,7 @@ export const Heading = ({
           ))}
         </Breadcrumb>
       </div>
+      {banner}
       {title && (
         <div className={styles.titleBlock}>
           <Typography variant="titleMedium" isStrong as="h1">

@@ -8,6 +8,7 @@ import type {
 import { ErrorMessage, Heading } from '@/libs/components';
 import { AccessDeny } from '@/libs/components/access-deny/access-deny';
 import { ConflictModal } from '@/libs/components/conflict-modal/conflict-modal';
+import { ReadOnlyBanner } from '@/libs/components/read-only-banner/read-only-banner';
 import { ROUTES } from '@/libs/constants/routes';
 import { FacetType } from '@/libs/constants/rule-types';
 import { FacetsPanelSkeleton } from '@/libs/containers';
@@ -100,7 +101,8 @@ const Page = ({ id }: PageProps): ReactElement => {
     router.push(`/global?catalogue=${catalogue}`);
   };
 
-  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Glob');
+  const { hasReadAccess, hasWriteAccess, requiredReadRole, requiredWriteRole } =
+    useAccess('Glob');
 
   useTrackRecentlyViewed({
     id,
@@ -127,6 +129,10 @@ const Page = ({ id }: PageProps): ReactElement => {
       <Heading
         breadcrumbs={['Categories', 'Global Facet Management', 'Editor']}
       />
+
+      {hasReadAccess && !hasWriteAccess && !isHistoryView && (
+        <ReadOnlyBanner requiredWriteRole={requiredWriteRole} />
+      )}
 
       {globalRulesetError && (
         <ErrorMessage>
