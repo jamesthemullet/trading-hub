@@ -121,7 +121,7 @@
     "prettier": "3.9.9",
     "storybook": "catalog:",
     "storybook-addon-deep-controls": "^0.10.0",
-    "stylelint": "17.15.0",
+    "stylelint": "17.16.0",
     "stylelint-config-standard": "40.0.0",
     "stylelint-order": "8.1.1",
     "swagger-typescript-api": "13.13.0",
