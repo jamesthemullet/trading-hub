@@ -9,6 +9,7 @@ import type {
 } from '@/libs/api';
 import { search } from '@/libs/api';
 
+import groupBy from 'lodash/groupBy';
 import uniqBy from 'lodash/uniqBy';
 
 import {
@@ -67,33 +68,20 @@ export const useAttributes = ({
 
         const results = await Promise.all(promises);
 
-        // merge and combine values of each attribute
-        const mergedAttributes: Array<MerchandisingAttributeResponseItem> = [];
-        results.forEach((returnedAttributes) => {
-          returnedAttributes.forEach((attr) => {
-            const index = mergedAttributes.findIndex(
-              (mergedAttribute) => mergedAttribute.name === attr.name
-            );
-            if (index > -1) {
-              // eslint-disable-next-line functional/immutable-data
-              mergedAttributes[index].values = [
-                ...(mergedAttributes[index].values ?? []),
-                ...(attr.values ?? []),
-              ];
-            } else {
-              // eslint-disable-next-line functional/immutable-data
-              mergedAttributes.push(attr);
-            }
-          });
-        });
+        const returnedAttributes = results.flat();
+        const attributesByName = groupBy(returnedAttributes, 'name');
+        const uniqueAttributes = uniqBy(returnedAttributes, 'name');
 
-        const attributesWithDedupedValues = mergedAttributes.map(
-          (attribute) => {
-            return {
-              ...attribute,
-              values: uniqBy(attribute.values, 'value'),
-            };
-          }
+        const attributesWithDedupedValues = uniqueAttributes.map(
+          (attribute) => ({
+            ...attribute,
+            values: uniqBy(
+              attributesByName[attribute.name].flatMap(
+                ({ values }) => values ?? []
+              ),
+              'value'
+            ),
+          })
         );
 
         setAttributes(attributesWithDedupedValues);
