@@ -22,6 +22,13 @@ const calendarAriaLabels = {
   next: 'Go to next month',
 };
 
+export const toDateRange = (
+  value: [string | null, string | null] | null
+): [Date | null, Date | null] => [
+  value?.[0] ? new Date(value[0]) : null,
+  value?.[1] ? new Date(value[1]) : null,
+];
+
 export const DatePicker = (
   props: {
     onChange: (value: [Date | null, Date | null]) => void;
@@ -121,11 +128,7 @@ export const DatePicker = (
           previousLabel={calendarAriaLabels.previous}
           nextLabel={calendarAriaLabels.next}
           onChange={(val: [string | null, string | null] | null) =>
-            onChange([
-              // istanbul ignore next
-              val?.[0] ? new Date(val[0]) : null,
-              val?.[1] ? new Date(val[1]) : null,
-            ])
+            onChange(toDateRange(val))
           }
           minDate={new Date()}
           {...datePickerProps}

@@ -4,11 +4,23 @@ import { MantineProvider } from '@mantine/core';
 
 import dayjs from 'dayjs';
 
-import { DatePicker } from './date-picker';
+import { DatePicker, toDateRange } from './date-picker';
 
 describe('date-picker', () => {
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('converts empty date ranges to null dates', () => {
+    expect(toDateRange(null)).toEqual([null, null]);
+    expect(toDateRange([null, null])).toEqual([null, null]);
+  });
+
+  it('converts date range values to dates', () => {
+    expect(toDateRange(['2021-01-01', '2021-01-31'])).toEqual([
+      new Date('2021-01-01'),
+      new Date('2021-01-31'),
+    ]);
   });
 
   it('should  render', () => {
