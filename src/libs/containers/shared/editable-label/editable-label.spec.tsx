@@ -234,5 +234,30 @@ describe('editable-label', () => {
       expect(onDisplayValueChange).not.toHaveBeenCalled();
       expect(mockCancel).toHaveBeenCalled();
     });
+
+    it('should cancel editing with the escape key without an onCancel callback', async () => {
+      const user = userEvent.setup({ delay: null });
+      renderWithProviders(
+        <EditableLabel
+          onDisplayValueChange={jest.fn()}
+          displayValue="color"
+          canCancelEdit
+          setError={jest.fn()}
+          shouldShowErrorState={false}
+          handleUpdatedValue={jest.fn()}
+          isWriteEnabled
+        />
+      );
+
+      await user.click(screen.getByLabelText('Edit display name for color'));
+      await user.type(
+        await screen.findByLabelText('Edit color input field'),
+        '{Escape}'
+      );
+
+      expect(await screen.findByTestId('Label for color')).toHaveTextContent(
+        'color'
+      );
+    });
   });
 });

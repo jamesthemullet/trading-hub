@@ -13,8 +13,7 @@ const validateErrorResponse = (err: unknown) => {
 export const handleError = (err: unknown): string => {
   const errorMessage = validateErrorResponse(err);
 
-  // istanbul ignore else
-  if (window) {
+  if (typeof window !== 'undefined') {
     track({ event: `error: ${err}` });
 
     // Report to Dynatrace

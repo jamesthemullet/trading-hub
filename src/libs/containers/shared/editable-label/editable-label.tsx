@@ -84,7 +84,6 @@ export const EditableLabel = ({
                   if (event.key === 'Escape' && canCancelEdit) {
                     setValue(originalValue);
                     setIsEditMode(false);
-                    // istanbul ignore else
                     if (onCancel) onCancel();
                   }
                 }}
