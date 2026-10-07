@@ -1,14 +1,10 @@
 import type { Dispatch } from 'react';
 import { useCallback } from 'react';
 
-import type {
-  MerchandisingAlphanumericBoostBury,
-  MerchandisingIncludeExclude,
-  MerchandisingNumericBoostBury,
-} from '@/libs/api';
 import {
   type AttributeEdit,
   isBoostOrBury,
+  isBoostOrBuryAttribute,
   type RuleSetActions,
   type RulesetAttribute,
 } from '@/libs/components/types';
@@ -29,11 +25,10 @@ export const useRulesetAttributeSave = ({
       if (attribute.change === 'modify' && editData) {
         if (
           attribute.type === 'alphanumeric' &&
-          isBoostOrBury(attribute.operation)
+          isBoostOrBuryAttribute(attribute)
         ) {
           if (attribute.operation === editData.operation) {
-            const data =
-              attribute.attribute as MerchandisingAlphanumericBoostBury;
+            const data = attribute.attribute;
             dispatch({
               type: 'alphanumericBoostBuryAttribute',
               payload: {
@@ -44,8 +39,7 @@ export const useRulesetAttributeSave = ({
               },
             });
           } else {
-            const data =
-              attribute.attribute as MerchandisingAlphanumericBoostBury;
+            const data = attribute.attribute;
             dispatch({
               type: 'alphanumericBoostBuryAttribute',
               payload: {
@@ -89,7 +83,7 @@ export const useRulesetAttributeSave = ({
             attribute.operation === 'exclude')
         ) {
           if (attribute.operation === editData.operation) {
-            const data = attribute.attribute as MerchandisingIncludeExclude;
+            const data = attribute.attribute;
             dispatch({
               type: 'alphanumericIncludeExcludeAttribute',
               payload: {
@@ -102,7 +96,7 @@ export const useRulesetAttributeSave = ({
               },
             });
           } else {
-            const data = attribute.attribute as MerchandisingIncludeExclude;
+            const data = attribute.attribute;
             dispatch({
               type: 'alphanumericIncludeExcludeAttribute',
               payload: {
@@ -142,12 +136,9 @@ export const useRulesetAttributeSave = ({
             }
           }
         }
-        if (
-          attribute.type === 'numeric' &&
-          isBoostOrBury(attribute.operation)
-        ) {
+        if (attribute.type === 'numeric' && isBoostOrBuryAttribute(attribute)) {
           if (attribute.operation === editData.operation) {
-            const data = attribute.attribute as MerchandisingNumericBoostBury;
+            const data = attribute.attribute;
             dispatch({
               type: 'numericAttribute',
               payload: {
@@ -158,7 +149,7 @@ export const useRulesetAttributeSave = ({
               },
             });
           } else {
-            const data = attribute.attribute as MerchandisingNumericBoostBury;
+            const data = attribute.attribute;
             dispatch({
               type: 'numericAttribute',
               payload: {
@@ -183,11 +174,8 @@ export const useRulesetAttributeSave = ({
           }
         }
       } else {
-        if (
-          attribute.type === 'numeric' &&
-          isBoostOrBury(attribute.operation)
-        ) {
-          const data = attribute.attribute as MerchandisingNumericBoostBury;
+        if (attribute.type === 'numeric' && isBoostOrBuryAttribute(attribute)) {
+          const data = attribute.attribute;
           dispatch({
             type: 'numericAttribute',
             payload: {
@@ -201,10 +189,9 @@ export const useRulesetAttributeSave = ({
 
         if (
           attribute.type === 'alphanumeric' &&
-          isBoostOrBury(attribute.operation)
+          isBoostOrBuryAttribute(attribute)
         ) {
-          const data =
-            attribute.attribute as MerchandisingAlphanumericBoostBury;
+          const data = attribute.attribute;
           dispatch({
             type: 'alphanumericBoostBuryAttribute',
             payload: {
@@ -221,7 +208,7 @@ export const useRulesetAttributeSave = ({
           (attribute.operation === 'include' ||
             attribute.operation === 'exclude')
         ) {
-          const data = attribute.attribute as MerchandisingIncludeExclude;
+          const data = attribute.attribute;
           dispatch({
             type: 'alphanumericIncludeExcludeAttribute',
             payload: {

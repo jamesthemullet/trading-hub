@@ -5,7 +5,10 @@ import type {
   MerchandisingCountryCode,
   SearchMerchandisingProductsV1ParamsEnum,
 } from '@/libs/api';
-import type { AttributeEdit, RuleSetActions } from '@/libs/components/types';
+import {
+  type AttributeEdit,
+  type RuleSetActions,
+} from '@/libs/components/types';
 
 import { AddSetAttribute } from '../add-set-attribute/add-set-attribute';
 import { useRulesetAttributeSave } from './use-ruleset-attribute-save';

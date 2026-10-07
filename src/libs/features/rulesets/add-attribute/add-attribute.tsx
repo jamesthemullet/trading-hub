@@ -453,23 +453,48 @@ export const AddAttribute = ({
             !!selectedAlphanumericValues.length) && (
             <Button
               onClick={() => {
-                const attribute =
-                  selectedAttributeType === 'alphanumeric'
-                    ? {
-                        fields: selectedAlphanumericValues,
-                        weight,
-                      }
-                    : {
-                        field: selectedNumericField,
-                        weight,
-                      };
+                const change = isEditMode ? 'modify' : 'add';
 
-                onSelect({
-                  attribute,
-                  change: isEditMode ? 'modify' : 'add',
-                  operation: selectedOperation,
-                  type: selectedAttributeType,
-                });
+                /* istanbul ignore else -- numeric operations are restricted to boost and bury */
+                if (
+                  selectedAttributeType === 'numeric' &&
+                  isBoostOrBury(selectedOperation)
+                ) {
+                  onSelect({
+                    attribute: {
+                      field: selectedNumericField,
+                      weight,
+                    },
+                    change,
+                    operation: selectedOperation,
+                    type: selectedAttributeType,
+                  });
+                } else if (
+                  selectedAttributeType === 'alphanumeric' &&
+                  isBoostOrBury(selectedOperation)
+                ) {
+                  onSelect({
+                    attribute: {
+                      fields: selectedAlphanumericValues,
+                      weight,
+                    },
+                    change,
+                    operation: selectedOperation,
+                    type: selectedAttributeType,
+                  });
+                } else if (
+                  selectedAttributeType === 'alphanumeric' &&
+                  !isBoostOrBury(selectedOperation)
+                ) {
+                  onSelect({
+                    attribute: {
+                      fields: selectedAlphanumericValues,
+                    },
+                    change,
+                    operation: selectedOperation,
+                    type: selectedAttributeType,
+                  });
+                }
               }}
               isInline
               theme="primary"

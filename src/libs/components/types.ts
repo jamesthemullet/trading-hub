@@ -3,7 +3,6 @@ import type {
   HttpResponse,
   MerchandisingAlphanumericBoostBury,
   MerchandisingAlphanumericBoostBuryField,
-  MerchandisingAttributeType,
   MerchandisingCountryCode,
   MerchandisingErrorResponse,
   MerchandisingIncludeExclude,
@@ -14,17 +13,29 @@ import type {
 } from '../api';
 import type { FacetDisplayType } from '../containers/facets/facet-row';
 
-export type RulesetAttribute = {
-  attribute: {
-    fields?: Array<MerchandisingAlphanumericBoostBuryField>;
-    weight?: number;
-    field?: string;
-  };
+type RulesetAttributeChange = {
   change: 'add' | 'remove' | 'modify';
-  operation: 'boost' | 'bury' | 'include' | 'exclude';
-  type: MerchandisingAttributeType;
   index?: number;
 };
+
+export type RulesetAttribute = RulesetAttributeChange &
+  (
+    | {
+        attribute: MerchandisingNumericBoostBury;
+        operation: 'boost' | 'bury';
+        type: 'numeric';
+      }
+    | {
+        attribute: MerchandisingAlphanumericBoostBury;
+        operation: 'boost' | 'bury';
+        type: 'alphanumeric';
+      }
+    | {
+        attribute: MerchandisingIncludeExclude;
+        operation: 'include' | 'exclude';
+        type: 'alphanumeric';
+      }
+  );
 
 type Change = 'add' | 'modify' | 'remove';
 
@@ -248,3 +259,8 @@ export const isBoostOrBury = (
   operation: RulesetAttribute['operation']
 ): operation is 'boost' | 'bury' =>
   operation === 'boost' || operation === 'bury';
+
+export const isBoostOrBuryAttribute = (
+  attribute: RulesetAttribute
+): attribute is Extract<RulesetAttribute, { operation: 'boost' | 'bury' }> =>
+  isBoostOrBury(attribute.operation);
