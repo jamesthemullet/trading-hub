@@ -554,7 +554,9 @@ describe('Search Keywords', () => {
         expect(addSearchTermsStub).toHaveBeenCalledWith(['alpha']);
       });
 
-      expect(screen.getByText('1 keyword added')).toBeVisible();
+      await waitFor(() => {
+        expect(screen.getByText('1 keyword added')).toBeVisible();
+      });
     });
 
     it('should show a duplication error when adding a single keyword that already exists', async () => {
