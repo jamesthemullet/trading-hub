@@ -12,4 +12,13 @@ enable_frontdoor_waf = true
 frontdoor_waf_mode   = "Prevention"
 akamai_enabled       = true
 
+# Routes all outbound traffic through the VNet, which Linux apps need to resolve
+# Key Vault references to the private vault (PSP-6240). This replaces the whole
+# site_config map from common.tfvars, so app_command_line is repeated here.
+# Without a NAT gateway, internet egress uses the VNet's default outbound access.
+site_config = {
+  app_command_line       = "node server.js"
+  vnet_route_all_enabled = true
+}
+
 # Bump me for update of Bright Cloud latest changes 1
