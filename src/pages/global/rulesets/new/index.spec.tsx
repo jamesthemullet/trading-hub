@@ -47,9 +47,7 @@ describe('Global Rulesets New', () => {
 
   it('should render the access denied page', async () => {
     renderWithProviders(<Page />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(

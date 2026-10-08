@@ -4,7 +4,6 @@ import { renderHook } from '@testing-library/react';
 import {
   defaultFeatureFlags,
   FeatureFlagContext,
-  useAuthorizationFlag,
   useFavouriteRulesetsFlag,
   useProfilePageFlag,
 } from './feature-flag';
@@ -22,16 +21,6 @@ const createWrapper = (overrides: Partial<typeof defaultFeatureFlags> = {}) => {
 
   return FeatureFlagTestWrapper;
 };
-
-describe('useAuthorizationFlag', () => {
-  it('should return the default feature flags', () => {
-    const { result } = renderHook(() => useAuthorizationFlag(), {
-      wrapper: createWrapper(),
-    });
-
-    expect(result.current).toBe(false);
-  });
-});
 
 describe('useProfilePageFlag', () => {
   it('should return false by default', () => {

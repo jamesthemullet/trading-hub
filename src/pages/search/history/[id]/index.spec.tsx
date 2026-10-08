@@ -102,9 +102,7 @@ describe('Search History', () => {
 
   it('should render the access denied page', async () => {
     renderWithProviders(<SearchHistory id="some-id" />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     await waitFor(() => {

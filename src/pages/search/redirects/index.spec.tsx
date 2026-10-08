@@ -201,9 +201,7 @@ describe('Search Rulesets', () => {
       setKeywordList: jest.fn(),
     });
 
-    renderWithProviders(<RedirectRuleSets />, ['Search.R'], {
-      featureFlags: { hasAuthorization: true },
-    });
+    renderWithProviders(<RedirectRuleSets />, ['Search.R']);
 
     await waitFor(() => {
       expect(screen.getByText('Keyword Redirect')).toBeVisible();
@@ -216,9 +214,7 @@ describe('Search Rulesets', () => {
 
   it('should render the access denied page', async () => {
     renderWithProviders(<RedirectRuleSets />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(

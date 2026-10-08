@@ -53,9 +53,7 @@ describe('Create new redirect', () => {
 
   it('should render the access denied page', async () => {
     renderWithProviders(<NewRedirect />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(

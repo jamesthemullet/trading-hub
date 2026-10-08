@@ -70,7 +70,7 @@ export const useExampleFeatureFlag = () => {
 
 // Usage in components
 const MyComponent = () => {
-  // a hook that is implemented in src/libs/components/feature-flag.ts ex is useAuthorizationRoleOverride
+  // a hook implemented in src/libs/components/feature-flag/feature-flag.tsx, such as useProfilePageFlag
   const isNewUI = useExampleFeatureFlag();
 
   return isNewUI ? <NewUI /> : <OldUI />;

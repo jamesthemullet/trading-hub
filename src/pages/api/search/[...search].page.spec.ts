@@ -656,5 +656,28 @@ describe('Search api proxy', () => {
       );
       delete process.env.SMOKE_TEST_TOKEN;
     });
+
+    it('falls back to SMOKE_TEST_TOKEN when the session has no access token', async () => {
+      process.env.SMOKE_TEST_TOKEN = 'smoke-token';
+      jest
+        .mocked(getToken)
+        .mockReset()
+        .mockResolvedValueOnce({
+          accessTokenExpires: 123,
+          refreshToken: '',
+          accessToken: '',
+          user: { id: 'playwright' },
+          roles: ['Search.W'],
+        });
+      await performGet(
+        `${baseUrl}/search/beta/merchandising/facet/subcategory_427`,
+        responses[0][0]
+      );
+
+      expect(httpGet.mock.calls[0][0].headers.get('Authorization')).toBe(
+        'smoke-token'
+      );
+      delete process.env.SMOKE_TEST_TOKEN;
+    });
   });
 });

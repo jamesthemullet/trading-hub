@@ -102,9 +102,7 @@ describe('Global History', () => {
 
   it('should render the access denied page', async () => {
     renderWithProviders(<GlobalHistory id="some-id" />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     await waitFor(() => {

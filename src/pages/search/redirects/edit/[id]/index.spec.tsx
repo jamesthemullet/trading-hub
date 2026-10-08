@@ -133,9 +133,7 @@ describe('Edit keyword redirect', () => {
 
   it('should render the access denied page', async () => {
     renderWithProviders(<Page id={ruleSetId} />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(
@@ -147,9 +145,7 @@ describe('Edit keyword redirect', () => {
 
   it('should show read-only banner for read-only users', async () => {
     renderWithProviders(<Page id={ruleSetId} />, ['Search.R'], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(
@@ -164,9 +160,7 @@ describe('Edit keyword redirect', () => {
 
   it('should not show read-only banner for write-enabled users', async () => {
     renderWithProviders(<Page id={ruleSetId} />, ['Search.W'], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     await waitFor(() => {

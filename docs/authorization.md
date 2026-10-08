@@ -25,11 +25,9 @@ const accessToken = {
 
 Access token is signed so backend will check that token is valid before interpreting the roles. That is not enough however since anyone can create new app registration and have signed token, we need to also make sure that client id of the token matches the one we have in prod.
 
-At the beginning we are planning to add just one role, to avoid future changes we will call it `Glob.W`. This role will give `read` and `write` access to the whole app.
+Access is granted independently for each area. Category Ranking requires `Cat.R` for read access or `Cat.W` for read and write access; Search Ranking requires `Search.R` or `Search.W`; and Global Ranking requires `Glob.R` or `Glob.W`. `Glob.W` grants access to Global Ranking only.
 
-Once we confirm successful integration we will restrict this role to only allow global access, while introducing more granular roles for category and search ranking.
-
-Adding roles to token will have no visible effect to users, it can however trigger some effects during the migration therefore the whole migration will be done behind feature flag. Once new authorization is implemented in the backend and all required people are assigned the `Glob.W` write roles, we will remove the flag and at this point nothing again will be visibly different except for the fact that there will be two systems of authorization running at the same time.
+Frontend role checks are enabled by default and are no longer controlled by a feature flag. The frontend rollout must be coordinated with Azure role assignments: intended users need the expected role values in their access token before they will be able to use the corresponding areas. Backend role enforcement is being delivered separately; frontend checks control the UI and do not replace backend authorization.
 
 Once we make sure new system works correctly we will remove the previous system from the backend as new method of authorization will be sufficient in keeping app safe.
 
@@ -48,18 +46,14 @@ Trading Hub is using roles section of token to declare roles.
 There are 3 modes of access to resource:
 
 - `no access`, for everyone who don't have any roles assigned. From a token perspective it means roles field is either `undefined` or empty - `[]`
-- `read access`\*, it allows to see the data but not change it. For example `[Glob.R]`
+- `read access`, it allows to see the data but not change it. For example `[Glob.R]`
 - `write access`, this role allows users to change data.
-
-\*Note: in first release the `read access` is not going to be supported, as it requires more work - each component needs to support read only state which is not the case currently.
 
 There are following sections of the page protected independently:
 
-- Category Ranking\*
-- Search Ranking\*
+- Category Ranking
+- Search Ranking
 - Global Ranking
-
-\*Note: in first release the whole website will be protected by 1 role. This is to steadily release access to website and not complicate things.
 
 In total there are following roles:
 
@@ -80,30 +74,29 @@ Read role from REST perspective means users can perform only GET request.
 
 Website is operating in untrusted regime by default, that means if the user wants he can bypass all checks. Checks however will be done in the frontend to avoid network calls to backend in the default scenario.
 
-Frontend will copy roles from access token and it will make the copy accessible from session object under:
+The frontend copies roles from the access token into the session object under:
 
 ```Typescript
 session.data.roles
 ```
 
+Azure role assignments to users or groups must produce the supported values (for example, `Cat.W`) in the access-token `roles` claim. The frontend copies that claim directly; it does not translate a separate `groups` claim.
+
 Developers can use this directly by simply checking if a roles is contained in the array like:
 
 ```Typescript
-  if(!session.data?.roles.includes('Glob.R')) {
+  if (!session.data?.roles?.includes('Glob.R')) {
     return;
   }
 ```
 
-It is easier however to use the provided `useAccess` hook:
+The `useAccess` hook checks roles for each application area. Users without a session role for that area have no access; read roles allow viewing and write roles allow viewing and editing. For example:
 
 ```Typescript
-  const { hasReadAccess, hasWriteAccess } = useAccess({
-    readRole: SEARCH_READ_ROLE,
-    writeRole: SEARCH_WRITE_ROLE,
-  });
+  const { hasReadAccess, hasWriteAccess, requiredReadRole } = useAccess('Search');
 
   if (!hasReadAccess) {
-    return <AccessDeny requiredRole={SEARCH_READ_ROLE} />;
+    return <AccessDeny requiredRole={requiredReadRole} />;
   }
 ```
 
@@ -117,7 +110,7 @@ Optionally backend can also verify if token method of authentication is using 2F
 
 ## Local development with roles
 
-Frontend developers can modify their app registration with roles to be able to test any access they want. This is also going to be required for future workflows as by default frontend will require role based access once feature flag is off.
+Frontend developers can modify their app registration with roles to test access. As authorization is always enabled in the frontend, local development requires the app registration to issue the roles needed by the area being tested.
 
 To modify your own app registration please follow those steps:
 

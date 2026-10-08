@@ -286,9 +286,7 @@ describe('Index', () => {
       error: '',
       isLoading: false,
     });
-    renderWithProviders(<RuleSets />, ['Glob.R'], {
-      featureFlags: { hasAuthorization: true },
-    });
+    renderWithProviders(<RuleSets />, ['Glob.R']);
 
     await waitFor(() => {
       expect(screen.getByText('Global')).toBeVisible();
@@ -490,9 +488,7 @@ describe('Index', () => {
 
   it('should render the access denied page', async () => {
     renderWithProviders(<RuleSets />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(

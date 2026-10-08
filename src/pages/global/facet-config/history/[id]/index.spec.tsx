@@ -336,9 +336,7 @@ describe('FacetConfigHistory', () => {
   });
 
   it('should render the access denied page when user lacks read access', async () => {
-    renderWithProviders(<FacetConfigHistory id="facet-1" />, [], {
-      featureFlags: { hasAuthorization: true },
-    });
+    renderWithProviders(<FacetConfigHistory id="facet-1" />, []);
 
     await waitFor(() => {
       expect(

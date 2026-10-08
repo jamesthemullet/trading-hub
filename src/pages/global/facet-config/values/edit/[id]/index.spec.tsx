@@ -100,9 +100,7 @@ describe('Index', () => {
     );
 
     renderWithProviders(<Page />, ['Glob.R'], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     await waitFor(() => {
@@ -193,9 +191,7 @@ describe('Index', () => {
     });
 
     renderWithProviders(<Page />, ['Glob.R'], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(
@@ -530,9 +526,7 @@ describe('Index', () => {
 
     it('should render the access denied page', async () => {
       renderWithProviders(<Page />, [], {
-        featureFlags: {
-          hasAuthorization: true,
-        },
+        featureFlags: {},
       });
 
       expect(
@@ -544,9 +538,7 @@ describe('Index', () => {
 
     it('should show read-only banner for read-only users', async () => {
       renderWithProviders(<Page />, ['Glob.R'], {
-        featureFlags: {
-          hasAuthorization: true,
-        },
+        featureFlags: {},
       });
 
       expect(
@@ -558,9 +550,7 @@ describe('Index', () => {
 
     it('should not show read-only banner for write-enabled users', async () => {
       renderWithProviders(<Page />, ['Glob.W'], {
-        featureFlags: {
-          hasAuthorization: true,
-        },
+        featureFlags: {},
       });
 
       await waitFor(() => {

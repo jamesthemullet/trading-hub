@@ -97,9 +97,7 @@ describe('Global Facet Config', () => {
 
   it('should render the access denied page', () => {
     renderWithProviders(<FacetConfig />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(
@@ -223,9 +221,7 @@ describe('Global Facet Config', () => {
   });
 
   it('should show View values buttons when user has no write access', async () => {
-    renderWithProviders(<FacetConfig />, ['Glob.R'], {
-      featureFlags: { hasAuthorization: true },
-    });
+    renderWithProviders(<FacetConfig />, ['Glob.R']);
 
     expect(
       await screen.findByText(/you're viewing this page in read-only mode/i)

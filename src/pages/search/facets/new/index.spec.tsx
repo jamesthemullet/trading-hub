@@ -65,9 +65,7 @@ describe('Search Facet Management New', () => {
 
   it('should render the access denied page', async () => {
     renderWithProviders(<NewFacetRuleset />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(

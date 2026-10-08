@@ -62,7 +62,7 @@ search().betaMerchandisingCategoryRulesetList({ q: '', start: 0, rows: 10 });
 
 ### Authorization
 
-Role-based access: `Cat.R`, `Cat.W`, `Search.R`, `Search.W`, `Glob.R`, `Glob.W`. Roles are read from the next-auth session token. The `useAccess` hook handles role checks and a feature flag gates the entire authorization system. Pages render `<AccessDeny>` when the user lacks the required role.
+Role-based access: `Cat.R`, `Cat.W`, `Search.R`, `Search.W`, `Glob.R`, `Glob.W`. Roles are read from the next-auth session token. The `useAccess` hook always handles role checks; users without the required role are denied. Pages render `<AccessDeny>` when the user lacks the required role.
 
 ## Key Conventions
 
@@ -109,7 +109,7 @@ renderWithProviders(<MyComponent />);
 renderWithProviders(<MyComponent />, ['Cat.R']);
 
 // With feature flags:
-renderWithProviders(<MyComponent />, ['Cat.W'], { featureFlags: { hasAuthorization: true } });
+renderWithProviders(<MyComponent />, ['Cat.W']);
 ```
 
 **API mocking** — use MSW `setupServer` from `msw/node`:

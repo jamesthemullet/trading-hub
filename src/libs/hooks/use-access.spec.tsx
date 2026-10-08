@@ -2,10 +2,6 @@ import { renderHook } from '@testing-library/react';
 
 import { useSession } from 'next-auth/react';
 
-import {
-  defaultFeatureFlags,
-  FeatureFlagContext,
-} from '../components/feature-flag/feature-flag';
 import { useAccess } from './use-access';
 
 jest.mock('next-auth/react', () => ({
@@ -15,299 +11,88 @@ jest.mock('next-auth/react', () => ({
 describe('useAccess', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it.each([
+    ['Cat', 'Cat.W'],
+    ['Search', 'Search.W'],
+    ['Glob', 'Glob.W'],
+  ] as const)(
+    'grants read and write access for %s write role',
+    (type, role) => {
+      jest.mocked(useSession).mockReturnValue({
+        data: {
+          user: { id: 'userId', email: '' },
+          roles: [role],
+          expires: '',
+          accessTokenExpires: 123,
+        },
+        update: async () => null,
+        status: 'authenticated',
+      });
+
+      const { result } = renderHook(() => useAccess(type));
+
+      expect(result.current.hasReadAccess).toBe(true);
+      expect(result.current.hasWriteAccess).toBe(true);
+      expect(result.current.requiredReadRole).toBe(`${type}.R`);
+      expect(result.current.requiredWriteRole).toBe(`${type}.W`);
+    }
+  );
+
+  it.each([
+    ['Cat', 'Cat.R'],
+    ['Search', 'Search.R'],
+    ['Glob', 'Glob.R'],
+  ] as const)('grants read-only access for %s read role', (type, role) => {
     jest.mocked(useSession).mockReturnValue({
       data: {
-        user: {
-          id: 'userId',
-          email: '',
-        },
-        roles: ['Cat.W'],
+        user: { id: 'userId', email: '' },
+        roles: [role],
         expires: '',
         accessTokenExpires: 123,
       },
       update: async () => null,
       status: 'authenticated',
     });
-  });
 
-  it('should return hasReadAccess=true and hasWriteAccess=true', () => {
-    const { result } = renderHook(() => useAccess('Cat'), {
-      wrapper: ({ children }) => (
-        <FeatureFlagContext.Provider
-          value={{
-            ...defaultFeatureFlags,
-            hasAuthorization: true,
-          }}
-        >
-          {children}
-        </FeatureFlagContext.Provider>
-      ),
-    });
-
-    expect(result.current.hasReadAccess).toBe(true);
-    expect(result.current.hasWriteAccess).toBe(true);
-  });
-
-  it('should return hasReadAccess=true and hasWriteAccess=false for category', () => {
-    jest.mocked(useSession).mockReturnValue({
-      data: {
-        user: {
-          id: 'userId',
-          email: '',
-        },
-        roles: ['Cat.R'],
-        expires: '',
-        accessTokenExpires: 123,
-      },
-      update: async () => null,
-      status: 'authenticated',
-    });
-
-    const { result } = renderHook(() => useAccess('Cat'), {
-      wrapper: ({ children }) => (
-        <FeatureFlagContext.Provider
-          value={{
-            ...defaultFeatureFlags,
-            hasAuthorization: true,
-          }}
-        >
-          {children}
-        </FeatureFlagContext.Provider>
-      ),
-    });
+    const { result } = renderHook(() => useAccess(type));
 
     expect(result.current.hasReadAccess).toBe(true);
     expect(result.current.hasWriteAccess).toBe(false);
   });
 
-  it('should return hasReadAccess=true and hasWriteAccess=false for search', () => {
-    jest.mocked(useSession).mockReturnValue({
-      data: {
-        user: {
-          id: 'userId',
-          email: '',
+  it.each([{ roles: [] }, { roles: ['Search.W'] }])(
+    'denies access when the session does not grant the requested role',
+    ({ roles }) => {
+      jest.mocked(useSession).mockReturnValue({
+        data: {
+          user: { id: 'userId', email: '' },
+          roles,
+          expires: '',
+          accessTokenExpires: 123,
         },
-        roles: ['Search.R'],
-        expires: '',
-        accessTokenExpires: 123,
-      },
-      update: async () => null,
-      status: 'authenticated',
-    });
+        update: async () => null,
+        status: 'authenticated',
+      });
 
-    const { result } = renderHook(() => useAccess('Search'), {
-      wrapper: ({ children }) => (
-        <FeatureFlagContext.Provider
-          value={{
-            ...defaultFeatureFlags,
-            hasAuthorization: true,
-          }}
-        >
-          {children}
-        </FeatureFlagContext.Provider>
-      ),
-    });
+      const { result } = renderHook(() => useAccess('Cat'));
 
-    expect(result.current.hasReadAccess).toBe(true);
-    expect(result.current.hasWriteAccess).toBe(false);
-  });
+      expect(result.current.hasReadAccess).toBe(false);
+      expect(result.current.hasWriteAccess).toBe(false);
+    }
+  );
 
-  it('should return hasReadAccess=true and hasWriteAccess=false for glob', () => {
-    jest.mocked(useSession).mockReturnValue({
-      data: {
-        user: {
-          id: 'userId',
-          email: '',
-        },
-        roles: ['Glob.R'],
-        expires: '',
-        accessTokenExpires: 123,
-      },
-      update: async () => null,
-      status: 'authenticated',
-    });
-
-    const { result } = renderHook(() => useAccess('Glob'), {
-      wrapper: ({ children }) => (
-        <FeatureFlagContext.Provider
-          value={{
-            ...defaultFeatureFlags,
-            hasAuthorization: true,
-          }}
-        >
-          {children}
-        </FeatureFlagContext.Provider>
-      ),
-    });
-
-    expect(result.current.hasReadAccess).toBe(true);
-    expect(result.current.hasWriteAccess).toBe(false);
-  });
-
-  it('should work with no session', () => {
+  it('denies access when there is no session', () => {
     jest.mocked(useSession).mockReturnValue({
       data: null,
       update: async () => null,
       status: 'unauthenticated',
     });
 
-    const { result } = renderHook(() => useAccess('Cat'), {
-      wrapper: ({ children }) => (
-        <FeatureFlagContext.Provider
-          value={{
-            ...defaultFeatureFlags,
-            hasAuthorization: true,
-          }}
-        >
-          {children}
-        </FeatureFlagContext.Provider>
-      ),
-    });
+    const { result } = renderHook(() => useAccess('Cat'));
 
     expect(result.current.hasReadAccess).toBe(false);
-    expect(result.current.hasWriteAccess).toBe(false);
-  });
-
-  it('should work with no authorization flag enabled', () => {
-    jest.mocked(useSession).mockReturnValue({
-      data: {
-        user: {
-          id: 'userId',
-          email: '',
-        },
-        roles: ['read'],
-        expires: '',
-        accessTokenExpires: 123,
-      },
-      update: async () => null,
-      status: 'authenticated',
-    });
-
-    const { result } = renderHook(() => useAccess('Cat'), {
-      wrapper: ({ children }) => (
-        <FeatureFlagContext.Provider
-          value={{
-            ...defaultFeatureFlags,
-            hasAuthorization: false,
-          }}
-        >
-          {children}
-        </FeatureFlagContext.Provider>
-      ),
-    });
-
-    expect(result.current.hasReadAccess).toBe(true);
-    expect(result.current.hasWriteAccess).toBe(true);
-  });
-
-  it('should override category role', () => {
-    jest.mocked(useSession).mockReturnValue({
-      data: {
-        user: {
-          id: 'userId',
-          email: '',
-        },
-        roles: ['Cat.W'],
-        expires: '',
-        accessTokenExpires: 123,
-      },
-      update: async () => null,
-      status: 'authenticated',
-    });
-
-    const { result } = renderHook(() => useAccess('Cat'), {
-      wrapper: ({ children }) => (
-        <FeatureFlagContext.Provider
-          value={{
-            ...defaultFeatureFlags,
-            hasAuthorization: true,
-            authorizationRoleOverride: {
-              catOverride: 'Cat.R',
-              searchOverride: '',
-              globalOverride: '',
-            },
-          }}
-        >
-          {children}
-        </FeatureFlagContext.Provider>
-      ),
-    });
-
-    expect(result.current.hasReadAccess).toBe(true);
-    expect(result.current.hasWriteAccess).toBe(false);
-  });
-
-  it('should override search role', () => {
-    jest.mocked(useSession).mockReturnValue({
-      data: {
-        user: {
-          id: 'userId',
-          email: '',
-        },
-        roles: ['Search.W'],
-        expires: '',
-        accessTokenExpires: 123,
-      },
-      update: async () => null,
-      status: 'authenticated',
-    });
-
-    const { result } = renderHook(() => useAccess('Search'), {
-      wrapper: ({ children }) => (
-        <FeatureFlagContext.Provider
-          value={{
-            ...defaultFeatureFlags,
-            hasAuthorization: true,
-            authorizationRoleOverride: {
-              catOverride: '',
-              searchOverride: 'Search.R',
-              globalOverride: '',
-            },
-          }}
-        >
-          {children}
-        </FeatureFlagContext.Provider>
-      ),
-    });
-
-    expect(result.current.hasReadAccess).toBe(true);
-    expect(result.current.hasWriteAccess).toBe(false);
-  });
-
-  it('should override global role', () => {
-    jest.mocked(useSession).mockReturnValue({
-      data: {
-        user: {
-          id: 'userId',
-          email: '',
-        },
-        roles: ['Glob.W'],
-        expires: '',
-        accessTokenExpires: 123,
-      },
-      update: async () => null,
-      status: 'authenticated',
-    });
-
-    const { result } = renderHook(() => useAccess('Glob'), {
-      wrapper: ({ children }) => (
-        <FeatureFlagContext.Provider
-          value={{
-            ...defaultFeatureFlags,
-            hasAuthorization: true,
-            authorizationRoleOverride: {
-              catOverride: '',
-              searchOverride: '',
-              globalOverride: 'Glob.R',
-            },
-          }}
-        >
-          {children}
-        </FeatureFlagContext.Provider>
-      ),
-    });
-
-    expect(result.current.hasReadAccess).toBe(true);
     expect(result.current.hasWriteAccess).toBe(false);
   });
 });

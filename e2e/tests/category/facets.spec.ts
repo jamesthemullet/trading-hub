@@ -1,5 +1,4 @@
-import { expect, test } from '@playwright/test';
-
+import { expect, test } from '../../fixtures';
 import { checkAccessibility } from '../accessibility-utils';
 import {
   mockAttributeValue,

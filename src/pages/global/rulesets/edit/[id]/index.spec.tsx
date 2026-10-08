@@ -103,9 +103,7 @@ describe('Index', () => {
     });
 
     renderWithProviders(<Page id={ruleSetId} />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(
@@ -117,9 +115,7 @@ describe('Index', () => {
 
   it('should show read-only banner for read-only users', async () => {
     renderWithProviders(<Page id={ruleSetId} />, ['Glob.R'], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(
@@ -134,9 +130,7 @@ describe('Index', () => {
 
   it('should not show read-only banner for write-enabled users', async () => {
     renderWithProviders(<Page id={ruleSetId} />, ['Glob.W'], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     await waitFor(() => {

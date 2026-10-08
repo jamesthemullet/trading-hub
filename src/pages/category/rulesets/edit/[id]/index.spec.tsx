@@ -170,9 +170,7 @@ describe('Index', () => {
     }));
 
     renderWithProviders(<Page id={ruleSetId} />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(
@@ -192,9 +190,7 @@ describe('Index', () => {
     }));
 
     renderWithProviders(<Page id={ruleSetId} />, ['Cat.R'], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(
@@ -217,9 +213,7 @@ describe('Index', () => {
     }));
 
     renderWithProviders(<Page id={ruleSetId} />, ['Cat.W'], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     await waitFor(() => {

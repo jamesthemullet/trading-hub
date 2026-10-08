@@ -124,9 +124,7 @@ describe('Search ranking rules', () => {
       .mocked(useSearchRuleSetPreview)
       .mockImplementation(() => mockUseSearchRuleSetPreviewData);
     renderWithProviders(<Page id={ruleSetId} />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(
@@ -142,9 +140,7 @@ describe('Search ranking rules', () => {
       .mockImplementation(() => mockUseSearchRuleSetPreviewData);
 
     renderWithProviders(<Page id={ruleSetId} />, ['Search.R'], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(
@@ -163,9 +159,7 @@ describe('Search ranking rules', () => {
       .mockImplementation(() => mockUseSearchRuleSetPreviewData);
 
     renderWithProviders(<Page id={ruleSetId} />, ['Search.W'], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     await waitFor(() => {

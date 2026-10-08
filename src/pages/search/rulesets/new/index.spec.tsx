@@ -49,9 +49,7 @@ describe('Index', () => {
 
   it('should render the access denied page', async () => {
     renderWithProviders(<RuleSetCreate />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(

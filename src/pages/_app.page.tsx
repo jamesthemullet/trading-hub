@@ -44,22 +44,11 @@ const FeatureFlagWrapper = ({
 }: {
   children: React.ReactNode;
 }): ReactElement => {
-  const [cookies] = useCookies([
-    'flagAuthorization',
-    'flagAuthorizationRoleOverride',
-    'flagProfilePage',
-    'flagFavouriteRulesets',
-  ]);
+  const [cookies] = useCookies(['flagProfilePage', 'flagFavouriteRulesets']);
 
   return (
     <FeatureFlagContext.Provider
       value={{
-        hasAuthorization: cookies.flagAuthorization,
-        authorizationRoleOverride: cookies.flagAuthorizationRoleOverride ?? {
-          catOverride: 'No Override',
-          searchOverride: 'No Override',
-          globalOverride: 'No Override',
-        },
         hasProfilePage: cookies.flagProfilePage === true,
         hasFavouriteRulesets: cookies.flagFavouriteRulesets === true,
       }}

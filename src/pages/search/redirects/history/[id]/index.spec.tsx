@@ -97,9 +97,7 @@ describe('Redirect History', () => {
 
   it('should render the access denied page', async () => {
     renderWithProviders(<RedirectHistory id="some-id" />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     await waitFor(() => {

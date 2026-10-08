@@ -237,9 +237,7 @@ describe('Categories', () => {
       error: '',
       isLoading: false,
     });
-    renderWithProviders(<Categories />, ['Cat.R'], {
-      featureFlags: { hasAuthorization: true },
-    });
+    renderWithProviders(<Categories />, ['Cat.R']);
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: 'Categories' })).toBeVisible();
@@ -252,9 +250,7 @@ describe('Categories', () => {
 
   it('should render the access denied page', async () => {
     renderWithProviders(<Categories />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(

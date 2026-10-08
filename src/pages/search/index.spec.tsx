@@ -236,9 +236,7 @@ describe('Search Rulesets', () => {
       refetchRuleSetList: () => jest.fn,
       setRuleSets: jest.fn(),
     });
-    renderWithProviders(<RuleSets />, ['Search.R'], {
-      featureFlags: { hasAuthorization: true },
-    });
+    renderWithProviders(<RuleSets />, ['Search.R']);
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: 'Search' })).toBeVisible();
@@ -251,9 +249,7 @@ describe('Search Rulesets', () => {
 
   it('should render the access denied page', async () => {
     renderWithProviders(<RuleSets />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(

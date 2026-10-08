@@ -102,9 +102,7 @@ describe('Category History', () => {
 
   it('should render the access denied page', async () => {
     renderWithProviders(<CategoryHistory id="some-id" />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     await waitFor(() => {

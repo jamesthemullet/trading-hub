@@ -35,7 +35,7 @@ const proxy = async (
 
   const headers = new Headers();
 
-  if (token && typeof token.accessToken === 'string') {
+  if (token?.accessToken) {
     headers.set('Authorization', `Bearer ${token.accessToken}`);
   } else if (process.env.E2E_TEST_USER_TOKEN) {
     headers.set('Authorization', `Bearer ${process.env.E2E_TEST_USER_TOKEN}`);

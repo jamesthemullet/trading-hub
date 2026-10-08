@@ -1,7 +1,6 @@
 import type { MerchandisingReturnedCategoryRuleSets } from '@/libs/api';
 
-import { expect, test } from '@playwright/test';
-
+import { expect, test } from '../../fixtures';
 import {
   getProductSearchResultPosition,
   searchForProductAndWaitForResults,

@@ -97,9 +97,7 @@ describe('Category Facet Management New', () => {
       error: '',
     });
     renderWithProviders(<NewFacetRuleset />, [], {
-      featureFlags: {
-        hasAuthorization: true,
-      },
+      featureFlags: {},
     });
 
     expect(
