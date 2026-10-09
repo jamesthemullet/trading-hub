@@ -120,6 +120,7 @@ export const GlobalEditableLabel = ({
       payload: { oldValue: displayName, newValue },
     });
 
+    // The backend represents a renamed standalone value as a single-value merge group.
     if (existingMergeGroup === -1) {
       dispatch({
         type: 'CREATE_MERGE_GROUP',

@@ -32,7 +32,6 @@ See [Local Development](./docs/local-development.md) for full setup details, inc
 
 ### Security and Permissions
 - [Authorization](./docs/authorization.md): Details about the authorization model.
-- [Azure OAuth App Registration](./docs/azure-oauth-app-registration.md): Guide to setting up Azure OAuth permissions.
 - [User Access Management](./docs/user-access-managment.md): Instructions for managing user access.
 - [Secret Rotation](./docs/secret-rotation.md): Guide to rotating Azure AD client secrets via Azure CLI.
 

@@ -89,11 +89,11 @@ In the event of an outage the most likely causes are:
 
 This is the error that they would receive:
 
-<img src="no-redirect-error.png" alt="alt text" width="500">
+<img src="img/no-redirect-error.png" alt="Azure sign-in error caused by a missing redirect URL" width="500">
 
 This can be corrected by adding it back to the Authentication page:
 
-<img src="authentication-page.png" alt="alt text" width="800">
+<img src="img/authentication-page.png" alt="alt text" width="800">
 
 The redirect for prod is: https://merchandising-hub.search.marksandspencer.app/api/auth/callback/azure-ad
 For dev: https://dev-merchandising-hub.search.marksandspencer.app/api/auth/callback/azure-ad
