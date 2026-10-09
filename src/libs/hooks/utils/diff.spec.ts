@@ -71,6 +71,96 @@ describe('diff utils', () => {
   });
 
   describe('diffFacetValues', () => {
+    it('preserves first positions for duplicate values without changing inputs', () => {
+      const original = ['red', 'blue', 'red'];
+      const current = ['blue', 'red', 'blue'];
+
+      expect(diffFacetValues(original, current, [], [])).toEqual([
+        {
+          type: 'changed',
+          label: 'Value order down',
+          description: 'red: position 1 → 2',
+        },
+        {
+          type: 'changed',
+          label: 'Value order up',
+          description: 'blue: position 2 → 1',
+        },
+      ]);
+      expect(original).toEqual(['red', 'blue', 'red']);
+      expect(current).toEqual(['blue', 'red', 'blue']);
+    });
+
+    it('prioritises included values and reports status changes before moves', () => {
+      expect(
+        diffFacetValues(
+          ['red', 'blue'],
+          ['blue', 'red', 'green'],
+          ['red', 'green'],
+          ['blue']
+        )
+      ).toEqual([
+        {
+          type: 'changed',
+          label: 'Include only',
+          description: 'green (Exclude only → Include only)',
+        },
+        {
+          type: 'changed',
+          label: 'Value order down',
+          description: 'red: position 1 → 2',
+        },
+        {
+          type: 'changed',
+          label: 'Value order up',
+          description: 'blue: position 2 → 1',
+        },
+      ]);
+    });
+
+    it('handles large reordered lists without per-value array scans', () => {
+      const original = Array.from(
+        { length: 5000 },
+        (_, index) => `value-${index}`
+      );
+      const current = [...original].reverse();
+      const originalExcluded = ['excluded'];
+      const currentExcluded = ['excluded'];
+      const scanSpies = [
+        original,
+        current,
+        originalExcluded,
+        currentExcluded,
+      ].flatMap((values) => [
+        jest.spyOn(values, 'includes'),
+        jest.spyOn(values, 'indexOf'),
+      ]);
+
+      try {
+        const changes = diffFacetValues(
+          original,
+          current,
+          originalExcluded,
+          currentExcluded
+        );
+
+        expect(changes).toHaveLength(5000);
+        expect(changes[0]).toEqual({
+          type: 'changed',
+          label: 'Value order down',
+          description: 'value-0: position 1 → 5000',
+        });
+        expect(changes[4999]).toEqual({
+          type: 'changed',
+          label: 'Value order up',
+          description: 'value-4999: position 5000 → 1',
+        });
+        scanSpies.forEach((spy) => expect(spy).not.toHaveBeenCalled());
+      } finally {
+        scanSpies.forEach((spy) => spy.mockRestore());
+      }
+    });
+
     it('returns empty list when nothing changes', () => {
       expect(
         diffFacetValues(['red', 'blue'], ['red', 'blue'], ['green'], ['green'])

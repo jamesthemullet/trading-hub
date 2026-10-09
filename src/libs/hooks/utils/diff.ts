@@ -37,13 +37,19 @@ export const formatDateForDiff = (date: string | undefined): string => {
 
 const getFacetValueStatus = (
   value: string,
-  boosted: string[],
-  excluded: string[]
+  boosted: Map<string, number>,
+  excluded: Set<string>
 ): FacetValueStatus => {
-  if (boosted.includes(value)) return 'Include only';
-  if (excluded.includes(value)) return 'Exclude only';
+  if (boosted.has(value)) return 'Include only';
+  if (excluded.has(value)) return 'Exclude only';
   return 'Algo control';
 };
+
+const firstIndexByValue = (values: string[]): Map<string, number> =>
+  // Reversing entries preserves indexOf's first-match behavior for duplicates.
+  new Map(
+    values.map((value, index): [string, number] => [value, index]).reverse()
+  );
 
 export const diffFacetValues = (
   originalBoosted: string[],
@@ -51,6 +57,10 @@ export const diffFacetValues = (
   originalExcluded: string[],
   currentExcluded: string[]
 ): DiffItem[] => {
+  const originalBoostedIndex = firstIndexByValue(originalBoosted);
+  const currentBoostedIndex = firstIndexByValue(currentBoosted);
+  const originalExcludedSet = new Set(originalExcluded);
+  const currentExcludedSet = new Set(currentExcluded);
   const allValues = [
     ...new Set([
       ...originalBoosted,
@@ -63,13 +73,13 @@ export const diffFacetValues = (
   const statusDiffItems = allValues.flatMap<DiffItem>((value) => {
     const origStatus = getFacetValueStatus(
       value,
-      originalBoosted,
-      originalExcluded
+      originalBoostedIndex,
+      originalExcludedSet
     );
     const currStatus = getFacetValueStatus(
       value,
-      currentBoosted,
-      currentExcluded
+      currentBoostedIndex,
+      currentExcludedSet
     );
 
     if (origStatus !== currStatus) {
@@ -90,23 +100,12 @@ export const diffFacetValues = (
     origIndex: number;
     currIndex: number;
   }>((value) => {
-    const origStatus = getFacetValueStatus(
-      value,
-      originalBoosted,
-      originalExcluded
-    );
-    const currStatus = getFacetValueStatus(
-      value,
-      currentBoosted,
-      currentExcluded
-    );
+    const origIndex = originalBoostedIndex.get(value);
+    const currIndex = currentBoostedIndex.get(value);
 
-    if (origStatus !== 'Include only' || currStatus !== 'Include only') {
+    if (origIndex === undefined || currIndex === undefined) {
       return [];
     }
-
-    const origIndex = originalBoosted.indexOf(value);
-    const currIndex = currentBoosted.indexOf(value);
 
     if (origIndex === currIndex) return [];
 
