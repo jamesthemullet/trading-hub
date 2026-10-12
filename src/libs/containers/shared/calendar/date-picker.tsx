@@ -122,7 +122,6 @@ export const DatePicker = (
           nextLabel={calendarAriaLabels.next}
           onChange={(val: [string | null, string | null] | null) =>
             onChange([
-              // istanbul ignore next
               val?.[0] ? new Date(val[0]) : null,
               val?.[1] ? new Date(val[1]) : null,
             ])
