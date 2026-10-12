@@ -28,6 +28,6 @@ jobs:
       - name: Prepare environment
         uses: ./.github/actions/prepare
       - name: Install gh-aw extension
-        uses: github/gh-aw-actions/setup-cli@16b430146d5d5646eccef5a1ceb72152333b18b9 # v0.91.5
+        uses: github/gh-aw-actions/setup-cli@7a073567000cd18a81b85d31527ac08d414c9599 # v0.91.7
         with:
           version: v0.67.1
