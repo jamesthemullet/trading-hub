@@ -1,118 +1,69 @@
 # CI/CD Pipelines
 
-## Main Release Pipeline (`release.yml`)
+Workflow definitions live in [`.github/workflows`](../.github/workflows). This page summarizes the repository configuration; GitHub environment approvals and branch-protection rules are managed outside the workflow files.
 
-- **Trigger**: Push to `main` branch or manual dispatch
-- **Environment**: Dev → Production
-- **Steps**:
-  1. **Build & Test**
-     - Node.js setup and cache
-     - Install dependencies
-     - Run unit tests and type checking
-     - Build application
-  2. **Dev Deployment**
-     - Automatic deployment to dev environment
-     - Runs smoke tests to validate deployment
-  3. **Production Deployment**
-     - Azure authentication using OIDC
-     - Container deployment to Azure
-     - Manual approval required
+## Main Release (`release.yml`)
 
-## Hotfix Pipeline (`hotfix.yml`)
+**Triggers:** Pushes to `main` and manual dispatch.
 
-- **Trigger**: PRs to `hotfix` branch
-- **Environment**: Dev → Production
-- **Process**:
-  1. Create branch from `hotfix`
-  2. Make changes and create PR against `hotfix`
-  3. Merge triggers automatic dev deployment
-  4. Manual approval for production deployment
-  5. Hotfix branch is synced with main after successful release
+The workflow builds the app and validates the standalone output, then deploys it to dev and validates the deployed version. It runs the dev Playwright smoke tests, starts the automated CAB change request, and deploys production to a pre-production slot. After validating the version, it swaps the slot into production. On successful production deployment, it syncs `main` into `hotfix`.
 
-## PR Validation Pipeline (`pr-validate-and-deploy.yml`)
+Azure login uses OIDC. The workflow targets GitHub environments for its deployments; whether a deployment requires manual approval depends on environment protection settings configured in GitHub, not in this repository.
 
-- **Purpose**: Validates pull requests
-- **_Notes_** This rule is set as a required check for merging to `main` branch, but not for `hotfix` branch as pipeline for release has a `sync-branches` job that fails if branch protection is enabled on `hotfix` branch, if merging anything to `hotfix` make sure not to merge without this pipeline check.
-- **Steps**:
-  1. **Code Quality**
-     - Runs tests and linting
-     - Type checking and formatting validation
-  2. **Build**
-     - Builds the application and validates standalone output
-  3. **E2E Tests**
-     - Runs Playwright end-to-end tests
-  4. **Storybook Accessibility**
-     - Runs accessibility tests against Storybook
+## Hotfix Release (`hotfix.yml`)
 
-## Smoke Tests Pipeline (`smoke-tests.yml`)
+**Triggers:** Pushes to `hotfix` and manual dispatch.
 
-- **Schedule**: Runs every 15 minutes
-- **Scope**:
-  - Category and global ranking tests
-  - Data loading verification
-  - Authentication flows
-- **Monitoring**:
-  - Dynatrace integration for failure alerts
-  - Email notifications after 2 consecutive failures
-  - Early warning after single failure
+The workflow builds the app, deploys to dev, validates the deployment, then deploys to a production pre-production slot and swaps it into production after version validation. It does not sync `hotfix` back into `main`; the main release workflow syncs `main` into `hotfix` after a successful production deployment.
+
+## Pull Request Validation (`pr-validate-and-deploy.yml`)
+
+**Triggers:** Pull requests targeting `main` or `hotfix`, and merge-queue checks.
+
+The workflow runs code formatting, code generation, TypeScript checks, linting, dependency audits, unit tests with coverage and SonarCloud, a production build, sharded Playwright end-to-end tests, and Storybook accessibility tests. It also checks new Istanbul coverage ignores. Knip runs with `continue-on-error`, so its findings do not fail the workflow.
+
+This file defines which events run validation, but whether its checks are required for merging is controlled by GitHub branch-protection or ruleset settings.
+
+## Smoke Tests
+
+The dev smoke-test workflow (`smoke-tests.yml`) can be started manually and is scheduled every 15 minutes on weekdays from 07:00 through 20:45 UTC. The production workflow (`smoke-tests-prod.yml`) can also be started manually and is scheduled every four hours on weekdays from 04:00 to 20:00 UTC. Both run Playwright smoke tests and report results to Dynatrace. Alerting and notification behavior beyond those workflow reports is configured outside this repository.
 
 ## Dependency Updates (Renovate)
 
-Renovate runs during its configured weekday schedule and creates updates without requiring Dependency Dashboard approval. The dashboard remains available to track updates.
+Renovate runs on its configured weekday schedule and can create update PRs without Dependency Dashboard approval; the dashboard is enabled for visibility. These safeguards were added after generating the pnpm lockfile for a large grouped npm update exceeded Renovate's available memory. Renovate is configured with a 1 GiB Node.js heap limit (`toolSettings.nodeMaxMemory`); this is not a runner or container memory limit. Open branches and PRs are capped at one at a time to keep update workload bounded while the memory issue is managed. Lock-file maintenance and pnpm package-manager updates are disabled, and npm artifact generation is skipped. React and Mantine dependencies remain grouped; other npm updates are kept individually bounded.
 
-Renovate config sets `toolSettings.nodeMaxMemory` to 1024 MiB (1 GiB) for the Node heap. This is separate from any runner or container memory limit, which is not defined in the repository configuration. Previous npm lockfile generation hit memory limits, so npm updates remain individually bounded (apart from related package groups such as React and Mantine). Renovate creates at most one branch and one PR at a time.
+The `Update Renovate lockfile` workflow only runs for same-repository PRs authored by `renovate[bot]`, with a `renovate/` head branch and the `dependencies` label. It generates `pnpm-lock.yaml` with lifecycle scripts disabled. It requires the `SAML_GITHUB_TOKEN` secret, then commits the lockfile using GitHub's `createCommitOnBranch` API. The expected head SHA prevents committing if the Renovate branch changed during the run. The token is only exposed inside this guarded job; using it lets the commit trigger normal PR validation.
 
-Lock-file maintenance and pnpm package-manager updates are disabled while these memory safeguards apply. Renovate skips artifact generation for all npm updates to avoid further memory failures. The `Update Renovate lockfile` workflow generates only `pnpm-lock.yaml` with lifecycle scripts disabled, then pushes it back to same-repository PRs that have the `dependencies` label, are authored by `renovate[bot]`, and use a `renovate/` branch.
+Minor and patch dependency updates receive the `auto-cab` label; major updates receive `dependencies`, `major`, and `breaking` labels and are not automatically given `auto-cab`.
 
-The workflow requires the `SAML_GITHUB_TOKEN` Actions secret with repository write access and the organisation's required SSO authorisation for GraphQL. It commits the lockfile using GitHub's `createCommitOnBranch` mutation, which provides GitHub-signed commits to satisfy the verified-signature rule. The mutation's `expectedHeadOid` atomically rejects an update if the branch has advanced since checkout; a new run must use the latest head.
-
-Using this token allows the commit to trigger normal PR validation automatically, without the default `GITHUB_TOKEN`'s workflow-trigger restrictions. It is exposed only to the guarded job for same-repository Renovate PRs and is not available to arbitrary or forked pull requests.
-
-Minor and patch update PRs are also given the `auto-cab` label so the required `Automated CAB Process / Check CAB Approval` check creates a change request for them automatically. Major/breaking update PRs are not auto-labelled, since they may need closer review before a change request is raised.
-
-## Security Features
-
-- OIDC (OpenID Connect) authentication
-- Federated credentials for Azure access
-- Secret rotation every 6 months
-- Snyk integration for vulnerability scanning
-
-## Branch Protection
-
-- Main branch requires PR reviews
-- Hotfix branch allows emergency deployments without approval, but make sure that all checks pass anyway
-- PR checks enforce tests and code quality standards
-
-## Monitoring & Alerts
-
-- Dynatrace integration for monitoring
-- Automated smoke tests every 15 minutes
-- Alert workflows for test failures
-- Health checks for deployment validation
-
-## Environment URLs
+## Deployment Environments
 
 | Environment | URL                                                       |
 | ----------- | --------------------------------------------------------- |
 | Dev         | https://dev-merchandising-hub.search.marksandspencer.app/ |
-| Prod        | https://merchandising-hub.search.marksandspencer.app/     |
+| Production  | https://merchandising-hub.search.marksandspencer.app/     |
 
 ## Deployment Guidelines
 
-1. **Normal Release**:
-   - Merge to main branch
-   - Monitor dev deployment
-   - Approve production deployment (required for any release after the incident)
-   - Run smoke tests to validate
+### Normal Release
 
-2. **Hotfix Release**:
-   - Branch from hotfix
-   - Create PR against hotfix branch
-   - Test in dev environment
-   - Approve production deployment
-   - Create PR to sync with main (when appropriate)
+1. Open a pull request targeting `main` and wait for the required validation checks and reviews configured for the repository.
+2. Merge the pull request. A push to `main` starts the release workflow automatically; it can also be run manually from GitHub Actions using the `main` branch.
+3. Monitor the build, dev deployment, and dev smoke-test jobs. The workflow starts the automated CAB change request before production deployment.
+4. Complete any approval required by the GitHub production environment. The workflow deploys to a pre-production slot, validates the deployed version, and swaps it into production.
+5. Verify the production deployment and smoke-test results. After a successful release, the workflow syncs `main` into `hotfix`.
 
-3. **Code Freeze Periods**:
-   - Use hotfix branch for emergency changes
-   - Avoid merging hotfix to main during freeze
-   - Additional validation required for production deployments
+### Hotfix Release
+
+1. Open a pull request targeting `hotfix` and review its validation results before merging.
+2. Merging to `hotfix` starts the hotfix release workflow automatically. It can also be run manually from GitHub Actions using the `hotfix` branch.
+3. Monitor the dev deployment and version validation, then the production pre-production slot deployment and swap. Complete any approvals required by the configured GitHub environments.
+4. Ensure the hotfix is also submitted to `main` so the fix is retained in the primary development line. The release workflow syncs `main` into `hotfix`; it does not sync hotfix changes back into `main`.
+
+Branch requirements, review counts, and environment approvals are controlled by GitHub settings and may vary by repository policy. Confirm the current requirements in GitHub before merging or dispatching a deployment.
+
+## Related Automation
+
+- [`automated-cab.yml`](../.github/workflows/automated-cab.yml) creates change requests for pull requests and merge-queue checks.
+- The main release workflow starts a change request before production deployment, then completes it after a successful deployment or closes it as unsuccessful if deployment fails.
+- Azure deployments use OIDC. Secret rotation, environment approval rules, branch protections, and Dynatrace alert policies are configured outside the workflow files and are not specified here.

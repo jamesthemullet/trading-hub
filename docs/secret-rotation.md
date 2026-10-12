@@ -3,8 +3,10 @@
 ## Prerequisites
 
 - Azure CLI installed and configured on your machine
-- Owner permissions on the app registration
-- Access to update secrets in GitHub
+- Permission to manage credentials on the correct app registration
+- Access to update the applicable GitHub Actions secret and run the release workflow
+
+The release workflow references `_AZURE_AD_CLIENT_ID` and `_AZURE_AD_CLIENT_SECRET` in both deployment jobs, but the jobs target separate GitHub environments (`deveun` for dev and `prodeun` for production). GitHub may provide environment-scoped values with the same secret names, or repository-level values; this repository does not show how those secrets are configured. Check the GitHub environment settings and confirm the corresponding app registration with its owners before rotating. Changing the local `.env` value does not update GitHub or a deployed environment.
 
 1. **Login to Azure CLI**
 
@@ -14,115 +16,96 @@
 
    This will open a browser window for authentication. Complete the login process.
 
-2. **Set the correct subscription**
+2. **Select the subscription for the app registration**
 
-   Select the subscription from the list that appears in the CLI for "MandS - V2 - Non Production - Customer & Loyalty - tradehub" if rotating dev secret, "MandS - V2 - Production - Customer & Loyalty - tradehub" if amending prod secret
+   List available subscriptions:
 
-3. **Retrieve the Client ID from the existing app registration**
+   ```bash
+   az account list --output table
+   ```
 
-   For dev:
+   Select the subscription that contains the app registration you intend to update:
+
+   - Non-production/dev: `MandS - V2 - Non Production - Customer & Loyalty - tradehub`
+   - Production: `MandS - V2 - Production - Customer & Loyalty - tradehub`
+
+   Set the appropriate subscription in the CLI:
+
+   ```bash
+   az account set --subscription "MandS - V2 - Non Production - Customer & Loyalty - tradehub"
+   ```
+
+   Replace the subscription name with the production subscription when rotating the production app registration. Confirm the app registration and corresponding GitHub environment secret with its owners before proceeding.
+
+3. **Find and confirm the app registration**
+
+   List matching non-production registrations:
 
    ```bash
    az ad app list --filter "startswith(displayName, 'sp-MandS-V2-NonProduction-Customer&Loyalty-tradehub')" --query "[].{displayName:displayName, appId:appId}" --output table
    ```
 
-   For prod:
+   List matching production registrations:
 
    ```bash
    az ad app list --filter "startswith(displayName, 'sp-MandS-V2-Production-Customer&Loyalty-tradehub')" --query "[].{displayName:displayName, appId:appId}" --output table
    ```
 
-4. **List Current Secrets**
+   Confirm the correct registration and `appId` with its owners. Both deployment jobs reference the same Actions secret names, but their environment-scoped values may differ. Check the `deveun` or `prodeun` environment settings in GitHub to identify which credential value is used by the deployment you are rotating.
 
-   Using the previously sourced AppId, identify which secrets are currently active:
+4. **Record the current credential IDs**
 
-   ```bash
-   az ad app credential list --id <AppId>
-   ```
-
-   Example output:
-
-   ```
-   DisplayName                    KeyId                                 EndDate
-   -----------------------------  ------------------------------------  ----------------------------
-   john.doe local secret          abc123-def4-5678-90ab-cdef12345678   2025-12-31T23:59:59.000000Z
-   production secret              xyz789-abc1-2345-67de-f890abcd1234   2025-06-30T23:59:59.000000Z
-   ```
-
-5. **Create New Secret (keeping old secret active)**
-
-   Create a new secret using the `--append` flag to keep existing secrets active:
+   Using the confirmed app ID, record the `keyId` for the credential that will be replaced. Do not copy or share any credential values.
 
    ```bash
-   az ad app credential reset --id <AppId> --append --display-name "Enter display name here"
+   az ad app credential list --id <APP_ID> --query "[].{displayName:displayName,keyId:keyId,endDateTime:endDateTime}" --output table
    ```
 
-   **Important:** The `--append` flag ensures the old secret remains valid!
+5. **Create a new secret without removing the old one**
 
-6. **Save New Secret**
+   Use `--append` so the existing credential remains available during the transition:
 
-   The command will output JSON containing the new secret:
-
-   ```json
-   {
-     "appId": "abc-app-id",
-     "password": "abc123~XYZ789-NewSecretValue",
-     "tenant": "..."
-   }
+   ```bash
+   az ad app credential reset --id <APP_ID> --append --display-name "trading-hub rotation YYYY-MM"
    ```
 
-   Copy the `password` value.
+   The command returns the new secret value once. Store it securely; do not put it in source control, logs, or chat.
 
-7. **Deploy New Secret**
+6. **Update the GitHub Actions secret**
 
-   If updating dev, update the secret in your local .env file
+   The release workflow reads the Actions secret named `_AZURE_AD_CLIENT_SECRET` and writes its value to the app setting named `AZURE_AD_CLIENT_SECRET`. These are different names for the workflow input and the runtime setting.
 
-8. **Update GitHub Secret**
-   1. Navigate to repository Settings → Secrets and variables → Actions
-   2. Update `AZURE_AD_CLIENT_SECRET` with the new value
-   3. Create a new branch locally
-   4. Update something in the ci folder (just adding an extra space will suffice)
-   5. Commit, push and merge your PR
-   6. Trigger a new deployment
+   The deployment jobs use the GitHub environments `deveun` and `prodeun`. Check **Settings → Environments** to see whether the applicable value is configured as an environment secret. If it is, update the secret in the environment you are rotating. If no environment-level secret overrides it, update the repository secret under **Settings → Secrets and variables → Actions**. Update both scopes/environments only if both should receive the new value.
 
-   **Important:** If you do not make a change in the ci folder, the updated `AZURE_AD_CLIENT_SECRET` secret will not be picked up
+   If you also need the new credential for local development, update `AZURE_AD_CLIENT_SECRET` in your local `.env` file separately. Do not commit `.env`.
 
-9. **Verify New Secret Works**
+7. **Deploy and verify**
 
-   Test authentication with the new secret in the environment you updated.
+   Changing a GitHub secret does not itself start a workflow. Run the **Release** workflow from GitHub Actions using the `main` branch, or wait for the next push to `main`. The release deploys to both dev and production; each job receives the value resolved for its GitHub environment (or the repository-level value if there is no environment override). Follow the workflow's deployment approvals and checks, then verify sign-in in every environment whose secret you changed. Check the production smoke-test run when production credentials are involved.
 
-   Monitor logs and production smoke tests for any authentication errors.
+8. **Remove the old credential after verification**
 
-10. **Delete Old Secret**
+   Once the new secret has been verified in every environment that uses it, delete only the old credential by its recorded key ID:
 
-    Once confirmed the new secret works everywhere, delete the old one:
+   ```bash
+   az ad app credential delete --id <APP_ID> --key-id <OLD_KEY_ID>
+   ```
 
-    ```bash
-    az ad app credential list --id <APP_ID> --output table
+   Confirm that the old key ID is absent. Other credentials may still exist, so do not expect the list to contain only the newly created credential:
 
-
-    az ad app credential delete \
-    --id <APP_ID> \
-    --key-id <OLD_KEY_ID>
-    ```
-
-11. **Verify Old Secret is Removed**
-
-    ```bash
-    az ad app credential list --id <APP_ID> --output table
-    ```
-
-    You should only see the new secret in the list.
+   ```bash
+   az ad app credential list --id <APP_ID> --query "[].{displayName:displayName,keyId:keyId,endDateTime:endDateTime}" --output table
+   ```
 
 ## Best Practices
 
-1. **Rotate secrets every 6-12 months** (before they expire)
+1. **Rotate secrets before expiry** and follow the organisation's rotation policy.
 2. **Use descriptive names** with date and creator info
-3. **Always use `--append`** for zero-downtime rotation
+3. **Use `--append`** to keep the existing credential active while deploying and verifying its replacement.
 4. **Test in non-production first**
 5. **Ensure the team are aware before rotating secrets** in team channels
 
-## PROD smoke-test yaccount password reset
+## Prod Smoke-Test User Password Reset
 
 Use these steps when production Playwright smoke tests fail due to authentication, or when `PROD_TEST_USER` credentials must be rotated.
 

@@ -1,94 +1,46 @@
 # Testing Strategy
 
-## Test Types
+## Unit Tests
 
-### Unit Tests
-
-- **Location**: `src/**/*.spec.ts(x)`
+- **Location**: `src/**/*.spec.ts` and `src/**/*.spec.tsx`
 - **Runner**: Jest
-- **Coverage Requirements**: 100%
-- **Command**: `pnpm run test`
+- **Coverage**: Global thresholds are 100% for statements, branches, functions, and lines.
+- **Run all unit tests**: `pnpm run test`
+- **Run one file**: `pnpm exec jest src/path/to/file.spec.tsx`
+- **Run matching tests**: `pnpm exec jest -t "test name"`
+- **Watch mode**: `pnpm run tdd` (watch mode with coverage)
 
-#### Example
+Use `renderWithProviders` from `@/test/render-with-providers` for React component tests. Use MSW for tests that exercise HTTP requests; mock individual dependencies directly when a network-level mock is not needed. Shared test data and helpers live in `src/test/data` and `src/test/helpers`.
 
-```typescript
-describe('RulesetEditor', () => {
-  it('should update attribute weight', () => {
-    // Arrange
-    const initialWeight = 50;
-
-    // Act
-    const result = updateWeight(initialWeight, 75);
-
-    // Assert
-    expect(result).toBe(75);
-  });
-});
-```
-
-### E2E Tests
+## End-to-End Tests
 
 - **Location**: `e2e/**/*.spec.ts`
 - **Runner**: Playwright
-- **Command**: `pnpm run test:e2e:ui`
+- **UI runner**: `pnpm run test:e2e:ui`
+- **Run mocked project headlessly**: `pnpm exec playwright test --project=mock`
 
-#### Test Categories
+Playwright projects divide tests by purpose:
 
-1. **Smoke Tests**
-   - Run every 15 minutes
-   - Basic functionality verification
-   - Critical path testing
+- `mock`: UI flows under `e2e/tests` using mocked API behavior; excludes smoke tests.
+- `category-tests`, `global-tests`, `search-tests`, `redirect-tests`: focused integration suites used by pull-request CI. The global project also includes product-status tests.
+- `smoke`: dev smoke tests under `e2e/dev`.
+- `production`: production smoke tests under `e2e/prod`; this project targets the live production site and requires the configured production test account.
 
-2. **Mock Tests**
-   - Test complex interactions
-   - Verify error handling
+Avoid running `pnpm run test:e2e` without a project filter unless you intend to run every configured project, including production tests. The Playwright UI runner also offers all configured projects; select a non-production project for local work.
 
-3. **Production Tests**
-   - Verify authentication
-   - Test data loading
-   - Check critical business flows
+## Scheduled Smoke Tests
 
-## Test Environment Setup
+- Dev smoke tests run every 15 minutes on weekdays from 07:00 through 20:45 UTC.
+- Production smoke tests run every four hours on weekdays from 04:00 to 20:00 UTC.
+- Both workflows can also be started manually and report results to Dynatrace.
+- Production smoke tests require credentials held in GitHub Actions. For production test-user credential reset steps, see [secret rotation guidance](./secret-rotation.md#prod-smoke-test-user-password-reset).
 
-### Local Testing
+## Pull-Request CI
 
-```bash
-# Unit and E2E Tests
-NEXT_PUBLIC_AUTO_LOGIN=false pnpm run test
+- Pull requests targeting `main` or `hotfix` run code quality checks, dependency audits, unit tests with coverage, a build, sharded Playwright suites (`category-tests`, `global-tests`, `search-tests`, and `redirect-tests`), and Storybook accessibility tests.
+- CI also checks new Istanbul coverage-ignore reasons. Knip runs as an advisory job and does not fail the workflow on its own.
+- Pull-request CI does not run the scheduled smoke projects or the live production project.
 
-# E2E Tests with UI
-pnpm run test:e2e:ui
+## Local Setup
 
-# E2E Tests headless
-pnpm run test:e2e
-```
-
-### CI/CD Testing
-
-- PR validation runs all tests
-- Smoke tests run automatically
-- Production tests require credentials
-- For credential reset/rotation steps, see [secret rotation guidance](./secret-rotation.md#prod-smoke-test-user-password-reset)
-
-## Test Data Management
-
-### Mock Data
-
-- Located in `src/test/data`
-- Use factories for consistent data (we don't do that now, so would be good to add)
-
-### API Mocking
-
-- MSW or just mocks for unit tests
-
-## Debugging Tests
-
-### Unit Tests
-
-```bash
-# Debug specific test
-pnpm run test -- -t "test name"
-
-# Watch mode
-pnpm run test -- --watch
-```
+Playwright starts the local development server automatically when needed. Configure the environment variables required by the selected test project in `.env`; production tests use a live target and must only be run intentionally. Unit tests do not require `NEXT_PUBLIC_AUTO_LOGIN` to be set.
