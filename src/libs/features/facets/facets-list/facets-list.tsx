@@ -626,7 +626,6 @@ export const FacetsList = ({
                   track({
                     event: `Change ${facetType} facet influence to ${country}`,
                   });
-                  // istanbul ignore else
                   if (country !== 'UK_IE') {
                     dispatchFacetList({
                       type: 'setPreviewCountryCode',

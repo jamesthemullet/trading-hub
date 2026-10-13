@@ -1064,6 +1064,43 @@ describe('FacetsList', () => {
     expect(screen.getAllByText('IE market only')).toHaveLength(2);
   });
 
+  it('should preserve the preview country when influence stays UK/IE', async () => {
+    const user = userEvent.setup({ delay: null });
+
+    renderWithProviders(
+      <FacetsList
+        {...defaultFacetProps}
+        currentRuleset={{ ...mockRuleset, countryCode: 'UK_IE' }}
+        isNewRuleset={false}
+        facetType={FacetType.Search}
+        searchTerms={['socks']}
+      />
+    );
+
+    const selectPreview = screen.getByRole('button', {
+      name: /Select country for preview/i,
+    });
+    await user.click(selectPreview);
+    await user.click(
+      screen.getByRole('menuitemradio', { name: 'IE flag IE view' })
+    );
+
+    const selectMarket = screen.getByRole('button', {
+      name: 'Select country - currently UK/IE Market',
+    });
+    await user.click(selectMarket);
+    await user.click(
+      within(selectMarket.parentElement!).getByRole('menuitemradio', {
+        name: 'UK/IE Market',
+      })
+    );
+
+    await user.click(selectPreview);
+    expect(
+      screen.getByRole('menuitemradio', { name: 'IE flag IE view' })
+    ).toBeChecked();
+  });
+
   describe('unsaved changes', () => {
     it('should not show the unsaved changes modal when Cancel is clicked with no changes', async () => {
       const user = userEvent.setup({ delay: null });
