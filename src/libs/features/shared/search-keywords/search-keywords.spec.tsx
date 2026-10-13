@@ -492,6 +492,26 @@ describe('Search Keywords', () => {
     });
   });
 
+  it('should keep the dropdown open for other key presses', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <SearchKeywords
+        {...mockProps}
+        searchTerms={longerSearchTermsList}
+        previewSearchTerm={longerSearchTermsList[0]}
+      />
+    );
+
+    const dropdownButton = screen.getByRole('button', {
+      name: 'select keyword',
+    });
+
+    await user.click(dropdownButton);
+    await user.keyboard('a');
+
+    expect(dropdownButton).toHaveAttribute('aria-expanded', 'true');
+  });
+
   describe('bulk keyword paste', () => {
     it('should add multiple comma-separated keywords in one operation', async () => {
       const addSearchTermsStub = jest.fn();

@@ -51,7 +51,6 @@ export const useGlobalFacetAttributesEditModal = ({
     newValue: string,
     demergedValues: string[] = []
   ) => {
-    // istanbul ignore else
     if (!newValue?.trim()) return setEditModalError('You must supply a value');
 
     setIsAwaitingUpdate(true);
