@@ -13,7 +13,7 @@ This application is responsible for:
 - Updating data provided by [search-service](https://github.com/DigitalInnovation/search-service)
 - Previewing PLPs and SRPs
 
-It is deployed in a Docker container to Azure.
+It is deployed to Azure App Service.
 
 #### Technologies
 
@@ -27,7 +27,7 @@ It is deployed in a Docker container to Azure.
 
 #### Deployment
 
-The application is deployed via a [pipeline](../.github/workflows/pr-validate-and-deploy.yml) in Github actions.
+The application is deployed by the [main release workflow](../.github/workflows/release.yml) when changes reach `main`, or by the [hotfix release workflow](../.github/workflows/hotfix.yml) when changes reach `hotfix`. The [PR validation workflow](../.github/workflows/pr-validate-and-deploy.yml) validates pull requests; it does not deploy the application.
 
 ## Service owners
 
@@ -47,7 +47,7 @@ Nikolay Gushchin
 
 ### Product Manager:
 
-Holly Morris
+Daniel Mountford
 
 ## System overview
 
@@ -67,9 +67,9 @@ Trading Hub is available for use 24 hours a day, it is supported 9am - 6pm Monda
 
 ## Configuration
 
-### Trading Hub Access
+### Merchandising Hub Access
 
-Anyone with an M&S email can log in to the trading hub. To access data users need to be on an approved list, this is stored in a env var in the [search-service](https://github.com/DigitalInnovation/search-service)
+Users need the required Merchandising Hub app roles, assigned either directly or through an approved AD group. See the [current group list and assignment instructions](./user-access-managment.md).
 
 ## Monitoring
 
@@ -81,9 +81,10 @@ See [Dynatrace documentation](https://github.com/DigitalInnovation/trading-hub/b
 
 In the event of an outage the most likely causes are:
 
-- failed deployment
-- api error from search service
-- user is not authorised to use the trading hub
+- Failed deployment
+- API error from search service
+- User is not authorised to use the Merchandising Hub
+- Azure client secret has expired and needs rotating
 
 #### Scenario: In case of users not being able to sign in after being signed out, it could be that the redirect url is missing from Azure.
 
@@ -99,15 +100,11 @@ The redirect for prod is: https://merchandising-hub.search.marksandspencer.app/a
 For dev: https://dev-merchandising-hub.search.marksandspencer.app/api/auth/callback/azure-ad
 For localhost: http://localhost:3000/api/auth/callback/azure-ad
 
-#### Scenario: Deploy to Azure Web App failed
+#### Scenario: Infrastructure deployment fails because a service principal secret expired
 
 > The provided client secret keys for app '\*\*\*' are expired. Visit the Azure portal to create new keys for your app
 
-Renew service principle password and replace `SP_PASSWORD` value in github actions
-
-Dev: https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/2c640eb1-36ce-4c8a-be67-0559df1722f5
-
-Prod: https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/79325e76-57c8-4d1d-83b9-08e3a5a14760
+The application release workflows authenticate to Azure using OIDC. `SP_PASSWORD` is used by the infrastructure/Terraform workflows, not by the application deployment workflow. If this error occurs in an infrastructure workflow, identify the service principal using `SP_CLIENT_ID` in the matching GitHub Actions environment (`Nonprod` or `Prod`), then ask an authorized owner to rotate its credential and update that environment's `SP_PASSWORD` secret. Do not use the app-registration links for user sign-in to identify this infrastructure principal. For the application's Entra client secret, follow the [secret rotation guide](./secret-rotation.md).
 
 #### Scenario: Production smoke tests fail to authenticate
 
@@ -117,10 +114,6 @@ If production Playwright smoke tests fail at sign-in, rotate/reset the test acco
 - `PROD_TEST_USER_PASSWORD`
 
 Follow the full procedure in [secret rotation guidance](./secret-rotation.md#prod-smoke-test-user-password-reset).
-
-### Incident management
-
-[Pagerduty Merchandising Hub Escalation](https://mands.pagerduty.com/escalation_policies#P4WPYI5)
 
 ### Hotfix Release Process
 
@@ -132,14 +125,21 @@ Create a pull request, with the base branch as [hotfix branch](https://github.co
 
 If there is a code freeze, or there are other unreleased changes on the main branch, do not merge in the main branch, and do not follow the "resolve conflicts" process on your pull request.
 
-Note that merging into the hotfix branch does not require an approval, but the usual code review process should be followed if possible. This is so that an emergency release can be done out of office hours.
+Follow the repository's current review and branch-protection requirements. Production deployment approval, if required, is controlled by the GitHub environment settings.
 
 Merge your pull request. This will trigger the [Hotfix Release workflow](https://github.com/DigitalInnovation/trading-hub/blob/main/.github/workflows/hotfix.yml).
 
 This will deploy to dev so that you can test your fix.
 
-To deploy to prod, you will need to provide approval within the Hotfix Release Github Actions flow.
+The workflow deploys the change to production after the dev deployment. Complete any approval required by the production GitHub environment.
 
-Once this is deployed, you will then need to create another pull request, this time to merge your branch into the [main branch](https://github.com/DigitalInnovation/trading-hub/tree/main).
+After the fix is released, make sure the same fix is included in `main`. Do not merge the entire `hotfix` branch into `main` if it contains other unreleased changes. Instead, create a branch from the latest `main`, cherry-pick only the hotfix commit(s), and open a pull request targeting `main`:
 
-Do not merge the hotfix branch into main if there are unreleased changes on main (ie during times of code freeze).
+```bash
+git switch main
+git pull --ff-only
+git switch -c hotfix/<short-description>
+git cherry-pick <hotfix-commit-sha>
+```
+
+Resolve any conflicts carefully and run the normal PR checks. If the fix cannot be cleanly cherry-picked, coordinate with the maintainers to apply it to `main` without bringing in unrelated changes. A successful normal release syncs `main` into `hotfix`; it does not sync hotfix changes back into `main`.

@@ -2,19 +2,11 @@
 
 ## Historical Context
 
-Trading Hub is currently using a hardcoded list of emails through a logic implemented in the backend to control access. Frontend does no control of access whatsoever.
+Merchandising Hub previously used a hardcoded list of emails through a logic implemented in the backend to control access.
 
-If new user wants to get access to Trading Hub a backend development team needs to add their email to list of approved emails. This requires a full release of backend app and can't be performed during code freeze.
+## New method of authorization
 
-Users not on that hardcoded list can log in and get session but they will not see any data because GET,PUT,POST,DELETE request to the backend will be rejected and return 403 HTTP Code.
-
-For more details on authentication please refer to [authentication doc](./authentication.md)
-
-## Migration to new method of authorization
-
-The goal of the migration is to make sure users do not notice any problems with app access while at the same time malicious actors do not gain access to the protected resources.
-
-The new method of authorization will be based on roles. Roles are simply an array of strings that define access to resource. They are stored in the access token, like so:
+The new method of authorization is based on roles. Roles are simply an array of strings that define access to resource. They are stored in the access token, like so:
 
 ```Typescript
 const accessToken = {
@@ -27,21 +19,19 @@ Access token is signed so backend will check that token is valid before interpre
 
 Access is granted independently for each area. Category Ranking requires `Cat.R` for read access or `Cat.W` for read and write access; Search Ranking requires `Search.R` or `Search.W`; and Global Ranking requires `Glob.R` or `Glob.W`. `Glob.W` grants access to Global Ranking only.
 
-Frontend role checks are enabled by default and are no longer controlled by a feature flag. The frontend rollout must be coordinated with Azure role assignments: intended users need the expected role values in their access token before they will be able to use the corresponding areas. Backend role enforcement is being delivered separately; frontend checks control the UI and do not replace backend authorization.
+Intended users need the expected role values in their access token before they will be able to use the corresponding areas. Backend role enforcement is being delivered separately; frontend checks control the UI and do not replace backend authorization.
 
-Once we make sure new system works correctly we will remove the previous system from the backend as new method of authorization will be sufficient in keeping app safe.
-
-After all above is done we can work on restricting people access, first group of people to restrict access will be developers, all developes should get `read` access in prod. There must be a process for getting temporary(up to 8h) access on demand provided an approval is made by authorized personnel. This is required as there are exceptional situations where developer needs to test write access on prod to verify if bug still exists.
+Still to do - all developers should get `read` access in prod. There must be a process for getting temporary (up to 8h) access on demand provided an approval is made by authorized personnel. This is required as there are exceptional situations where developer needs to test write access on prod to verify if bug still exists.
 
 ## Naming
 
-Roles naming should follow same pattern, it needs to be relatively short as space in token is costly and subject to limits. Some browsers allow only 8Kb of space for header in request and access token is going to travel there between frontend and backend.
+Role naming should follow same pattern, it needs to be relatively short as space in token is costly and subject to limits. Some browsers allow only 8Kb of space for header in request and access token is going to travel there between frontend and backend.
 
-This is why Trading Hub will use simple scheme with 3-4 letters, first one uppercase followed by `.` and either `R` or `W` indicating `read` or `write` access.
+This is why Merchandising Hub uses a short area prefix followed by `.` and either `R` or `W`, indicating `read` or `write` access.
 
 ## Roles
 
-Trading Hub is using roles section of token to declare roles.
+Merchandising Hub is using roles section of token to declare roles.
 
 There are 3 modes of access to resource:
 
@@ -52,15 +42,15 @@ There are 3 modes of access to resource:
 There are following sections of the page protected independently:
 
 - Category Ranking
-- Search Ranking
+- Search Ranking & Redirects
 - Global Ranking
 
 In total there are following roles:
 
 - `Cat.R` for read access to category ranking
 - `Cat.W` for read and write access to category ranking
-- `Search.R` for read access to search ranking
-- `Search.W` for read and write access to search ranking
+- `Search.R` for read access to search ranking and redirects
+- `Search.W` for read and write access to search ranking and redirects
 - `Glob.R` for read access to global ranking
 - `Glob.W` for read and write access to global ranking
 
@@ -72,12 +62,10 @@ Read role from REST perspective means users can perform only GET request.
 
 ## Frontend support of roles
 
-Website is operating in untrusted regime by default, that means if the user wants he can bypass all checks. Checks however will be done in the frontend to avoid network calls to backend in the default scenario.
-
 The frontend copies roles from the access token into the session object under:
 
 ```Typescript
-session.data.roles
+session.roles
 ```
 
 Azure role assignments to users or groups must produce the supported values (for example, `Cat.W`) in the access-token `roles` claim. The frontend copies that claim directly; it does not translate a separate `groups` claim.
@@ -85,7 +73,7 @@ Azure role assignments to users or groups must produce the supported values (for
 Developers can use this directly by simply checking if a roles is contained in the array like:
 
 ```Typescript
-  if (!session.data?.roles?.includes('Glob.R')) {
+  if (!session?.roles?.includes('Glob.R')) {
     return;
   }
 ```
