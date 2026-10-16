@@ -35,6 +35,20 @@ The /flags page uses server-side email allowlisting.
 - Example: FLAGS_ALLOWED_EMAILS=you@marks-and-spencer.com,teammate@marks-and-spencer.com
 - If /flags redirects to /, verify your signed-in email appears in FLAGS_ALLOWED_EMAILS (matching is case-insensitive).
 
+## Development Server Stuck Compiling
+
+If `pnpm dev` stays on `Compiling ...` without returning a page or reporting an
+error, stop the development server and clear its Turbopack cache:
+
+```bash
+rm -rf .next/dev/cache/turbopack
+pnpm dev
+```
+
+Run these commands from the repository root. This removes only generated
+Turbopack cache data, not source files or local environment configuration. The
+first request after restarting rebuilds the cache.
+
 ## Migrating from npm to pnpm
 
 If you were previously using npm, follow these steps to switch to pnpm:
