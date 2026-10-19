@@ -44,10 +44,7 @@ export const RulesetAttributesModal = ({
   return (
     <Modal.Root
       opened={isModalOpen}
-      onClose={
-        // istanbul ignore next
-        () => onCloseModal()
-      }
+      onClose={onCloseModal}
       centered
       size={`${2 * MODAL_WIDTH}px`}
       padding={0}

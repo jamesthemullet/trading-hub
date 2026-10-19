@@ -259,6 +259,19 @@ describe('RulesetAttributes', () => {
     );
   });
 
+  it('closes the modal when Escape is pressed', async () => {
+    const user = userEvent.setup();
+    await openModal();
+
+    await user.keyboard('{Escape}');
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole('heading', { name: 'Choose attribute type' })
+      ).not.toBeVisible()
+    );
+  });
+
   it('selects a numeric attribute', async () => {
     await openModal();
 

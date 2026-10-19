@@ -16,7 +16,7 @@
 - [ ] src/libs/features/facets/global-facet-attributes-page-layout/global-facet-attributes-page-layout.tsx (3)
 - [ ] src/libs/features/rulesets/add-attribute/add-attribute.tsx (1)
 - [ ] src/libs/features/rulesets/category-search/category-search.tsx (4)
-- [ ] src/libs/features/rulesets/ruleset-attributes-modal/ruleset-attributes-modal.tsx (1)
+- [x] src/libs/features/rulesets/ruleset-attributes-modal/ruleset-attributes-modal.tsx (0)
 - [ ] src/libs/features/shared/search-keywords/search-keywords.tsx (1)
 - [ ] src/libs/features/shared/table-panel/table-panel.tsx (1)
 - [x] src/libs/hooks/search/redirect/use-redirect-create.ts (0)
