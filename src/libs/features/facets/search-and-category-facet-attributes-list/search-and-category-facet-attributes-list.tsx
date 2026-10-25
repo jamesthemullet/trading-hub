@@ -116,6 +116,8 @@ export const SearchAndCategoryFacetAttributesList = ({
     handleInputKeyDown,
   } = useFacetOrderInput(handleOrderChange, initialOrders);
 
+  const searchQueryInLowerCase = searchQuery.toLowerCase();
+
   const listValues = useCallback(
     (
       values:
@@ -137,7 +139,7 @@ export const SearchAndCategoryFacetAttributesList = ({
       };
 
       const filteredRows = (values ?? []).filter((row) =>
-        row.displayValue.toLowerCase().includes(searchQuery.toLowerCase())
+        row.displayValue.toLowerCase().includes(searchQueryInLowerCase)
       );
 
       const rows = filteredRows.map((row, index) => {
@@ -247,7 +249,7 @@ export const SearchAndCategoryFacetAttributesList = ({
     },
     [
       dispatch,
-      searchQuery,
+      searchQueryInLowerCase,
       isWriteEnabled,
       handleInputBlur,
       handleInputChange,

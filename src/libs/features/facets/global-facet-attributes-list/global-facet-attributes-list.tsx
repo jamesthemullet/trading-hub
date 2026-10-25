@@ -129,6 +129,16 @@ export const GlobalFacetAttributesList = ({
 
   const searchQueryInLowerCase = searchQuery.toLowerCase();
 
+  const mergedDisplayValueSet = useMemo(
+    () =>
+      new Set(
+        (globalAttributesLocalState.merged ?? []).flatMap(
+          (group) => group.mergedValues ?? []
+        )
+      ),
+    [globalAttributesLocalState.merged]
+  );
+
   const filteredAttributeValues = useMemo(
     () =>
       attributeValues.filter((attribute) =>
@@ -140,12 +150,9 @@ export const GlobalFacetAttributesList = ({
   const filteredAttributeValuesNotInAMergeGroup = useMemo(
     () =>
       filteredAttributeValues.filter(
-        (attribute) =>
-          !globalAttributesLocalState.merged?.some((group) =>
-            group.mergedValues?.includes(attribute.displayValue)
-          )
+        (attribute) => !mergedDisplayValueSet.has(attribute.displayValue)
       ),
-    [filteredAttributeValues, globalAttributesLocalState.merged]
+    [filteredAttributeValues, mergedDisplayValueSet]
   );
 
   const filteredMergeGroups = useMemo(
